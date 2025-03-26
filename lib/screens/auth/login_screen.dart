@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.offWhite,
       body: SingleChildScrollView(
         child: SizedBox(
           height: size.height,
@@ -42,10 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 left: 0,
                 right: 0,
                 height: size.height * 0.55,
-                child: Image.asset(
-                  'assets/images/Auth.png',
-                  fit: BoxFit.cover,
-                ),
+                child: Image.asset('assets/images/auth.png', fit: BoxFit.cover),
               ),
               // Bagian konten
               Positioned(
@@ -71,14 +68,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Tombol ganti form
+                        // Toggle ganti form
                         Row(
                           children: [
                             Expanded(
                               child: TextButton(
                                 onPressed: () {},
                                 style: TextButton.styleFrom(
-                                  foregroundColor: AppColors.secondary,
+                                  foregroundColor: Colors.black,
                                 ),
                                 child: Column(
                                   children: [
@@ -93,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Container(
                                       width: 70,
                                       height: 2,
-                                      color: AppColors.secondary,
+                                      color: Colors.black,
                                     ),
                                   ],
                                 ),
@@ -142,15 +139,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                     labelText: 'Email',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -176,15 +173,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   obscureText: _obscurePassword,
                                   decoration: InputDecoration(
                                     labelText: 'Kata Sandi',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -199,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         _obscurePassword
                                             ? Icons.visibility_off
                                             : Icons.visibility,
-                                        color: Colors.grey,
+                                        color: AppColors.componentGrey!,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -251,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.secondary,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
                                     ),
                                     child: const Text(

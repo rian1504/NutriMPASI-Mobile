@@ -45,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.offWhite,
       body: SingleChildScrollView(
         child: SizedBox(
           height: size.height,
@@ -57,7 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 left: 0,
                 right: 0,
                 height: size.height * 0.55,
-                child: Image.asset('assets/images/Auth.png', fit: BoxFit.cover),
+                child: Image.asset('assets/images/auth.png', fit: BoxFit.cover),
               ),
               // Bagian konten
               Positioned(
@@ -83,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Tombol ganti form
+                        // Toggle ganti form
                         Row(
                           children: [
                             Expanded(
@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   TextButton(
                                     onPressed: () {},
                                     style: TextButton.styleFrom(
-                                      foregroundColor: AppColors.secondary,
+                                      foregroundColor: Colors.black,
                                       padding: EdgeInsets.zero,
                                     ),
                                     child: Column(
@@ -131,7 +131,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         Container(
                                           width: 70,
                                           height: 2,
-                                          color: AppColors.secondary,
+                                          color: Colors.black,
                                         ),
                                       ],
                                     ),
@@ -163,15 +163,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   },
                                   decoration: InputDecoration(
                                     labelText: 'Nama',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -202,15 +202,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   },
                                   decoration: InputDecoration(
                                     labelText: 'Email',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -246,15 +246,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   },
                                   decoration: InputDecoration(
                                     labelText: 'Kata Sandi',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -269,7 +269,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         _obscurePassword
                                             ? Icons.visibility_off
                                             : Icons.visibility,
-                                        color: Colors.grey,
+                                        color: AppColors.componentGrey!,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -298,15 +298,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   obscureText: _obscureConfirmPassword,
                                   decoration: InputDecoration(
                                     labelText: 'Konfirmasi Kata Sandi',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -321,7 +321,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         _obscureConfirmPassword
                                             ? Icons.visibility_off
                                             : Icons.visibility,
-                                        color: Colors.grey,
+                                        color: AppColors.componentGrey!,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -358,7 +358,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.secondary,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
                                     ),
                                     child: const Text(
