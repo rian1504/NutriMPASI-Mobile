@@ -39,7 +39,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
   final Map<String, bool> _recipeSourceFilters = {
     'KEMENKES': false,
     'WHO': false,
-    'Rekomendasi User': false,
+    'Rekomendasi Pengguna': false,
   };
 
   // Data makanan dari model
@@ -142,143 +142,154 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Bagian tekstur
-                          const Text(
-                            'Konsistensi atau tekstur',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.secondary,
+                          // Bagian kategori makanan
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Kategori Makanan',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.secondary,
+                              ),
                             ),
                           ),
 
                           const SizedBox(height: 10),
 
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 0,
-                            children:
-                                _foodAgeFilters.keys.map((age) {
-                                  return FilterChip(
-                                    label: Text(age),
-                                    selected: _foodAgeFilters[age]!,
-                                    selectedColor: AppColors.primary.withAlpha(
-                                      50,
-                                    ),
-                                    checkmarkColor: AppColors.primary,
-                                    backgroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      side: BorderSide(
-                                        color:
-                                            _foodAgeFilters[age]!
-                                                ? AppColors.primary
-                                                : AppColors.componentGrey!,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Wrap(
+                              alignment: WrapAlignment.start,
+                              spacing: 8,
+                              runSpacing: 0,
+                              children:
+                                  _foodCategoryFilters.keys.map((category) {
+                                    return FilterChip(
+                                      label: Text(category),
+                                      selected: _foodCategoryFilters[category]!,
+                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      checkmarkColor: AppColors.primary,
+                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        side: BorderSide(
+                                          color: _foodCategoryFilters[category]!
+                                              ? AppColors.primary
+                                              : AppColors.componentGrey!,
+                                        ),
                                       ),
-                                    ),
-                                    onSelected: (selected) {
-                                      setState(() {
-                                        _foodAgeFilters[age] = selected;
-                                      });
-                                    },
-                                  );
-                                }).toList(),
+                                      onSelected: (selected) {
+                                        setState(() {
+                                          _foodCategoryFilters[category] = selected;
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
+                            ),
                           ),
 
                           const SizedBox(height: 12),
 
-                          // Bagian kategori makanan
-                          const Text(
-                            'Kategori Makanan',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.secondary,
+                          // Bagian usia konsumsi
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Usia Konsumsi',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.secondary,
+                              ),
                             ),
                           ),
 
                           const SizedBox(height: 10),
 
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 0,
-                            children:
-                                _foodCategoryFilters.keys.map((category) {
-                                  return FilterChip(
-                                    label: Text(category),
-                                    selected: _foodCategoryFilters[category]!,
-                                    selectedColor: AppColors.primary.withAlpha(
-                                      50,
-                                    ),
-                                    checkmarkColor: AppColors.primary,
-                                    backgroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      side: BorderSide(
-                                        color:
-                                            _foodCategoryFilters[category]!
-                                                ? AppColors.primary
-                                                : AppColors.componentGrey!,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Wrap(
+                              alignment: WrapAlignment.start,
+                              spacing: 8,
+                              runSpacing: 0,
+                              children:
+                                  _foodAgeFilters.keys.map((age) {
+                                    return FilterChip(
+                                      label: Text(age),
+                                      selected: _foodAgeFilters[age]!,
+                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      checkmarkColor: AppColors.primary,
+                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        side: BorderSide(
+                                          color: _foodAgeFilters[age]!
+                                              ? AppColors.primary
+                                              : AppColors.componentGrey!,
+                                        ),
                                       ),
-                                    ),
-                                    onSelected: (selected) {
-                                      setState(() {
-                                        _foodCategoryFilters[category] =
-                                            selected;
-                                      });
-                                    },
-                                  );
-                                }).toList(),
+                                      onSelected: (selected) {
+                                        setState(() {
+                                          _foodAgeFilters[age] = selected;
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
+                            ),
                           ),
 
                           const SizedBox(height: 12),
 
                           // Bagian sumber resep
-                          const Text(
-                            'Sumber Resep',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.secondary,
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Sumber Resep',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.secondary,
+                              ),
                             ),
                           ),
 
                           const SizedBox(height: 10),
 
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 0,
-                            children:
-                                _recipeSourceFilters.keys.map((source) {
-                                  return FilterChip(
-                                    label: Text(source),
-                                    selected: _recipeSourceFilters[source]!,
-                                    selectedColor: AppColors.primary.withAlpha(
-                                      50,
-                                    ),
-                                    checkmarkColor: AppColors.primary,
-                                    backgroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      side: BorderSide(
-                                        color:
-                                            _recipeSourceFilters[source]!
-                                                ? AppColors.primary
-                                                : AppColors.componentGrey!,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Wrap(
+                              alignment: WrapAlignment.start,
+                              spacing: 8,
+                              runSpacing: 0,
+                              children:
+                                  _recipeSourceFilters.keys.map((source) {
+                                    return FilterChip(
+                                      label: Text(source),
+                                      selected: _recipeSourceFilters[source]!,
+                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      checkmarkColor: AppColors.primary,
+                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        side: BorderSide(
+                                          color: _recipeSourceFilters[source]!
+                                              ? AppColors.primary
+                                              : AppColors.componentGrey!,
+                                        ),
                                       ),
-                                    ),
-                                    onSelected: (selected) {
-                                      setState(() {
-                                        _recipeSourceFilters[source] = selected;
-                                      });
-                                    },
-                                  );
-                                }).toList(),
+                                      onSelected: (selected) {
+                                        setState(() {
+                                          _recipeSourceFilters[source] = selected;
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
+                            ),
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 12),
                         ],
                       ),
                     ),
@@ -325,20 +336,27 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.offWhite,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.offWhite,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset('assets/images/Logo.png'),
-        ),
+        leading: Image.asset('assets/images/logo_aplikasi.png', height: 40),
         actions: [
-          IconButton(
-            icon: const Icon(Symbols.bookmark_heart, color: AppColors.primary),
+          ElevatedButton(
             onPressed: () {
               // TODO: Navigasi ke halaman favorit
             },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(4),
+              backgroundColor: Colors.white,
+              elevation: 2,
+            ),
+            child: const Icon(
+              Symbols.bookmark_heart,
+              color: AppColors.primary,
+              size: 24,
+            ),
           ),
         ],
       ),
@@ -356,19 +374,10 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Sudah kepikiran',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textGrey,
-                      ),
-                    ),
-                    Text(
                       'Masak apa hari ini?',
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        fontSize: 20,
+                        fontSize: 28,
                         fontWeight: FontWeight.w700,
                         color: AppColors.secondary,
                       ),
@@ -378,46 +387,47 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
               ),
 
               // Search bar
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.componentGrey!),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.componentGrey!),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Cari Resep...',
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: AppColors.secondary,
+                    ),
+                    // Tombol filter
+                    suffixIcon: Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
                       ),
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          hintText: 'Cari Resep...',
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: AppColors.secondary,
+                      height: 20,
+                      width: 40,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 12),
                         ),
+                        onPressed: () {
+                          // Fungsi menampilkan bottom sheet filter
+                          _showFilterBottomSheet(context);
+                        },
+                        child: const Icon(Icons.tune, color: Colors.white),
                       ),
                     ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  const SizedBox(width: 8),
-                  // Tombol filter
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.componentGrey!),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.tune, color: AppColors.secondary),
-                      onPressed: () {
-                        // Fungsi menampilkan bottom sheet filter
-                        _showFilterBottomSheet(context);
-                      },
-                    ),
-                  ),
-                ],
+                ),
               ),
 
               const SizedBox(height: 16),
@@ -442,27 +452,11 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                     // Gambar background
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        'https://picsum.photos/800/600',
+                      child: Image.asset(
+                        'assets/images/banner_usulan.png',
                         width: double.infinity,
                         height: 180,
                         fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
-                            width: double.infinity,
-                            height: 180,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          );
-                        },
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             width: double.infinity,
@@ -487,7 +481,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                       right: 0,
                       child: Container(
                         padding: const EdgeInsets.all(16),
-                        margin: const EdgeInsets.all(4),
+                        margin: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           color: Colors.white.withAlpha(225),
                           borderRadius: const BorderRadius.all(
@@ -556,7 +550,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
               // Toggle switch untuk mengganti antara semua makanan dan usulan user
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 padding: const EdgeInsets.all(4),
@@ -574,7 +568,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                           decoration: BoxDecoration(
                             color:
                                 !_showUserSuggestionsOnly
-                                    ? AppColors.primary
+                                    ? AppColors.buff
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -587,8 +581,8 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                               fontWeight: FontWeight.w600,
                               color:
                                   !_showUserSuggestionsOnly
-                                      ? Colors.white
-                                      : AppColors.textGrey,
+                                      ? Colors.black
+                                      : Colors.white,
                             ),
                           ),
                         ),
@@ -606,12 +600,12 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                           decoration: BoxDecoration(
                             color:
                                 _showUserSuggestionsOnly
-                                    ? AppColors.primary
+                                    ? AppColors.buff
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            'Usulan User',
+                            'Usulan Saya',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Poppins',
@@ -619,8 +613,8 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                               fontWeight: FontWeight.w600,
                               color:
                                   _showUserSuggestionsOnly
-                                      ? Colors.white
-                                      : AppColors.textGrey,
+                                      ? Colors.black
+                                      : Colors.white,
                             ),
                           ),
                         ),
@@ -657,16 +651,12 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                           children: [
                             // Gambar makanan
                             ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(12),
-                              ),
-                              child: SizedBox(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                item.image,
                                 width: 100,
                                 height: 100,
-                                child: Image.network(
-                                  item.image,
-                                  fit: BoxFit.cover,
-                                ),
+                                fit: BoxFit.cover,
                               ),
                             ),
 

@@ -59,7 +59,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).padding.top + 325,
                         decoration: BoxDecoration(
-                          color: AppColors.primary,
+                          gradient: const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.05, 0.41, 0.72, 1.0],
+                            colors: [
+                              Color(0xFFFFE1BE),
+                              Color(0xFFFFC698),
+                              Color(0xFFFFAC84),
+                              Color(0xFFFF7F53),
+                            ],
+                          ),
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.elliptical(200, 90),
                             bottomRight: Radius.elliptical(200, 90),
@@ -71,12 +81,19 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       Positioned(
                         top: MediaQuery.of(context).padding.top + 16,
                         left: 16,
-                        child: IconButton(
-                          icon: const Icon(
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(12),
+                            elevation: 2,
+                          ),
+                          child: const Icon(
                             Symbols.arrow_back_ios_new,
                             color: Colors.black,
+                            size: 20,
                           ),
-                          onPressed: () => Navigator.pop(context),
                         ),
                       ),
 
@@ -252,21 +269,38 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ),
                         Row(
                           children: [
-                            Image.asset(
-                              'assets/images/Logo.png',
-                              width: 16,
-                              height: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              _food.source,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.secondary,
+                            if (_food.source == 'WHO')
+                              Image.asset(
+                                'assets/images/logo_who.png',
+                                width: 100,
+                                height: 30,
+                              )
+                            else if (_food.source == 'KEMENKES')
+                              Image.asset(
+                                'assets/images/logo_kemenkes.png',
+                                width: 100,
+                                height: 30,
+                              )
+                            else if (_food.source == 'Pengguna')
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.person,
+                                    size: 24,
+                                    color: AppColors.secondary,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Pengguna',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.secondary,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
                           ],
                         ),
 
@@ -384,7 +418,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.primary,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(24),
                 topRight: Radius.circular(24),
@@ -592,7 +626,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   ),
                                   const SizedBox(height: 24),
 
-                                  // Save button
+                                  // Tombol simpan
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
@@ -635,10 +669,13 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
+                      ),
                       elevation: 2,
                     ),
-                    child: const Icon(Symbols.calendar_add_on, size: 20),
+                    child: const Icon(Symbols.calendar_add_on, size: 28),
                   ),
 
                   const SizedBox(width: 16),
@@ -817,12 +854,12 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.secondary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                       elevation: 2,
                     ),
                     child: Padding(
@@ -838,6 +875,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
+                          SizedBox(width: 10),
                           const Icon(Icons.arrow_forward, size: 20),
                         ],
                       ),
