@@ -22,21 +22,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'subtitle': 'Memasak',
       'description':
           'Atur jadwal MPASI dengan mudah! Rencanakan menu harian, atur porsi, dan pastikan bayi Anda mendapatkan nutrisi terbaik setiap saat.',
-      'image': 'assets/images/Onboarding_1.png',
+      'image': 'assets/images/onboarding_1.png',
     },
     {
       'title': 'Usulan',
       'subtitle': 'Makanan',
       'description':
           'Punya resep MPASI favorit? Bagikan kreasi terbaik Anda dan bantu ibu lainnya menemukan inspirasi menu sehat!',
-      'image': 'assets/images/Onboarding_2.png',
+      'image': 'assets/images/onboarding_2.png',
     },
     {
       'title': 'Riwayat',
       'subtitle': 'Masakan',
       'description':
           'Pantau riwayat MPASI si kecil! Lihat catatan makanan sebelumnya, jumlah gizi, dan perkembangan pola makan bayi Anda.',
-      'image': 'assets/images/Onboarding_3.png',
+      'image': 'assets/images/onboarding_3.png',
     },
   ];
 
@@ -50,7 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.backgroundOnboarding,
+      backgroundColor: AppColors.porcelain,
       body: Stack(
         children: [
           PageView.builder(
@@ -114,7 +114,7 @@ class OnboardingPage extends StatelessWidget {
           child: Container(
             width: double.infinity,
             decoration: const BoxDecoration(
-              color: AppColors.background,
+              color: AppColors.white,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
@@ -236,7 +236,7 @@ class OnboardingPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 padding: const EdgeInsets.all(8),
                 minimumSize: const Size(42, 42),
@@ -262,9 +262,9 @@ class OnboardingPage extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColors.primary.withAlpha(100),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(15),
               ),
               padding: const EdgeInsets.all(8),
               minimumSize: const Size(42, 42),
@@ -275,8 +275,8 @@ class OnboardingPage extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                color: AppColors.secondary,
               ),
             ),
           ),
