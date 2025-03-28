@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
+import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
@@ -41,7 +42,7 @@ class _MainPageState extends State<MainPage> {
   int _page = 0;
 
   final List<Widget> _screens = [
-    const Center(child: Text('Home')),
+    const HomeScreen(),
     const FoodListingScreen(),
     const ScheduleScreen(),
     const Center(child: Text('Forum')),
@@ -51,10 +52,10 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.offWhite,
       body: _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.offWhite,
         color: AppColors.primary,
         height: MediaQuery.of(context).size.height * 0.070,
         animationDuration: const Duration(milliseconds: 300),
