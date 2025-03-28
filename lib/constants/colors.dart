@@ -13,9 +13,12 @@ class AppColors {
   static const Color porcelain = Color(0xFFFDEFC0);
   static const Color offWhite = Color(0xFFFBF5E6);
   static const Color cream = Color(0xFFEBDDC5);
+  static const Color lavenderBlue = Color(0xFFBABAEE);
+  static const Color bisque = Color(0xFFFFE1BE);
 
   // Text color
-  static const Color textGrey = Colors.blueGrey;
+  static const Color textBlack = Color(0xFF323232);
+  static const Color textGrey = Color(0xFF808080);
 
   // item color
   static Color? componentGrey = Colors.grey[300];
