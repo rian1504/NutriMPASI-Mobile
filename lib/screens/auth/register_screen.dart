@@ -10,7 +10,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  // Controller form
+  // Controller untuk form
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -19,7 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  // Focus Node untuk mengatur fokus pada form
+  // Focus Node untuk perpindahan fokus
   final _nameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
@@ -27,12 +27,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    // Fungsi dispose untuk membersihkan controller
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    // Fungsi dispose untuk membersihkan focus node
     _nameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
@@ -51,15 +49,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           height: size.height,
           child: Stack(
             children: [
-              // Bagian gambar atas
+              // Gambar latar belakang
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
                 height: size.height * 0.55,
-                child: Image.asset('assets/images/auth.png', fit: BoxFit.cover),
+                child: Image.asset('assets/images/background/auth.png', fit: BoxFit.cover),
               ),
-              // Bagian konten
+              // Panel utama
               Positioned(
                 top: size.height * 0.4,
                 left: 24,
@@ -83,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Toggle ganti form
+                        // Tab navigasi
                         Row(
                           children: [
                             Expanded(
@@ -97,7 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   );
                                 },
                                 style: TextButton.styleFrom(
-                                  foregroundColor: Colors.grey,
+                                  foregroundColor: AppColors.textGrey,
                                 ),
                                 child: const Text(
                                   'Masuk',
@@ -115,7 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   TextButton(
                                     onPressed: () {},
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.black,
+                                      foregroundColor: AppColors.textBlack,
                                       padding: EdgeInsets.zero,
                                     ),
                                     child: Column(
@@ -131,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         Container(
                                           width: 70,
                                           height: 2,
-                                          color: Colors.black,
+                                          color: AppColors.textBlack,
                                         ),
                                       ],
                                     ),
@@ -142,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        // Form daftar
+                        // Formulir pendaftaran
                         Form(
                           key: _formKey,
                           child: Padding(
@@ -275,7 +273,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         setState(() {
                                           _obscurePassword = !_obscurePassword;
                                         });
-                                        // Fungsi agar tetap fokus pada form selanjutnya
                                         _passwordFocusNode.requestFocus();
                                       },
                                     ),
@@ -328,7 +325,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           _obscureConfirmPassword =
                                               !_obscureConfirmPassword;
                                         });
-                                        // Fungsi agar tetap fokus pada form selanjutnya
                                         _confirmPasswordFocusNode
                                             .requestFocus();
                                       },

@@ -11,32 +11,32 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  // Controller untuk PageView
+  // Controller PageView untuk slide onboarding
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // Data onboarding
+  // Data konten onboarding
   final List<Map<String, String>> _onboardingData = [
     {
       'title': 'Jadwal',
       'subtitle': 'Memasak',
       'description':
           'Atur jadwal MPASI dengan mudah! Rencanakan menu harian, atur porsi, dan pastikan bayi Anda mendapatkan nutrisi terbaik setiap saat.',
-      'image': 'assets/images/onboarding_1.png',
+      'image': 'assets/images/background/onboarding_1.png',
     },
     {
       'title': 'Usulan',
       'subtitle': 'Makanan',
       'description':
           'Punya resep MPASI favorit? Bagikan kreasi terbaik Anda dan bantu ibu lainnya menemukan inspirasi menu sehat!',
-      'image': 'assets/images/onboarding_2.png',
+      'image': 'assets/images/background/onboarding_2.png',
     },
     {
       'title': 'Riwayat',
       'subtitle': 'Masakan',
       'description':
           'Pantau riwayat MPASI si kecil! Lihat catatan makanan sebelumnya, jumlah gizi, dan perkembangan pola makan bayi Anda.',
-      'image': 'assets/images/onboarding_3.png',
+      'image': 'assets/images/background/onboarding_3.png',
     },
   ];
 
@@ -53,6 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       backgroundColor: AppColors.porcelain,
       body: Stack(
         children: [
+          // PageView untuk halaman onboarding
           PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -105,7 +106,7 @@ class OnboardingPage extends StatelessWidget {
 
     return Stack(
       children: [
-        // Bagian konten
+        // Bagian konten teks dan tombol
         Positioned(
           top: size.height * 0.6,
           left: 0,
@@ -126,7 +127,7 @@ class OnboardingPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20),
-                  // Judul
+                  // Judul utama
                   Text(
                     title,
                     style: const TextStyle(
@@ -147,7 +148,7 @@ class OnboardingPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Deskripsi
+                  // Teks deskripsi
                   Text(
                     description,
                     textAlign: TextAlign.center,
@@ -159,7 +160,7 @@ class OnboardingPage extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // Tombol lanjut
+                  // Tombol lanjut dengan indikator progres
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -212,7 +213,7 @@ class OnboardingPage extends StatelessWidget {
           ),
         ),
 
-        // Bagian gambar
+        // Gambar ilustrasi
         Positioned(
           top: 0,
           left: 0,
@@ -221,7 +222,7 @@ class OnboardingPage extends StatelessWidget {
           child: Image.asset(image, width: double.infinity),
         ),
 
-        // Tombol Kembali - Hanya pada halaman kedua dan seterusnya
+        // Tombol kembali
         if (currentPage > 0)
           Positioned(
             top: 40,

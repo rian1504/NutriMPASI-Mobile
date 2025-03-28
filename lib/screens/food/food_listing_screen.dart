@@ -12,19 +12,19 @@ class FoodListingScreen extends StatefulWidget {
 }
 
 class _FoodListingScreenState extends State<FoodListingScreen> {
-  // Controller pencarian
+  // Controller untuk pencarian
   final TextEditingController _searchController = TextEditingController();
-  // Controller scroll untuk mendeteksi posisi scroll
+  // Controller scroll
   final ScrollController _scrollController = ScrollController();
-  // Variable untuk menampilkan/menyembunyikan tombol scroll ke atas
+  // Status tombol scroll ke atas
   bool _showScrollToTop = false;
-  // Variable untuk toggle antara semua makanan dan usulan user
+  // Toggle tampilan usulan pengguna
   bool _showUserSuggestionsOnly = false;
-  // Variable untuk lazy loading
+  // Variable lazy loading
   int _displayedItemCount = 5;
   bool _isLoadingMore = false;
 
-  // Filter bottom sheet
+  // Filter data
   final Map<String, bool> _foodAgeFilters = {
     'Tekstur Halus': false,
     'Tekstur Kasar': false,
@@ -42,19 +42,17 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
     'Rekomendasi Pengguna': false,
   };
 
-  // Data makanan dari model
+  // Data makanan
   final List<Food> _foodItems = Food.dummyFoods;
 
   @override
   void initState() {
     super.initState();
-    // listener untuk mendeteksi posisi scroll
     _scrollController.addListener(_scrollListener);
   }
 
-  // Fungsi untuk mendeteksi posisi scroll
+  // Deteksi posisi scroll
   void _scrollListener() {
-    // Jika posisi scroll lebih dari filter, tampilkan tombol scroll ke atas
     if (_scrollController.offset >= 300 && !_showScrollToTop) {
       setState(() {
         _showScrollToTop = true;
@@ -65,7 +63,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
       });
     }
 
-    // Deteksi scroll ke bawah untuk lazy loading
+    // Deteksi untuk lazy loading
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
@@ -74,13 +72,12 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
     }
   }
 
-  // Fungsi untuk memuat lebih banyak item
+  // Muat lebih banyak item
   void _loadMoreItems() {
     setState(() {
       _isLoadingMore = true;
     });
 
-    // Simulasi loading dengan delay
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
         _displayedItemCount =
@@ -92,7 +89,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
     });
   }
 
-  // Fungsi untuk mendapatkan item makanan yang difilter
+  // Filter makanan berdasarkan sumber
   List<Food> _getFilteredFoodItems() {
     if (_showUserSuggestionsOnly) {
       return _foodItems.where((item) => item.source == 'Pengguna').toList();
@@ -101,14 +98,13 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
   }
 
   @override
-  // Fungsi dispose untuk membersihkan controller
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
-  // Menampilkan bottom sheet filter
+  // Dialog bottom sheet filter
   void _showFilterBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -124,7 +120,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
               height: MediaQuery.of(context).size.height * 0.5,
               child: Column(
                 children: [
-                  // Indikator bottom sheet
+                  // Indikator panel
                   Center(
                     child: Container(
                       height: 8,
@@ -136,13 +132,13 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                       ),
                     ),
                   ),
-                  // Area yang dapat di-scroll
+                  // Area konten filter yang dapat di-scroll
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Bagian kategori makanan
+                          // Filter kategori makanan
                           const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -151,7 +147,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                 fontFamily: 'Poppins',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.secondary,
+                                color: AppColors.textBlack,
                               ),
                             ),
                           ),
@@ -169,20 +165,24 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                     return FilterChip(
                                       label: Text(category),
                                       selected: _foodCategoryFilters[category]!,
-                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      selectedColor: AppColors.primary
+                                          .withAlpha(50),
                                       checkmarkColor: AppColors.primary,
-                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      backgroundColor: AppColors.cream
+                                          .withAlpha(50),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                         side: BorderSide(
-                                          color: _foodCategoryFilters[category]!
-                                              ? AppColors.primary
-                                              : AppColors.componentGrey!,
+                                          color:
+                                              _foodCategoryFilters[category]!
+                                                  ? AppColors.primary
+                                                  : AppColors.componentGrey!,
                                         ),
                                       ),
                                       onSelected: (selected) {
                                         setState(() {
-                                          _foodCategoryFilters[category] = selected;
+                                          _foodCategoryFilters[category] =
+                                              selected;
                                         });
                                       },
                                     );
@@ -192,7 +192,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
 
                           const SizedBox(height: 12),
 
-                          // Bagian usia konsumsi
+                          // Filter usia konsumsi
                           const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -201,7 +201,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                 fontFamily: 'Poppins',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.secondary,
+                                color: AppColors.textBlack,
                               ),
                             ),
                           ),
@@ -219,15 +219,18 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                     return FilterChip(
                                       label: Text(age),
                                       selected: _foodAgeFilters[age]!,
-                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      selectedColor: AppColors.primary
+                                          .withAlpha(50),
                                       checkmarkColor: AppColors.primary,
-                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      backgroundColor: AppColors.cream
+                                          .withAlpha(50),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                         side: BorderSide(
-                                          color: _foodAgeFilters[age]!
-                                              ? AppColors.primary
-                                              : AppColors.componentGrey!,
+                                          color:
+                                              _foodAgeFilters[age]!
+                                                  ? AppColors.primary
+                                                  : AppColors.componentGrey!,
                                         ),
                                       ),
                                       onSelected: (selected) {
@@ -242,7 +245,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
 
                           const SizedBox(height: 12),
 
-                          // Bagian sumber resep
+                          // Filter sumber resep
                           const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -251,7 +254,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                 fontFamily: 'Poppins',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.secondary,
+                                color: AppColors.textBlack,
                               ),
                             ),
                           ),
@@ -269,20 +272,24 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                     return FilterChip(
                                       label: Text(source),
                                       selected: _recipeSourceFilters[source]!,
-                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      selectedColor: AppColors.primary
+                                          .withAlpha(50),
                                       checkmarkColor: AppColors.primary,
-                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      backgroundColor: AppColors.cream
+                                          .withAlpha(50),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                         side: BorderSide(
-                                          color: _recipeSourceFilters[source]!
-                                              ? AppColors.primary
-                                              : AppColors.componentGrey!,
+                                          color:
+                                              _recipeSourceFilters[source]!
+                                                  ? AppColors.primary
+                                                  : AppColors.componentGrey!,
                                         ),
                                       ),
                                       onSelected: (selected) {
                                         setState(() {
-                                          _recipeSourceFilters[source] = selected;
+                                          _recipeSourceFilters[source] =
+                                              selected;
                                         });
                                       },
                                     );
@@ -295,7 +302,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                     ),
                   ),
 
-                  // Tombol terapkan filter
+                  // Tombol terapkan
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
                     child: SizedBox(
@@ -340,7 +347,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.offWhite,
         elevation: 0,
-        leading: Image.asset('assets/images/logo_aplikasi.png', height: 40),
+        leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
         actions: [
           ElevatedButton(
             onPressed: () {
@@ -367,7 +374,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Pesan halaman
+              // Judul halaman
               const Padding(
                 padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
                 child: Column(
@@ -379,14 +386,14 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                         fontFamily: 'Poppins',
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.secondary,
+                        color: AppColors.textBlack,
                       ),
                     ),
                   ],
                 ),
               ),
 
-              // Search bar
+              // Kotak pencarian
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -399,9 +406,9 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                     hintText: 'Cari Resep...',
                     prefixIcon: const Icon(
                       Icons.search,
-                      color: AppColors.secondary,
+                      color: AppColors.textBlack,
                     ),
-                    // Tombol filter
+                    // Tombol filter pencarian
                     suffixIcon: Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 4,
@@ -418,7 +425,6 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                           ),
                         ),
                         onPressed: () {
-                          // Fungsi menampilkan bottom sheet filter
                           _showFilterBottomSheet(context);
                         },
                         child: const Icon(Icons.tune, color: Colors.white),
@@ -432,7 +438,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
 
               const SizedBox(height: 16),
 
-              // Bagian tambah usulan
+              // Banner tambah usulan
               Container(
                 height: 180,
                 decoration: BoxDecoration(
@@ -449,11 +455,11 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                 ),
                 child: Stack(
                   children: [
-                    // Gambar background
+                    // Gambar latar belakang
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.asset(
-                        'assets/images/banner_usulan.png',
+                        'assets/images/banner/tambah_usulan_makanan.png',
                         width: double.infinity,
                         height: 180,
                         fit: BoxFit.cover,
@@ -462,19 +468,19 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                             width: double.infinity,
                             height: 180,
                             decoration: BoxDecoration(
-                              color: Colors.grey[200],
+                              color: AppColors.componentGrey,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
                               Icons.image,
-                              color: Colors.grey,
+                              color: AppColors.textGrey,
                               size: 40,
                             ),
                           );
                         },
                       ),
                     ),
-                    // Card konten
+                    // Panel konten
                     Positioned(
                       bottom: 0,
                       left: 0,
@@ -490,7 +496,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                         ),
                         child: Row(
                           children: [
-                            // Text konten
+                            // Informasi usulan
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -502,7 +508,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                       fontFamily: 'Poppins',
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.secondary,
+                                      color: AppColors.textBlack,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -511,13 +517,13 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 12,
-                                      color: Colors.grey[600],
+                                      color: AppColors.textGrey,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            // Tombol tambah usulan
+                            // Tombol tambah
                             Container(
                               width: 48,
                               height: 48,
@@ -547,7 +553,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
 
               const SizedBox(height: 16),
 
-              // Toggle switch untuk mengganti antara semua makanan dan usulan user
+              // Toggle pilihan tampilan
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.primary,
@@ -581,7 +587,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                               fontWeight: FontWeight.w600,
                               color:
                                   !_showUserSuggestionsOnly
-                                      ? Colors.black
+                                      ? AppColors.textBlack
                                       : Colors.white,
                             ),
                           ),
@@ -613,7 +619,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                               fontWeight: FontWeight.w600,
                               color:
                                   _showUserSuggestionsOnly
-                                      ? Colors.black
+                                      ? AppColors.textBlack
                                       : Colors.white,
                             ),
                           ),
@@ -626,7 +632,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
 
               const SizedBox(height: 16),
 
-              // Daftar makanan
+              // Daftar kartu makanan
               Column(
                 children: [
                   ..._getFilteredFoodItems().take(_displayedItemCount).map((
@@ -679,24 +685,24 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            // Judul makanan
+                                            // Nama makanan
                                             Text(
                                               item.name,
                                               style: const TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w700,
-                                                color: AppColors.secondary,
+                                                color: AppColors.textBlack,
                                               ),
                                             ),
                                             const SizedBox(height: 4),
-                                            // Deskripsi makanan
+                                            // Deskripsi singkat
                                             Text(
                                               item.description,
                                               style: TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontSize: 12,
-                                                color: Colors.grey[600],
+                                                color: AppColors.textGrey,
                                               ),
                                               textAlign: TextAlign.justify,
                                               maxLines: 3,
@@ -710,7 +716,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        // Sumber makanan
+                                        // Indikator sumber
                                         Container(
                                           padding: const EdgeInsets.all(4),
                                           decoration: BoxDecoration(
@@ -728,7 +734,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                           ),
                                         ),
                                         const SizedBox(height: 32),
-                                        // Jumlah favorite
+                                        // Indikator favorit
                                         Container(
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 6,
@@ -805,13 +811,12 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
           ),
         ),
       ),
-      // FloatingActionButton untuk scroll ke atas
+      // Tombol kembali ke atas
       floatingActionButton:
           _showScrollToTop
               ? FloatingActionButton(
                 backgroundColor: AppColors.primary,
                 onPressed: () {
-                  // Fungsi scroll ke posisi paling atas
                   _scrollController.animateTo(
                     0,
                     duration: const Duration(milliseconds: 500),

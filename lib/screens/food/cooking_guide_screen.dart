@@ -13,14 +13,14 @@ class CookingGuideScreen extends StatefulWidget {
 }
 
 class _CookingGuideScreenState extends State<CookingGuideScreen> {
-  // Toggle antara bahan dan langkah
+  // Toggle untuk tampilan bahan dan langkah
   bool _showIngredients = true;
   late Food _food;
 
   @override
   void initState() {
     super.initState();
-    // Mendapatkan data makanan berdasarkan ID
+    // Ambil data makanan
     _food = Food.dummyFoods.firstWhere((food) => food.id == widget.foodId);
   }
 
@@ -29,7 +29,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Gambar makanan di bagian atas
+          // Gambar latar belakang
           Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.5,
@@ -55,13 +55,13 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
               onPressed: () => Navigator.pop(context),
               child: const Icon(
                 Symbols.arrow_back_ios_new,
-                color: Colors.black,
+                color: AppColors.textBlack,
                 size: 20,
               ),
             ),
           ),
 
-          // Bottom sheet dengan informasi
+          // Panel detail resep
           DraggableScrollableSheet(
             initialChildSize: 0.6,
             minChildSize: 0.6,
@@ -87,7 +87,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Indikator bottom sheet
+                      // Indikator panel
                       Center(
                         child: Container(
                           height: 8,
@@ -107,13 +107,13 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.secondary,
+                            color: AppColors.textGrey,
                           ),
                         ),
                       ),
                       const SizedBox(height: 8),
 
-                      // Porsi dan riwayat dimasak
+                      // Informasi porsi dan riwayat
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -139,7 +139,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                             child: Container(
                               height: 40,
                               width: 1,
-                              color: Colors.grey.withAlpha(75),
+                              color: AppColors.textBlack.withAlpha(75),
                             ),
                           ),
                           Row(
@@ -160,7 +160,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Toggle button bahan dan langkah
+                      // Tab bahan dan langkah
                       Container(
                         color: AppColors.buff,
                         child: Row(
@@ -185,8 +185,8 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                                 : FontWeight.normal,
                                         color:
                                             _showIngredients
-                                                ? Colors.black
-                                                : Colors.grey,
+                                                ? AppColors.textBlack
+                                                : AppColors.textGrey,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
@@ -196,7 +196,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                       width: double.infinity,
                                       color:
                                           _showIngredients
-                                              ? Colors.black
+                                              ? AppColors.textBlack
                                               : Colors.transparent,
                                     ),
                                   ],
@@ -223,8 +223,8 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                                 : FontWeight.normal,
                                         color:
                                             !_showIngredients
-                                                ? Colors.black
-                                                : Colors.grey,
+                                                ? AppColors.textBlack
+                                                : AppColors.textGrey,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
@@ -234,7 +234,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                       width: double.infinity,
                                       color:
                                           !_showIngredients
-                                              ? Colors.black
+                                              ? AppColors.textBlack
                                               : Colors.transparent,
                                     ),
                                   ],
@@ -286,7 +286,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                           ),
                         ),
 
-                        // Section Buah
+                        // Bagian daftar buah
                         if (_food.fruit.isNotEmpty) ...[
                           const SizedBox(height: 16),
                           Container(
@@ -294,7 +294,9 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                               horizontal: 24.0,
                             ),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
+                              border: Border.all(
+                                color: AppColors.componentGrey!,
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Column(
@@ -360,7 +362,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                           ),
                         ],
                       ] else ...[
-                        // Langkah-langkah penyajian
+                        // Daftar langkah penyajian
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
                           child: ListView.builder(
@@ -400,7 +402,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                           ),
                         ),
                       ],
-                      // Tombol Selesai Memasak
+                      // Tombol selesai memasak
                       if (!_showIngredients) ...[
                         const SizedBox(height: 24),
                         Padding(
@@ -412,7 +414,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                 Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
+                                backgroundColor: AppColors.secondary,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 16,
