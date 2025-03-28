@@ -3,7 +3,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
-// import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -13,21 +12,21 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-  // Controller untuk PageView hari
+  // Controller PageView untuk navigasi hari
   final PageController _dayController = PageController(viewportFraction: 0.2);
   int _currentDay = 0;
 
-  // Variabel untuk melacak card yang sedang terbuka
+  // Variabel untuk card yang sedang terbuka
   String? _openCardId;
 
-  // Data dummy untuk jadwal makanan
+  // Data dummy jadwal makanan
   final List<Map<String, dynamic>> _scheduleItems = [
     {'food': Food.dummyFoods[0], 'babyName': 'Bayi 1', 'portion': '1 Porsi'},
     {'food': Food.dummyFoods[1], 'babyName': 'Bayi 2', 'portion': '1 Porsi'},
     {'food': Food.dummyFoods[2], 'babyName': 'Bayi 1', 'portion': '1 Porsi'},
   ];
 
-  // Data untuk hari dan tanggal
+  // Data hari dan tanggal
   final List<Map<String, dynamic>> _days = List.generate(7, (index) {
     final today = DateTime.now();
     final date = today.add(Duration(days: index));
@@ -62,16 +61,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       backgroundColor: AppColors.offWhite,
       appBar: AppBar(
         backgroundColor: AppColors.offWhite,
-        leading: Image.asset('assets/images/logo_aplikasi.png', height: 40),
+        leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
         title: const Text(
           'Jadwal Memasak',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppColors.textBlack,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          // Bagian hari dan tanggal
+          // Bagian navigasi hari dan tanggal
           SizedBox(
             height: 100,
             child: PageView.builder(
@@ -119,7 +121,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             color:
                                 _currentDay == index
                                     ? Colors.white
-                                    : Colors.black,
+                                    : AppColors.textBlack,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -131,7 +133,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             color:
                                 _currentDay == index
                                     ? Colors.white
-                                    : Colors.black,
+                                    : AppColors.textBlack,
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
@@ -144,22 +146,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
           ),
 
-          // Bagian gambar
+          // Bagian banner gambar
           Container(
             margin: const EdgeInsets.all(16),
             height: 180,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: AppColors.componentGrey,
               borderRadius: BorderRadius.circular(10),
               image: const DecorationImage(
-                image: NetworkImage('https://picsum.photos/800/400'),
+                image: AssetImage('assets/images/banner/jadwal_makanan.png'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
 
-          // Tombol tambah jadwal
+          // Tombol tambah jadwal masak
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -169,7 +171,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   width: MediaQuery.of(context).size.width * 0.6,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Implementasi tambah jadwal
+                      // Logika tambah jadwal
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
@@ -206,13 +208,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 final item = _scheduleItems[index];
                 final food = item['food'] as Food;
 
-                // Jika card ini terbuka, tampilkan versi terbuka dengan tombol
+                // Card dalam mode terbuka
                 if (_openCardId == food.id) {
                   return Stack(
                     children: [
                       Row(
                         children: [
-                          // Tombol untuk menutup card
+                          // Area utama card
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -230,10 +232,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               ),
                             ),
                           ),
-                          // Tombol edit
+                          // Tombol edit jadwal
                           GestureDetector(
                             onTap: () {
-                              // Implementasi edit
+                              // Logika edit jadwal
                               print('Edit: ${food.name}');
                             },
                             child: Container(
@@ -249,10 +251,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               ),
                             ),
                           ),
-                          // Tombol hapus
+                          // Tombol hapus jadwal
                           GestureDetector(
                             onTap: () {
-                              // Implementasi hapus
+                              // Logika hapus jadwal
                               print('Delete: ${food.name}');
                             },
                             child: Container(
@@ -278,7 +280,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   );
                 }
 
-                // Versi normal (tidak terbuka)
+                // Card dalam mode normal (tidak terbuka)
                 return Dismissible(
                   key: Key(food.id),
                   direction: DismissDirection.endToStart,
@@ -359,7 +361,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
-  // Metode untuk membangun konten card
+  // Widget untuk membangun konten kartu jadwal
   Widget buildCardContent(Map<String, dynamic> item, Food food) {
     return Row(
       children: [
@@ -388,24 +390,24 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Judul makanan
+                        // Nama makanan
                         Text(
                           food.name,
                           style: const TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.secondary,
+                            color: AppColors.textBlack,
                           ),
                         ),
 
-                        // Deskripsi makanan
+                        // Nama bayi
                         Text(
                           item['babyName'],
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 12,
-                            color: Colors.grey[600],
+                            color: AppColors.textGrey,
                           ),
                         ),
                       ],
@@ -415,7 +417,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Sumber makanan
+                    // Informasi porsi
                     Text(
                       '${food.portion} Porsi',
                       style: const TextStyle(
@@ -426,10 +428,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    // Jumlah favorite
+                    // Tombol masak
                     GestureDetector(
                       onTap: () {
-                        // Implementasi masak
+                        // Logika masak
                         print('Masak: ${food.name}');
                         Navigator.push(
                           context,
@@ -454,7 +456,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           children: [
                             Icon(
                               Symbols.chef_hat,
-                              color: Colors.black,
+                              color: AppColors.textBlack,
                               size: 16,
                             ),
                           ],
@@ -466,71 +468,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               ],
             ),
           ),
-          // child: Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Text(
-          //       food.name,
-          //       style: const TextStyle(
-          //         fontWeight: FontWeight.bold,
-          //         fontSize: 16,
-          //       ),
-          //       maxLines: 2,
-          //       overflow: TextOverflow.ellipsis,
-          //     ),
-          //     const SizedBox(height: 4),
-          //     Text(
-          //       item['babyName'],
-          //       style: TextStyle(color: Colors.grey[600], fontSize: 14),
-          //     ),
-          //   ],
-          // ),
         ),
-        // Porsi dan tombol masak
-        // GestureDetector(
-        //   onTap: () {
-        //     // Implementasi masak
-        //     print('Masak: ${food.name}');
-        //     Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //         builder: (context) => CookingGuideScreen(foodId: food.id),
-        //       ),
-        //     );
-        //   },
-        //   child: Container(
-        //     margin: const EdgeInsets.only(right: 12),
-        //     child: Column(
-        //       crossAxisAlignment: CrossAxisAlignment.end,
-        //       children: [
-        //         Text(
-        //           '${food.portion} Porsi',
-        //           style: const TextStyle(
-        //             fontWeight: FontWeight.bold,
-        //             color: AppColors.secondary,
-        //           ),
-        //         ),
-        //         const SizedBox(height: 8),
-        //         Container(
-        //           padding: const EdgeInsets.symmetric(
-        //             horizontal: 12,
-        //             vertical: 12,
-        //           ),
-        //           decoration: BoxDecoration(
-        //             color: AppColors.buff,
-        //             borderRadius: BorderRadius.circular(30),
-        //           ),
-        //           child: const Row(
-        //             mainAxisSize: MainAxisSize.min,
-        //             children: [
-        //               Icon(Symbols.chef_hat, color: Colors.black, size: 16),
-        //             ],
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
