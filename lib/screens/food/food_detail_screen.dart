@@ -14,7 +14,7 @@ class FoodDetailScreen extends StatefulWidget {
 }
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
-  // Variabel untuk menyimpan status favorit dan jumlah favorit
+  // Status favorit dan jumlah
   bool _isFavorite = false;
   int _favoriteCount = 12;
   late Food _food;
@@ -22,12 +22,12 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Mendapatkan data makanan berdasarkan ID
+    // Ambil data makanan
     _food = Food.dummyFoods.firstWhere((food) => food.id == widget.foodId);
     _isFavorite = _food.isFavorite;
   }
 
-  // Fungsi untuk mengubah status favorit dan jumlah favorit
+  // Fungsi toggle favorit
   void _toggleFavorite() {
     setState(() {
       _isFavorite = !_isFavorite;
@@ -45,21 +45,31 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Bagian Konten Utama
+          // Bagian konten utama
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Bagian atas
+                  // Bagian header
                   Stack(
                     children: [
-                      // Background gambar
+                      // Latar belakang gradien
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).padding.top + 325,
                         decoration: BoxDecoration(
-                          color: AppColors.primary,
+                          gradient: const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.05, 0.41, 0.72, 1.0],
+                            colors: [
+                              Color(0xFFFFE1BE),
+                              Color(0xFFFFC698),
+                              Color(0xFFFFAC84),
+                              Color(0xFFFF7F53),
+                            ],
+                          ),
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.elliptical(200, 90),
                             bottomRight: Radius.elliptical(200, 90),
@@ -71,12 +81,19 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       Positioned(
                         top: MediaQuery.of(context).padding.top + 16,
                         left: 16,
-                        child: IconButton(
-                          icon: const Icon(
-                            Symbols.arrow_back_ios_new,
-                            color: Colors.black,
-                          ),
+                        child: ElevatedButton(
                           onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(12),
+                            elevation: 2,
+                          ),
+                          child: const Icon(
+                            Symbols.arrow_back_ios_new,
+                            color: AppColors.textBlack,
+                            size: 20,
+                          ),
                         ),
                       ),
 
@@ -88,7 +105,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              // Bagian gambar makanan
+                              // Gambar makanan
                               Container(
                                 width: 225,
                                 height: 225,
@@ -116,7 +133,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ),
                       ),
 
-                      // Tombol Favorit
+                      // Tombol favorit
                       Positioned(
                         top: MediaQuery.of(context).padding.top + 270,
                         right: 24,
@@ -169,20 +186,20 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                   const SizedBox(height: 16),
 
-                  // Bagian informasi makanan
+                  // Informasi makanan
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Judul makanan
+                        // Nama makanan
                         Text(
                           _food.name,
                           style: const TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.secondary,
+                            color: AppColors.textBlack,
                           ),
                         ),
 
@@ -190,7 +207,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                         Row(
                           children: [
-                            // Rentang usia
+                            // Tag usia
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -212,7 +229,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                             const SizedBox(width: 8),
 
-                            // Kategori makanan
+                            // Tag kategori
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -241,7 +258,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                         const SizedBox(height: 8),
 
-                        // Sumber resep
+                        // Informasi sumber resep
                         const Text(
                           'Resep oleh: ',
                           style: TextStyle(
@@ -252,27 +269,44 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ),
                         Row(
                           children: [
-                            Image.asset(
-                              'assets/images/Logo.png',
-                              width: 16,
-                              height: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              _food.source,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.secondary,
+                            if (_food.source == 'WHO')
+                              Image.asset(
+                                'assets/images/logo/who.png',
+                                width: 100,
+                                height: 30,
+                              )
+                            else if (_food.source == 'KEMENKES')
+                              Image.asset(
+                                'assets/images/logo/kemenkes.png',
+                                width: 100,
+                                height: 30,
+                              )
+                            else if (_food.source == 'Pengguna')
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.person,
+                                    size: 24,
+                                    color: AppColors.secondary,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Pengguna',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.secondary,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
                           ],
                         ),
 
                         const SizedBox(height: 16),
 
-                        // Deskripsi makanan
+                        // Bagian deskripsi
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -282,7 +316,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 fontFamily: 'Poppins',
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.secondary,
+                                color: AppColors.textBlack,
                               ),
                             ),
 
@@ -308,14 +342,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                         const SizedBox(height: 18),
 
-                        // Informasi nutrisi
+                        // Bagian informasi nutrisi
                         Text(
                           'Nutrisi Per Set (${_food.portion} Porsi)',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.secondary,
+                            color: AppColors.textBlack,
                           ),
                         ),
 
@@ -331,7 +365,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withAlpha(50),
+                                color: Colors.black.withAlpha(50),
                                 spreadRadius: 1,
                                 blurRadius: 3,
                                 offset: const Offset(0, 2),
@@ -341,7 +375,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Bagian energi
+                              // Kartu energi
                               _buildNutritionCard(
                                 'Energi',
                                 '${_food.energy}',
@@ -350,9 +384,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               Container(
                                 height: 40,
                                 width: 1,
-                                color: Colors.grey.withAlpha(75),
+                                color: AppColors.textBlack.withAlpha(75),
                               ),
-                              // Bagian Protein
+                              // Kartu protein
                               _buildNutritionCard(
                                 'Protein',
                                 '${_food.protein}',
@@ -361,9 +395,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               Container(
                                 height: 40,
                                 width: 1,
-                                color: Colors.grey.withAlpha(75),
+                                color: AppColors.textBlack.withAlpha(75),
                               ),
-                              // Bagian Lemak
+                              // Kartu lemak
                               _buildNutritionCard('Lemak', '${_food.fat}', 'g'),
                             ],
                           ),
@@ -380,18 +414,18 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             ),
           ),
 
-          // Bagian aksi
+          // Panel tombol aksi
           Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.primary,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(24),
                 topRight: Radius.circular(24),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withAlpha(75),
+                  color: Colors.black.withAlpha(75),
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, -2),
@@ -406,14 +440,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Tombol tambahkan ke jadwal
+                  // Tombol jadwalkan
                   ElevatedButton(
                     onPressed: () {
-                      // Pop up tambah jadwal
+                      // Dialog jadwal
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          // Menggunakan Map untuk menyimpan status checkbox bayi
+                          // Map untuk checkbox bayi
                           Map<String, bool> selectedBabies = {
                             'Bayi 1': false,
                             'Bayi 2': false,
@@ -439,14 +473,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                           child: Container(
                                             width: 24,
                                             height: 24,
-                                            decoration: const BoxDecoration(
+                                            decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: AppColors.secondary,
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                color: AppColors.textBlack,
+                                              ),
                                             ),
                                             child: const Center(
                                               child: Icon(
                                                 Icons.close,
-                                                color: Colors.white,
+                                                color: AppColors.textBlack,
                                                 size: 18,
                                               ),
                                             ),
@@ -462,14 +499,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         fontFamily: 'Poppins',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.secondary,
+                                        color: AppColors.textBlack,
                                       ),
                                     ),
                                   ),
 
                                   const SizedBox(height: 16),
 
-                                  // Bagian pemilihan bayi
+                                  // Pilihan bayi
                                   const Text(
                                     'Pilih Profil Bayi',
                                     style: TextStyle(
@@ -533,7 +570,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   ),
                                   const SizedBox(height: 16),
 
-                                  // Bagian tanggal
+                                  // Pilihan tanggal
                                   const Text(
                                     'Pilih Penjadwalan',
                                     style: TextStyle(
@@ -592,7 +629,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   ),
                                   const SizedBox(height: 24),
 
-                                  // Save button
+                                  // Tombol simpan jadwal
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
@@ -601,7 +638,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         Navigator.pop(context);
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primary,
+                                        backgroundColor: AppColors.secondary,
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
@@ -631,14 +668,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: AppColors.secondary,
+                      foregroundColor: AppColors.textBlack,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
+                      ),
                       elevation: 2,
                     ),
-                    child: const Icon(Symbols.calendar_add_on, size: 20),
+                    child: const Icon(Symbols.calendar_add_on, size: 28),
                   ),
 
                   const SizedBox(width: 16),
@@ -646,11 +686,11 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   // Tombol masak sekarang
                   ElevatedButton(
                     onPressed: () {
-                      // Pop up masak sekarang
+                      // Dialog masak sekarang
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          // Menggunakan Map untuk menyimpan status checkbox bayi
+                          // Map untuk checkbox bayi
                           Map<String, bool> selectedBabies = {
                             'Bayi 1': false,
                             'Bayi 2': false,
@@ -676,14 +716,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                           child: Container(
                                             width: 24,
                                             height: 24,
-                                            decoration: const BoxDecoration(
+                                            decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: AppColors.secondary,
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                color: AppColors.textBlack,
+                                              ),
                                             ),
                                             child: const Center(
                                               child: Icon(
                                                 Icons.close,
-                                                color: Colors.white,
+                                                color: AppColors.textBlack,
                                                 size: 18,
                                               ),
                                             ),
@@ -699,14 +742,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         fontFamily: 'Poppins',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.secondary,
+                                        color: AppColors.textBlack,
                                       ),
                                     ),
                                   ),
 
                                   const SizedBox(height: 16),
 
-                                  // Bagian pemilihan bayi
+                                  // Pilihan bayi
                                   const Text(
                                     'Pilih Profil Bayi',
                                     style: TextStyle(
@@ -771,7 +814,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                                   const SizedBox(height: 24),
 
-                                  // Tombol Lanjut
+                                  // Tombol lanjutkan
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
@@ -788,7 +831,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primary,
+                                        backgroundColor: AppColors.secondary,
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
@@ -817,12 +860,12 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.textBlack,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                       elevation: 2,
                     ),
                     child: Padding(
@@ -838,6 +881,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
+                          SizedBox(width: 10),
                           const Icon(Icons.arrow_forward, size: 20),
                         ],
                       ),
@@ -852,7 +896,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     );
   }
 
-  // Fungsi untuk membangun card nutrisi
+  // Widget untuk kartu nutrisi
   Widget _buildNutritionCard(String label, String value, String unit) {
     return Expanded(
       child: Container(

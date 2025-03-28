@@ -11,14 +11,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Controller form
+  // Controller untuk form
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
-  // Fungsi dispose untuk membersihkan controller
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -30,24 +29,21 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.offWhite,
       body: SingleChildScrollView(
         child: SizedBox(
           height: size.height,
           child: Stack(
             children: [
-              // Bagian gambar atas
+              // Gambar latar belakang
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
                 height: size.height * 0.55,
-                child: Image.asset(
-                  'assets/images/Auth.png',
-                  fit: BoxFit.cover,
-                ),
+                child: Image.asset('assets/images/background/auth.png', fit: BoxFit.cover),
               ),
-              // Bagian konten
+              // Panel utama
               Positioned(
                 top: size.height * 0.5,
                 left: 24,
@@ -71,14 +67,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Tombol ganti form
+                        // Tab navigasi
                         Row(
                           children: [
                             Expanded(
                               child: TextButton(
                                 onPressed: () {},
                                 style: TextButton.styleFrom(
-                                  foregroundColor: AppColors.secondary,
+                                  foregroundColor: AppColors.textBlack,
                                 ),
                                 child: Column(
                                   children: [
@@ -93,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Container(
                                       width: 70,
                                       height: 2,
-                                      color: AppColors.secondary,
+                                      color: AppColors.textBlack,
                                     ),
                                   ],
                                 ),
@@ -111,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 },
                                 style: TextButton.styleFrom(
-                                  foregroundColor: Colors.grey,
+                                  foregroundColor: AppColors.textGrey,
                                 ),
                                 child: const Text(
                                   'Daftar',
@@ -126,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        // Form masuk
+                        // Formulir login
                         Form(
                           key: _formKey,
                           child: Padding(
@@ -142,15 +138,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                     labelText: 'Email',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -176,15 +172,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   obscureText: _obscurePassword,
                                   decoration: InputDecoration(
                                     labelText: 'Kata Sandi',
-                                    border: const UnderlineInputBorder(
+                                    border: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: AppColors.textGrey,
+                                        color: AppColors.componentGrey!,
                                         width: 1.0,
                                       ),
                                     ),
@@ -199,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         _obscurePassword
                                             ? Icons.visibility_off
                                             : Icons.visibility,
-                                        color: Colors.grey,
+                                        color: AppColors.componentGrey!,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -216,6 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                 ),
                                 const SizedBox(height: 8),
+                                // Link lupa password
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
@@ -236,9 +233,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 50,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      // Pengecekan form
+                                      // Validasi dan navigasi
                                       if (_formKey.currentState!.validate()) {
-                                        // Navigasi ke beranda
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -251,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.secondary,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
                                     ),
                                     child: const Text(
