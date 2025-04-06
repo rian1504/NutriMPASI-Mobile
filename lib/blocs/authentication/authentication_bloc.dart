@@ -45,16 +45,19 @@ class AuthenticationBloc
   ) async {
     emit(AuthenticationLoading());
     try {
-      final user = await controller.register(
+      final result = await controller.register(
         name: event.name,
         email: event.email,
         password: event.password,
         passwordConfirmation: event.passwordConfirmation,
       );
 
-      emit(RegistrationSuccess(user: user));
+      final User user = result['user'];
+      final String message = result['message'];
+
+      emit(RegistrationSuccess(user: user, message: message));
     } catch (e) {
-      emit(AuthenticationError('Register gagal: ${e.toString()}'));
+      emit(AuthenticationError('Registrasi gagal: ${e.toString()}'));
     }
   }
 
@@ -64,8 +67,9 @@ class AuthenticationBloc
   ) async {
     emit(AuthenticationLoading());
     try {
-      final message = await controller.logout();
-      emit(LogoutSuccess(message: message));
+      final result = await controller.logout();
+
+      emit(LogoutSuccess(message: result));
     } catch (e) {
       emit(AuthenticationError(e.toString()));
     }

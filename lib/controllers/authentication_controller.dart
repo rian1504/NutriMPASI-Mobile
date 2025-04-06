@@ -8,7 +8,7 @@ class AuthenticationController {
   final Dio _dio = RemoteDio().dio;
 
   // registrasi
-  Future<User> register({
+  Future<Map<String, dynamic>> register({
     required String name,
     required String email,
     required String password,
@@ -26,9 +26,14 @@ class AuthenticationController {
       // kirim data ke API
       final response = await _dio.post(ApiEndpoints.register, data: data);
 
-      // return response
+      // debug response
       debugPrint('Registration response: ${response.data}');
-      return User.fromJson(response.data['user']);
+
+      // return response
+      return {
+        'user': User.fromJson(response.data['data']),
+        'message': response.data['message'],
+      };
     } on DioException catch (e) {
       debugPrint('Registration error: ${e.response?.data}');
       throw _handleError(e);
@@ -47,6 +52,10 @@ class AuthenticationController {
       // kirim data ke API
       final response = await _dio.post(ApiEndpoints.login, data: data);
 
+      // debug response
+      debugPrint('Login response: ${response.data}');
+
+      // return response
       return {
         'user': User.fromJson(response.data['user']),
         'token': response.data['token'],
@@ -61,7 +70,13 @@ class AuthenticationController {
   // logout
   Future<String> logout() async {
     try {
+      // kirim data ke API
       final response = await _dio.post(ApiEndpoints.logout);
+
+      // debug response
+      debugPrint('Logout response: ${response.data}');
+
+      // return response
       return response.data['message'];
     } on DioException catch (e) {
       debugPrint('Logout error: ${e.response?.data}');
@@ -78,6 +93,10 @@ class AuthenticationController {
       // kirim data ke API
       final response = await _dio.post(ApiEndpoints.forgotPassword, data: data);
 
+      // debug response
+      debugPrint('Forgot Password response: ${response.data}');
+
+      // return response
       return response.data['message'];
     } on DioException catch (e) {
       debugPrint('Forgot password error: ${e.response?.data}');

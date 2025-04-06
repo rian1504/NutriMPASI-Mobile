@@ -21,8 +21,9 @@ class LoginSuccess extends AuthenticationState {
 
 class RegistrationSuccess extends AuthenticationState {
   final User user;
+  final String message;
 
-  RegistrationSuccess({required this.user});
+  RegistrationSuccess({required this.user, required this.message});
 }
 
 class LogoutSuccess extends AuthenticationState {

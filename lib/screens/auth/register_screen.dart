@@ -56,11 +56,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: const Color.fromRGBO(251, 245, 230, 1),
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
-          if (state is LoginSuccess) {
-            Navigator.pushReplacementNamed(context, '/home');
+          if (state is RegistrationSuccess) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+
+            Navigator.pushReplacementNamed(context, '/login');
           } else if (state is AuthenticationError) {
             ScaffoldMessenger.of(
               context,
