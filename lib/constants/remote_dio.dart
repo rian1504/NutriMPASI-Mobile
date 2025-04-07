@@ -18,6 +18,7 @@ class RemoteDio {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await SecureStorage.getToken();
+
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
@@ -25,7 +26,8 @@ class RemoteDio {
         },
         onError: (e, handler) {
           if (e.response?.statusCode == 401) {
-            // Handle 401, expired token, dll di sini
+            // Token expired, logout user
+            // context.read<AuthenticationBloc>().add(LogoutRequested());
           }
           return handler.next(e);
         },

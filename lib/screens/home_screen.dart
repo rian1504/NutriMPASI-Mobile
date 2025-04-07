@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/models/user.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,23 +42,84 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.offWhite,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(),
-              _buildFeaturesSection(),
-              _buildRecommendationSection(),
-            ],
+      appBar: AppBar(
+        title: const Text('Home'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              context.read<AuthenticationBloc>().add(LogoutRequested());
+            },
           ),
+        ],
+      ),
+      body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is AuthenticationError) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Tampilkan pesan error
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
+
+              // Navigasi ke login
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+          } else if (state is LogoutSuccess) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Tampilkan pesan logout sukses
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+
+              // Navigasi ke login
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+          }
+        },
+        builder: (context, state) {
+          if (state is AuthenticationLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is LoginSuccess) {
+            return _buildHomeContent(state.user);
+          } else if (state is AuthenticationUnauthenticated) {
+            // langsung arahkan ke login
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+            return const SizedBox();
+          } else if (state is AuthenticationError) {
+            return Center(child: Text(state.error));
+          } else {
+            // langsung arahkan ke login
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+            return const SizedBox(); // Default return to avoid null
+          }
+        },
+      ),
+    );
+  }
+
+  // Home Content
+  Widget _buildHomeContent(User user) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(user),
+            _buildFeaturesSection(),
+            _buildRecommendationSection(),
+          ],
         ),
       ),
     );
   }
 
   // Header dengan latar belakang banner dan kartu informasi bayi
-  Widget _buildHeader() {
+  Widget _buildHeader(User user) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -107,11 +171,11 @@ class _HomeScreenState extends State<HomeScreen> {
               // Pesan sambutan
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Halo, Moms',
+                      'Halo, Moms ${user.name}!',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

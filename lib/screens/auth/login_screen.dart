@@ -41,11 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             // Tampilkan snackbar sukses dan arahkan ke halaman utama
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message ?? 'Login berhasil')),
+            );
 
-            Navigator.pushReplacementNamed(context, '/home');
+            // Tunggu sebentar lalu navigasi ke home
+            Future.delayed(const Duration(milliseconds: 500), () {
+              Navigator.pushReplacementNamed(context, '/home');
+            });
           } else if (state is AuthenticationError) {
             ScaffoldMessenger.of(
               context,

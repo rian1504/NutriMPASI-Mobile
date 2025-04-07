@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/remote_dio.dart';
+import 'package:nutrimpasi/constants/secure_storage.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/user.dart';
 
@@ -52,6 +53,11 @@ class AuthenticationController {
       // kirim data ke API
       final response = await _dio.post(ApiEndpoints.login, data: data);
 
+      final token = response.data['token'];
+
+      // Simpan token ke secure storage
+      await SecureStorage.saveToken(token);
+
       // debug response
       debugPrint('Login response: ${response.data}');
 
@@ -76,10 +82,28 @@ class AuthenticationController {
       // debug response
       debugPrint('Logout response: ${response.data}');
 
+      // Hapus session dari secure storage
+      await SecureStorage.clearAll();
+
       // return response
       return response.data['message'];
     } on DioException catch (e) {
       debugPrint('Logout error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<User> getUserProfile() async {
+    try {
+      // kirim data ke API
+      final response = await _dio.get(ApiEndpoints.user);
+
+      // debug response
+      debugPrint('User profile response: ${response.data}');
+
+      // return response
+      return User.fromJson(response.data['user']);
+    } on DioException catch (e) {
       throw _handleError(e);
     }
   }

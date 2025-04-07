@@ -9,14 +9,10 @@ class AuthenticationLoading extends AuthenticationState {}
 
 class LoginSuccess extends AuthenticationState {
   final User user;
-  final String token;
-  final String message;
+  final String? token;
+  final String? message;
 
-  LoginSuccess({
-    required this.user,
-    required this.token,
-    required this.message,
-  });
+  LoginSuccess({required this.user, this.token, this.message});
 }
 
 class RegistrationSuccess extends AuthenticationState {
@@ -37,3 +33,5 @@ class AuthenticationError extends AuthenticationState {
 
   AuthenticationError(this.error);
 }
+
+class AuthenticationUnauthenticated extends AuthenticationState {}

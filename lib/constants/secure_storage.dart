@@ -13,11 +13,11 @@ class SecureStorage {
     return await _storage.read(key: _tokenKey);
   }
 
-  static Future<void> deleteToken() async {
-    await _storage.delete(key: _tokenKey);
-  }
-
   static Future<void> clearAll() async {
     await _storage.deleteAll();
   }
+
+  // static Future<void> deleteToken() async {
+  //   await _storage.delete(key: _tokenKey);
+  // }
 }

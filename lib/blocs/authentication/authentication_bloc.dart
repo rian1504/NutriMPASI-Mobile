@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/constants/secure_storage.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/models/user.dart';
 
@@ -15,7 +16,8 @@ class AuthenticationBloc
     on<LoginRequested>(_onLogin);
     on<RegisterRequested>(_onRegister);
     on<LogoutRequested>(_onLogout);
-    // on<CheckAuthStatus>(_onCheckStatus);
+    on<LoadUserData>(_onLoadUserData);
+    on<CheckAuthStatus>(_onCheckStatus);
   }
 
   Future<void> _onLogin(
@@ -70,20 +72,40 @@ class AuthenticationBloc
       final result = await controller.logout();
 
       emit(LogoutSuccess(message: result));
+      emit(AuthenticationUnauthenticated());
     } catch (e) {
       emit(AuthenticationError(e.toString()));
     }
   }
 
-  // Future<void> _onCheckStatus(
-  //   CheckAuthStatus event,
-  //   Emitter<AuthenticationState> emit,
-  // ) async {
-  //   final token = await controller.getToken();
-  //   if (token != null) {
-  //     emit(AuthenticationAuthenticated({'token': token}));
-  //   } else {
-  //     emit(AuthenticationUnauthenticated());
-  //   }
-  // }
+  Future<void> _onLoadUserData(
+    LoadUserData event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    try {
+      final user = await controller.getUserProfile();
+      emit(LoginSuccess(user: user));
+    } catch (e) {
+      emit(AuthenticationError('Gagal memuat data pengguna: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onCheckStatus(
+    CheckAuthStatus event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(AuthenticationLoading());
+    final token = await SecureStorage.getToken();
+
+    if (token != null) {
+      try {
+        final user = await controller.getUserProfile();
+        emit(LoginSuccess(user: user, token: token));
+      } catch (e) {
+        emit(AuthenticationUnauthenticated());
+      }
+    } else {
+      emit(AuthenticationUnauthenticated());
+    }
+  }
 }
