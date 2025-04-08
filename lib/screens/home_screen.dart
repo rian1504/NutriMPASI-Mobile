@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
+import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
-import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/models/user.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,10 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     });
+    context.read<BabyBloc>().add(FetchBabies());
   }
-
-  // Data dummy bayi
-  final babies = Baby.dummyBabies;
 
   @override
   Widget build(BuildContext context) {
@@ -120,348 +119,388 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Header dengan latar belakang banner dan kartu informasi bayi
   Widget _buildHeader(User user) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        // Latar belakang banner
-        Container(
-          width: double.infinity,
-          height: 300,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/banner/beranda.png'),
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.topCenter,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Logo dan nama aplikasi
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<BabyBloc, BabyState>(
+      builder: (context, state) {
+        List<Baby> babies = [];
+
+        if (state is BabyLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is BabyLoaded) {
+          babies = state.babies;
+        } else if (state is BabyError) {
+          return Center(child: Text(state.error));
+        }
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Latar belakang banner
+            Container(
+              width: double.infinity,
+              height: 300,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/banner/beranda.png'),
+                  fit: BoxFit.fitWidth,
+                  alignment: Alignment.topCenter,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Logo dan nama aplikasi
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(
-                        'assets/images/logo/nutrimpasi.png',
-                        height: 55,
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/logo/nutrimpasi.png',
+                            height: 55,
+                          ),
+                          const Text(
+                            'NutriMPASI',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                        ],
                       ),
-                      const Text(
-                        'NutriMPASI',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                      // Tombol notifikasi
+                      IconButton(
+                        icon: Icon(
+                          Symbols.notifications,
                           color: AppColors.textBlack,
                         ),
+                        onPressed: () {},
                       ),
                     ],
                   ),
-                  // Tombol notifikasi
-                  IconButton(
-                    icon: Icon(
-                      Symbols.notifications,
-                      color: AppColors.textBlack,
+                  const SizedBox(height: 4),
+                  // Pesan sambutan
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Halo, Moms ${user.name}!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textBlack,
+                          ),
+                        ),
+                        Text(
+                          'Dukung perjalanan makan si kecil\ndengan rekomendasi nutrisi terbaik!',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textBlack,
+                          ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {},
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              // Pesan sambutan
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+
+            // Kartu informasi bayi bertumpuk
+            Positioned(
+              top: 140,
+              left: 24,
+              right: 24,
+              child: SizedBox(
+                height: 150,
+                child: Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    Text(
-                      'Halo, Moms ${user.name}!',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textBlack,
+                    // Kartu bertumpuk dengan PageView vertikal untuk scrolling snap
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 48,
+                      height: 200,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // Kartu latar belakang bertumpuk
+                          ...List.generate(babies.length, (index) {
+                            if (index > _currentBabyIndex &&
+                                index <= _currentBabyIndex + 2) {
+                              final offset = (index - _currentBabyIndex) * 4.0;
+                              final cardWidth =
+                                  MediaQuery.of(context).size.width -
+                                  48 -
+                                  ((index - _currentBabyIndex) * 30.0);
+                              final horizontalOffset =
+                                  (MediaQuery.of(context).size.width -
+                                      48 -
+                                      cardWidth) /
+                                  2;
+
+                              return Positioned(
+                                top: offset * 2.5,
+                                left: horizontalOffset,
+                                right: horizontalOffset,
+                                child: Opacity(
+                                  opacity:
+                                      1.0 - ((index - _currentBabyIndex) * 0.3),
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    width: cardWidth,
+                                    child: Card(
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: SizedBox(height: 130),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          }),
+
+                          // PageView kartu bayi utama
+                          PageView.builder(
+                            controller: _babyController,
+                            scrollDirection: Axis.vertical,
+                            itemCount: babies.length,
+                            physics: const PageScrollPhysics(),
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentBabyIndex = index;
+                              });
+                            },
+                            itemBuilder: (context, index) {
+                              final bool isCurrentItem =
+                                  index == _currentBabyIndex;
+
+                              if (isCurrentItem ||
+                                  index == _currentBabyIndex - 1) {
+                                return AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 300),
+                                  opacity: isCurrentItem ? 1.0 : 0.0,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    child: Card(
+                                      elevation: 4,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Row(
+                                          children: [
+                                            // Avatar bayi
+                                            SizedBox(
+                                              width: 120,
+                                              height: 120,
+                                              child:
+                                                  babies[index]
+                                                          .isProfileComplete
+                                                      ? Image.asset(
+                                                        babies[index].gender ==
+                                                                'L'
+                                                            ? 'assets/images/component/bayi_laki_laki.png'
+                                                            : 'assets/images/component/bayi_perempuan.png',
+                                                        fit: BoxFit.contain,
+                                                      )
+                                                      : Container(
+                                                        decoration: BoxDecoration(
+                                                          color: AppColors.buff,
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                30,
+                                                              ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Image.asset(
+                                                            'assets/images/logo/nutrimpasi.png',
+                                                            height: 40,
+                                                            color:
+                                                                AppColors
+                                                                    .primary,
+                                                          ),
+                                                        ),
+                                                      ),
+                                            ),
+                                            const SizedBox(width: 16),
+                                            // Informasi bayi
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    babies[index].name,
+                                                    style: const TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          AppColors.textBlack,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  if (babies[index]
+                                                      .isProfileComplete) ...[
+                                                    // Informasi jenis kelamin
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Symbols.male_rounded,
+                                                          size: 16,
+                                                          color:
+                                                              AppColors
+                                                                  .textGrey,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 4,
+                                                        ),
+                                                        Text(
+                                                          babies[index]
+                                                                      .gender ==
+                                                                  'L'
+                                                              ? 'Laki-laki'
+                                                              : 'Perempuan',
+                                                          style: const TextStyle(
+                                                            fontSize: 12,
+                                                            color:
+                                                                AppColors
+                                                                    .textGrey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    // Informasi usia
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Symbols
+                                                              .update_rounded,
+                                                          size: 16,
+                                                          color:
+                                                              AppColors
+                                                                  .textGrey,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 4,
+                                                        ),
+                                                        Text(
+                                                          '${babies[index].ageInMonths} bulan',
+                                                          style: const TextStyle(
+                                                            fontSize: 12,
+                                                            color:
+                                                                AppColors
+                                                                    .textGrey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    // Informasi kondisi bayi
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Symbols
+                                                              .water_drop_rounded,
+                                                          size: 16,
+                                                          color:
+                                                              AppColors
+                                                                  .textGrey,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 4,
+                                                        ),
+                                                        Text(
+                                                          babies[index]
+                                                                  .condition ??
+                                                              '',
+                                                          style: const TextStyle(
+                                                            fontSize: 12,
+                                                            color:
+                                                                AppColors
+                                                                    .textGrey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ] else
+                                                    Text(
+                                                      'Lengkapi Data Bayi',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color:
+                                                            AppColors.secondary,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      'Dukung perjalanan makan si kecil\ndengan rekomendasi nutrisi terbaik!',
-                      style: TextStyle(
-                        fontSize: 8,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textBlack,
+
+                    // Tombol tambah bayi
+                    Positioned(
+                      right: -24,
+                      top: 40,
+                      child: InkWell(
+                        onTap: () {
+                          // Logika tambah bayi
+                        },
+                        borderRadius: const BorderRadius.horizontal(
+                          left: Radius.circular(20),
+                        ),
+                        child: Container(
+                          width: 80,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: AppColors.secondary,
+                            borderRadius: const BorderRadius.horizontal(
+                              left: Radius.circular(20),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(50),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Symbols.add,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-
-        // Kartu informasi bayi bertumpuk
-        Positioned(
-          top: 140,
-          left: 24,
-          right: 24,
-          child: SizedBox(
-            height: 150,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Kartu bertumpuk dengan PageView vertikal untuk scrolling snap
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 48,
-                  height: 200,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      // Kartu latar belakang bertumpuk
-                      ...List.generate(babies.length, (index) {
-                        if (index > _currentBabyIndex &&
-                            index <= _currentBabyIndex + 2) {
-                          final offset = (index - _currentBabyIndex) * 4.0;
-                          final cardWidth =
-                              MediaQuery.of(context).size.width -
-                              48 -
-                              ((index - _currentBabyIndex) * 30.0);
-                          final horizontalOffset =
-                              (MediaQuery.of(context).size.width -
-                                  48 -
-                                  cardWidth) /
-                              2;
-
-                          return Positioned(
-                            top: offset * 2.5,
-                            left: horizontalOffset,
-                            right: horizontalOffset,
-                            child: Opacity(
-                              opacity:
-                                  1.0 - ((index - _currentBabyIndex) * 0.3),
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                width: cardWidth,
-                                child: Card(
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: SizedBox(height: 130),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      }),
-
-                      // PageView kartu bayi utama
-                      PageView.builder(
-                        controller: _babyController,
-                        scrollDirection: Axis.vertical,
-                        itemCount: babies.length,
-                        physics: const PageScrollPhysics(),
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentBabyIndex = index;
-                          });
-                        },
-                        itemBuilder: (context, index) {
-                          final bool isCurrentItem = index == _currentBabyIndex;
-
-                          if (isCurrentItem || index == _currentBabyIndex - 1) {
-                            return AnimatedOpacity(
-                              duration: const Duration(milliseconds: 300),
-                              opacity: isCurrentItem ? 1.0 : 0.0,
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                child: Card(
-                                  elevation: 4,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Row(
-                                      children: [
-                                        // Avatar bayi
-                                        SizedBox(
-                                          width: 120,
-                                          height: 120,
-                                          child:
-                                              babies[index].isProfileComplete
-                                                  ? Image.asset(
-                                                    babies[index].gender ==
-                                                            'Laki-Laki'
-                                                        ? 'assets/images/component/bayi_laki_laki.png'
-                                                        : 'assets/images/component/bayi_perempuan.png',
-                                                    fit: BoxFit.contain,
-                                                  )
-                                                  : Container(
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.buff,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            30,
-                                                          ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Image.asset(
-                                                        'assets/images/logo/nutrimpasi.png',
-                                                        height: 40,
-                                                        color:
-                                                            AppColors.primary,
-                                                      ),
-                                                    ),
-                                                  ),
-                                        ),
-                                        const SizedBox(width: 16),
-                                        // Informasi bayi
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                babies[index].name,
-                                                style: const TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.textBlack,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              if (babies[index]
-                                                  .isProfileComplete) ...[
-                                                // Informasi jenis kelamin
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Symbols.male_rounded,
-                                                      size: 16,
-                                                      color: AppColors.textGrey,
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                      babies[index].gender ??
-                                                          '',
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        color:
-                                                            AppColors.textGrey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 4),
-                                                // Informasi usia
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Symbols.update_rounded,
-                                                      size: 16,
-                                                      color: AppColors.textGrey,
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                      '${babies[index].ageInMonths} bulan',
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        color:
-                                                            AppColors.textGrey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 4),
-                                                // Informasi alergi
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Symbols
-                                                          .water_drop_rounded,
-                                                      size: 16,
-                                                      color: AppColors.textGrey,
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                      babies[index].allergy ??
-                                                          '',
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        color:
-                                                            AppColors.textGrey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ] else
-                                                Text(
-                                                  'Lengkapi Data Bayi',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: AppColors.secondary,
-                                                    decoration:
-                                                        TextDecoration
-                                                            .underline,
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Tombol tambah bayi
-                Positioned(
-                  right: -24,
-                  top: 40,
-                  child: InkWell(
-                    onTap: () {
-                      // Logika tambah bayi
-                    },
-                    borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(20),
-                    ),
-                    child: Container(
-                      width: 80,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary,
-                        borderRadius: const BorderRadius.horizontal(
-                          left: Radius.circular(20),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(50),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Symbols.add,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 

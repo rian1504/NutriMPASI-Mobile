@@ -15,10 +15,15 @@ var headers = {'Accept': 'application/json'};
 
 // API ENDPOINTS
 class ApiEndpoints {
+  // Authentication
   static const String register = 'register';
   static const String login = 'login';
   static const String logout = 'logout';
   static const String user = 'user';
   static const String forgotPassword = 'forgot-password';
   static const String resetPassword = 'reset-password';
+
+  // Baby
+  static const String baby = 'baby';
+  static const String babyFoodRecommendationById = 'baby/food-recommendation';
 }

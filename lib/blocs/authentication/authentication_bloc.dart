@@ -16,7 +16,6 @@ class AuthenticationBloc
     on<LoginRequested>(_onLogin);
     on<RegisterRequested>(_onRegister);
     on<LogoutRequested>(_onLogout);
-    on<LoadUserData>(_onLoadUserData);
     on<CheckAuthStatus>(_onCheckStatus);
   }
 
@@ -75,18 +74,6 @@ class AuthenticationBloc
       emit(AuthenticationUnauthenticated());
     } catch (e) {
       emit(AuthenticationError(e.toString()));
-    }
-  }
-
-  Future<void> _onLoadUserData(
-    LoadUserData event,
-    Emitter<AuthenticationState> emit,
-  ) async {
-    try {
-      final user = await controller.getUserProfile();
-      emit(LoginSuccess(user: user));
-    } catch (e) {
-      emit(AuthenticationError('Gagal memuat data pengguna: ${e.toString()}'));
     }
   }
 
