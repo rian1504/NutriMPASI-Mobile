@@ -271,7 +271,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      Symbols.male_rounded,
+                                                      babies[index].gender ==
+                                                              'Laki-Laki'
+                                                          ? Symbols.male_rounded
+                                                          : Symbols
+                                                              .female_rounded,
                                                       size: 16,
                                                       color: AppColors.textGrey,
                                                     ),
@@ -312,8 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      Symbols
-                                                          .water_drop_rounded,
+                                                      Symbols.no_meals,
                                                       size: 16,
                                                       color: AppColors.textGrey,
                                                     ),
