@@ -264,7 +264,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 12,
-                            color: AppColors.textGrey,
+                            color: AppColors.textBlack,
                           ),
                         ),
                         Row(
@@ -355,52 +355,34 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                         const SizedBox(height: 12),
 
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(50),
-                                spreadRadius: 1,
-                                blurRadius: 3,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Kartu energi
-                              _buildNutritionCard(
-                                'Energi',
-                                '${_food.energy}',
-                                'kkal',
-                              ),
-                              Container(
-                                height: 40,
-                                width: 1,
-                                color: AppColors.textBlack.withAlpha(75),
-                              ),
-                              // Kartu protein
-                              _buildNutritionCard(
-                                'Protein',
-                                '${_food.protein}',
-                                'g',
-                              ),
-                              Container(
-                                height: 40,
-                                width: 1,
-                                color: AppColors.textBlack.withAlpha(75),
-                              ),
-                              // Kartu lemak
-                              _buildNutritionCard('Lemak', '${_food.fat}', 'g'),
-                            ],
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Kartu energi
+                            _buildNutritionCard(
+                              'Energi',
+                              '${_food.energy}',
+                              'kkal',
+                            ),
+                            Container(
+                              height: 40,
+                              width: 1,
+                              color: AppColors.textBlack.withAlpha(75),
+                            ),
+                            // Kartu protein
+                            _buildNutritionCard(
+                              'Protein',
+                              '${_food.protein}',
+                              'g',
+                            ),
+                            Container(
+                              height: 40,
+                              width: 1,
+                              color: AppColors.textBlack.withAlpha(75),
+                            ),
+                            // Kartu lemak
+                            _buildNutritionCard('Lemak', '${_food.fat}', 'g'),
+                          ],
                         ),
 
                         const SizedBox(height: 10),
