@@ -26,6 +26,4 @@ class RegisterRequested extends AuthenticationEvent {
 
 class LogoutRequested extends AuthenticationEvent {}
 
-class LoadUserData extends AuthenticationEvent {}
-
 class CheckAuthStatus extends AuthenticationEvent {}

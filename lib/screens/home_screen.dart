@@ -34,7 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     });
-    context.read<BabyBloc>().add(FetchBabies());
+
+    final babyState = context.read<BabyBloc>().state;
+    if (babyState is! BabyLoaded) {
+      context.read<BabyBloc>().add(FetchBabies());
+    }
   }
 
   @override
@@ -87,8 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pushReplacementNamed(context, '/login');
             });
             return const SizedBox();
-          } else if (state is AuthenticationError) {
-            return Center(child: Text(state.error));
           } else {
             // langsung arahkan ke login
             WidgetsBinding.instance.addPostFrameCallback((_) {

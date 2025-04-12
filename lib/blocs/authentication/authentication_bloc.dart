@@ -81,17 +81,20 @@ class AuthenticationBloc
     CheckAuthStatus event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(AuthenticationLoading());
+    emit(AuthenticationChecking());
+
     final token = await SecureStorage.getToken();
 
-    if (token != null) {
-      try {
-        final user = await controller.getUserProfile();
-        emit(LoginSuccess(user: user, token: token));
-      } catch (e) {
-        emit(AuthenticationUnauthenticated());
-      }
-    } else {
+    if (token == null) {
+      emit(AuthenticationUnauthenticated());
+      return;
+    }
+
+    try {
+      final user = await controller.getUserProfile();
+      emit(LoginSuccess(user: user, token: token));
+    } catch (e) {
+      await SecureStorage.clearAll();
       emit(AuthenticationUnauthenticated());
     }
   }

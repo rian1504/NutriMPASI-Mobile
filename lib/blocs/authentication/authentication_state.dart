@@ -7,6 +7,8 @@ class AuthenticationInitial extends AuthenticationState {}
 
 class AuthenticationLoading extends AuthenticationState {}
 
+class AuthenticationChecking extends AuthenticationState {}
+
 class LoginSuccess extends AuthenticationState {
   final User user;
   final String? token;

@@ -26,10 +26,19 @@ class MainApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create:
-              (context) =>
-                  AuthenticationBloc(controller: AuthenticationController()),
+          create: (context) {
+            final bloc = AuthenticationBloc(
+              controller: AuthenticationController(),
+            );
+            bloc.add(CheckAuthStatus());
+            return bloc;
+          },
         ),
+        // BlocProvider(
+        //   create:
+        //       (context) =>
+        //           AuthenticationBloc(controller: AuthenticationController()),
+        // ),
         BlocProvider(
           create: (context) => BabyBloc(controller: BabyController()),
         ),
@@ -46,23 +55,22 @@ class MainApp extends StatelessWidget {
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
-            // Logic untuk menentukan screen awal berdasarkan auth state
-            if (state is AuthenticationInitial) {
-              return const OnboardingScreen();
+            if (state is AuthenticationInitial ||
+                state is AuthenticationChecking) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
             } else if (state is LoginSuccess) {
-              return const HomeScreen();
-            } else if (state is AuthenticationError) {
-              return const LoginScreen();
+              return const MainPage();
+            } else {
+              return const OnboardingScreen();
             }
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
           },
         ),
         routes: {
           '/login': (context) => LoginScreen(),
           '/register': (context) => RegisterScreen(),
-          '/home': (context) => HomeScreen(),
+          '/home': (context) => MainPage(),
         },
       ),
     );

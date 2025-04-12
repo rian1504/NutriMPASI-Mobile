@@ -104,6 +104,9 @@ class AuthenticationController {
       // return response
       return User.fromJson(response.data['user']);
     } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        await SecureStorage.clearAll();
+      }
       throw _handleError(e);
     }
   }
