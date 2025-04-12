@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/main.dart';
+import 'package:nutrimpasi/screens/auth/forget_password_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
@@ -41,7 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 left: 0,
                 right: 0,
                 height: size.height * 0.55,
-                child: Image.asset('assets/images/background/auth.png', fit: BoxFit.cover),
+                child: Image.asset(
+                  'assets/images/background/auth.png',
+                  fit: BoxFit.cover,
+                ),
               ),
               // Panel utama
               Positioned(
@@ -216,7 +220,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  const ForgetPasswordScreen(),
+                                        ),
+                                      );
+                                    },
                                     child: const Text(
                                       'Lupa Password?',
                                       style: TextStyle(

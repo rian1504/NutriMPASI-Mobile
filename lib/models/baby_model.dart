@@ -37,7 +37,7 @@ class Baby {
     ),
     Baby(
       id: '3',
-      name: 'Siti Nurhaliza',
+      name: 'Naystar Cikut',
       avatarUrl: null,
       ageInMonths: 12,
       weight: 9.2,

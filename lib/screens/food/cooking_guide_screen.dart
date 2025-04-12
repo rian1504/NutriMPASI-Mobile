@@ -107,7 +107,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textGrey,
+                            color: AppColors.textBlack,
                           ),
                         ),
                       ),

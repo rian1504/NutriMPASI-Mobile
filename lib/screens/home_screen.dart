@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'Dukung perjalanan makan si kecil\ndengan rekomendasi nutrisi terbaik!',
                       style: TextStyle(
-                        fontSize: 8,
+                        fontSize: 10,
                         fontWeight: FontWeight.w500,
                         color: AppColors.textBlack,
                       ),
@@ -271,7 +271,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      Symbols.male_rounded,
+                                                      babies[index].gender ==
+                                                              'Laki-Laki'
+                                                          ? Symbols.male_rounded
+                                                          : Symbols
+                                                              .female_rounded,
                                                       size: 16,
                                                       color: AppColors.textGrey,
                                                     ),
@@ -312,8 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      Symbols
-                                                          .water_drop_rounded,
+                                                      Symbols.no_meals,
                                                       size: 16,
                                                       color: AppColors.textGrey,
                                                     ),
@@ -520,12 +523,12 @@ Widget _buildFeaturesSection() {
       'image': 'assets/images/card/riwayat_memasak.png',
     },
     {
-      'title': 'Makanan Favorit',
-      'image': 'assets/images/card/makanan_favorit.png',
-    },
-    {
       'title': 'Usulan Makanan',
       'image': 'assets/images/card/usulan_makanan.png',
+    },
+    {
+      'title': 'Makanan Favorit',
+      'image': 'assets/images/card/makanan_favorit.png',
     },
   ];
 
@@ -591,8 +594,8 @@ Widget _buildFeaturesSection() {
                     child: Center(
                       child: Image.asset(
                         feature['image'],
-                        width: 80,
-                        height: 80,
+                        width: 120,
+                        height: 120,
                         fit: BoxFit.contain,
                       ),
                     ),

@@ -197,7 +197,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
           // Daftar jadwal makanan
           Expanded(
