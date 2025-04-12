@@ -3,6 +3,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
+import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -70,6 +71,29 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CookingHistoryScreen(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              backgroundColor: Colors.white,
+              padding: const EdgeInsets.all(8.0),
+              elevation: 2,
+            ),
+            child: const Icon(
+              Symbols.history,
+              color: AppColors.textBlack,
+              size: 20,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -253,7 +277,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                     padding: const EdgeInsets.only(left: 20.0),
                                     child: InkWell(
                                       onTap: () {
-                                        // Logika edit jadwal
+                                        // TODO: Logika edit jadwal
                                       },
                                       child: const Center(
                                         child: Icon(
@@ -277,6 +301,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 ),
                                 child: InkWell(
                                   onTap: () {
+                                    // TODO: Logika hapus jadwal
                                     setState(() {
                                       _scheduleItems.removeAt(index);
                                       _openCardId = null;
