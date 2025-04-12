@@ -3,6 +3,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/screens/notification_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -99,7 +100,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       Symbols.notifications,
                       color: AppColors.textBlack,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
