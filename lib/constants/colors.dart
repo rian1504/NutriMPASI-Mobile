@@ -15,6 +15,7 @@ class AppColors {
   static const Color cream = Color(0xFFEBDDC5);
   static const Color lavenderBlue = Color(0xFFBABAEE);
   static const Color bisque = Color(0xFFFFE1BE);
+  static const Color red = Color(0xFFD54F27);
 
   // Text color
   static const Color textBlack = Color(0xFF323232);
@@ -22,4 +23,5 @@ class AppColors {
 
   // item color
   static Color? componentGrey = Colors.grey[300];
+  static Color? componentBlack = Color(0xFF4F4E4E);
 }
