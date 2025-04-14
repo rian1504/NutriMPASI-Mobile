@@ -121,109 +121,118 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Header dengan latar belakang banner dan kartu informasi bayi
   Widget _buildHeader(User user) {
-    return BlocBuilder<BabyBloc, BabyState>(
-      builder: (context, state) {
-        List<Baby> babies = [];
-
-        if (state is BabyLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is BabyLoaded) {
-          babies = state.babies;
-        } else if (state is BabyError) {
-          return Center(child: Text(state.error));
-        }
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Latar belakang banner
-            Container(
-              width: double.infinity,
-              height: 300,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/banner/beranda.png'),
-                  fit: BoxFit.fitWidth,
-                  alignment: Alignment.topCenter,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        // Latar belakang banner
+        Container(
+          width: double.infinity,
+          height: 300,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/banner/beranda.png'),
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.topCenter,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Logo dan nama aplikasi
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Logo dan nama aplikasi
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/logo/nutrimpasi.png',
-                            height: 55,
-                          ),
-                          const Text(
-                            'NutriMPASI',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textBlack,
-                            ),
-                          ),
-                        ],
+                      Image.asset(
+                        'assets/images/logo/nutrimpasi.png',
+                        height: 55,
                       ),
-                      // Tombol notifikasi
-                      IconButton(
-                        icon: Icon(
-                          Symbols.notifications,
+                      const Text(
+                        'NutriMPASI',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                           color: AppColors.textBlack,
                         ),
-                        onPressed: () {},
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  // Pesan sambutan
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Halo, Moms ${user.name}!',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textBlack,
-                          ),
-                        ),
-                        Text(
-                          'Dukung perjalanan makan si kecil\ndengan rekomendasi nutrisi terbaik!',
-                          style: TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textBlack,
-                          ),
-                        ),
-                      ],
+                  // Tombol notifikasi
+                  IconButton(
+                    icon: Icon(
+                      Symbols.notifications,
+                      color: AppColors.textBlack,
                     ),
+                    onPressed: () {},
                   ),
                 ],
               ),
-            ),
-
-            // Kartu informasi bayi bertumpuk
-            Positioned(
-              top: 140,
-              left: 24,
-              right: 24,
-              child: SizedBox(
-                height: 150,
-                child: Stack(
-                  clipBehavior: Clip.none,
+              const SizedBox(height: 4),
+              // Pesan sambutan
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Kartu bertumpuk dengan PageView vertikal untuk scrolling snap
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 48,
-                      height: 200,
-                      child: Stack(
+                    Text(
+                      'Halo, Moms ${user.name}!',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
+                      ),
+                    ),
+                    Text(
+                      'Dukung perjalanan makan si kecil\ndengan rekomendasi nutrisi terbaik!',
+                      style: TextStyle(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textBlack,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Kartu informasi bayi bertumpuk
+        Positioned(
+          top: 140,
+          left: 24,
+          right: 24,
+          child: SizedBox(
+            height: 150,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Kartu bertumpuk dengan PageView vertikal untuk scrolling snap
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 48,
+                  height: 200,
+                  child: BlocBuilder<BabyBloc, BabyState>(
+                    builder: (context, state) {
+                      List<Baby> babies = [];
+
+                      if (state is BabyLoading) {
+                        return Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      } else if (state is BabyLoaded) {
+                        babies = state.babies;
+                      } else if (state is BabyError) {
+                        return Center(child: Text(state.error));
+                      }
+
+                      return Stack(
                         clipBehavior: Clip.none,
                         children: [
                           // Kartu latar belakang bertumpuk
@@ -457,52 +466,52 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                         ],
-                      ),
-                    ),
+                      );
+                    },
+                  ),
+                ),
 
-                    // Tombol tambah bayi
-                    Positioned(
-                      right: -24,
-                      top: 40,
-                      child: InkWell(
-                        onTap: () {
-                          // Logika tambah bayi
-                        },
+                // Tombol tambah bayi
+                Positioned(
+                  right: -24,
+                  top: 40,
+                  child: InkWell(
+                    onTap: () {
+                      // Logika tambah bayi
+                    },
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(20),
+                    ),
+                    child: Container(
+                      width: 80,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary,
                         borderRadius: const BorderRadius.horizontal(
                           left: Radius.circular(20),
                         ),
-                        child: Container(
-                          width: 80,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: AppColors.secondary,
-                            borderRadius: const BorderRadius.horizontal(
-                              left: Radius.circular(20),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(50),
-                                spreadRadius: 1,
-                                blurRadius: 3,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 2),
                           ),
-                          child: const Icon(
-                            Symbols.add,
-                            color: Colors.white,
-                            size: 32,
-                          ),
-                        ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Symbols.add,
+                        color: Colors.white,
+                        size: 32,
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 

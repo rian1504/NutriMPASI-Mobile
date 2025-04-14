@@ -4,8 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
+import 'package:nutrimpasi/blocs/food/food_bloc.dart';
+import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
+import 'package:nutrimpasi/controllers/food_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
@@ -34,13 +37,14 @@ class MainApp extends StatelessWidget {
             return bloc;
           },
         ),
-        // BlocProvider(
-        //   create:
-        //       (context) =>
-        //           AuthenticationBloc(controller: AuthenticationController()),
-        // ),
         BlocProvider(
           create: (context) => BabyBloc(controller: BabyController()),
+        ),
+        BlocProvider(
+          create: (context) => FoodBloc(controller: FoodController()),
+        ),
+        BlocProvider(
+          create: (context) => FoodDetailBloc(controller: FoodController()),
         ),
       ],
       child: MaterialApp(
