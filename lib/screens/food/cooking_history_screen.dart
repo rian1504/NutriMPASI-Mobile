@@ -12,7 +12,7 @@ class CookingHistoryScreen extends StatefulWidget {
 }
 
 class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
-  // Data riwayat memasak (hanya menggunakan objek Food)
+  // Data riwayat memasak
   final List<Food> _historyItems = [
     Food.dummyFoods[0],
     Food.dummyFoods[1],

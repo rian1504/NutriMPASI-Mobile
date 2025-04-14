@@ -89,7 +89,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
             child: const Icon(
               Symbols.history,
-              color: AppColors.textBlack,
+              color: AppColors.primary,
               size: 20,
             ),
           ),
@@ -262,12 +262,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               // Tombol edit
                               Container(
                                 decoration: const BoxDecoration(
-                                  color: Colors.red,
+                                  color: AppColors.red,
                                 ),
                                 child: Container(
                                   width: 80,
                                   decoration: BoxDecoration(
-                                    color: Colors.blue,
+                                    color: AppColors.secondary,
                                     borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       bottomRight: Radius.circular(10),
@@ -293,7 +293,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               Container(
                                 width: 60,
                                 decoration: const BoxDecoration(
-                                  color: Colors.red,
+                                  color: AppColors.red,
                                   borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(10),
                                     bottomRight: Radius.circular(10),
@@ -301,11 +301,102 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 ),
                                 child: InkWell(
                                   onTap: () {
-                                    // TODO: Logika hapus jadwal
-                                    setState(() {
-                                      _scheduleItems.removeAt(index);
-                                      _openCardId = null;
-                                    });
+                                    // Tampilkan dialog konfirmasi
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                          ),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Text(
+                                                  'Anda yakin ingin menghapus Jadwal Memasak ini?',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 24),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    // Tombol Batal
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              AppColors
+                                                                  .componentBlack,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          Navigator.of(
+                                                            context,
+                                                          ).pop();
+                                                        },
+                                                        child: const Text(
+                                                          'Batal',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                    // Tombol Hapus
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              AppColors.red,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            _scheduleItems
+                                                                .removeAt(
+                                                                  index,
+                                                                );
+                                                            _openCardId = null;
+                                                          });
+                                                          Navigator.of(
+                                                            context,
+                                                          ).pop();
+                                                        },
+                                                        child: const Text(
+                                                          'Hapus',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
                                   },
                                   child: const Center(
                                     child: Icon(

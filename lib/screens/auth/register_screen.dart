@@ -55,7 +55,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 left: 0,
                 right: 0,
                 height: size.height * 0.55,
-                child: Image.asset('assets/images/background/auth.png', fit: BoxFit.cover),
+                child: Image.asset(
+                  'assets/images/background/auth.png',
+                  fit: BoxFit.cover,
+                ),
               ),
               // Panel utama
               Positioned(
