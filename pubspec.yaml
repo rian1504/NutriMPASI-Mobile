@@ -10,7 +10,9 @@ dependencies:
   curved_navigation_bar: ^1.0.6
   flutter:
     sdk: flutter
+  google_generative_ai: ^0.4.6
   material_symbols_icons: ^4.2810.1
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -26,6 +28,7 @@ flutter:
     - assets/images/card/
     - assets/images/component/
     - assets/images/logo/
+    - .env
   fonts:
     - family: Poppins
       fonts:

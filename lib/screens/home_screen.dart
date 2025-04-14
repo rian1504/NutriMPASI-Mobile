@@ -3,7 +3,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
+import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -521,22 +523,45 @@ Widget _buildFeaturesSection() {
     {
       'title': 'Materi Pembelajaran',
       'image': 'assets/images/card/materi_pembelajaran.png',
+      'navigate': (BuildContext context) {
+        // TODO: Halaman Materi Pembelajaran
+      },
     },
     {
       'title': 'Konsultasi Ahli Gizi',
       'image': 'assets/images/card/konsultasi_ahli_gizi.png',
+      'navigate': (BuildContext context) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const NutritionistProfileScreen(),
+          ),
+        );
+      },
     },
     {
       'title': 'Riwayat Memasak',
       'image': 'assets/images/card/riwayat_memasak.png',
+      'navigate': (BuildContext context) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CookingHistoryScreen()),
+        );
+      },
     },
     {
       'title': 'Usulan Makanan',
       'image': 'assets/images/card/usulan_makanan.png',
+      'navigate': (BuildContext context) {
+        // TODO: Halaman Usulan Makanan
+      },
     },
     {
       'title': 'Makanan Favorit',
       'image': 'assets/images/card/makanan_favorit.png',
+      'navigate': (BuildContext context) {
+        // TODO: Halaman Makanan Favorit
+      },
     },
   ];
 
@@ -582,29 +607,37 @@ Widget _buildFeaturesSection() {
 
               return Column(
                 children: [
-                  // Kartu fitur
-                  Container(
-                    width: 140,
-                    height: 140,
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(50),
-                          spreadRadius: 1,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
+                  // Kartu fitur dengan InkWell
+                  InkWell(
+                    onTap: () {
+                      if (feature['navigate'] != null) {
+                        feature['navigate'](context);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      width: 140,
+                      height: 140,
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: cardColor,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            spreadRadius: 1,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          feature['image'],
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.contain,
                         ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        feature['image'],
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.contain,
                       ),
                     ),
                   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-// import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
+import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
 
 class FoodAddSuggestionScreen extends StatefulWidget {
   const FoodAddSuggestionScreen({super.key});
@@ -623,22 +623,22 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                     child: GestureDetector(
                       onTap: () {
                         // Validasi form saat tombol next ditekan
-                        // if (_formKey.currentState!.validate()) {
-                        //   List<String> ingredients =
-                        //       _ingredientControllers
-                        //           .map((controller) => controller.text)
-                        //           .toList();
+                        if (_formKey.currentState!.validate()) {
+                          List<String> ingredients =
+                              _ingredientControllers
+                                  .map((controller) => controller.text)
+                                  .toList();
 
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder:
-                        //           (context) => FoodNutritionCalculatorScreen(
-                        //             ingredients: ingredients,
-                        //           ),
-                        //     ),
-                        //   );
-                        // }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => FoodNutritionCalculatorScreen(
+                                    ingredients: ingredients,
+                                  ),
+                            ),
+                          );
+                        }
                       },
                       child: Container(
                         width: 50,
