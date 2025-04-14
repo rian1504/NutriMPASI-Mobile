@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
@@ -7,7 +8,10 @@ import 'package:nutrimpasi/screens/schedule_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
 
-void main() {
+Future<void> main() async {
+  // Make main async
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MainApp());
 }
 
@@ -36,10 +40,10 @@ class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainPage> createState() => MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> {
   int _page = 0;
 
   final List<Widget> _screens = [
@@ -49,6 +53,13 @@ class _MainPageState extends State<MainPage> {
     const Center(child: Text('Forum')),
     const Center(child: Text('Settings')),
   ];
+
+  // Fungsi untuk mengubah halaman
+  void changePage(int index) {
+    setState(() {
+      _page = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +71,7 @@ class _MainPageState extends State<MainPage> {
         color: AppColors.primary,
         height: MediaQuery.of(context).size.height * 0.070,
         animationDuration: const Duration(milliseconds: 300),
+        index: _page,
         items: [
           Icon(
             Symbols.home_rounded,
