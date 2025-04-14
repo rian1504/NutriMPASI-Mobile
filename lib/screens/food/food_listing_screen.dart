@@ -3,6 +3,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food_model.dart';
+import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 
 class FoodListingScreen extends StatefulWidget {
   const FoodListingScreen({super.key});
@@ -539,7 +540,14 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                   size: 20,
                                 ),
                                 onPressed: () {
-                                  // TODO: Navigasi ke halaman tambah usulan
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              const FoodAddSuggestionScreen(),
+                                    ),
+                                  );
                                 },
                               ),
                             ),
