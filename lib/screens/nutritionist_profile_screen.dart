@@ -46,71 +46,68 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Tombol kembali (back button)
-              IconButton(
-                icon: const Icon(Symbols.arrow_back),
-                onPressed: () => Navigator.pop(context),
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Tombol kembali (back button)
+            IconButton(
+              icon: const Icon(Symbols.arrow_back),
+              onPressed: () => Navigator.pop(context),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                padding: const EdgeInsets.all(8),
               ),
-              // Bagian header dengan teks informasi
-              Container(
-                color: AppColors.bisque,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(60),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Judul halaman
-                        const Text(
-                          'Temukan dan Hubungi\nAhli Gizi Pilihanmu!',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textBlack,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        // Deskripsi layanan
-                        Text(
-                          'Lihat profil lengkap ahli gizi yang terdaftar. Hubungi langsung untuk berkonsultasi dan dapatkan saran terbaik untuk memenuhi kebutuhan gizi si kecil!',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textGrey,
-                          ),
-                          textAlign: TextAlign.justify,
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
+            ),
+            // Bagian header dengan teks informasi
+            Container(
+              color: AppColors.bisque,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: const BorderRadius.only(
+                    bottomRight: Radius.circular(60),
                   ),
                 ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 60.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Judul halaman
+                      const Text(
+                        'Temukan dan Hubungi\nAhli Gizi Pilihanmu!',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textBlack,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // Deskripsi layanan
+                      Text(
+                        'Lihat profil lengkap ahli gizi yang terdaftar. Hubungi langsung untuk berkonsultasi dan dapatkan saran terbaik untuk memenuhi kebutuhan gizi si kecil!',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textGrey,
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
               ),
+            ),
 
-              // Bagian utama dengan latar belakang gradient
-              Container(
+            // Bagian utama dengan latar belakang gradient
+            Expanded(
+              child: Container(
                 color: AppColors.white,
                 child: Container(
                   width: double.infinity,
-                  constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height - 200,
-                  ),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       begin: Alignment.topCenter,
@@ -133,16 +130,14 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                       children: [
                         // Container untuk carousel gambar ahli gizi
                         Container(
-                          margin: const EdgeInsets.only(top: 24, left: 24),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          height: 340,
+                          margin: const EdgeInsets.only(top: 48, left: 48),
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          height: 360,
                           decoration: BoxDecoration(
                             color: AppColors.offWhite,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.elliptical(90, 57),
-                              topRight: Radius.circular(15),
                               bottomLeft: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
                             ),
                             boxShadow: const [
                               BoxShadow(
@@ -165,6 +160,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
 
                                     // Item carousel dengan animasi
                                     return AnimatedContainer(
+                                      alignment: Alignment.centerLeft,
                                       duration: const Duration(
                                         milliseconds: 300,
                                       ),
@@ -174,11 +170,11 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                       ),
                                       margin: EdgeInsets.only(
                                         top: isCurrentItem ? 0 : 36,
-                                        bottom: isCurrentItem ? 0 : 12,
-                                        left: 12,
-                                        right: 12,
+                                        bottom: isCurrentItem ? 0 : 36,
+                                        right: 48,
                                       ),
                                       child: Container(
+                                        padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
@@ -229,24 +225,27 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 8),
                               // Indikator dot untuk carousel (pagination)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  _nutritionists.length,
-                                  (index) => Container(
-                                    width: 8,
-                                    height: 8,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color:
-                                          _currentCarouselPage == index
-                                              ? AppColors.primary
-                                              : AppColors.componentGrey,
+                              Container(
+                                margin: const EdgeInsets.only(right: 48),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    _nutritionists.length,
+                                    (index) => Container(
+                                      width: 8,
+                                      height: 8,
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color:
+                                            _currentCarouselPage == index
+                                                ? AppColors.primary
+                                                : AppColors.componentGrey,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -255,10 +254,10 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                           ),
                         ),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 48),
                         // Card informasi detail ahli gizi
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 24),
+                          margin: const EdgeInsets.symmetric(horizontal: 48),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
@@ -343,54 +342,59 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 16),
                                 // Tombol WhatsApp untuk kontak ahli gizi
                                 if (_nutritionists[_currentCarouselPage]
                                     .hasWhatsapp)
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF25D366),
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      minimumSize: const Size(
-                                        double.infinity,
-                                        46,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/logo/whatsapp.png',
-                                          width: 40,
-                                          height: 40,
+                                  Container(
+                                    margin: EdgeInsets.only(top: 16),
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(
+                                          0xFF25D366,
                                         ),
-                                        const SizedBox(width: 8),
-                                        const Text(
-                                          'Hubungi via WhatsApp',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
                                           ),
                                         ),
-                                      ],
+                                        minimumSize: const Size(
+                                          double.infinity,
+                                          46,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/logo/whatsapp.png',
+                                            width: 40,
+                                            height: 40,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Text(
+                                            'Hubungi via WhatsApp',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                               ],
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
                       ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
