@@ -26,10 +26,51 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _babyController.addListener(() {
-      if (_babyController.page != null &&
-          _babyController.page!.round() != _currentBabyIndex) {
-        setState(() {
-          _currentBabyIndex = _babyController.page!.round();
+      if (!_babyController.hasClients ||
+          !_babyController.position.hasContentDimensions) {
+        return;
+      }
+
+      // Mengatur offset dan halaman saat pengguna menggulir
+      final double currentOffset = _babyController.offset;
+      final double maxScrollExtent = _babyController.position.maxScrollExtent;
+      final int currentPageFloor =
+          _babyController.page?.floor() ?? _currentBabyIndex;
+      final int currentPageRound =
+          _babyController.page?.round() ?? _currentBabyIndex;
+      const double overscrollThreshold = 50.0;
+
+      // Mengatur halaman bayi saat mencapai batas atas atau bawah
+      if (currentPageFloor == babies.length - 1 &&
+          currentOffset > maxScrollExtent + overscrollThreshold) {
+        if (_currentBabyIndex != 0 &&
+            !_babyController.position.isScrollingNotifier.value) {
+          _babyController.animateToPage(
+            0,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOut,
+          );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && _currentBabyIndex != 0) {
+              setState(() {
+                _currentBabyIndex = 0;
+              });
+            }
+          });
+          return;
+        }
+      }
+
+      // Mengatur halaman bayi saat mencapai batas bawah
+      if (currentPageRound != _currentBabyIndex &&
+          currentPageRound >= 0 &&
+          currentPageRound < babies.length) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {
+              _currentBabyIndex = currentPageRound;
+            });
+          }
         });
       }
     });
@@ -204,19 +245,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         controller: _babyController,
                         scrollDirection: Axis.vertical,
                         itemCount: babies.length,
-                        physics: const PageScrollPhysics(),
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentBabyIndex = index;
-                          });
-                        },
+                        physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
                         itemBuilder: (context, index) {
+                          final baby = babies[index];
                           final bool isCurrentItem = index == _currentBabyIndex;
 
-                          if (isCurrentItem || index == _currentBabyIndex - 1) {
-                            return AnimatedOpacity(
-                              duration: const Duration(milliseconds: 300),
-                              opacity: isCurrentItem ? 1.0 : 0.0,
+                          return AnimatedOpacity(
+                            duration: const Duration(milliseconds: 300),
+                            opacity: isCurrentItem ? 1.0 : 0.0,
+                            child: IgnorePointer(
+                              ignoring: !isCurrentItem,
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 10),
                                 child: Card(
@@ -265,9 +305,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                babies[index].name,
+                                                baby.name,
                                                 style: const TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
@@ -275,14 +317,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
-                                              if (babies[index]
-                                                  .isProfileComplete) ...[
+                                              if (baby.isProfileComplete) ...[
                                                 // Informasi jenis kelamin
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      babies[index].gender ==
-                                                              'Laki-Laki'
+                                                      baby.gender == 'Laki-Laki'
                                                           ? Symbols.male_rounded
                                                           : Symbols
                                                               .female_rounded,
@@ -291,8 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      babies[index].gender ??
-                                                          '',
+                                                      baby.gender ?? '',
                                                       style: const TextStyle(
                                                         fontSize: 12,
                                                         color:
@@ -312,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      '${babies[index].ageInMonths} bulan',
+                                                      '${baby.ageInMonths} bulan',
                                                       style: const TextStyle(
                                                         fontSize: 12,
                                                         color:
@@ -332,8 +371,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      babies[index].allergy ??
-                                                          '',
+                                                      baby.allergy ??
+                                                          'Tidak ada alergi',
                                                       style: const TextStyle(
                                                         fontSize: 12,
                                                         color:
@@ -343,14 +382,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ],
                                                 ),
                                               ] else
-                                                Text(
-                                                  'Lengkapi Data Bayi',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: AppColors.secondary,
-                                                    decoration:
-                                                        TextDecoration
-                                                            .underline,
+                                                InkWell(
+                                                  onTap: () {
+                                                    // TODO: Navgifasi ke halaman lengkapi profil bayi
+                                                    print(
+                                                      'Navigate to complete profile for ${baby.name}',
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'Lengkapi Data Bayi',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color:
+                                                          AppColors.secondary,
+                                                      decoration:
+                                                          TextDecoration
+                                                              .underline,
+                                                    ),
                                                   ),
                                                 ),
                                             ],
@@ -361,9 +409,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
-                            );
-                          }
-                          return const SizedBox.shrink();
+                            ),
+                          );
                         },
                       ),
                     ],
