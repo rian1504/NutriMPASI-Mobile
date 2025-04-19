@@ -3,6 +3,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
@@ -43,8 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // Mengatur halaman bayi saat mencapai batas atas atau bawah
       if (currentPageFloor == babies.length - 1 &&
           currentOffset > maxScrollExtent + overscrollThreshold) {
-        if (_currentBabyIndex != 0 &&
-            !_babyController.position.isScrollingNotifier.value) {
+        if (_currentBabyIndex != 0) {
           _babyController.animateToPage(
             0,
             duration: const Duration(milliseconds: 400),
@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
           left: 24,
           right: 24,
           child: SizedBox(
-            height: 150,
+            height: 160,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -231,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  child: SizedBox(height: 130),
+                                  child: SizedBox(height: 140),
                                 ),
                               ),
                             ),
@@ -265,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
+                                    padding: const EdgeInsets.all(12.0),
                                     child: Row(
                                       children: [
                                         // Avatar bayi
@@ -318,34 +318,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               const SizedBox(height: 8),
                                               if (baby.isProfileComplete) ...[
-                                                // Informasi jenis kelamin
+                                                // Informasi usia (Age)
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      baby.gender == 'Laki-Laki'
-                                                          ? Symbols.male_rounded
-                                                          : Symbols
-                                                              .female_rounded,
-                                                      size: 16,
-                                                      color: AppColors.textGrey,
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                      baby.gender ?? '',
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        color:
-                                                            AppColors.textGrey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 4),
-                                                // Informasi usia
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Symbols.update_rounded,
+                                                      Symbols.clock_arrow_up,
                                                       size: 16,
                                                       color: AppColors.textGrey,
                                                     ),
@@ -361,7 +338,50 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ],
                                                 ),
                                                 const SizedBox(height: 4),
-                                                // Informasi alergi
+
+                                                // Informasi tinggi (Height)
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Symbols.height_rounded,
+                                                      size: 16,
+                                                      color: AppColors.textGrey,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      '${baby.height ?? '-'} cm',
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color:
+                                                            AppColors.textGrey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 4),
+
+                                                // Informasi berat (Weight)
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Symbols.scale_rounded,
+                                                      size: 16,
+                                                      color: AppColors.textGrey,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      '${baby.weight ?? '-'} kg',
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color:
+                                                            AppColors.textGrey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 4),
+
+                                                // Informasi alergi (Allergy)
                                                 Row(
                                                   children: [
                                                     Icon(
@@ -423,7 +443,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   top: 40,
                   child: InkWell(
                     onTap: () {
-                      // Logika tambah bayi
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BabyListScreen(),
+                        ),
+                      );
                     },
                     borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(20),
