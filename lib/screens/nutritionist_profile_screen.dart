@@ -80,7 +80,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                       const Text(
                         'Temukan dan Hubungi\nAhli Gizi Pilihanmu!',
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textBlack,
                         ),
