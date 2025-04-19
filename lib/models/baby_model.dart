@@ -2,7 +2,7 @@ class Baby {
   final String id;
   final String name;
   final String? avatarUrl;
-  final int? ageInMonths;
+  final DateTime? birthDate;
   final double? weight;
   final double? height;
   final bool isProfileComplete;
@@ -13,7 +13,7 @@ class Baby {
     required this.id,
     required this.name,
     this.avatarUrl,
-    this.ageInMonths,
+    this.birthDate,
     this.weight,
     this.height,
     this.isProfileComplete = false,
@@ -28,7 +28,7 @@ class Baby {
       id: '2',
       name: 'Abay Cekut',
       avatarUrl: null,
-      ageInMonths: 6,
+      birthDate: DateTime(2024, 7, 15),
       weight: 7.5,
       height: 68.0,
       isProfileComplete: true,
@@ -39,7 +39,7 @@ class Baby {
       id: '3',
       name: 'Naystar Cikut',
       avatarUrl: null,
-      ageInMonths: 12,
+      birthDate: DateTime(2024, 1, 20),
       weight: 9.2,
       height: 74.5,
       isProfileComplete: true,
