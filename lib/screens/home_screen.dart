@@ -3,6 +3,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
+import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
@@ -14,7 +16,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   // Data dummy untuk makanan yang direkomendasikan
   final List<Food> _recommendedFoods = Food.dummyFoods.take(5).toList();
 
@@ -22,17 +25,120 @@ class _HomeScreenState extends State<HomeScreen> {
   final PageController _babyController = PageController();
   int _currentBabyIndex = 0;
 
+  // Controller untuk animasi gambar bayi
+  late AnimationController _imageAnimationController;
+  late Animation<double> _scaleAnimation;
+  bool _showFirstImage = true;
+
   @override
   void initState() {
     super.initState();
-    _babyController.addListener(() {
-      if (_babyController.page != null &&
-          _babyController.page!.round() != _currentBabyIndex) {
+    _initAnimationController();
+    _initBabyController();
+  }
+
+  // Inisialisasi controller animasi untuk gambar bayi
+  void _initAnimationController() {
+    _imageAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 0.95,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeIn)),
+        weight: 40,
+      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 20),
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 0.95,
+        ).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+    ]).animate(_imageAnimationController);
+
+    _imageAnimationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed && mounted) {
         setState(() {
-          _currentBabyIndex = _babyController.page!.round();
+          _showFirstImage = !_showFirstImage;
+        });
+        if (mounted) {
+          _imageAnimationController.reset();
+          _imageAnimationController.forward();
+        }
+      }
+    });
+
+    _imageAnimationController.forward();
+  }
+
+  void _initBabyController() {
+    _babyController.addListener(() {
+      if (!mounted ||
+          !_babyController.hasClients ||
+          !_babyController.position.hasContentDimensions) {
+        return;
+      }
+
+      // Mengatur offset dan halaman saat pengguna menggulir
+      final double currentOffset = _babyController.offset;
+      final double maxScrollExtent = _babyController.position.maxScrollExtent;
+      final int currentPageFloor =
+          _babyController.page?.floor() ?? _currentBabyIndex;
+      final int currentPageRound =
+          _babyController.page?.round() ?? _currentBabyIndex;
+      const double overscrollThreshold = 50.0;
+
+      // Mengatur halaman bayi saat mencapai batas atas atau bawah
+      if (currentPageFloor == babies.length - 1 &&
+          currentOffset > maxScrollExtent + overscrollThreshold) {
+        if (_currentBabyIndex != 0) {
+          _babyController.animateToPage(
+            0,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOut,
+          );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && _currentBabyIndex != 0) {
+              setState(() {
+                _currentBabyIndex = 0;
+              });
+            }
+          });
+          return;
+        }
+      }
+
+      // Mengatur halaman bayi saat mencapai batas bawah
+      if (currentPageRound != _currentBabyIndex &&
+          currentPageRound >= 0 &&
+          currentPageRound < babies.length) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {
+              _currentBabyIndex = currentPageRound;
+            });
+          }
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    if (_imageAnimationController.isAnimating) {
+      _imageAnimationController.stop();
+    }
+
+    _imageAnimationController.dispose();
+    _babyController.dispose();
+
+    super.dispose();
   }
 
   // Data dummy bayi
@@ -42,6 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.offWhite,
+      appBar: AppBar(backgroundColor: AppColors.bisque, toolbarHeight: 1),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -149,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
           left: 24,
           right: 24,
           child: SizedBox(
-            height: 150,
+            height: 160,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -190,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  child: SizedBox(height: 130),
+                                  child: SizedBox(height: 140),
                                 ),
                               ),
                             ),
@@ -204,19 +311,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         controller: _babyController,
                         scrollDirection: Axis.vertical,
                         itemCount: babies.length,
-                        physics: const PageScrollPhysics(),
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentBabyIndex = index;
-                          });
-                        },
+                        physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
                         itemBuilder: (context, index) {
+                          final baby = babies[index];
                           final bool isCurrentItem = index == _currentBabyIndex;
 
-                          if (isCurrentItem || index == _currentBabyIndex - 1) {
-                            return AnimatedOpacity(
-                              duration: const Duration(milliseconds: 300),
-                              opacity: isCurrentItem ? 1.0 : 0.0,
+                          return AnimatedOpacity(
+                            duration: const Duration(milliseconds: 300),
+                            opacity: isCurrentItem ? 1.0 : 0.0,
+                            child: IgnorePointer(
+                              ignoring: !isCurrentItem,
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 10),
                                 child: Card(
@@ -225,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
+                                    padding: const EdgeInsets.all(12.0),
                                     child: Row(
                                       children: [
                                         // Avatar bayi
@@ -241,22 +347,39 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         : 'assets/images/component/bayi_perempuan.png',
                                                     fit: BoxFit.contain,
                                                   )
-                                                  : Container(
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.buff,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            30,
-                                                          ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Image.asset(
-                                                        'assets/images/logo/nutrimpasi.png',
-                                                        height: 40,
-                                                        color:
-                                                            AppColors.primary,
+                                                  : Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      Opacity(
+                                                        opacity: 0,
+                                                        child: Image.asset(
+                                                          'assets/images/component/bayi_laki_laki_awal.png',
+                                                          fit: BoxFit.contain,
+                                                          width: 120,
+                                                          height: 120,
+                                                        ),
                                                       ),
-                                                    ),
+                                                      Opacity(
+                                                        opacity: 0,
+                                                        child: Image.asset(
+                                                          'assets/images/component/bayi_perempuan_awal.png',
+                                                          fit: BoxFit.contain,
+                                                          width: 120,
+                                                          height: 120,
+                                                        ),
+                                                      ),
+                                                      ScaleTransition(
+                                                        scale: _scaleAnimation,
+                                                        child: Image.asset(
+                                                          _showFirstImage
+                                                              ? 'assets/images/component/bayi_laki_laki_awal.png'
+                                                              : 'assets/images/component/bayi_perempuan_awal.png',
+                                                          fit: BoxFit.contain,
+                                                          width: 120,
+                                                          height: 120,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                         ),
                                         const SizedBox(width: 16),
@@ -265,9 +388,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                babies[index].name,
+                                                baby.name,
                                                 style: const TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
@@ -275,24 +400,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
-                                              if (babies[index]
-                                                  .isProfileComplete) ...[
-                                                // Informasi jenis kelamin
+                                              if (baby.isProfileComplete) ...[
+                                                // Informasi usia (Age)
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      babies[index].gender ==
-                                                              'Laki-Laki'
-                                                          ? Symbols.male_rounded
-                                                          : Symbols
-                                                              .female_rounded,
+                                                      Symbols.clock_arrow_up,
                                                       size: 16,
                                                       color: AppColors.textGrey,
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      babies[index].gender ??
-                                                          '',
+                                                      getAgeDisplay(baby),
                                                       style: const TextStyle(
                                                         fontSize: 12,
                                                         color:
@@ -302,17 +421,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ],
                                                 ),
                                                 const SizedBox(height: 4),
-                                                // Informasi usia
+
+                                                // Informasi tinggi (Height)
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      Symbols.update_rounded,
+                                                      Symbols.height_rounded,
                                                       size: 16,
                                                       color: AppColors.textGrey,
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      '${babies[index].ageInMonths} bulan',
+                                                      '${baby.height ?? '-'} cm',
                                                       style: const TextStyle(
                                                         fontSize: 12,
                                                         color:
@@ -322,7 +442,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ],
                                                 ),
                                                 const SizedBox(height: 4),
-                                                // Informasi alergi
+
+                                                // Informasi berat (Weight)
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Symbols.scale_rounded,
+                                                      size: 16,
+                                                      color: AppColors.textGrey,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      '${baby.weight ?? '-'} kg',
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color:
+                                                            AppColors.textGrey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 4),
+
+                                                // Informasi alergi (Allergy)
                                                 Row(
                                                   children: [
                                                     Icon(
@@ -332,8 +474,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      babies[index].allergy ??
-                                                          '',
+                                                      baby.allergy ??
+                                                          'Tidak ada alergi',
                                                       style: const TextStyle(
                                                         fontSize: 12,
                                                         color:
@@ -343,14 +485,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ],
                                                 ),
                                               ] else
-                                                Text(
-                                                  'Lengkapi Data Bayi',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: AppColors.secondary,
-                                                    decoration:
-                                                        TextDecoration
-                                                            .underline,
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                                BabyEditScreen(
+                                                                  baby: baby,
+                                                                ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'Lengkapi Data Bayi',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color:
+                                                          AppColors.secondary,
+                                                      decoration:
+                                                          TextDecoration
+                                                              .underline,
+                                                    ),
                                                   ),
                                                 ),
                                             ],
@@ -361,9 +518,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
-                            );
-                          }
-                          return const SizedBox.shrink();
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -376,7 +532,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   top: 40,
                   child: InkWell(
                     onTap: () {
-                      // Logika tambah bayi
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BabyListScreen(),
+                        ),
+                      );
                     },
                     borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(20),
@@ -514,152 +675,171 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-// Bagian carousel fitur lainnya
-Widget _buildFeaturesSection() {
-  // Data fitur
-  final List<Map<String, dynamic>> features = [
-    {
-      'title': 'Materi Pembelajaran',
-      'image': 'assets/images/card/materi_pembelajaran.png',
-      'navigate': (BuildContext context) {
-        // TODO: Halaman Materi Pembelajaran
-      },
-    },
-    {
-      'title': 'Konsultasi Ahli Gizi',
-      'image': 'assets/images/card/konsultasi_ahli_gizi.png',
-      'navigate': (BuildContext context) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const NutritionistProfileScreen(),
-          ),
-        );
-      },
-    },
-    {
-      'title': 'Riwayat Memasak',
-      'image': 'assets/images/card/riwayat_memasak.png',
-      'navigate': (BuildContext context) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CookingHistoryScreen()),
-        );
-      },
-    },
-    {
-      'title': 'Usulan Makanan',
-      'image': 'assets/images/card/usulan_makanan.png',
-      'navigate': (BuildContext context) {
-        // TODO: Halaman Usulan Makanan
-      },
-    },
-    {
-      'title': 'Makanan Favorit',
-      'image': 'assets/images/card/makanan_favorit.png',
-      'navigate': (BuildContext context) {
-        // TODO: Halaman Makanan Favorit
-      },
-    },
-  ];
+  // Fungsi untuk menghitung dan menampilkan usia bayi dalam bulan
+  String getAgeDisplay(Baby baby) {
+    if (baby.birthDate == null) return '- bulan';
 
-  return Container(
-    margin: const EdgeInsets.only(top: 20),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Judul bagian
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Fitur Lainnya',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textBlack,
+    final now = DateTime.now();
+    final months =
+        (now.year - baby.birthDate!.year) * 12 +
+        now.month -
+        baby.birthDate!.month;
+
+    if (now.day < baby.birthDate!.day) {
+      return '${months - 1} bulan';
+    }
+
+    return '$months bulan';
+  }
+
+  // Bagian carousel fitur lainnya
+  Widget _buildFeaturesSection() {
+    // Data fitur
+    final List<Map<String, dynamic>> features = [
+      {
+        'title': 'Materi Pembelajaran',
+        'image': 'assets/images/card/materi_pembelajaran.png',
+        'navigate': (BuildContext context) {
+          // TODO: Halaman Materi Pembelajaran
+        },
+      },
+      {
+        'title': 'Konsultasi Ahli Gizi',
+        'image': 'assets/images/card/konsultasi_ahli_gizi.png',
+        'navigate': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NutritionistProfileScreen(),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Riwayat Memasak',
+        'image': 'assets/images/card/riwayat_memasak.png',
+        'navigate': (BuildContext context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CookingHistoryScreen(),
+            ),
+          );
+        },
+      },
+      {
+        'title': 'Usulan Makanan',
+        'image': 'assets/images/card/usulan_makanan.png',
+        'navigate': (BuildContext context) {
+          // TODO: Halaman Usulan Makanan
+        },
+      },
+      {
+        'title': 'Makanan Favorit',
+        'image': 'assets/images/card/makanan_favorit.png',
+        'navigate': (BuildContext context) {
+          // TODO: Halaman Makanan Favorit
+        },
+      },
+    ];
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Judul bagian
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Fitur Lainnya',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textBlack,
+                  ),
                 ),
-              ),
-              Icon(
-                Symbols.arrow_forward_ios,
-                size: 16,
-                color: AppColors.secondary,
-              ),
-            ],
+                Icon(
+                  Symbols.arrow_forward_ios,
+                  size: 16,
+                  color: AppColors.secondary,
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        // Carousel kartu fitur
-        SizedBox(
-          height: 180,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: features.length,
-            itemBuilder: (context, index) {
-              final feature = features[index];
-              final cardColor =
-                  index % 2 == 0 ? AppColors.bisque : AppColors.lavenderBlue;
+          const SizedBox(height: 16),
+          // Carousel kartu fitur
+          SizedBox(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: features.length,
+              itemBuilder: (context, index) {
+                final feature = features[index];
+                final cardColor =
+                    index % 2 == 0 ? AppColors.bisque : AppColors.lavenderBlue;
 
-              return Column(
-                children: [
-                  // Kartu fitur dengan InkWell
-                  InkWell(
-                    onTap: () {
-                      if (feature['navigate'] != null) {
-                        feature['navigate'](context);
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      width: 140,
-                      height: 140,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: cardColor,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(50),
-                            spreadRadius: 1,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
+                return Column(
+                  children: [
+                    // Kartu fitur dengan InkWell
+                    InkWell(
+                      onTap: () {
+                        if (feature['navigate'] != null) {
+                          feature['navigate'](context);
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        width: 140,
+                        height: 140,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: cardColor,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(50),
+                              spreadRadius: 1,
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            feature['image'],
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.contain,
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          feature['image'],
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Judul fitur
-                  SizedBox(
-                    width: 140,
-                    child: Text(
-                      feature['title'],
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                    const SizedBox(height: 8),
+                    // Judul fitur
+                    SizedBox(
+                      width: 140,
+                      child: Text(
+                        feature['title'],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
