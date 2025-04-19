@@ -13,6 +13,7 @@ dependencies:
   google_generative_ai: ^0.4.6
   material_symbols_icons: ^4.2810.1
   flutter_dotenv: ^5.1.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
