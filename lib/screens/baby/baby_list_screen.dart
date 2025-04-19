@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
-import 'package:nutrimpasi/screens/baby/edit_baby_screen.dart';
+import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
+import 'package:nutrimpasi/screens/baby/baby_add_screen.dart';
 
 class BabyListScreen extends StatefulWidget {
   const BabyListScreen({super.key});
@@ -274,7 +275,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditBabyScreen(baby: baby),
+                          builder: (context) => BabyEditScreen(baby: baby),
                         ),
                       ).then((_) {
                         setState(() {});
@@ -473,7 +474,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const EditBabyScreen(),
+                    builder: (context) => const BabyAddScreen(),
                   ),
                 ).then((_) {
                   setState(() {});

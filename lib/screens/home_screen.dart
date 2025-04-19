@@ -4,6 +4,7 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
+import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
@@ -486,9 +487,15 @@ class _HomeScreenState extends State<HomeScreen>
                                               ] else
                                                 InkWell(
                                                   onTap: () {
-                                                    // TODO: Navgifasi ke halaman lengkapi profil bayi
-                                                    print(
-                                                      'Navigate to complete profile for ${baby.name}',
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                                BabyEditScreen(
+                                                                  baby: baby,
+                                                                ),
+                                                      ),
                                                     );
                                                   },
                                                   child: Text(

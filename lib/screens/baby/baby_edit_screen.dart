@@ -4,15 +4,15 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/baby_model.dart';
 import 'package:intl/intl.dart';
 
-class EditBabyScreen extends StatefulWidget {
+class BabyEditScreen extends StatefulWidget {
   final Baby? baby;
-  const EditBabyScreen({super.key, this.baby});
+  const BabyEditScreen({super.key, this.baby});
 
   @override
-  State<EditBabyScreen> createState() => _EditBabyScreenState();
+  State<BabyEditScreen> createState() => _BabyEditScreenState();
 }
 
-class _EditBabyScreenState extends State<EditBabyScreen> {
+class _BabyEditScreenState extends State<BabyEditScreen> {
   // Form key untuk validasi input
   final _formKey = GlobalKey<FormState>();
 
@@ -173,7 +173,7 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withAlpha(25),
                                 blurRadius: 6,
                                 spreadRadius: 1,
                               ),
@@ -204,7 +204,7 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withAlpha(15),
                               blurRadius: 10,
                               spreadRadius: 2,
                             ),
