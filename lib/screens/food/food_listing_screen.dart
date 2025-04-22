@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
+import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
-import 'package:nutrimpasi/models/food_model.dart';
+import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 
 class FoodListingScreen extends StatefulWidget {
@@ -31,12 +35,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
     'Tekstur Kasar': false,
     'Finger Food': false,
   };
-  final Map<String, bool> _foodCategoryFilters = {
-    'Karbohidrat': false,
-    'Bubur & Puree': false,
-    'Sup & Kuah': false,
-    'Finger Food': false,
-  };
+  late Map<String, bool> _foodCategoryFilters;
   final Map<String, bool> _recipeSourceFilters = {
     'KEMENKES': false,
     'WHO': false,
@@ -44,12 +43,23 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
   };
 
   // Data makanan
-  final List<Food> _foodItems = Food.dummyFoods;
+  List<Food> get _foodItems {
+    final state = context.read<FoodBloc>().state;
+    return state is FoodLoaded ? state.foods : [];
+  }
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+
+    _scrollController.addListener(_scrollListener);
+
+    // if (foodState is! FoodLoaded) {
+    //   context.read<FoodBloc>().add(FetchFoods());
+    // }
+
+    context.read<FoodBloc>().add(FetchFoods());
   }
 
   // Deteksi posisi scroll
@@ -92,9 +102,17 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
 
   // Filter makanan berdasarkan sumber
   List<Food> _getFilteredFoodItems() {
-    if (_showUserSuggestionsOnly) {
-      return _foodItems.where((item) => item.source == 'Pengguna').toList();
+    final authState = context.read<AuthenticationBloc>().state;
+
+    int? userId;
+    if (authState is LoginSuccess) {
+      userId = authState.user.id;
     }
+
+    if (_showUserSuggestionsOnly && userId != null) {
+      return _foodItems.where((item) => item.userId == userId).toList();
+    }
+
     return _foodItems;
   }
 
@@ -641,184 +659,217 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
               const SizedBox(height: 16),
 
               // Daftar kartu makanan
-              Column(
-                children: [
-                  ..._getFilteredFoodItems().take(_displayedItemCount).map((
-                    item,
-                  ) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => FoodDetailScreen(foodId: item.id),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            // Gambar makanan
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                item.image,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+              BlocBuilder<FoodBloc, FoodState>(
+                builder: (context, state) {
+                  if (state is FoodLoading) {
+                    return const Center(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 100),
+                          CircularProgressIndicator(),
+                        ],
+                      ),
+                    );
+                  }
 
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 5,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 8.0,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            // Nama makanan
-                                            Text(
-                                              item.name,
-                                              style: const TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w700,
-                                                color: AppColors.textBlack,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            // Deskripsi singkat
-                                            Text(
-                                              item.description,
-                                              style: TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontSize: 12,
-                                                color: AppColors.textGrey,
-                                              ),
-                                              textAlign: TextAlign.justify,
-                                              maxLines: 3,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                  if (state is FoodError) {
+                    return Center(child: Text(state.error));
+                  }
+
+                  if (state is FoodLoaded) {
+                    final categories = state.categories;
+                    _foodCategoryFilters = {
+                      for (var category in categories) category.name: false,
+                    };
+                  }
+
+                  return Column(
+                    children: [
+                      ..._getFilteredFoodItems().take(_displayedItemCount).map((
+                        item,
+                      ) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => FoodDetailScreen(
+                                      foodId: item.id.toString(),
                                     ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                              ),
+                            );
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                // Gambar makanan
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    storageUrl + item.image,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                    ),
+                                    child: Row(
                                       children: [
-                                        // Indikator sumber
-                                        Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.secondary
-                                                .withAlpha(25),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(
-                                            item.source == 'WHO' ||
-                                                    item.source == 'KEMENKES'
-                                                ? Symbols.verified
-                                                : Symbols.person,
-                                            color: AppColors.secondary,
-                                            size: 16,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 32),
-                                        // Indikator favorit
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 3,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary,
-                                            borderRadius: BorderRadius.circular(
-                                              8,
+                                        Expanded(
+                                          flex: 5,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 8.0,
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                // Nama makanan
+                                                Text(
+                                                  item.name,
+                                                  style: const TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: AppColors.textBlack,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                // Deskripsi singkat
+                                                Text(
+                                                  item.description,
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 12,
+                                                    color: AppColors.textGrey,
+                                                  ),
+                                                  textAlign: TextAlign.justify,
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              item.isFavorite
-                                                  ? Stack(
-                                                    alignment: Alignment.center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.favorite,
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            // Indikator sumber
+                                            Container(
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.secondary
+                                                    .withAlpha(25),
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                item.source == 'WHO' ||
+                                                        item.source ==
+                                                            'KEMENKES'
+                                                    ? Symbols.verified
+                                                    : Symbols.person,
+                                                color: AppColors.secondary,
+                                                size: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 32),
+                                            // Indikator favorit
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 3,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.primary,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  item.isFavorite
+                                                      ? Stack(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.favorite,
+                                                            color: Colors.white,
+                                                            size: 12,
+                                                          ),
+                                                          Icon(
+                                                            Icons.favorite,
+                                                            color:
+                                                                AppColors.buff,
+                                                            size: 12,
+                                                          ),
+                                                        ],
+                                                      )
+                                                      : Icon(
+                                                        Icons.favorite_border,
                                                         color: Colors.white,
                                                         size: 12,
                                                       ),
-                                                      Icon(
-                                                        Icons.favorite,
-                                                        color: AppColors.buff,
-                                                        size: 12,
-                                                      ),
-                                                    ],
-                                                  )
-                                                  : Icon(
-                                                    Icons.favorite_border,
-                                                    color: Colors.white,
-                                                    size: 12,
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    item.favoritesCount
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 8,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                '24',
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 8,
-                                                  color: Colors.white,
-                                                ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
+                          ),
+                        );
+                      }),
 
-                  // Indikator loading
-                  if (_isLoadingMore)
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
+                      // Indikator loading
+                      if (_isLoadingMore)
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                ],
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 70),
             ],
           ),
         ),
       ),
+
       // Tombol kembali ke atas
       floatingActionButton:
           _showScrollToTop

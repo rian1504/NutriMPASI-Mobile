@@ -1,7 +1,17 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
+import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
+import 'package:nutrimpasi/blocs/food/food_bloc.dart';
+import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
+import 'package:nutrimpasi/controllers/authentication_controller.dart';
+import 'package:nutrimpasi/controllers/baby_controller.dart';
+import 'package:nutrimpasi/controllers/food_controller.dart';
+import 'package:nutrimpasi/screens/auth/login_screen.dart';
+import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
@@ -20,18 +30,58 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'NutriMPASI',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Poppins',
-        primaryColor: AppColors.primary,
-        colorScheme: ColorScheme.light(
-          primary: AppColors.primary,
-          secondary: AppColors.secondary,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            final bloc = AuthenticationBloc(
+              controller: AuthenticationController(),
+            );
+            bloc.add(CheckAuthStatus());
+            return bloc;
+          },
         ),
+        BlocProvider(
+          create: (context) => BabyBloc(controller: BabyController()),
+        ),
+        BlocProvider(
+          create: (context) => FoodBloc(controller: FoodController()),
+        ),
+        BlocProvider(
+          create: (context) => FoodDetailBloc(controller: FoodController()),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'NutriMPASI',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: 'Poppins',
+          primaryColor: AppColors.primary,
+          colorScheme: ColorScheme.light(
+            primary: AppColors.primary,
+            secondary: AppColors.secondary,
+          ),
+        ),
+        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          builder: (context, state) {
+            if (state is AuthenticationInitial ||
+                state is AuthenticationChecking) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            } else if (state is LoginSuccess) {
+              return const MainPage();
+            } else {
+              return const OnboardingScreen();
+            }
+          },
+        ),
+        routes: {
+          '/login': (context) => LoginScreen(),
+          '/register': (context) => RegisterScreen(),
+          '/home': (context) => MainPage(),
+        },
       ),
-      home: const OnboardingScreen(),
     );
   }
 }

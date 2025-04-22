@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
+import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
-import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
@@ -35,6 +38,11 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _initAnimationController();
     _initBabyController();
+
+    final babyState = context.read<BabyBloc>().state;
+    if (babyState is! BabyLoaded) {
+      context.read<BabyBloc>().add(FetchBabies());
+    }
   }
 
   // Inisialisasi controller animasi untuk gambar bayi
@@ -141,24 +149,82 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-  // Data dummy bayi
-  final babies = Baby.dummyBabies;
+  List<Baby> babies = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.offWhite,
-      appBar: AppBar(backgroundColor: AppColors.bisque, toolbarHeight: 1),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(),
-              _buildFeaturesSection(),
-              _buildRecommendationSection(),
-            ],
+      appBar: AppBar(
+        backgroundColor: AppColors.bisque,
+        toolbarHeight: 1,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              context.read<AuthenticationBloc>().add(LogoutRequested());
+            },
           ),
+        ],
+      ),
+      body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is AuthenticationError) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Tampilkan pesan error
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
+
+              // Navigasi ke login
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+          } else if (state is LogoutSuccess) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Tampilkan pesan logout sukses
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+
+              // Navigasi ke login
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+          }
+        },
+        builder: (context, state) {
+          if (state is AuthenticationLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is LoginSuccess) {
+            return _buildHomeContent();
+          } else if (state is AuthenticationUnauthenticated) {
+            // langsung arahkan ke login
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+            return const SizedBox();
+          } else {
+            // langsung arahkan ke login
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+            return const SizedBox(); // Default return to avoid null
+          }
+        },
+      ),
+    );
+  }
+
+  // Home Content
+  Widget _buildHomeContent() {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            _buildFeaturesSection(),
+            _buildRecommendationSection(),
+          ],
         ),
       ),
     );
@@ -411,7 +477,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      getAgeDisplay(baby),
+                                                      '${baby.ageInMonths} bulan',
                                                       style: const TextStyle(
                                                         fontSize: 12,
                                                         color:
@@ -474,7 +540,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      baby.allergy ??
+                                                      baby.condition ??
                                                           'Tidak ada alergi',
                                                       style: const TextStyle(
                                                         fontSize: 12,
@@ -487,16 +553,16 @@ class _HomeScreenState extends State<HomeScreen>
                                               ] else
                                                 InkWell(
                                                   onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                BabyEditScreen(
-                                                                  baby: baby,
-                                                                ),
-                                                      ),
-                                                    );
+                                                    // Navigator.push(
+                                                    //   context,
+                                                    //   MaterialPageRoute(
+                                                    //     builder:
+                                                    //         (context) =>
+                                                    //             BabyEditScreen(
+                                                    //               baby: baby,
+                                                    //             ),
+                                                    //   ),
+                                                    // );
                                                   },
                                                   child: Text(
                                                     'Lengkapi Data Bayi',
@@ -674,23 +740,6 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
     );
-  }
-
-  // Fungsi untuk menghitung dan menampilkan usia bayi dalam bulan
-  String getAgeDisplay(Baby baby) {
-    if (baby.birthDate == null) return '- bulan';
-
-    final now = DateTime.now();
-    final months =
-        (now.year - baby.birthDate!.year) * 12 +
-        now.month -
-        baby.birthDate!.month;
-
-    if (now.day < baby.birthDate!.day) {
-      return '${months - 1} bulan';
-    }
-
-    return '$months bulan';
   }
 
   // Bagian carousel fitur lainnya
