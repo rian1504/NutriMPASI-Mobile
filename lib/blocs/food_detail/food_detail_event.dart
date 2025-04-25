@@ -8,3 +8,9 @@ class FetchFoodDetail extends FoodDetailEvent {
 
   FetchFoodDetail({required this.foodId});
 }
+
+class ToggleFavorite extends FoodDetailEvent {
+  final String foodId;
+
+  ToggleFavorite({required this.foodId});
+}

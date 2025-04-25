@@ -81,6 +81,42 @@ class Food {
     "is_favorite": isFavorite,
     "food_category": foodCategory?.toJson(),
   };
+
+  Food copyWith({
+    int? id,
+    int? foodCategoryId,
+    int? userId,
+    String? name,
+    String? source,
+    String? image,
+    String? age,
+    double? energy,
+    double? protein,
+    double? fat,
+    int? portion,
+    String? description,
+    int? favoritesCount,
+    bool? isFavorite,
+    FoodCategory? foodCategory,
+  }) {
+    return Food(
+      id: id ?? this.id,
+      foodCategoryId: foodCategoryId ?? this.foodCategoryId,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      source: source ?? this.source,
+      image: image ?? this.image,
+      age: age ?? this.age,
+      energy: energy ?? this.energy,
+      protein: protein ?? this.protein,
+      fat: fat ?? this.fat,
+      portion: portion ?? this.portion,
+      description: description ?? this.description,
+      favoritesCount: favoritesCount ?? this.favoritesCount,
+      isFavorite: isFavorite ?? this.isFavorite,
+      foodCategory: foodCategory ?? this.foodCategory,
+    );
+  }
 }
 
 class FoodCategory {

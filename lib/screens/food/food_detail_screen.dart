@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
@@ -98,7 +99,27 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               top: MediaQuery.of(context).padding.top + 16,
                               left: 16,
                               child: ElevatedButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () {
+                                  context.read<FoodBloc>().add(FetchFoods());
+                                  Navigator.pop(context);
+                                },
+                                // onPressed: () {
+                                //   Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //       builder: (context) => MainPage(),
+                                //     ),
+                                //   );
+                                //   // Fungsi untuk navigasi ke FoodListScreen
+                                //   final MainPageState? mainPage =
+                                //       context
+                                //           .findAncestorStateOfType<
+                                //             MainPageState
+                                //           >();
+                                //   if (mainPage != null) {
+                                //     mainPage.changePage(1);
+                                //   }
+                                // },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
                                   shape: const CircleBorder(),
@@ -179,8 +200,13 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         color: AppColors.primary,
                                         size: 24,
                                       ),
-                                      // onPressed: _toggleFavorite,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        context.read<FoodDetailBloc>().add(
+                                          ToggleFavorite(
+                                            foodId: food.id.toString(),
+                                          ),
+                                        );
+                                      },
                                       padding: EdgeInsets.zero,
                                     ),
                                     Positioned(

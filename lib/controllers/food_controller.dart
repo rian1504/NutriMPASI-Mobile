@@ -93,6 +93,19 @@ class FoodController {
     }
   }
 
+  Future<void> toggleFavorite({required String id}) async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.post('${ApiEndpoints.favorite}/$id');
+
+      // Debug response
+      debugPrint('Favorite response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Favorite error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
   String _handleError(DioException e) {
     if (e.response?.data != null && e.response?.data['message'] != null) {
       return e.response!.data['message'];

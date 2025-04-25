@@ -10,7 +10,12 @@ class BabyBloc extends Bloc<BabyEvent, BabyState> {
   final BabyController controller;
 
   BabyBloc({required this.controller}) : super(BabyInitial()) {
+    on<ResetBaby>(_onReset);
     on<FetchBabies>(_onFetch);
+  }
+
+  Future<void> _onReset(ResetBaby event, Emitter<BabyState> emit) async {
+    emit(BabyInitial());
   }
 
   Future<void> _onFetch(FetchBabies event, Emitter<BabyState> emit) async {
