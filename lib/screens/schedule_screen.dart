@@ -840,16 +840,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       const SizedBox(height: 12),
                                       GestureDetector(
                                         onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) =>
-                                                      CookingGuideScreen(
-                                                        foodId: food.id,
-                                                      ),
-                                            ),
-                                          );
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //     builder:
+                                          //         (context) =>
+                                          //             CookingGuideScreen(
+                                          //               foodId: food.id,
+                                          //             ),
+                                          //   ),
+                                          // );
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.all(10),
