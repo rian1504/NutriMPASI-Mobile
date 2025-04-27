@@ -30,6 +30,12 @@ class LogoutSuccess extends AuthenticationState {
   LogoutSuccess({required this.message});
 }
 
+class ForgotPasswordSuccess extends AuthenticationState {
+  final String message;
+
+  ForgotPasswordSuccess({required this.message});
+}
+
 class AuthenticationError extends AuthenticationState {
   final String error;
 
