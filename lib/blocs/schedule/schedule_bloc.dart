@@ -11,6 +11,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
   ScheduleBloc({required this.controller}) : super(ScheduleInitial()) {
     on<FetchSchedules>(_onFetch);
+    on<StoreSchedules>(_onStore);
   }
 
   Future<void> _onFetch(
@@ -23,6 +24,24 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       emit(ScheduleLoaded(schedules: result));
     } catch (e) {
       emit(ScheduleError('Fetch Schedule gagal: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onStore(
+    StoreSchedules event,
+    Emitter<ScheduleState> emit,
+  ) async {
+    emit(ScheduleLoading());
+    try {
+      await controller.storeSchedule(
+        foodId: event.foodId,
+        babyId: event.babyId,
+        date: event.date,
+      );
+
+      emit(ScheduleStored());
+    } catch (e) {
+      emit(ScheduleError('Store Schedule gagal: ${e.toString()}'));
     }
   }
 }

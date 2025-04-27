@@ -141,7 +141,6 @@ class FoodController {
       // data
       final data = FormData();
       // Tambahkan field satu per satu
-      data.fields.add(MapEntry('food_id', foodId));
       for (var id in babyId) {
         data.fields.add(MapEntry('baby_id[]', id)); // Format array PHP
       }

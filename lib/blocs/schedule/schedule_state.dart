@@ -7,6 +7,8 @@ final class ScheduleInitial extends ScheduleState {}
 
 final class ScheduleLoading extends ScheduleState {}
 
+final class ScheduleStored extends ScheduleState {}
+
 final class ScheduleLoaded extends ScheduleState {
   final List<Schedule> schedules;
 
