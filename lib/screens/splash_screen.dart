@@ -16,30 +16,28 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _primaryController;
   late AnimationController _amberController;
   late AnimationController _lightAmberController;
-  late AnimationController
-  _secondaryPrimaryController; // New controller for the third primary-colored circle
+  late AnimationController _secondaryPrimaryController;
   late Animation<double> _primaryAnimation;
   late Animation<double> _amberAnimation;
   late Animation<double> _lightAmberAnimation;
-  late Animation<double>
-  _secondaryPrimaryAnimation; // New animation for the third primary-colored circle
+  late Animation<double> _secondaryPrimaryAnimation;
   late Animation<double> _logoOpacityAnimation;
 
-  // Add a state variable to track if logo has already appeared
+  // Variabel state untuk melacak apakah logo sudah muncul
   bool _logoRevealed = false;
 
-  // Add these variables to track if widget is disposed
+  // Variabel untuk melacak apakah widget sudah di-dispose
   bool _isDisposed = false;
-  List<Timer> _timers = [];
+  final List<Timer> _timers = [];
 
-  // Add this property to track when to show the fifth circle
+  // Properti untuk melacak kapan menampilkan lingkaran kelima
   bool _showFifthCircle = false;
 
   @override
   void initState() {
     super.initState();
 
-    // Create separate controllers for each circle for independent repeating animations
+    // Membuat controller terpisah untuk setiap lingkaran agar animasi dapat diulang secara independen
     _primaryController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -55,29 +53,29 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 1000),
     );
 
-    // New controller for secondary primary circle
+    // Controller untuk lingkaran primary kedua
     _secondaryPrimaryController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
 
-    // Primary circle animation (orange) - increase end size to 3.0
+    // Animasi lingkaran pertama (warna orange/primary) - ukuran akhir 3.0
     _primaryAnimation = Tween<double>(begin: 0.1, end: 3.0).animate(
       CurvedAnimation(parent: _primaryController, curve: Curves.easeOut),
     );
 
-    // Amber circle animation - increase end size to 3.0
+    // Animasi lingkaran amber - ukuran akhir 3.0
     _amberAnimation = Tween<double>(
       begin: 0.1,
       end: 3.0,
     ).animate(CurvedAnimation(parent: _amberController, curve: Curves.easeOut));
 
-    // Light amber circle animation - increase end size to 3.0
+    // Animasi lingkaran light amber - ukuran akhir 3.0
     _lightAmberAnimation = Tween<double>(begin: 0.1, end: 3.0).animate(
       CurvedAnimation(parent: _lightAmberController, curve: Curves.easeOut),
     );
 
-    // New animation for secondary primary circle - also large end size
+    // Animasi untuk lingkaran primary kedua - juga dengan ukuran akhir besar
     _secondaryPrimaryAnimation = Tween<double>(begin: 0.1, end: 3.0).animate(
       CurvedAnimation(
         parent: _secondaryPrimaryController,
@@ -85,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Logo opacity animation (only for first appearance)
+    // Animasi opacity logo (hanya untuk kemunculan pertama)
     _logoOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _primaryController,
@@ -93,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Add listener to mark when logo is fully revealed
+    // Menambahkan listener untuk menandai ketika logo sudah sepenuhnya ditampilkan
     _primaryController.addStatusListener((status) {
       if (status == AnimationStatus.completed && !_logoRevealed) {
         setState(() {
@@ -102,42 +100,40 @@ class _SplashScreenState extends State<SplashScreen>
       }
     });
 
-    // Start with primary circle visible first, then delay the others
+    // Mulai dengan lingkaran primary terlihat dahulu, lalu tunda yang lainnya
     _primaryController.forward();
 
-    // Sequence the animations with faster timing - one after another
+    // Mengurutkan animasi dengan waktu yang lebih cepat - satu setelah yang lain
     Future.delayed(const Duration(milliseconds: 350), () {
       if (!_isDisposed) {
         _amberController.forward();
       }
     });
 
-    // Light amber starts after amber
+    // Light amber dimulai setelah amber
     Future.delayed(const Duration(milliseconds: 700), () {
       if (!_isDisposed) {
         _lightAmberController.forward();
       }
     });
 
-    // Secondary primary starts after light amber
+    // Secondary primary dimulai setelah light amber
     Future.delayed(const Duration(milliseconds: 1050), () {
       if (!_isDisposed) {
         _secondaryPrimaryController.forward();
       }
     });
 
-    // Add fifth circle animations (amber again)
+    // Menambahkan animasi lingkaran kelima (amber lagi)
     Future.delayed(const Duration(milliseconds: 1400), () {
       if (!_isDisposed) {
-        // Instead of reusing amber controller, let's just track the time for the fifth circle
         setState(() {
-          // This will make our fifth circle appear in the build method
           _showFifthCircle = true;
         });
       }
     });
 
-    // Navigate to next screen after delay
+    // Navigasi ke layar berikutnya setelah penundaan
     Timer(const Duration(milliseconds: 2500), () {
       if (widget.nextScreen != null) {
         Navigator.pushReplacement(
@@ -167,20 +163,20 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    // Mark as disposed first
+    // Tandai sebagai disposed terlebih dahulu
     _isDisposed = true;
 
-    // Cancel all pending timers
+    // Batalkan semua timer yang tertunda
     for (final timer in _timers) {
       timer.cancel();
     }
     _timers.clear();
 
-    // Then dispose controllers
+    // Kemudian dispose semua controller
     _primaryController.dispose();
     _amberController.dispose();
     _lightAmberController.dispose();
-    _secondaryPrimaryController.dispose(); // Dispose the new controller
+    _secondaryPrimaryController.dispose();
     super.dispose();
   }
 
@@ -195,7 +191,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // First circle (primary/orange)
+            // Lingkaran pertama (primary/orange)
             AnimatedBuilder(
               animation: _primaryController,
               builder: (context, child) {
@@ -213,7 +209,7 @@ class _SplashScreenState extends State<SplashScreen>
               },
             ),
 
-            // Second circle (amber)
+            // Lingkaran kedua (amber)
             AnimatedBuilder(
               animation: _amberController,
               builder: (context, child) {
@@ -231,11 +227,10 @@ class _SplashScreenState extends State<SplashScreen>
               },
             ),
 
-            // Third circle (light amber)
+            // Lingkaran ketiga (light amber)
             AnimatedBuilder(
               animation: _lightAmberController,
               builder: (context, child) {
-                // Make sure this is always visible and properly scaled
                 return Transform.scale(
                   scale: _lightAmberAnimation.value,
                   child: Container(
@@ -250,7 +245,7 @@ class _SplashScreenState extends State<SplashScreen>
               },
             ),
 
-            // Fourth circle (primary/orange again)
+            // Lingkaran keempat (primary/orange lagi)
             AnimatedBuilder(
               animation: _secondaryPrimaryController,
               builder: (context, child) {
@@ -268,7 +263,7 @@ class _SplashScreenState extends State<SplashScreen>
               },
             ),
 
-            // Fifth circle (amber again) - using TweenAnimationBuilder instead of reusing controller
+            // Lingkaran kelima (amber lagi) - menggunakan TweenAnimationBuilder
             if (_showFifthCircle)
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.1, end: 3.0),
@@ -288,7 +283,7 @@ class _SplashScreenState extends State<SplashScreen>
                 },
               ),
 
-            // White circle behind the logo (static)
+            // Lingkaran putih di belakang logo (statis)
             Container(
               width: 220,
               height: 220,
@@ -298,7 +293,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
 
-            // Logo with fade-in effect for first cycle only
+            // Logo dengan efek fade-in hanya untuk siklus pertama
             _logoRevealed
                 ? Image.asset(
                   'assets/images/component/logo_text.png',
