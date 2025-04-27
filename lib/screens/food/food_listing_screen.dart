@@ -458,156 +458,218 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
 
               const SizedBox(height: 16),
 
-              // Banner tambah usulan
-              Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.componentGrey!),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(10),
-                      spreadRadius: 1,
-                      blurRadius: 3,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    // Gambar latar belakang
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        'assets/images/banner/tambah_usulan_makanan.png',
-                        width: double.infinity,
-                        height: 180,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: double.infinity,
-                            height: 180,
-                            decoration: BoxDecoration(
-                              color: AppColors.componentGrey,
-                              borderRadius: BorderRadius.circular(12),
+              // Banner berdasarkan toggle dengan animasi fade
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                child:
+                    !_showUserSuggestionsOnly
+                        // Banner daftar makanan untuk "Semua"
+                        ? Container(
+                          key: const ValueKey('daftar_makanan'),
+                          height: 180,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.componentGrey!),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(10),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              'assets/images/banner/daftar_makanan.png',
+                              width: double.infinity,
+                              height: 180,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: double.infinity,
+                                  height: 180,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.componentGrey,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.image,
+                                    color: AppColors.textGrey,
+                                    size: 40,
+                                  ),
+                                );
+                              },
                             ),
-                            child: const Icon(
-                              Icons.image,
-                              color: AppColors.textGrey,
-                              size: 40,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    // Panel konten
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        margin: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withAlpha(225),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(12),
+                          ),
+                        )
+                        // Banner tambah usulan untuk "Usulan Saya"
+                        : Container(
+                          key: const ValueKey('tambah_usulan'),
+                          height: 180,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.componentGrey!),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(10),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              // Gambar latar belakang
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.asset(
+                                  'assets/images/banner/tambah_usulan_makanan.png',
+                                  width: double.infinity,
+                                  height: 180,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 180,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.componentGrey,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.image,
+                                        color: AppColors.textGrey,
+                                        size: 40,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              // Panel konten
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  margin: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha(225),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(12),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // Informasi usulan
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text(
+                                              'Tambah Usulan',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                                color: AppColors.textBlack,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'Tambahkan usulan resep dari kreasi kamu!',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                color: AppColors.textGrey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // Tombol tambah
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.primary,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: IconButton(
+                                          padding: EdgeInsets.zero,
+                                          icon: const Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 36,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) =>
+                                                        const FoodAddSuggestionScreen(),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            // Informasi usulan
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Text(
-                                    'Tambah Usulan',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.textBlack,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Tambahkan usulan resep dari kreasi kamu!',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 12,
-                                      color: AppColors.textGrey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // Tombol tambah
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                padding: EdgeInsets.zero,
-                                icon: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 36,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              const FoodAddSuggestionScreen(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ),
 
               const SizedBox(height: 16),
 
-              // Toggle pilihan tampilan
+              // Toggle pilihan tampilan dengan animasi slide
               Container(
+                height: 40,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 padding: const EdgeInsets.all(4),
-                child: Row(
+                child: Stack(
                   children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _showUserSuggestionsOnly = false;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color:
-                                !_showUserSuggestionsOnly
-                                    ? Colors.white
-                                    : Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'Semua',
-                            textAlign: TextAlign.center,
+                    // Animasi background slider
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      left:
+                          _showUserSuggestionsOnly
+                              ? MediaQuery.of(context).size.width / 2 - 24
+                              : 4,
+                      right:
+                          _showUserSuggestionsOnly
+                              ? 4
+                              : MediaQuery.of(context).size.width / 2 - 24,
+                      top: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+
+                    // Row untuk text
+                    Row(
+                      children: [
+                        // Text "Semua"
+                        Expanded(
+                          child: AnimatedDefaultTextStyle(
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 14,
@@ -617,29 +679,18 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                       ? AppColors.textBlack
                                       : Colors.white,
                             ),
+                            duration: const Duration(milliseconds: 300),
+                            child: const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: Text('Semua'),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _showUserSuggestionsOnly = true;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color:
-                                _showUserSuggestionsOnly
-                                    ? Colors.white
-                                    : Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'Usulan Saya',
-                            textAlign: TextAlign.center,
+                        // Text "Usulan Saya"
+                        Expanded(
+                          child: AnimatedDefaultTextStyle(
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 14,
@@ -649,9 +700,52 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                       ? AppColors.textBlack
                                       : Colors.white,
                             ),
+                            duration: const Duration(milliseconds: 300),
+                            child: const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: Text('Usulan Saya'),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
+                    ),
+
+                    // Area klik
+                    Row(
+                      children: [
+                        // Area klik "Semua"
+                        Expanded(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(10),
+                              onTap: () {
+                                setState(() {
+                                  _showUserSuggestionsOnly = false;
+                                });
+                              },
+                              child: const SizedBox(height: double.infinity),
+                            ),
+                          ),
+                        ),
+                        // Area klik "Usulan Saya"
+                        Expanded(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(10),
+                              onTap: () {
+                                setState(() {
+                                  _showUserSuggestionsOnly = true;
+                                });
+                              },
+                              child: const SizedBox(height: double.infinity),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
