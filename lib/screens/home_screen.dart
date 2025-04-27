@@ -11,6 +11,7 @@ import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
+import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
     _initAnimationController();
     _initBabyController();
 
+    // Load data
     final babyState = context.read<BabyBloc>().state;
     if (babyState is! BabyLoaded) {
       context.read<BabyBloc>().add(FetchBabies());
@@ -154,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       appBar: AppBar(backgroundColor: AppColors.bisque, toolbarHeight: 1),
       body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
@@ -266,9 +268,10 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   // Tombol notifikasi
                   IconButton(
-                    icon: Icon(
-                      Symbols.notifications,
+                    icon: Image.asset(
+                      'assets/images/icon/daftar_notifikasi.png',
                       color: AppColors.textBlack,
+                      scale: 5,
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -423,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                           .isProfileComplete
                                                       ? Image.asset(
                                                         babies[index].gender ==
-                                                                'Laki-Laki'
+                                                                'L'
                                                             ? 'assets/images/component/bayi_laki_laki.png'
                                                             : 'assets/images/component/bayi_perempuan.png',
                                                         fit: BoxFit.contain,
@@ -490,16 +493,16 @@ class _HomeScreenState extends State<HomeScreen>
                                                           AppColors.textBlack,
                                                     ),
                                                   ),
-                                                  const SizedBox(height: 8),
+                                                  const SizedBox(height: 16),
                                                   if (baby
                                                       .isProfileComplete) ...[
                                                     // Informasi usia (Age)
                                                     Row(
                                                       children: [
-                                                        Icon(
-                                                          Symbols
-                                                              .clock_arrow_up,
-                                                          size: 16,
+                                                        Image.asset(
+                                                          'assets/images/icon/umur.png',
+                                                          width: 12,
+                                                          height: 12,
                                                           color:
                                                               AppColors
                                                                   .textGrey,
@@ -523,10 +526,10 @@ class _HomeScreenState extends State<HomeScreen>
                                                     // Informasi tinggi (Height)
                                                     Row(
                                                       children: [
-                                                        Icon(
-                                                          Symbols
-                                                              .height_rounded,
-                                                          size: 16,
+                                                        Image.asset(
+                                                          'assets/images/icon/tinggi.png',
+                                                          width: 12,
+                                                          height: 12,
                                                           color:
                                                               AppColors
                                                                   .textGrey,
@@ -550,9 +553,10 @@ class _HomeScreenState extends State<HomeScreen>
                                                     // Informasi berat (Weight)
                                                     Row(
                                                       children: [
-                                                        Icon(
-                                                          Symbols.scale_rounded,
-                                                          size: 16,
+                                                        Image.asset(
+                                                          'assets/images/icon/berat.png',
+                                                          width: 12,
+                                                          height: 12,
                                                           color:
                                                               AppColors
                                                                   .textGrey,
@@ -576,9 +580,10 @@ class _HomeScreenState extends State<HomeScreen>
                                                     // Informasi alergi (Allergy)
                                                     Row(
                                                       children: [
-                                                        Icon(
-                                                          Symbols.no_meals,
-                                                          size: 16,
+                                                        Image.asset(
+                                                          'assets/images/icon/alergi.png',
+                                                          width: 12,
+                                                          height: 12,
                                                           color:
                                                               AppColors
                                                                   .textGrey,
@@ -646,7 +651,7 @@ class _HomeScreenState extends State<HomeScreen>
                 // Tombol tambah bayi
                 Positioned(
                   right: -24,
-                  top: 40,
+                  top: 45,
                   child: InkWell(
                     onTap: () {
                       Navigator.push(
@@ -677,9 +682,10 @@ class _HomeScreenState extends State<HomeScreen>
                         ],
                       ),
                       child: const Icon(
-                        Symbols.add,
+                        Symbols.add_2_rounded,
                         color: Colors.white,
                         size: 32,
+                        weight: 900,
                       ),
                     ),
                   ),
@@ -695,7 +701,7 @@ class _HomeScreenState extends State<HomeScreen>
   // Bagian rekomendasi makanan
   Widget _buildRecommendationSection() {
     return Container(
-      margin: const EdgeInsets.only(top: 24, bottom: 24),
+      margin: const EdgeInsets.only(top: 12, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -716,7 +722,8 @@ class _HomeScreenState extends State<HomeScreen>
                 Icon(
                   Symbols.arrow_forward_ios,
                   size: 16,
-                  color: AppColors.secondary,
+                  color: AppColors.textBlack,
+                  weight: 900,
                 ),
               ],
             ),
@@ -850,12 +857,12 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Judul bagian
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Fitur Lainnya',
                   style: TextStyle(
                     fontSize: 18,
@@ -863,10 +870,25 @@ class _HomeScreenState extends State<HomeScreen>
                     color: AppColors.textBlack,
                   ),
                 ),
-                Icon(
-                  Symbols.arrow_forward_ios,
-                  size: 16,
-                  color: AppColors.secondary,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FeatureListScreen(),
+                      ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Icon(
+                      Symbols.arrow_forward_ios,
+                      size: 16,
+                      color: AppColors.textBlack,
+                      weight: 900,
+                    ),
+                  ),
                 ),
               ],
             ),
