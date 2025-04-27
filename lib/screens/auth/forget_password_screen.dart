@@ -28,7 +28,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       body: SingleChildScrollView(
         child: SizedBox(
           height: size.height,

@@ -95,9 +95,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       appBar: AppBar(
-        backgroundColor: AppColors.offWhite,
+        backgroundColor: AppColors.pearl,
         leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
         title: const Text(
           'Jadwal Memasak',
@@ -320,13 +320,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             children: [
                               // Tombol edit
                               Container(
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: AppColors.red,
                                 ),
                                 child: Container(
                                   width: 80,
                                   decoration: BoxDecoration(
-                                    color: AppColors.secondary,
+                                    color: AppColors.brightYellow,
                                     borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       bottomRight: Radius.circular(10),
@@ -645,7 +645,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               // Tombol hapus
                               Container(
                                 width: 60,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: AppColors.red,
                                   borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(10),
@@ -854,12 +854,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                         child: Container(
                                           padding: const EdgeInsets.all(10),
                                           decoration: BoxDecoration(
-                                            color: AppColors.buff,
+                                            color: AppColors.secondary,
                                             shape: BoxShape.circle,
                                           ),
                                           child: const Icon(
                                             Symbols.chef_hat,
-                                            color: AppColors.textBlack,
+                                            color: Colors.white,
                                             size: 20,
                                           ),
                                         ),

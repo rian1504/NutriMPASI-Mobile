@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
@@ -362,12 +361,13 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       appBar: AppBar(
-        backgroundColor: AppColors.offWhite,
+        backgroundColor: AppColors.pearl,
         elevation: 0,
         leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
         actions: [
+          // Tombol favorit
           ElevatedButton(
             onPressed: () {
               // TODO: Navigasi ke halaman favorit
@@ -378,10 +378,11 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
               backgroundColor: Colors.white,
               elevation: 2,
             ),
-            child: const Icon(
-              Symbols.bookmark_heart,
+            child: Image.asset(
+              'assets/images/icon/daftar_favorit.png',
+              width: 24,
+              height: 24,
               color: AppColors.primary,
-              size: 24,
             ),
           ),
         ],
@@ -555,7 +556,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                 icon: const Icon(
                                   Icons.add,
                                   color: Colors.white,
-                                  size: 20,
+                                  size: 36,
                                 ),
                                 onPressed: () {
                                   Navigator.push(
@@ -600,7 +601,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                           decoration: BoxDecoration(
                             color:
                                 !_showUserSuggestionsOnly
-                                    ? AppColors.buff
+                                    ? Colors.white
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -632,7 +633,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                           decoration: BoxDecoration(
                             color:
                                 _showUserSuggestionsOnly
-                                    ? AppColors.buff
+                                    ? Colors.white
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -776,14 +777,14 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                                                     .withAlpha(25),
                                                 shape: BoxShape.circle,
                                               ),
-                                              child: Icon(
-                                                item.source == 'WHO' ||
-                                                        item.source ==
-                                                            'KEMENKES'
-                                                    ? Symbols.verified
-                                                    : Symbols.person,
-                                                color: AppColors.secondary,
-                                                size: 16,
+                                              child: Image.asset(
+                                                item.source == 'WHO'
+                                                    ? 'assets/images/icon/source_who.png'
+                                                    : item.source == 'KEMENKES'
+                                                    ? 'assets/images/icon/source_kemenkes.png'
+                                                    : 'assets/images/icon/source_pengguna.png',
+                                                width: 16,
+                                                height: 16,
                                               ),
                                             ),
                                             const SizedBox(height: 32),
@@ -864,7 +865,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 70),
+              const SizedBox(height: 76),
             ],
           ),
         ),

@@ -22,21 +22,30 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              padding: EdgeInsets.zero,
-              onPressed: () => Navigator.pop(context),
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black54,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new,
+                  color: AppColors.textBlack,
+                  size: 24,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.pop(context),
+              ),
             ),
           ),
         ),

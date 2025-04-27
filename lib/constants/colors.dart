@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary color
-  static const Color primary = Color(0xFFEDA033);
+  static const Color primary = Color(0xFFFC8207);
 
   // Secondary color
   static const Color secondary = Color(0xFF5966B1);
 
   // Color pallete
-  static const Color buff = Color(0xFFF3D58D);
-  static const Color white = Color(0xFFFFFFFD);
-  static const Color porcelain = Color(0xFFFDEFC0);
-  static const Color offWhite = Color(0xFFFBF5E6);
-  static const Color cream = Color(0xFFEBDDC5);
+  static const Color pearl = Color(0xFFF9F9F9);
   static const Color lavenderBlue = Color(0xFFBABAEE);
+  static const Color cream = Color(0xFFEBDDC5);
+  static const Color porcelain = Color(0xFFFDEFC0);
   static const Color bisque = Color(0xFFFFE1BE);
-  static const Color red = Color(0xFFD54F27);
+  static const Color buff = Color(0xFFF3D58D);
+  static Color brightYellow = Color(0xFFFFCD29).withAlpha(180);
+  static const Color lightAmber = Color(0xFFFFC16B);
+  static const Color amber = Color(0xFFFEAC3B);
+  static Color red = Color(0xFFFE2323).withAlpha(180);
 
   // Text color
   static const Color textBlack = Color(0xFF323232);

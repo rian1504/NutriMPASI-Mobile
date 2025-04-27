@@ -165,7 +165,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                   height: 20,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [AppColors.offWhite, AppColors.white],
+                      colors: [AppColors.pearl, Colors.white],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
@@ -186,7 +186,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.offWhite,
+                      color: Colors.white,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.zero,
                         topRight: Radius.circular(30),
@@ -457,7 +457,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                         // Tombol hapus
                                         if (_ingredientControllers.length > 1)
                                           IconButton(
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.remove_circle_outline,
                                               color: AppColors.red,
                                             ),
@@ -562,7 +562,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                         // Tombol hapus
                                         if (_stepControllers.length > 1)
                                           IconButton(
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.remove_circle_outline,
                                               color: AppColors.red,
                                             ),
@@ -616,7 +616,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                   width: 80,
                   height: 80,
                   decoration: const BoxDecoration(
-                    color: AppColors.offWhite,
+                    color: Colors.white,
                     shape: BoxShape.circle,
                   ),
                   child: Center(

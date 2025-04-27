@@ -45,39 +45,32 @@ class _BabyListScreenState extends State<BabyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.pearl,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFE1BE),
-        leading: IconButton(
-          icon: const Icon(Symbols.arrow_back_ios_new),
-          onPressed: () => Navigator.pop(context),
-          style: IconButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(8),
-          ),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
-            const SizedBox(width: 4),
-            const Text(
-              'NutriMPASI',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textBlack,
+        backgroundColor: AppColors.primary,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black54,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new,
+                  color: AppColors.textBlack,
+                  size: 24,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.pop(context),
               ),
             ),
-            const SizedBox(width: 24),
-          ],
+          ),
         ),
-        centerTitle: true,
-        actions: [const SizedBox(width: 48)],
-        elevation: 0,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,12 +90,11 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            stops: [0.05, 0.41, 0.72, 1.0],
+                            stops: [0.2, 0.7, 0.9],
                             colors: [
-                              Color(0xFFFFE1BE),
-                              Color(0xFFFFC698),
-                              Color(0xFFFFAC84),
-                              Color(0xFFFF7F53),
+                              AppColors.primary,
+                              AppColors.bisque,
+                              AppColors.pearl,
                             ],
                           ),
                           borderRadius: BorderRadius.only(
@@ -120,7 +112,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                 // Konten utama (overlay di atas background)
                 Column(
                   children: [
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 24),
                     // Judul halaman
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 32.0),
@@ -132,24 +124,21 @@ class _BabyListScreenState extends State<BabyListScreen> {
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textBlack,
+                              color: Colors.white,
                             ),
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 8),
                           Text(
                             'Tambahkan atau edit data bayi untuk mendapatkan rekomendasi makanan yang lebih sesuai.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textGrey,
-                            ),
+                            style: TextStyle(fontSize: 12, color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 48),
                     // PageView untuk carousel bayi
                     Expanded(
                       child: Column(
@@ -268,24 +257,40 @@ class _BabyListScreenState extends State<BabyListScreen> {
                       color: AppColors.textBlack,
                     ),
                   ),
-                  // Tombol edit
-                  IconButton(
-                    icon: const Icon(Symbols.edit_rounded),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BabyEditScreen(baby: baby),
+                  Row(
+                    children: [
+                      // Tombol edit
+                      IconButton(
+                        icon: const Icon(Symbols.edit_rounded),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BabyEditScreen(baby: baby),
+                            ),
+                          ).then((_) {
+                            setState(() {});
+                          });
+                        },
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppColors.brightYellow,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.all(8),
                         ),
-                      ).then((_) {
-                        setState(() {});
-                      });
-                    },
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppColors.secondary.withAlpha(25),
-                      foregroundColor: AppColors.secondary,
-                      padding: const EdgeInsets.all(8),
-                    ),
+                      ),
+                      // Tombol hapus
+                      IconButton(
+                        icon: const Icon(Symbols.delete),
+                        onPressed: () {
+                          _showDeleteConfirmation(baby);
+                        },
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppColors.red,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.all(8),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -316,9 +321,8 @@ class _BabyListScreenState extends State<BabyListScreen> {
                                   height: 150,
                                 )
                                 : Image.asset(
-                                  'assets/images/logo/nutrimpasi.png',
-                                  height: 50,
-                                  color: AppColors.primary,
+                                  'assets/images/component/bayi_laki_laki_awal.png',
+                                  height: 150,
                                 ),
                       ),
                     ),
@@ -363,26 +367,6 @@ class _BabyListScreenState extends State<BabyListScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  // Tombol hapus profil
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // TODO: Implementasi hapus profil bayi
-                        _showDeleteConfirmation(baby);
-                      },
-                      icon: const Icon(Symbols.delete_outline, size: 16),
-                      label: const Text(
-                        'Hapus Profil',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.red,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
                   // Tombol lihat riwayat
                   Expanded(
                     child: ElevatedButton.icon(

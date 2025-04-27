@@ -44,29 +44,44 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black54,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new,
+                  color: AppColors.textBlack,
+                  size: 24,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Tombol kembali (back button)
-            IconButton(
-              icon: const Icon(Symbols.arrow_back),
-              onPressed: () => Navigator.pop(context),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(8),
-              ),
-            ),
             // Bagian header dengan teks informasi
             Container(
-              color: AppColors.bisque,
+              color: AppColors.primary,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: Colors.white,
                   borderRadius: const BorderRadius.only(
                     bottomRight: Radius.circular(60),
                   ),
@@ -105,19 +120,18 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
             // Bagian utama dengan latar belakang gradient
             Expanded(
               child: Container(
-                color: AppColors.white,
+                color: Colors.white,
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      stops: [0.05, 0.41, 0.72, 1.0],
+                      stops: [0.1, 0.7, 0.9],
                       colors: [
-                        Color(0xFFFFE1BE),
-                        Color(0xFFFFC698),
-                        Color(0xFFFFAC84),
-                        Color(0xFFFF7F53),
+                        AppColors.primary,
+                        AppColors.bisque,
+                        AppColors.pearl,
                       ],
                     ),
                     borderRadius: const BorderRadius.only(
@@ -134,7 +148,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           height: 360,
                           decoration: BoxDecoration(
-                            color: AppColors.offWhite,
+                            color: Colors.white,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.elliptical(90, 57),
                               bottomLeft: Radius.circular(15),

@@ -52,9 +52,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       appBar: AppBar(
-        backgroundColor: AppColors.offWhite,
+        backgroundColor: AppColors.pearl,
         foregroundColor: AppColors.textBlack,
         leading: IconButton(
           icon: const Icon(Symbols.arrow_back),
@@ -84,7 +84,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 child: Text(
                   '${_notifications.length}',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -193,7 +193,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             decoration: BoxDecoration(
                               color:
                                   notification.isRead
-                                      ? AppColors.offWhite
+                                      ? AppColors.pearl
                                       : AppColors.bisque,
                               border: Border(
                                 bottom: BorderSide(color: Colors.grey.shade200),
