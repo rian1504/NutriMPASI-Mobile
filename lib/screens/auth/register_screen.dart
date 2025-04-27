@@ -66,7 +66,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             // Tunggu sebentar lalu navigasi ke login
             Future.delayed(const Duration(milliseconds: 500), () {
-              Navigator.pushReplacementNamed(context, '/login');
+              if (context.mounted) {
+                Navigator.pushReplacementNamed(context, '/login');
+              }
             });
           } else if (state is AuthenticationError) {
             ScaffoldMessenger.of(
