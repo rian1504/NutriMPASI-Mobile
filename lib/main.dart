@@ -15,6 +15,7 @@ import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
+import 'package:nutrimpasi/screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
 
@@ -66,13 +67,11 @@ class MainApp extends StatelessWidget {
           builder: (context, state) {
             if (state is AuthenticationInitial ||
                 state is AuthenticationChecking) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
+              return const SplashScreen();
             } else if (state is LoginSuccess) {
-              return const MainPage();
+              return const SplashScreen(nextScreen: MainPage());
             } else {
-              return const OnboardingScreen();
+              return const SplashScreen(nextScreen: OnboardingScreen());
             }
           },
         ),
@@ -114,10 +113,10 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       body: _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.offWhite,
+        backgroundColor: AppColors.pearl,
         color: AppColors.primary,
         height: MediaQuery.of(context).size.height * 0.070,
         animationDuration: const Duration(milliseconds: 300),
