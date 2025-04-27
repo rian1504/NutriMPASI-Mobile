@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -27,7 +28,14 @@ class _HomeScreenState extends State<HomeScreen>
 
   // Controller PageView untuk bayi (vertikal)
   final PageController _babyController = PageController();
+  // Controller untuk carousel rekomendasi makanan
+  final PageController _foodRecommendationController = PageController();
   int _currentBabyIndex = 0;
+  int _currentRecommendationIndex = 0;
+  Timer? _autoScrollTimer;
+
+  // Status loading data bayi
+  bool _isBabyDataLoading = true;
 
   // Controller untuk animasi gambar bayi
   late AnimationController _imageAnimationController;
@@ -39,12 +47,36 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _initAnimationController();
     _initBabyController();
+    _startAutoScroll();
 
     // Load data
     final babyState = context.read<BabyBloc>().state;
     if (babyState is! BabyLoaded) {
       context.read<BabyBloc>().add(FetchBabies());
+    } else {
+      // Jika data sudah ter-load, perbarui status loading
+      setState(() {
+        _isBabyDataLoading = false;
+      });
     }
+  }
+
+  // Mulai auto scroll untuk rekomendasi
+  void _startAutoScroll() {
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (mounted && _recommendedFoods.isNotEmpty) {
+        final nextIndex =
+            (_currentRecommendationIndex + 1) % _recommendedFoods.length;
+        _foodRecommendationController.animateToPage(
+          nextIndex,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        setState(() {
+          _currentRecommendationIndex = nextIndex;
+        });
+      }
+    });
   }
 
   // Inisialisasi controller animasi untuk gambar bayi
@@ -147,6 +179,8 @@ class _HomeScreenState extends State<HomeScreen>
 
     _imageAnimationController.dispose();
     _babyController.dispose();
+    _foodRecommendationController.dispose();
+    _autoScrollTimer?.cancel();
 
     super.dispose();
   }
@@ -182,12 +216,31 @@ class _HomeScreenState extends State<HomeScreen>
             });
           }
         },
-        builder: (context, state) {
-          if (state is AuthenticationLoading) {
+        builder: (context, authState) {
+          if (authState is AuthenticationLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is LoginSuccess) {
-            return _buildHomeContent();
-          } else if (state is AuthenticationUnauthenticated) {
+          } else if (authState is LoginSuccess) {
+            // Bungkus konten utama dengan BlocConsumer untuk BabyBloc
+            return BlocConsumer<BabyBloc, BabyState>(
+              listener: (context, babyState) {
+                if (babyState is BabyLoaded) {
+                  if (_isBabyDataLoading) {
+                    setState(() {
+                      babies = babyState.babies;
+                      _isBabyDataLoading = false;
+                    });
+                  }
+                }
+              },
+              builder: (context, babyState) {
+                if (babyState is BabyLoaded && babies.isEmpty) {
+                  babies = babyState.babies;
+                  _isBabyDataLoading = false;
+                }
+                return _buildHomeContent();
+              },
+            );
+          } else if (authState is AuthenticationUnauthenticated) {
             // langsung arahkan ke login
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacementNamed(context, '/login');
@@ -706,12 +759,12 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Judul bagian
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Rekomendasi',
                   style: TextStyle(
                     fontSize: 18,
@@ -719,80 +772,245 @@ class _HomeScreenState extends State<HomeScreen>
                     color: AppColors.textBlack,
                   ),
                 ),
-                Icon(
-                  Symbols.arrow_forward_ios,
-                  size: 16,
-                  color: AppColors.textBlack,
-                  weight: 900,
+                InkWell(
+                  onTap: () {
+                    // TODO: Navigasi ke halaman rekomendasi
+                  },
+                  child: const Icon(
+                    Symbols.arrow_forward_ios_rounded,
+                    size: 16,
+                    color: AppColors.textBlack,
+                    weight: 900,
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          // Kartu rekomendasi terkunci
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    // Gambar makanan terkunci
-                    Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: Image.network(
-                              _recommendedFoods[0].image,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withAlpha(125),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Center(
-                            child: Icon(
-                              Symbols.lock,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ],
+
+          // Tampilkan konten berdasarkan status saat ini
+          _isBabyDataLoading
+              ? _buildLoadingRecommendation()
+              : _buildRecommendationContent(),
+        ],
+      ),
+    );
+  }
+
+  // Indikator loading untuk rekomendasi
+  Widget _buildLoadingRecommendation() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: SizedBox(
+          height: 132,
+          child: Center(
+            child: CircularProgressIndicator(color: AppColors.secondary),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Konten untuk rekomendasi (terkunci atau carousel)
+  Widget _buildRecommendationContent() {
+    // Periksa apakah ada bayi yang profilnya lengkap
+    bool hasCompleteBabyProfile = babies.any((baby) => baby.isProfileComplete);
+
+    if (!hasCompleteBabyProfile) {
+      return _buildLockedRecommendation();
+    } else {
+      return _buildRecommendationCarousel();
+    }
+  }
+
+  // Kartu rekomendasi terkunci
+  Widget _buildLockedRecommendation() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              // Gambar makanan terkunci
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Image.network(
+                        _recommendedFoods[0].image,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    // Teks informasi
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Buka fitur ini dengan melengkapi\nprofil bayi kamu!',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
+                  ),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(125),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: Center(
+                      child: Icon(Symbols.lock, color: Colors.white, size: 24),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 16),
+              // Teks informasi
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Buka fitur ini dengan melengkapi\nprofil bayi kamu!',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Carousel untuk rekomendasi
+  Widget _buildRecommendationCarousel() {
+    return SizedBox(
+      height: 180,
+      child: PageView.builder(
+        controller: _foodRecommendationController,
+        itemCount: _recommendedFoods.length * 1000, // Quasi-infinite scrolling
+        onPageChanged: (index) {
+          setState(() {
+            _currentRecommendationIndex = index % _recommendedFoods.length;
+          });
+        },
+        itemBuilder: (context, index) {
+          final food = _recommendedFoods[index % _recommendedFoods.length];
+          return _buildFoodRecommendationCard(food);
+        },
+      ),
+    );
+  }
+
+  // Card untuk rekomendasi makanan
+  Widget _buildFoodRecommendationCard(Food food) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Stack(
+        children: [
+          // Background image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              food.image,
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Gradient overlay for text at the bottom
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 70,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(16),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black.withAlpha(175)],
+                ),
+              ),
+            ),
+          ),
+
+          // Food information
+          Positioned(
+            left: 12,
+            right: 12,
+            bottom: 12,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Food name
+                Expanded(
+                  child: Text(
+                    food.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+
+                // Source badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withAlpha(200),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    food.source,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Page indicator dots
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Row(
+              children: List.generate(_recommendedFoods.length, (i) {
+                return Container(
+                  width: 8,
+                  height: 8,
+                  margin: const EdgeInsets.only(left: 4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color:
+                        i == _currentRecommendationIndex
+                            ? AppColors.secondary
+                            : Colors.white.withAlpha(125),
+                  ),
+                );
+              }),
             ),
           ),
         ],
@@ -883,7 +1101,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: const Padding(
                     padding: EdgeInsets.all(4.0),
                     child: Icon(
-                      Symbols.arrow_forward_ios,
+                      Symbols.arrow_forward_ios_rounded,
                       size: 16,
                       color: AppColors.textBlack,
                       weight: 900,
