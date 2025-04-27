@@ -48,18 +48,21 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
     return state is FoodLoaded ? state.foods : [];
   }
 
+  bool _initialLoadCompleted = false;
+
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
-
     _scrollController.addListener(_scrollListener);
 
     // if (foodState is! FoodLoaded) {
     //   context.read<FoodBloc>().add(FetchFoods());
     // }
 
-    context.read<FoodBloc>().add(FetchFoods());
+    if (!_initialLoadCompleted) {
+      context.read<FoodBloc>().add(FetchFoods());
+      _initialLoadCompleted = true;
+    }
   }
 
   // Deteksi posisi scroll

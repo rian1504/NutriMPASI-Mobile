@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/main.dart';
 
 class CookingGuideScreen extends StatefulWidget {
   final String foodId;
@@ -99,9 +99,15 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Memasak berhasil diselesaikan')),
           );
-          context.read<FoodBloc>().add(FetchFoods());
-          Navigator.pop(context);
-          Navigator.pop(context);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) =>
+                      MainPage(initialPage: 1), // 1 untuk FoodListingScreen
+            ),
+          );
         }
       },
       builder: (context, state) {

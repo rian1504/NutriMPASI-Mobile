@@ -8,9 +8,11 @@ import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
+import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/food_controller.dart';
+import 'package:nutrimpasi/controllers/schedule_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
@@ -54,6 +56,9 @@ class MainApp extends StatelessWidget {
         BlocProvider(
           create: (context) => FoodCookingBloc(controller: FoodController()),
         ),
+        BlocProvider(
+          create: (context) => ScheduleBloc(controller: ScheduleController()),
+        ),
       ],
       child: MaterialApp(
         title: 'NutriMPASI',
@@ -91,7 +96,9 @@ class MainApp extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final int initialPage;
+
+  const MainPage({super.key, this.initialPage = 0});
 
   @override
   State<MainPage> createState() => MainPageState();
@@ -99,6 +106,12 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   int _page = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _page = widget.initialPage;
+  }
 
   final List<Widget> _screens = [
     const HomeScreen(),

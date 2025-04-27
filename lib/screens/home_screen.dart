@@ -424,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                           .isProfileComplete
                                                       ? Image.asset(
                                                         babies[index].gender ==
-                                                                'Laki-Laki'
+                                                                'L'
                                                             ? 'assets/images/component/bayi_laki_laki.png'
                                                             : 'assets/images/component/bayi_perempuan.png',
                                                         fit: BoxFit.contain,
