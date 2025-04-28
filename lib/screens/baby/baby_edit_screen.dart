@@ -98,11 +98,10 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       // AppBar dengan styling khusus
       appBar: AppBar(
-        backgroundColor: Color(0xFFFFE1BE),
-        elevation: 0,
+        backgroundColor: AppColors.primary,
         // Tombol kembali dengan styling custom
         leading: IconButton(
           icon: const Icon(Symbols.arrow_back_ios_new),
@@ -133,18 +132,21 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
             left: 0,
             right: 0,
             child: Container(
-              height: 100,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFFFE1BE),
-                    Color(0xFFFFC698),
-                    Color(0xFFFFAC84),
-                    Color(0xFFFF7F53),
-                  ],
+              height: 125,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(50),
+                    offset: const Offset(0, 4),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
             ),
           ),
@@ -154,15 +156,22 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  const SizedBox(height: 8),
                   // Avatar bayi dengan efek bulat dan shadow
                   Center(
                     child: Container(
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        color: AppColors.offWhite,
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(10),
+                            offset: const Offset(0, 8),
+                            blurRadius: 0,
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
                       child: Center(
                         child: Container(
@@ -193,6 +202,8 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 16),
 
                   // Form container dengan efek shadow
                   Stack(

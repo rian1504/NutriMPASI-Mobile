@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
@@ -48,7 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Tunggu sebentar lalu navigasi ke home
             Future.delayed(const Duration(milliseconds: 500), () {
-              Navigator.pushReplacementNamed(context, '/home');
+              if (context.mounted) {
+                Navigator.pushReplacementNamed(context, '/home');
+              }
             });
           } else if (state is AuthenticationError) {
             ScaffoldMessenger.of(
@@ -66,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   top: 0,
                   left: 0,
                   right: 0,
-                  height: size.height * 0.55,
+                  height: size.height * 1,
                   child: Image.asset(
                     'assets/images/background/auth.png',
                     fit: BoxFit.cover,

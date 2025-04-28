@@ -15,6 +15,7 @@ import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
+import 'package:nutrimpasi/screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
 
@@ -66,13 +67,11 @@ class MainApp extends StatelessWidget {
           builder: (context, state) {
             if (state is AuthenticationInitial ||
                 state is AuthenticationChecking) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
+              return const SplashScreen();
             } else if (state is LoginSuccess) {
-              return const MainPage();
+              return const SplashScreen(nextScreen: MainPage());
             } else {
-              return const OnboardingScreen();
+              return const SplashScreen(nextScreen: OnboardingScreen());
             }
           },
         ),
@@ -87,14 +86,23 @@ class MainApp extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final int initialPage;
+
+  const MainPage({super.key, this.initialPage = 0});
 
   @override
   State<MainPage> createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage> {
-  int _page = 0;
+  late int _page;
+  Map<String, dynamic> _pageParams = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _page = widget.initialPage;
+  }
 
   final List<Widget> _screens = [
     const HomeScreen(),
@@ -105,19 +113,25 @@ class MainPageState extends State<MainPage> {
   ];
 
   // Fungsi untuk mengubah halaman
-  void changePage(int index) {
+  void changePage(int index, {Map<String, dynamic>? additionalParams}) {
     setState(() {
       _page = index;
+      _pageParams = additionalParams ?? {};
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
-      body: _screens[_page],
+      backgroundColor: AppColors.pearl,
+      body:
+          _page == 1 && _pageParams.containsKey('showUserSuggestions')
+              ? FoodListingScreen(
+                showUserSuggestions: _pageParams['showUserSuggestions'],
+              )
+              : _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.offWhite,
+        backgroundColor: AppColors.pearl,
         color: AppColors.primary,
         height: MediaQuery.of(context).size.height * 0.070,
         animationDuration: const Duration(milliseconds: 300),
@@ -148,6 +162,7 @@ class MainPageState extends State<MainPage> {
         onTap: (index) {
           setState(() {
             _page = index;
+            _pageParams = {};
           });
         },
       ),

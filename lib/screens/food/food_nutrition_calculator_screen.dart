@@ -395,7 +395,7 @@ class _FoodNutritionCalculatorScreenState
       // Step sebelumnya (sudah selesai)
       circleColor = AppColors.buff;
       borderColor = AppColors.componentGrey!;
-      textColor = AppColors.white;
+      textColor = Colors.white;
     } else {
       // Step berikutnya (belum dilakukan)
       circleColor = Colors.white;

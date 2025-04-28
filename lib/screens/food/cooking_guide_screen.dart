@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 
 class CookingGuideScreen extends StatefulWidget {
@@ -112,25 +113,34 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
             Positioned(
               top: MediaQuery.of(context).padding.top + 16,
               left: 16,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  backgroundColor: Colors.white,
-                  padding: const EdgeInsets.all(12),
-                  elevation: 2,
-                ),
-                onPressed: () async {
-                  final shouldPop = await _showExitConfirmationDialog();
-                  if (shouldPop) {
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                    }
-                  }
-                },
-                child: const Icon(
-                  Symbols.arrow_back_ios_new,
-                  color: AppColors.textBlack,
-                  size: 20,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Material(
+                  elevation: 3,
+                  shadowColor: Colors.black54,
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Symbols.arrow_back_ios_new,
+                        color: AppColors.textBlack,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.zero,
+                      onPressed: () async {
+                        final shouldPop = await _showExitConfirmationDialog();
+                        if (shouldPop) {
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -195,15 +205,36 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                               width: 125,
                               child: Row(
                                 children: [
-                                  const Icon(
-                                    Symbols.restaurant,
-                                    size: 20,
+                                  Image.asset(
+                                    'assets/images/icon/set_makanan.png',
+                                    width: 20,
+                                    height: 20,
                                     color: AppColors.primary,
                                   ),
                                   const SizedBox(width: 4),
-                                  Text(
-                                    '${_food.portion} porsi',
-                                    style: TextStyle(fontSize: 18),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: '1 Set ',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.textBlack,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: '(${_food.portion} Porsi)',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.textBlack,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -220,14 +251,15 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                             ),
                             Row(
                               children: [
-                                const Icon(
-                                  Symbols.history,
-                                  size: 20,
+                                Image.asset(
+                                  'assets/images/icon/jumlah_dimasak.png',
+                                  width: 20,
+                                  height: 20,
                                   color: AppColors.primary,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '32x dimasak',
+                                  '32x Dimasak',
                                   style: TextStyle(fontSize: 18),
                                 ),
                               ],
@@ -498,6 +530,15 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                 onPressed: () {
                                   if (mounted) {
                                     Navigator.pop(context);
+
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                MainPage(initialPage: 1),
+                                      ),
+                                      (Route<dynamic> route) => false,
+                                    );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
