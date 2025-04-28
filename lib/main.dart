@@ -86,14 +86,23 @@ class MainApp extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final int initialPage;
+
+  const MainPage({super.key, this.initialPage = 0});
 
   @override
   State<MainPage> createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage> {
-  int _page = 0;
+  late int _page;
+  Map<String, dynamic> _pageParams = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _page = widget.initialPage;
+  }
 
   final List<Widget> _screens = [
     const HomeScreen(),
@@ -104,9 +113,10 @@ class MainPageState extends State<MainPage> {
   ];
 
   // Fungsi untuk mengubah halaman
-  void changePage(int index) {
+  void changePage(int index, {Map<String, dynamic>? additionalParams}) {
     setState(() {
       _page = index;
+      _pageParams = additionalParams ?? {};
     });
   }
 
@@ -114,7 +124,12 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pearl,
-      body: _screens[_page],
+      body:
+          _page == 1 && _pageParams.containsKey('showUserSuggestions')
+              ? FoodListingScreen(
+                showUserSuggestions: _pageParams['showUserSuggestions'],
+              )
+              : _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: AppColors.pearl,
         color: AppColors.primary,
@@ -147,6 +162,7 @@ class MainPageState extends State<MainPage> {
         onTap: (index) {
           setState(() {
             _page = index;
+            _pageParams = {};
           });
         },
       ),

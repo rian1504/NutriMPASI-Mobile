@@ -5,6 +5,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
@@ -120,54 +121,50 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _initBabyController() {
-    _babyController.addListener(() {
-      if (!mounted ||
-          !_babyController.hasClients ||
-          !_babyController.position.hasContentDimensions) {
-        return;
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
 
-      // Mengatur offset dan halaman saat pengguna menggulir
-      final double currentOffset = _babyController.offset;
-      final double maxScrollExtent = _babyController.position.maxScrollExtent;
-      final int currentPageFloor =
-          _babyController.page?.floor() ?? _currentBabyIndex;
-      final int currentPageRound =
-          _babyController.page?.round() ?? _currentBabyIndex;
-      const double overscrollThreshold = 50.0;
-
-      // Mengatur halaman bayi saat mencapai batas atas atau bawah
-      if (currentPageFloor == babies.length - 1 &&
-          currentOffset > maxScrollExtent + overscrollThreshold) {
-        if (_currentBabyIndex != 0) {
-          _babyController.animateToPage(
-            0,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOut,
-          );
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted && _currentBabyIndex != 0) {
-              setState(() {
-                _currentBabyIndex = 0;
-              });
-            }
-          });
+      _babyController.addListener(() {
+        if (!mounted ||
+            !_babyController.hasClients ||
+            !_babyController.position.hasContentDimensions) {
           return;
         }
-      }
 
-      // Mengatur halaman bayi saat mencapai batas bawah
-      if (currentPageRound != _currentBabyIndex &&
-          currentPageRound >= 0 &&
-          currentPageRound < babies.length) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
+        // Mengatur offset dan halaman saat pengguna menggulir
+        final double currentOffset = _babyController.offset;
+        final double maxScrollExtent = _babyController.position.maxScrollExtent;
+        final int currentPageFloor =
+            _babyController.page?.floor() ?? _currentBabyIndex;
+        final int currentPageRound =
+            _babyController.page?.round() ?? _currentBabyIndex;
+        const double overscrollThreshold = 50.0;
+
+        // Mengatur halaman bayi saat mencapai batas atas atau bawah
+        if (currentPageFloor == babies.length - 1 &&
+            currentOffset > maxScrollExtent + overscrollThreshold) {
+          if (_currentBabyIndex != 0) {
+            _babyController.animateToPage(
+              0,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOut,
+            );
             setState(() {
-              _currentBabyIndex = currentPageRound;
+              _currentBabyIndex = 0;
             });
+            return;
           }
-        });
-      }
+        }
+
+        // Mengatur halaman bayi saat mencapai batas bawah
+        if (currentPageRound != _currentBabyIndex &&
+            currentPageRound >= 0 &&
+            currentPageRound < babies.length) {
+          setState(() {
+            _currentBabyIndex = currentPageRound;
+          });
+        }
+      });
     });
   }
 
@@ -445,11 +442,32 @@ class _HomeScreenState extends State<HomeScreen>
                           PageView.builder(
                             controller: _babyController,
                             scrollDirection: Axis.vertical,
-                            itemCount: babies.length,
+                            itemCount: babies.isEmpty ? 1 : babies.length,
                             physics: const BouncingScrollPhysics(
                               parent: AlwaysScrollableScrollPhysics(),
                             ),
                             itemBuilder: (context, index) {
+                              if (babies.isEmpty) {
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  child: Card(
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "Belum ada data bayi",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: AppColors.textGrey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+
                               final baby = babies[index];
                               final bool isCurrentItem =
                                   index == _currentBabyIndex;
@@ -545,6 +563,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                       color:
                                                           AppColors.textBlack,
                                                     ),
+                                                    maxLines: 1,
                                                   ),
                                                   const SizedBox(height: 16),
                                                   if (baby
@@ -1057,7 +1076,7 @@ class _HomeScreenState extends State<HomeScreen>
         'title': 'Usulan Makanan',
         'image': 'assets/images/card/usulan_makanan.png',
         'navigate': (BuildContext context) {
-          // TODO: Halaman Usulan Makanan
+          _navigateToFoodList(showUserSuggestions: true);
         },
       },
       {
@@ -1181,5 +1200,17 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
     );
+  }
+
+  void _navigateToFoodList({bool showUserSuggestions = false}) {
+    // Fungsi untuk navigasi ke FoodListScreen
+    final MainPageState? mainPage =
+        context.findAncestorStateOfType<MainPageState>();
+    if (mainPage != null) {
+      mainPage.changePage(
+        1,
+        additionalParams: {'showUserSuggestions': showUserSuggestions},
+      );
+    }
   }
 }
