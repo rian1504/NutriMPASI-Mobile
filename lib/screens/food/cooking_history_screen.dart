@@ -55,7 +55,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
               ),
               child: IconButton(
                 icon: const Icon(
-                  Symbols.arrow_back_ios_new,
+                  Symbols.arrow_back_ios_new_rounded,
                   color: AppColors.textBlack,
                   size: 24,
                 ),

@@ -244,7 +244,7 @@ class OnboardingPage extends StatelessWidget {
                 elevation: 1,
               ),
               child: const Icon(
-                Symbols.arrow_back_ios_new,
+                Symbols.arrow_back_ios_new_rounded,
                 color: Colors.white,
                 size: 16,
               ),

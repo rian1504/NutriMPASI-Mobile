@@ -104,7 +104,7 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
         backgroundColor: AppColors.primary,
         // Tombol kembali dengan styling custom
         leading: IconButton(
-          icon: const Icon(Symbols.arrow_back_ios_new),
+          icon: const Icon(Symbols.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Colors.white,
