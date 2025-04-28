@@ -244,7 +244,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   _buildVerticalNutrientIndicator(
                     'Energi',
                     _nutritionData['energy'],
-                    'g kkal',
+                    'kkal',
                     AppColors.secondary,
                   ),
 
@@ -252,7 +252,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   _buildVerticalNutrientIndicator(
                     'Protein',
                     _nutritionData['protein'],
-                    'g kkal',
+                    'g',
                     AppColors.red,
                   ),
 
@@ -260,7 +260,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   _buildVerticalNutrientIndicator(
                     'Lemak',
                     _nutritionData['fat'],
-                    'g kkal',
+                    'g',
                     AppColors.green,
                   ),
                 ],
