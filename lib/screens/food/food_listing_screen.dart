@@ -9,24 +9,33 @@ import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 
 class FoodListingScreen extends StatefulWidget {
-  const FoodListingScreen({super.key});
+  final bool showUserSuggestions;
+
+  const FoodListingScreen({super.key, this.showUserSuggestions = false});
 
   @override
   State<FoodListingScreen> createState() => _FoodListingScreenState();
 }
 
-class _FoodListingScreenState extends State<FoodListingScreen> {
+class _FoodListingScreenState extends State<FoodListingScreen>
+    with SingleTickerProviderStateMixin {
   // Controller untuk pencarian
   final TextEditingController _searchController = TextEditingController();
   // Controller scroll
   final ScrollController _scrollController = ScrollController();
   // Status tombol scroll ke atas
   bool _showScrollToTop = false;
+  // Status search bar pada AppBar
+  bool _showSearchInAppBar = false;
   // Toggle tampilan usulan pengguna
   bool _showUserSuggestionsOnly = false;
   // Variable lazy loading
   int _displayedItemCount = 5;
   bool _isLoadingMore = false;
+
+  // Animasi untuk transisi AppBar
+  late AnimationController _animationController;
+  late Animation<double> _appBarAnimation;
 
   // Filter data
   final Map<String, bool> _foodAgeFilters = {
@@ -51,18 +60,27 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-
-    _scrollController.addListener(_scrollListener);
-
-    // if (foodState is! FoodLoaded) {
-    //   context.read<FoodBloc>().add(FetchFoods());
-    // }
-
     context.read<FoodBloc>().add(FetchFoods());
+
+    // menetapkan toggle
+    _showUserSuggestionsOnly = widget.showUserSuggestions;
+
+    // Inisialisasi animation controller
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    // Animasi untuk AppBar transition
+    _appBarAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
   }
 
   // Deteksi posisi scroll
   void _scrollListener() {
+    // Untuk deteksi scroll to top button
     if (_scrollController.offset >= 300 && !_showScrollToTop) {
       setState(() {
         _showScrollToTop = true;
@@ -71,6 +89,19 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
       setState(() {
         _showScrollToTop = false;
       });
+    }
+
+    // Untuk deteksi search bar di AppBar dengan animasi
+    if (_scrollController.offset >= 120 && !_showSearchInAppBar) {
+      setState(() {
+        _showSearchInAppBar = true;
+      });
+      _animationController.forward();
+    } else if (_scrollController.offset < 120 && _showSearchInAppBar) {
+      setState(() {
+        _showSearchInAppBar = false;
+      });
+      _animationController.reverse();
     }
 
     // Deteksi untuk lazy loading
@@ -119,6 +150,7 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -358,34 +390,122 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
     );
   }
 
+  // Widget pencarian
+  Widget _buildSearchBar({bool inAppBar = false}) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.componentGrey!),
+      ),
+      child: TextField(
+        controller: _searchController,
+        textAlignVertical: TextAlignVertical.center,
+        style: const TextStyle(fontFamily: 'Poppins', fontSize: 14),
+        decoration: InputDecoration(
+          isDense: true,
+          hintText: 'Cari Resep...',
+          hintStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 14),
+          prefixIcon: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Icon(Icons.search, color: AppColors.textBlack, size: 22),
+          ),
+          // Tombol filter pencarian
+          suffixIcon: Padding(
+            padding: const EdgeInsets.all(6),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () {
+                _showFilterBottomSheet(context);
+              },
+              child: const Icon(Icons.tune, color: Colors.white, size: 18),
+            ),
+          ),
+          contentPadding: EdgeInsets.zero,
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pearl,
-      appBar: AppBar(
-        backgroundColor: AppColors.pearl,
-        elevation: 0,
-        leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
-        actions: [
-          // Tombol favorit
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Navigasi ke halaman favorit
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(4),
-              backgroundColor: Colors.white,
-              elevation: 2,
-            ),
-            child: Image.asset(
-              'assets/images/icon/daftar_favorit.png',
-              width: 24,
-              height: 24,
-              color: AppColors.primary,
-            ),
-          ),
-        ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AnimatedBuilder(
+          animation: _appBarAnimation,
+          builder: (context, child) {
+            return AppBar(
+              backgroundColor: AppColors.pearl,
+              elevation: 0,
+              leadingWidth: Tween<double>(
+                begin: 56.0,
+                end: 0.0,
+              ).evaluate(_appBarAnimation),
+              titleSpacing: Tween<double>(
+                begin: NavigationToolbar.kMiddleSpacing,
+                end: 0.0,
+              ).evaluate(_appBarAnimation),
+              leading: Opacity(
+                opacity: 1 - _appBarAnimation.value,
+                child: Image.asset(
+                  'assets/images/logo/nutrimpasi.png',
+                  height: 40,
+                ),
+              ),
+              title:
+                  _showSearchInAppBar
+                      ? Opacity(
+                        opacity: _appBarAnimation.value,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: _buildSearchBar(inAppBar: true),
+                        ),
+                      )
+                      : null,
+              actions:
+                  _showSearchInAppBar
+                      ? []
+                      : [
+                        // Tombol favorit
+                        Opacity(
+                          opacity: 1 - _appBarAnimation.value,
+                          child: ElevatedButton(
+                            onPressed:
+                                _appBarAnimation.value < 0.5
+                                    ? () {
+                                      // TODO: Navigasi ke halaman favorit
+                                    }
+                                    : null,
+                            style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(4),
+                              backgroundColor: Colors.white,
+                              elevation: 2,
+                            ),
+                            child: Image.asset(
+                              'assets/images/icon/daftar_favorit.png',
+                              width: 24,
+                              height: 24,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -414,45 +534,16 @@ class _FoodListingScreenState extends State<FoodListingScreen> {
               ),
 
               // Kotak pencarian
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.componentGrey!),
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Cari Resep...',
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: AppColors.textBlack,
-                    ),
-                    // Tombol filter pencarian
-                    suffixIcon: Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 4,
-                        horizontal: 8,
-                      ),
-                      height: 20,
-                      width: 40,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () {
-                          _showFilterBottomSheet(context);
-                        },
-                        child: const Icon(Icons.tune, color: Colors.white),
-                      ),
-                    ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
+              AnimatedOpacity(
+                opacity: _showSearchInAppBar ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 300),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: _showSearchInAppBar ? 0 : 48,
+                  child:
+                      _showSearchInAppBar
+                          ? const SizedBox()
+                          : _buildSearchBar(),
                 ),
               ),
 
