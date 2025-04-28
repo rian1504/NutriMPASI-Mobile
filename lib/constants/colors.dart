@@ -18,6 +18,7 @@ class AppColors {
   static const Color lightAmber = Color(0xFFFFC16B);
   static const Color amber = Color(0xFFFEAC3B);
   static Color red = Color(0xFFFE2323).withAlpha(180);
+  static Color green = Color(0xFF14AE5C);
 
   // Text color
   static const Color textBlack = Color(0xFF323232);

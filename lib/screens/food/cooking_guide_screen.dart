@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 
 class CookingGuideScreen extends StatefulWidget {
@@ -529,6 +530,15 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                 onPressed: () {
                                   if (mounted) {
                                     Navigator.pop(context);
+
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                MainPage(initialPage: 1),
+                                      ),
+                                      (Route<dynamic> route) => false,
+                                    );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
