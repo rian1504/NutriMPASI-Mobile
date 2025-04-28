@@ -168,22 +168,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                       // Langkah 1
                       _buildProgressStep(1, 'Isi Form', true),
 
-                      // Garis 1
+                      // Garis penghubung
                       Expanded(
-                        child: Container(
-                          height: 1,
-                          color: AppColors.componentGrey,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 15, left: 10),
+                          child: Container(
+                            height: 4,
+                            color: AppColors.secondary,
+                          ),
                         ),
                       ),
 
                       // Langkah 2
                       _buildProgressStep(2, 'Kalkulator Gizi', false),
 
-                      // Garis 2
+                      // Garis penghubung
                       Expanded(
-                        child: Container(
-                          height: 1,
-                          color: Colors.grey.withAlpha(75),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 15, right: 10),
+                          child: Container(
+                            height: 4,
+                            color: AppColors.componentGrey,
+                          ),
                         ),
                       ),
 
@@ -720,7 +726,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
           height: 32,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isActive ? AppColors.primary : Colors.white,
+            color: isActive ? AppColors.primary : AppColors.componentGrey,
             border: Border.all(
               color: isActive ? AppColors.primary : AppColors.componentGrey!,
               width: 1,
@@ -733,7 +739,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                 fontFamily: 'Poppins',
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: isActive ? Colors.white : Colors.grey,
+                color: Colors.white,
               ),
             ),
           ),

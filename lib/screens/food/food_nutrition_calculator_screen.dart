@@ -184,14 +184,25 @@ class _FoodNutritionCalculatorScreenState
                 children: [
                   _buildProgressStep(1, 'Isi Form', false),
 
+                  // Garis penghubung
                   Expanded(
-                    child: Container(height: 1, color: AppColors.secondary),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 15, left: 10),
+                      child: Container(height: 4, color: AppColors.secondary),
+                    ),
                   ),
 
                   _buildProgressStep(2, 'Kalkulator Gizi', true),
 
+                  // Garis penghubung
                   Expanded(
-                    child: Container(height: 1, color: AppColors.componentGrey),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 15, right: 10),
+                      child: Container(
+                        height: 4,
+                        color: AppColors.componentGrey,
+                      ),
+                    ),
                   ),
 
                   _buildProgressStep(3, 'Selesai', false),
@@ -382,25 +393,21 @@ class _FoodNutritionCalculatorScreenState
   // Widget helper untuk membuat indikator step progress
   Widget _buildProgressStep(int number, String label, bool isActive) {
     Color circleColor;
-    Color borderColor;
     Color textColor;
 
     // Menentukan warna berdasarkan status step
     if (isActive) {
       // Step saat ini (aktif)
       circleColor = AppColors.primary;
-      borderColor = AppColors.primary;
       textColor = Colors.white;
     } else if (number < 2) {
       // Step sebelumnya (sudah selesai)
       circleColor = AppColors.buff;
-      borderColor = AppColors.componentGrey!;
       textColor = Colors.white;
     } else {
       // Step berikutnya (belum dilakukan)
-      circleColor = Colors.white;
-      borderColor = AppColors.componentGrey!;
-      textColor = Colors.grey;
+      circleColor = AppColors.componentGrey!;
+      textColor = Colors.white;
     }
 
     // Membangun widget step (lingkaran dengan nomor)
@@ -409,11 +416,7 @@ class _FoodNutritionCalculatorScreenState
         Container(
           width: 32,
           height: 32,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: circleColor,
-            border: Border.all(color: borderColor, width: 1),
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: circleColor),
           child: Center(
             child: Text(
               number.toString(),
