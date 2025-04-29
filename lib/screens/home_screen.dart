@@ -14,6 +14,7 @@ import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
+import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -793,7 +794,15 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 InkWell(
                   onTap: () {
-                    // TODO: Navigasi ke halaman rekomendasi
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => FoodRecommendationScreen(
+                              recommendedFoods: _recommendedFoods,
+                            ),
+                      ),
+                    );
                   },
                   child: const Icon(
                     Symbols.arrow_forward_ios_rounded,
