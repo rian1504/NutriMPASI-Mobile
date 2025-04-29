@@ -248,13 +248,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                             padding: const EdgeInsets.all(20),
                             children: [
                               // Input nama resep
-                              const Text(
-                                'Masukkan Nama Resep',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Nama Resep',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -272,13 +287,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Tombol unggah foto
-                              const Text(
-                                'Unggah Foto Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Unggah Foto Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -322,13 +352,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Dropdown kategori
-                              const Text(
-                                'Pilih Kategori Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Pilih Kategori Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -362,13 +407,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Dropdown usia konsumsi
-                              const Text(
-                                'Pilih Usia Konsumsi',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Pilih Usia Konsumsi',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -402,13 +462,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Input jumlah porsi
-                              const Text(
-                                'Tentukan Porsi',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Tentukan Porsi',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -427,13 +502,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Input deskripsi
-                              const Text(
-                                'Masukkan Deskripsi Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Deskripsi Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -452,13 +542,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Input bahan masakan
-                              const Text(
-                                'Masukkan Bahan Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Bahan Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
 
@@ -564,13 +669,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Input langkah penyajian
-                              const Text(
-                                'Masukkan Langkah Penyajian',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Langkah Penyajian',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
 
