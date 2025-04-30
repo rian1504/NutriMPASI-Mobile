@@ -119,7 +119,7 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: AppColors.textBlack,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
