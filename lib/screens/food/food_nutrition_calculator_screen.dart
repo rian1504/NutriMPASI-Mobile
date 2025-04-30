@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'dart:convert';
@@ -155,175 +156,217 @@ class _FoodNutritionCalculatorScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 36),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Judul halaman
-              Center(
-                child: const Text(
-                  'Kalkulator Gizi',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Indikator progress step (Isi Form -> Kalkulator Gizi -> Selesai)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 60, horizontal: 36),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildProgressStep(1, 'Isi Form', false),
-
-                  Expanded(
-                    child: Container(height: 1, color: AppColors.secondary),
+                  // Judul halaman
+                  Center(
+                    child: const Text(
+                      'Kalkulator Gizi',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
 
-                  _buildProgressStep(2, 'Kalkulator Gizi', true),
+                  const SizedBox(height: 24),
 
-                  Expanded(
-                    child: Container(height: 1, color: AppColors.componentGrey),
-                  ),
+                  // Indikator progress step (Isi Form -> Kalkulator Gizi -> Selesai)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildProgressStep(1, 'Isi Form', false),
 
-                  _buildProgressStep(3, 'Selesai', false),
-                ],
-              ),
-
-              const SizedBox(height: 30),
-
-              // Container untuk menampilkan daftar bahan yang diinput
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF1E0),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // Menampilkan pesan jika tidak ada bahan, atau daftar bahan jika ada
-                  children:
-                      widget.ingredients.isEmpty
-                          ? [
-                            _buildIngredientItem(
-                              'Tidak ada bahan yang diinput',
-                            ),
-                          ]
-                          : widget.ingredients
-                              .map(
-                                (ingredient) =>
-                                    _buildIngredientItem(ingredient),
-                              )
-                              .toList(),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Teks penjelasan tentang proses kalkulasi
-              const Text(
-                'Menghitung kandungan nutrisi...',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.italic,
-                  color: AppColors.textBlack,
-                ),
-              ),
-              const Text(
-                'Berdasarkan bahan-bahan yang telah diinput, sistem akan menghitung total kandungan gizi meliputi energi (kalori), protein, dan lemak. Hasilnya akan ditampilkan dalam tabel berikut:',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textBlack,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Judul hasil perhitungan
-              const Text(
-                'Hasil Perhitungan Nutrisi:',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textBlack,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Widget kondisional: loading indicator atau hasil perhitungan
-              _isCalculating
-                  ? const Center(
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(color: AppColors.secondary),
-                        SizedBox(height: 8),
-                        Text(
-                          'Menghitung nilai nutrisi...',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic,
-                            color: AppColors.textBlack,
+                      // Garis penghubung
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 15, left: 10),
+                          child: Container(
+                            height: 4,
+                            color: AppColors.secondary,
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                  // Tampilan hasil perhitungan nutrisi dalam bentuk card
-                  : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Card untuk energi (kalori)
-                      _buildNutritionCard(
-                        'Energi',
-                        _energyValue.toStringAsFixed(1),
-                        'kkal',
                       ),
-                      // Pembatas vertikal antar card
-                      Container(
-                        height: 40,
-                        width: 1,
-                        color: AppColors.textBlack.withAlpha(75),
+
+                      _buildProgressStep(2, 'Kalkulator Gizi', true),
+
+                      // Garis penghubung
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 15, right: 10),
+                          child: Container(
+                            height: 4,
+                            color: AppColors.componentGrey,
+                          ),
+                        ),
                       ),
-                      // Card untuk protein
-                      _buildNutritionCard(
-                        'Protein',
-                        _proteinValue.toStringAsFixed(1),
-                        'g',
-                      ),
-                      // Pembatas vertikal antar card
-                      Container(
-                        height: 40,
-                        width: 1,
-                        color: AppColors.textBlack.withAlpha(75),
-                      ),
-                      // Card untuk lemak
-                      _buildNutritionCard(
-                        'Lemak',
-                        _fatValue.toStringAsFixed(1),
-                        'g',
-                      ),
+
+                      _buildProgressStep(3, 'Selesai', false),
                     ],
                   ),
-            ],
+
+                  const SizedBox(height: 30),
+
+                  // Container untuk menampilkan daftar bahan yang diinput
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF1E0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // Menampilkan pesan jika tidak ada bahan, atau daftar bahan jika ada
+                      children:
+                          widget.ingredients.isEmpty
+                              ? [
+                                _buildIngredientItem(
+                                  'Tidak ada bahan yang diinput',
+                                ),
+                              ]
+                              : widget.ingredients
+                                  .map(
+                                    (ingredient) =>
+                                        _buildIngredientItem(ingredient),
+                                  )
+                                  .toList(),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Teks penjelasan tentang proses kalkulasi
+                  const Text(
+                    'Menghitung kandungan nutrisi...',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                      color: AppColors.textBlack,
+                    ),
+                  ),
+                  const Text(
+                    'Berdasarkan bahan-bahan yang telah diinput, sistem akan menghitung total kandungan gizi meliputi energi (kalori), protein, dan lemak. Hasilnya akan ditampilkan dalam tabel berikut:',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textBlack,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Judul hasil perhitungan
+                  const Text(
+                    'Hasil Perhitungan Nutrisi:',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textBlack,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Widget kondisional: loading indicator atau hasil perhitungan
+                  _isCalculating
+                      ? const Center(
+                        child: Column(
+                          children: [
+                            CircularProgressIndicator(
+                              color: AppColors.secondary,
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Menghitung nilai nutrisi...',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.italic,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      // Tampilan hasil perhitungan nutrisi dalam bentuk card
+                      : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Card untuk energi (kalori)
+                          _buildNutritionCard(
+                            'Energi',
+                            _energyValue.toStringAsFixed(1),
+                            'kkal',
+                          ),
+                          // Pembatas vertikal antar card
+                          Container(
+                            height: 40,
+                            width: 1,
+                            color: AppColors.textBlack.withAlpha(75),
+                          ),
+                          // Card untuk protein
+                          _buildNutritionCard(
+                            'Protein',
+                            _proteinValue.toStringAsFixed(1),
+                            'g',
+                          ),
+                          // Pembatas vertikal antar card
+                          Container(
+                            height: 40,
+                            width: 1,
+                            color: AppColors.textBlack.withAlpha(75),
+                          ),
+                          // Card untuk lemak
+                          _buildNutritionCard(
+                            'Lemak',
+                            _fatValue.toStringAsFixed(1),
+                            'g',
+                          ),
+                        ],
+                      ),
+                ],
+              ),
+            ),
           ),
-        ),
+
+          // Tombol kembali
+          Positioned(
+            top: 35,
+            left: 15,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.componentGrey!),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new_rounded,
+                  color: AppColors.textBlack,
+                  size: 24,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        ],
       ),
       // Bottom navigation bar dengan tombol simpan
       bottomNavigationBar: Container(
@@ -382,25 +425,21 @@ class _FoodNutritionCalculatorScreenState
   // Widget helper untuk membuat indikator step progress
   Widget _buildProgressStep(int number, String label, bool isActive) {
     Color circleColor;
-    Color borderColor;
     Color textColor;
 
     // Menentukan warna berdasarkan status step
     if (isActive) {
       // Step saat ini (aktif)
       circleColor = AppColors.primary;
-      borderColor = AppColors.primary;
       textColor = Colors.white;
     } else if (number < 2) {
       // Step sebelumnya (sudah selesai)
       circleColor = AppColors.buff;
-      borderColor = AppColors.componentGrey!;
       textColor = Colors.white;
     } else {
       // Step berikutnya (belum dilakukan)
-      circleColor = Colors.white;
-      borderColor = AppColors.componentGrey!;
-      textColor = Colors.grey;
+      circleColor = AppColors.componentGrey!;
+      textColor = Colors.white;
     }
 
     // Membangun widget step (lingkaran dengan nomor)
@@ -409,11 +448,7 @@ class _FoodNutritionCalculatorScreenState
         Container(
           width: 32,
           height: 32,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: circleColor,
-            border: Border.all(color: borderColor, width: 1),
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: circleColor),
           child: Center(
             child: Text(
               number.toString(),

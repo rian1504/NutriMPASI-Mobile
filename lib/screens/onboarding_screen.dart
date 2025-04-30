@@ -244,44 +244,45 @@ class OnboardingPage extends StatelessWidget {
                 elevation: 1,
               ),
               child: const Icon(
-                Symbols.arrow_back_ios_new,
+                Symbols.arrow_back_ios_new_rounded,
                 color: Colors.white,
                 size: 16,
               ),
             ),
           ),
 
-        // Tombol lewati
-        Positioned(
-          top: 40,
-          right: 16,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary.withAlpha(100),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+        // Tombol lewati - hanya tampil pada halaman pertama dan kedua
+        if (currentPage < totalPages - 1)
+          Positioned(
+            top: 40,
+            right: 16,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.secondary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                padding: const EdgeInsets.all(8),
+                minimumSize: const Size(42, 42),
+                elevation: 1,
               ),
-              padding: const EdgeInsets.all(8),
-              minimumSize: const Size(42, 42),
-              elevation: 1,
-            ),
-            child: const Text(
-              'Lewati',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: AppColors.secondary,
+              child: const Text(
+                'Lewati',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

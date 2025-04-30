@@ -14,6 +14,7 @@ import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
+import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -65,14 +66,20 @@ class _HomeScreenState extends State<HomeScreen>
   // Mulai auto scroll untuk rekomendasi
   void _startAutoScroll() {
     _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (mounted && _recommendedFoods.isNotEmpty) {
+      if (!mounted || _recommendedFoods.isEmpty) return;
+
+      if (_foodRecommendationController.hasClients &&
+          _foodRecommendationController.positions.isNotEmpty &&
+          _foodRecommendationController.position.hasContentDimensions) {
         final nextIndex =
             (_currentRecommendationIndex + 1) % _recommendedFoods.length;
+
         _foodRecommendationController.animateToPage(
           nextIndex,
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
+
         setState(() {
           _currentRecommendationIndex = nextIndex;
         });
@@ -127,11 +134,14 @@ class _HomeScreenState extends State<HomeScreen>
       _babyController.addListener(() {
         if (!mounted ||
             !_babyController.hasClients ||
-            !_babyController.position.hasContentDimensions) {
+            _babyController.positions.isEmpty) {
           return;
         }
 
-        // Mengatur offset dan halaman saat pengguna menggulir
+        if (!_babyController.position.hasContentDimensions) {
+          return;
+        }
+
         final double currentOffset = _babyController.offset;
         final double maxScrollExtent = _babyController.position.maxScrollExtent;
         final int currentPageFloor =
@@ -139,6 +149,8 @@ class _HomeScreenState extends State<HomeScreen>
         final int currentPageRound =
             _babyController.page?.round() ?? _currentBabyIndex;
         const double overscrollThreshold = 50.0;
+
+        if (babies.isEmpty) return;
 
         // Mengatur halaman bayi saat mencapai batas atas atau bawah
         if (currentPageFloor == babies.length - 1 &&
@@ -793,7 +805,15 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 InkWell(
                   onTap: () {
-                    // TODO: Navigasi ke halaman rekomendasi
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => FoodRecommendationScreen(
+                              recommendedFoods: _recommendedFoods,
+                            ),
+                      ),
+                    );
                   },
                   child: const Icon(
                     Symbols.arrow_forward_ios_rounded,
@@ -914,11 +934,13 @@ class _HomeScreenState extends State<HomeScreen>
       height: 180,
       child: PageView.builder(
         controller: _foodRecommendationController,
-        itemCount: _recommendedFoods.length * 1000, // Quasi-infinite scrolling
+        itemCount: _recommendedFoods.length * 1000,
         onPageChanged: (index) {
-          setState(() {
-            _currentRecommendationIndex = index % _recommendedFoods.length;
-          });
+          if (mounted) {
+            setState(() {
+              _currentRecommendationIndex = index % _recommendedFoods.length;
+            });
+          }
         },
         itemBuilder: (context, index) {
           final food = _recommendedFoods[index % _recommendedFoods.length];

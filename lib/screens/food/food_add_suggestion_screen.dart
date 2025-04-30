@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
 
@@ -17,6 +18,8 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
   // Controller untuk field formulir
   final TextEditingController _recipeNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _servingsController = TextEditingController();
+  final TextEditingController _fruitsController = TextEditingController();
 
   // List controller untuk field dinamis
   final List<TextEditingController> _ingredientControllers = [];
@@ -24,6 +27,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
 
   // Pilihan kategori dropdown
   String? _selectedCategory;
+  String? _selectedAgeGroup;
 
   // Daftar kategori yang tersedia
   final List<String> _categories = [
@@ -31,6 +35,14 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
     'Bubur & Puree',
     'Sup & Kuah',
     'Finger Food',
+  ];
+
+  // Daftar usia konsumsi
+  final List<String> _ageGroups = [
+    '6-8 bulan',
+    '9-11 bulan',
+    '12-23 bulan',
+    '> 24 bulan',
   ];
 
   @override
@@ -75,6 +87,8 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
   void dispose() {
     _recipeNameController.dispose();
     _descriptionController.dispose();
+    _servingsController.dispose();
+    _fruitsController.dispose();
 
     // Hapus semua controller dinamis
     for (var controller in _ingredientControllers) {
@@ -87,14 +101,35 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
     super.dispose();
   }
 
+  // Style untuk form input
+  InputDecoration _getInputDecoration({String? hintText}) {
+    return InputDecoration(
+      filled: true,
+      fillColor: Colors.white,
+      hintText: hintText,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.grey, width: 1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.grey, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primary,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          // Konten utama
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
             child: Column(
@@ -135,22 +170,34 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                           // Langkah 1
                           _buildProgressStep(1, 'Isi Form', true),
 
-                          // Garis 1
+                          // Garis penghubung
                           Expanded(
-                            child: Container(
-                              height: 1,
-                              color: AppColors.componentGrey,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 15,
+                                left: 10,
+                              ),
+                              child: Container(
+                                height: 4,
+                                color: AppColors.secondary,
+                              ),
                             ),
                           ),
 
                           // Langkah 2
                           _buildProgressStep(2, 'Kalkulator Gizi', false),
 
-                          // Garis 2
+                          // Garis penghubung
                           Expanded(
-                            child: Container(
-                              height: 1,
-                              color: Colors.grey.withAlpha(75),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 15,
+                                right: 10,
+                              ),
+                              child: Container(
+                                height: 4,
+                                color: AppColors.componentGrey,
+                              ),
                             ),
                           ),
 
@@ -186,50 +233,49 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.pearl,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.zero,
                         topRight: Radius.circular(30),
                       ),
                     ),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Form(
+                    child: Stack(
+                      children: [
+                        Form(
                           key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: ListView(
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.all(20),
                             children: [
                               // Input nama resep
-                              const Text(
-                                'Masukkan Nama Resep',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Nama Resep',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
                               TextFormField(
                                 controller: _recipeNameController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
+                                decoration: _getInputDecoration(),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Nama resep tidak boleh kosong';
@@ -241,13 +287,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Tombol unggah foto
-                              const Text(
-                                'Unggah Foto Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Unggah Foto Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -263,6 +324,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                   decoration: BoxDecoration(
                                     color: AppColors.buff,
                                     borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.grey),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -290,35 +352,34 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Dropdown kategori
-                              const Text(
-                                'Pilih Kategori Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Pilih Kategori Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
                               DropdownButtonFormField<String>(
                                 value: _selectedCategory,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  suffixIcon: const Icon(Icons.arrow_drop_down),
-                                ),
+                                decoration: _getInputDecoration(),
                                 icon: const SizedBox.shrink(),
                                 hint: const Text('Pilih kategori'),
                                 items:
@@ -333,42 +394,143 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                     _selectedCategory = value;
                                   });
                                 },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Kategori harus dipilih';
+                                  }
+                                  return null;
+                                },
                                 isExpanded: true,
                                 isDense: true,
                               ),
 
                               const SizedBox(height: 16),
 
+                              // Dropdown usia konsumsi
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Pilih Usia Konsumsi',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              DropdownButtonFormField<String>(
+                                value: _selectedAgeGroup,
+                                decoration: _getInputDecoration(),
+                                icon: const SizedBox.shrink(),
+                                hint: const Text('Pilih usia'),
+                                items:
+                                    _ageGroups.map((age) {
+                                      return DropdownMenuItem<String>(
+                                        value: age,
+                                        child: Text(age),
+                                      );
+                                    }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedAgeGroup = value;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Usia konsumsi harus dipilih';
+                                  }
+                                  return null;
+                                },
+                                isExpanded: true,
+                                isDense: true,
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Input jumlah porsi
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Tentukan Porsi',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              TextFormField(
+                                controller: _servingsController,
+                                decoration: _getInputDecoration(),
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Jumlah porsi tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 16),
+
                               // Input deskripsi
-                              const Text(
-                                'Masukkan Deskripsi Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Deskripsi Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 4),
                               TextFormField(
                                 controller: _descriptionController,
                                 maxLines: 2,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
+                                decoration: _getInputDecoration(),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Deskripsi tidak boleh kosong';
@@ -380,13 +542,28 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               const SizedBox(height: 16),
 
                               // Input bahan masakan
-                              const Text(
-                                'Masukkan Bahan Masakan',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textBlack,
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Bahan Masakan',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
 
@@ -404,17 +581,20 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                       children: [
                                         // Nomor indeks
                                         Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.buff,
-                                            shape: BoxShape.circle,
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                           child: Center(
                                             child: Text(
                                               '${index + 1}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ),
@@ -425,25 +605,8 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                           child: TextFormField(
                                             controller:
                                                 _ingredientControllers[index],
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.white,
+                                            decoration: _getInputDecoration(
                                               hintText: 'Bahan ${index + 1}',
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 8,
-                                                  ),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                borderSide: BorderSide.none,
-                                              ),
                                             ),
                                             validator: (value) {
                                               if (value == null ||
@@ -485,14 +648,49 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                 ),
                               ),
 
-                              // Input langkah penyajian
+                              const SizedBox(height: 16),
+
+                              // Input buah
                               const Text(
-                                'Masukkan Langkah Penyajian',
+                                'Buah',
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.textBlack,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              TextFormField(
+                                controller: _fruitsController,
+                                decoration: _getInputDecoration(),
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Input langkah penyajian
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Masukkan Langkah Penyajian',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '*',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
 
@@ -510,17 +708,20 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                       children: [
                                         // Nomor indeks
                                         Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.buff,
-                                            shape: BoxShape.circle,
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                           child: Center(
                                             child: Text(
                                               '${index + 1}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ),
@@ -530,25 +731,8 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                         Expanded(
                                           child: TextFormField(
                                             controller: _stepControllers[index],
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.white,
+                                            decoration: _getInputDecoration(
                                               hintText: 'Langkah ${index + 1}',
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 8,
-                                                  ),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                borderSide: BorderSide.none,
-                                              ),
                                             ),
                                             validator: (value) {
                                               if (value == null ||
@@ -587,12 +771,88 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                   ),
                                 ),
                               ),
-
-                              const SizedBox(height: 240),
+                              const SizedBox(height: 90),
                             ],
                           ),
                         ),
-                      ),
+
+                        // Tombol next
+                        Positioned(
+                          right: -20,
+                          bottom: -20,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              width: 120,
+                              height: 120,
+                              decoration: const BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // Validasi form saat tombol next ditekan
+                                        if (_formKey.currentState!.validate()) {
+                                          List<String> ingredients =
+                                              _ingredientControllers
+                                                  .map(
+                                                    (controller) =>
+                                                        controller.text,
+                                                  )
+                                                  .toList();
+
+                                          // menambahkan field buah ke bahan untuk perhitungan gizi
+                                          if (_fruitsController
+                                              .text
+                                              .isNotEmpty) {
+                                            ingredients.add(
+                                              _fruitsController.text,
+                                            );
+                                          }
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                      FoodNutritionCalculatorScreen(
+                                                        ingredients:
+                                                            ingredients,
+                                                      ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.buff,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Symbols.arrow_forward_ios_rounded,
+                                          color: Colors.black,
+                                          size: 24,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -600,62 +860,24 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
             ),
           ),
 
-          // Tombol next
+          // Tombol kembali
           Positioned(
-            right: 0,
-            bottom: 20,
+            top: 35,
+            left: 15,
             child: Container(
-              width: 120,
-              height: 120,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.componentGrey!),
               ),
-              child: Center(
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        // Validasi form saat tombol next ditekan
-                        if (_formKey.currentState!.validate()) {
-                          List<String> ingredients =
-                              _ingredientControllers
-                                  .map((controller) => controller.text)
-                                  .toList();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => FoodNutritionCalculatorScreen(
-                                    ingredients: ingredients,
-                                  ),
-                            ),
-                          );
-                        }
-                      },
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          color: AppColors.buff,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.chevron_right,
-                          color: Colors.black,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new_rounded,
+                  color: AppColors.textBlack,
+                  size: 24,
                 ),
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.pop(context),
               ),
             ),
           ),
@@ -674,7 +896,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
           height: 32,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isActive ? AppColors.primary : Colors.white,
+            color: isActive ? AppColors.primary : AppColors.componentGrey,
             border: Border.all(
               color: isActive ? AppColors.primary : AppColors.componentGrey!,
               width: 1,
@@ -687,7 +909,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                 fontFamily: 'Poppins',
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: isActive ? Colors.white : Colors.grey,
+                color: Colors.white,
               ),
             ),
           ),

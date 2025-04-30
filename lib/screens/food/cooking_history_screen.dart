@@ -55,7 +55,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
               ),
               child: IconButton(
                 icon: const Icon(
-                  Symbols.arrow_back_ios_new,
+                  Symbols.arrow_back_ios_new_rounded,
                   color: AppColors.textBlack,
                   size: 24,
                 ),
@@ -244,7 +244,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   _buildVerticalNutrientIndicator(
                     'Energi',
                     _nutritionData['energy'],
-                    'g kkal',
+                    'kkal',
                     AppColors.secondary,
                   ),
 
@@ -252,7 +252,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   _buildVerticalNutrientIndicator(
                     'Protein',
                     _nutritionData['protein'],
-                    'g kkal',
+                    'g',
                     AppColors.red,
                   ),
 
@@ -260,7 +260,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   _buildVerticalNutrientIndicator(
                     'Lemak',
                     _nutritionData['fat'],
-                    'g kkal',
+                    'g',
                     AppColors.green,
                   ),
                 ],
