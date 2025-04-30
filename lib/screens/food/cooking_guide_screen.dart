@@ -156,17 +156,28 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                     ),
                   ),
 
-                  // Tombol kembali
-                  Positioned(
-                    top: MediaQuery.of(context).padding.top + 16,
-                    left: 16,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.all(12),
-                        elevation: 2,
+            // Tombol kembali
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              left: 16,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Material(
+                  elevation: 3,
+                  shadowColor: Colors.black54,
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Symbols.arrow_back_ios_new_rounded,
+                        color: AppColors.textBlack,
+                        size: 24,
                       ),
+                      padding: EdgeInsets.zero,
                       onPressed: () async {
                         final shouldPop = await _showExitConfirmationDialog();
                         if (shouldPop) {
@@ -175,13 +186,11 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                           }
                         }
                       },
-                      child: const Icon(
-                        Symbols.arrow_back_ios_new,
-                        color: AppColors.textBlack,
-                        size: 20,
-                      ),
                     ),
                   ),
+                ),
+              ),
+            ),
 
                   // Panel detail resep
                   DraggableScrollableSheet(
@@ -239,55 +248,76 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                               ),
                               const SizedBox(height: 8),
 
-                              // Informasi porsi dan riwayat
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                        // Informasi porsi dan riwayat
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                              width: 125,
+                              child: Row(
                                 children: [
-                                  SizedBox(
-                                    width: 125,
-                                    child: Row(
+                                  Image.asset(
+                                    'assets/images/icon/set_makanan.png',
+                                    width: 20,
+                                    height: 20,
+                                    color: AppColors.primary,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  RichText(
+                                    text: TextSpan(
                                       children: [
-                                        const Icon(
-                                          Symbols.restaurant,
-                                          size: 20,
-                                          color: AppColors.primary,
+                                        TextSpan(
+                                          text: '1 Set ',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.textBlack,
+                                          ),
                                         ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '${food.portion} porsi',
-                                          style: TextStyle(fontSize: 18),
+                                        TextSpan(
+                                          text: '(${food.portion} Porsi)',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.textBlack,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    child: Container(
-                                      height: 40,
-                                      width: 1,
-                                      color: AppColors.textBlack.withAlpha(75),
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Symbols.history,
-                                        size: 20,
-                                        color: AppColors.primary,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${food.foodRecordCount}x dimasak ',
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ],
-                                  ),
                                 ],
                               ),
-                              const SizedBox(height: 24),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Container(
+                                height: 40,
+                                width: 1,
+                                color: AppColors.textBlack.withAlpha(75),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  'assets/images/icon/jumlah_dimasak.png',
+                                  width: 20,
+                                  height: 20,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${food.foodRecordCount}x dimasak',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
 
                               // Tab bahan dan langkah
                               Container(

@@ -7,7 +7,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pearl,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 36),
@@ -34,17 +34,23 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                   // Langkah 1 - Isi Form (sudah selesai)
                   _buildProgressStep(1, 'Isi Form', false, true),
 
-                  // Garis penghubung antar langkah
+                  // Garis penghubung
                   Expanded(
-                    child: Container(height: 1, color: AppColors.secondary),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 15, left: 10),
+                      child: Container(height: 4, color: AppColors.secondary),
+                    ),
                   ),
 
                   // Langkah 2 - Kalkulator Gizi (sudah selesai)
                   _buildProgressStep(2, 'Kalkulator Gizi', false, true),
 
-                  // Garis penghubung antar langkah
+                  // Garis penghubung
                   Expanded(
-                    child: Container(height: 1, color: AppColors.secondary),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 15, right: 10),
+                      child: Container(height: 4, color: AppColors.secondary),
+                    ),
                   ),
 
                   // Langkah 3 - Selesai (langkah aktif)
@@ -148,25 +154,21 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
     bool isCompleted,
   ) {
     Color circleColor;
-    Color borderColor;
     Color textColor;
 
     // Menentukan warna berdasarkan status langkah
     if (isActive) {
       // Langkah aktif (sedang dikerjakan)
       circleColor = AppColors.primary;
-      borderColor = AppColors.primary;
       textColor = Colors.white;
     } else if (isCompleted) {
       // Langkah sudah selesai
       circleColor = AppColors.buff;
-      borderColor = AppColors.buff;
       textColor = Colors.white;
     } else {
       // Langkah belum aktif/belum dikerjakan
-      circleColor = Colors.white;
-      borderColor = AppColors.componentGrey!;
-      textColor = Colors.grey;
+      circleColor = AppColors.componentGrey!;
+      textColor = Colors.white;
     }
 
     return Column(
@@ -175,11 +177,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
         Container(
           width: 32,
           height: 32,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: circleColor,
-            border: Border.all(color: borderColor, width: 1),
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: circleColor),
           child: Center(
             child: Text(
               number.toString(),

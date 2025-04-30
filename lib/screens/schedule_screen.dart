@@ -104,9 +104,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       appBar: AppBar(
-        backgroundColor: AppColors.offWhite,
+        backgroundColor: AppColors.pearl,
         leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
         title: const Text(
           'Jadwal Memasak',
@@ -320,92 +320,86 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     final itemId = '${food.id}_$index';
                     final isOpen = _openCardId == itemId;
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: GestureDetector(
-                        onHorizontalDragEnd: (details) {
-                          if (details.primaryVelocity! < 0) {
-                            // Swipe ke kiri
-                            setState(() {
-                              _openCardId = itemId;
-                            });
-                          } else if (details.primaryVelocity! > 0) {
-                            // Swipe ke kanan
-                            setState(() {
-                              _openCardId = null;
-                            });
-                          }
-                        },
-                        child: Stack(
-                          children: [
-                            // Tombol aksi (edit dan hapus)
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              bottom: 0,
-                              child: Row(
-                                children: [
-                                  // Tombol edit
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.red,
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: GestureDetector(
+                    onHorizontalDragEnd: (details) {
+                      if (details.primaryVelocity! < 0) {
+                        // Swipe ke kiri
+                        setState(() {
+                          _openCardId = itemId;
+                        });
+                      } else if (details.primaryVelocity! > 0) {
+                        // Swipe ke kanan
+                        setState(() {
+                          _openCardId = null;
+                        });
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        // Tombol aksi (edit dan hapus)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                          child: Row(
+                            children: [
+                              // Tombol edit
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.red,
+                                ),
+                                child: Container(
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.brightYellow,
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
                                     ),
-                                    child: Container(
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.secondary,
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(10),
-                                          bottomRight: Radius.circular(10),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 20.0,
-                                        ),
-                                        child: InkWell(
-                                          onTap: () {
-                                            // Tampilkan Dialog untuk edit jadwal
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                // Map untuk checkbox bayi (gunakan ID bayi sebagai key)
-                                                Map<int, bool> selectedBabies =
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        // Tampilkan Dialog untuk edit jadwal
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            // Map untuk checkbox bayi
+                                             Map<int, bool> selectedBabies =
                                                     {
                                                       for (var baby in babies)
                                                         baby.id: false,
                                                     };
-                                                return Dialog(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          16,
-                                                        ),
-                                                  ),
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          16,
-                                                        ),
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                              ),
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  16,
+                                                ),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
                                                       children: [
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            Material(
-                                                              color:
-                                                                  Colors
-                                                                      .transparent,
-                                                              child: InkWell(
-                                                                onTap:
-                                                                    () => Navigator.pop(
+                                                        Material(
+                                                          color:
+                                                              Colors
+                                                                  .transparent,
+                                                          child: InkWell(
+                                                            onTap:
+                                                                () =>
+                                                                    Navigator.pop(
                                                                       context,
                                                                     ),
                                                                 customBorder:
@@ -677,7 +671,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                   // Tombol hapus
                                   Container(
                                     width: 60,
-                                    decoration: const BoxDecoration(
+                                    decoration: BoxDecoration(
                                       color: AppColors.red,
                                       borderRadius: BorderRadius.only(
                                         topRight: Radius.circular(10),
@@ -915,37 +909,35 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                         scheduleId:
                                                             item.id.toString(),
                                                       ),
-                                                ),
-                                              );
-                                            },
-                                            child: Container(
-                                              padding: const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.buff,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Icon(
-                                                Symbols.chef_hat,
-                                                color: AppColors.textBlack,
-                                                size: 20,
-                                              ),
                                             ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.secondary,
+                                            shape: BoxShape.circle,
                                           ),
-                                        ],
+                                          child: const Icon(
+                                            Symbols.chef_hat,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

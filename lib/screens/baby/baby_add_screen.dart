@@ -72,14 +72,14 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.pearl,
       // AppBar dengan styling khusus
       appBar: AppBar(
-        backgroundColor: Color(0xFFFFE1BE),
+        backgroundColor: AppColors.primary,
         elevation: 0,
         // Tombol kembali dengan styling custom
         leading: IconButton(
-          icon: const Icon(Symbols.arrow_back_ios_new),
+          icon: const Icon(Symbols.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Colors.white,
@@ -90,11 +90,11 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
           ),
         ),
         title: const Text(
-          'Tambah Bayi', // Title diubah menjadi Tambah Bayi
+          'Tambah Profil Bayi',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: AppColors.textBlack,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
@@ -107,18 +107,21 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
             left: 0,
             right: 0,
             child: Container(
-              height: 100,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFFFE1BE),
-                    Color(0xFFFFC698),
-                    Color(0xFFFFAC84),
-                    Color(0xFFFF7F53),
-                  ],
+              height: 125,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(50),
+                    offset: const Offset(0, 4),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
             ),
           ),
@@ -128,15 +131,22 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  const SizedBox(height: 8),
                   // Avatar bayi dengan efek bulat dan shadow
                   Center(
                     child: Container(
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        color: AppColors.offWhite,
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(10),
+                            offset: const Offset(0, 8),
+                            blurRadius: 0,
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
                       child: Center(
                         child: Container(
@@ -167,6 +177,8 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 20),
 
                   // Form container dengan efek shadow
                   Stack(

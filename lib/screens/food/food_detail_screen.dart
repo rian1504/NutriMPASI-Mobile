@@ -63,24 +63,18 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         Stack(
                           children: [
                             // Latar belakang gradien
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).padding.top + 325,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  stops: [0.05, 0.41, 0.72, 1.0],
-                                  colors: [
-                                    Color(0xFFFFE1BE),
-                                    Color(0xFFFFC698),
-                                    Color(0xFFFFAC84),
-                                    Color(0xFFFF7F53),
-                                  ],
-                                ),
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.elliptical(200, 90),
-                                  bottomRight: Radius.elliptical(200, 90),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 64.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).padding.top + 225,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.elliptical(200, 70),
+                                    bottomRight: Radius.elliptical(200, 70),
+                                  ),
                                 ),
                               ),
                             ),
@@ -89,21 +83,30 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                             Positioned(
                               top: MediaQuery.of(context).padding.top + 16,
                               left: 16,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  context.read<FoodBloc>().add(FetchFoods());
-                                  Navigator.pop(context);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  shape: const CircleBorder(),
-                                  padding: const EdgeInsets.all(12),
-                                  elevation: 2,
-                                ),
-                                child: const Icon(
-                                  Symbols.arrow_back_ios_new,
-                                  color: AppColors.textBlack,
-                                  size: 20,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Material(
+                                  elevation: 3,
+                                  shadowColor: Colors.black54,
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Symbols.arrow_back_ios_new_rounded,
+                                        color: AppColors.textBlack,
+                                        size: 24,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        context.read<FoodBloc>().add(FetchFoods());
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -146,55 +149,57 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                             // Tombol favorit
                             Positioned(
-                              top: MediaQuery.of(context).padding.top + 270,
+                              top: MediaQuery.of(context).padding.top + 175,
                               right: 24,
-                              child: Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withAlpha(25),
-                                      spreadRadius: 1,
-                                      blurRadius: 3,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        food.isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: AppColors.primary,
-                                        size: 24,
-                                      ),
-                                      onPressed: () {
+                              child: GestureDetector(
+                                onTap: () {
                                         context.read<FoodDetailBloc>().add(
                                           ToggleFavorite(
                                             foodId: food.id.toString(),
                                           ),
                                         );
                                       },
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    Positioned(
-                                      bottom: 4,
-                                      child: Text(
-                                        food.favoritesCount.toString(),
-                                        style: const TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 10,
-                                          color: AppColors.textGrey,
+                                child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withAlpha(25),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Positioned(
+                                        top: 12,
+                                        child: Icon(
+                                          food.isFavorite
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: AppColors.red,
+                                          size: 20,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      Positioned(
+                                        bottom: 4,
+                                        child: Text(
+                                          food.favoritesCount.toString(),
+                                          style: const TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 12,
+                                            color: AppColors.textBlack,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -434,8 +439,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: 32.0,
-                      horizontal: 32.0,
+                      vertical: 24.0,
+                      horizontal: 36.0,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

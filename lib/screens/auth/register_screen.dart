@@ -66,7 +66,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             // Tunggu sebentar lalu navigasi ke login
             Future.delayed(const Duration(milliseconds: 500), () {
-              Navigator.pushReplacementNamed(context, '/login');
+              if (context.mounted) {
+                Navigator.pushReplacementNamed(context, '/login');
+              }
             });
           } else if (state is AuthenticationError) {
             ScaffoldMessenger.of(
@@ -84,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   top: 0,
                   left: 0,
                   right: 0,
-                  height: size.height * 0.55,
+                  height: size.height * 1,
                   child: Image.asset(
                     'assets/images/background/auth.png',
                     fit: BoxFit.cover,
