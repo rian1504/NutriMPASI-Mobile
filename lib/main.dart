@@ -105,9 +105,6 @@ class MainPage extends StatefulWidget {
   final int initialPage;
 
   const MainPage({super.key, this.initialPage = 0});
-  final int initialPage;
-
-  const MainPage({super.key, this.initialPage = 0});
 
   @override
   State<MainPage> createState() => MainPageState();
