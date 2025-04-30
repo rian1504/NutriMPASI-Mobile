@@ -578,7 +578,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                     ),
                                                     maxLines: 1,
                                                   ),
-                                                  const SizedBox(height: 16),
+                                                  const SizedBox(height: 4),
                                                   if (baby
                                                       .isProfileComplete) ...[
                                                     // Informasi usia (Age)
