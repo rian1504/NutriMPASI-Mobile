@@ -11,6 +11,7 @@ class FoodDetailBloc extends Bloc<FoodDetailEvent, FoodDetailState> {
 
   FoodDetailBloc({required this.controller}) : super(FoodDetailInitial()) {
     on<FetchFoodDetail>(_onFetch);
+    on<ToggleFavorite>(_onToggleFavorite);
   }
 
   Future<void> _onFetch(
@@ -23,6 +24,43 @@ class FoodDetailBloc extends Bloc<FoodDetailEvent, FoodDetailState> {
       emit(FoodDetailLoaded(food: result));
     } catch (e) {
       emit(FoodDetailError('Gagal memuat detail makanan: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onToggleFavorite(
+    ToggleFavorite event,
+    Emitter<FoodDetailState> emit,
+  ) async {
+    if (state is! FoodDetailLoaded) return;
+
+    final currentState = state as FoodDetailLoaded;
+    final currentFood = currentState.food;
+
+    try {
+      // Optimistic update
+      emit(
+        FoodDetailLoaded(
+          food: currentFood.copyWith(
+            isFavorite: !currentFood.isFavorite,
+            favoritesCount:
+                currentFood.isFavorite
+                    ? currentFood.favoritesCount - 1
+                    : currentFood.favoritesCount + 1,
+          ),
+        ),
+      );
+
+      // API call
+      await controller.toggleFavorite(id: event.foodId);
+
+      // Jika perlu, fetch ulang data untuk memastikan sync
+      // final updatedFood = await controller.showFood(id: event.foodId);
+      // emit(FoodDetailLoaded(food: updatedFood));
+    } catch (e) {
+      // Rollback jika error
+      emit(FoodDetailLoaded(food: currentFood));
+      // Anda bisa menambahkan snackbar atau alert untuk menampilkan error
+      // ScaffoldMessenger.of(context).showSnackBar(...);
     }
   }
 }

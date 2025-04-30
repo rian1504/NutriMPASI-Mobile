@@ -43,10 +43,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _register(BuildContext context) {
     context.read<AuthenticationBloc>().add(
       RegisterRequested(
-        _nameController.text,
-        _emailController.text,
-        _passwordController.text,
-        _confirmPasswordController.text,
+        name: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+        passwordConfirmation: _confirmPasswordController.text,
       ),
     );
   }

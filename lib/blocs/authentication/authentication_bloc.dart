@@ -16,6 +16,7 @@ class AuthenticationBloc
     on<LoginRequested>(_onLogin);
     on<RegisterRequested>(_onRegister);
     on<LogoutRequested>(_onLogout);
+    on<ForgotPasswordRequested>(_onForgotPassword);
     on<CheckAuthStatus>(_onCheckStatus);
   }
 
@@ -72,6 +73,20 @@ class AuthenticationBloc
 
       emit(LogoutSuccess(message: result));
       emit(AuthenticationUnauthenticated());
+    } catch (e) {
+      emit(AuthenticationError(e.toString()));
+    }
+  }
+
+  Future<void> _onForgotPassword(
+    ForgotPasswordRequested event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(AuthenticationLoading());
+    try {
+      final result = await controller.forgotPassword(email: event.email);
+
+      emit(ForgotPasswordSuccess(message: result));
     } catch (e) {
       emit(AuthenticationError(e.toString()));
     }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/remote_dio.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/food.dart';
+import 'package:nutrimpasi/models/food_cooking.dart';
 
 class FoodController {
   final Dio _dio = RemoteDio().dio;
@@ -89,6 +90,74 @@ class FoodController {
       return Food.fromJson(response.data['data']);
     } on DioException catch (e) {
       debugPrint('Get Food Detail error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> toggleFavorite({required String id}) async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.post('${ApiEndpoints.favorite}/$id');
+
+      // Debug response
+      debugPrint('Favorite response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Favorite error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<FoodCooking> showCookingGuide({
+    required String foodId,
+    required List<String> babyId,
+  }) async {
+    try {
+      // data
+      final data = {'baby_id[]': babyId};
+
+      // Kirim request ke API
+      final response = await _dio.get(
+        '${ApiEndpoints.food}/$foodId/cook',
+        queryParameters: data,
+      );
+
+      // Debug response
+      debugPrint('Get Food Cooking response: ${response.data}');
+
+      // Return data
+      return FoodCooking.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      debugPrint('Get Food Cooking error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> completeCookingGuide({
+    required String foodId,
+    required List<String> babyId,
+    String? scheduleId,
+  }) async {
+    try {
+      // data
+      final data = FormData();
+      // Tambahkan field satu per satu
+      for (var id in babyId) {
+        data.fields.add(MapEntry('baby_id[]', id)); // Format array PHP
+      }
+      if (scheduleId != null) {
+        data.fields.add(MapEntry('schedule_id', scheduleId));
+      }
+
+      // Kirim request ke API
+      final response = await _dio.post(
+        '${ApiEndpoints.food}/$foodId/cook/complete',
+        data: data,
+      );
+
+      // Debug response
+      debugPrint('Complete Cooking response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Complete Cooking error: ${e.response?.data}');
       throw _handleError(e);
     }
   }

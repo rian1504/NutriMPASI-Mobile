@@ -219,7 +219,8 @@ class _HomeScreenState extends State<HomeScreen>
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text(state.message)));
-
+              // Reset Baby
+              context.read<BabyBloc>().add(ResetBaby());
               // Navigasi ke login
               Navigator.pushReplacementNamed(context, '/login');
             });

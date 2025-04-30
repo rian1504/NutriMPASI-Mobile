@@ -7,7 +7,7 @@ class LoginRequested extends AuthenticationEvent {
   final String email;
   final String password;
 
-  LoginRequested(this.email, this.password);
+  LoginRequested({required this.email, required this.password});
 }
 
 class RegisterRequested extends AuthenticationEvent {
@@ -16,14 +16,20 @@ class RegisterRequested extends AuthenticationEvent {
   final String password;
   final String passwordConfirmation;
 
-  RegisterRequested(
-    this.name,
-    this.email,
-    this.password,
-    this.passwordConfirmation,
-  );
+  RegisterRequested({
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.passwordConfirmation,
+  });
 }
 
 class LogoutRequested extends AuthenticationEvent {}
+
+class ForgotPasswordRequested extends AuthenticationEvent {
+  final String email;
+
+  ForgotPasswordRequested({required this.email});
+}
 
 class CheckAuthStatus extends AuthenticationEvent {}

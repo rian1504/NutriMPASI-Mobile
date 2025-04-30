@@ -56,11 +56,12 @@ class _FoodListingScreenState extends State<FoodListingScreen>
     return state is FoodLoaded ? state.foods : [];
   }
 
+  bool _initialLoadCompleted = false;
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    context.read<FoodBloc>().add(FetchFoods());
 
     // menetapkan toggle
     _showUserSuggestionsOnly = widget.showUserSuggestions;
@@ -76,6 +77,15 @@ class _FoodListingScreenState extends State<FoodListingScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     );
+
+        // if (foodState is! FoodLoaded) {
+    //   context.read<FoodBloc>().add(FetchFoods());
+    // }
+
+    if (!_initialLoadCompleted) {
+      context.read<FoodBloc>().add(FetchFoods());
+      _initialLoadCompleted = true;
+    }
   }
 
   // Deteksi posisi scroll
