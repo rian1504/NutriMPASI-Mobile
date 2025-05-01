@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/models/food_model.dart';
+import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/models/baby_food_recommendation.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 
 class FoodRecommendationScreen extends StatefulWidget {
-  final List<Food> recommendedFoods;
+  final List<BabyFoodRecommendation> recommendedFoods;
 
   const FoodRecommendationScreen({super.key, required this.recommendedFoods});
 
@@ -101,7 +102,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                             controller: _scrollController,
                             itemCount: widget.recommendedFoods.length,
                             itemBuilder: (context, index) {
-                              final item = widget.recommendedFoods[index];
+                              final item = widget.recommendedFoods[index].food;
 
                               // Card rekomendasi makanan
                               return GestureDetector(
@@ -129,7 +130,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                       children: [
                                         // Gambar makanan
                                         Image.network(
-                                          item.image,
+                                          storageUrl + item.image,
                                           width: 100,
                                           height: 100,
                                           fit: BoxFit.cover,

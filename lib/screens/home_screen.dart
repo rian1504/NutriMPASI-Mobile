@@ -5,11 +5,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/main.dart';
-import 'package:nutrimpasi/models/food_model.dart';
+import 'package:nutrimpasi/models/baby_food_recommendation.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
-import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
+// import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
@@ -24,9 +25,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
-  // Data dummy untuk makanan yang direkomendasikan
-  final List<Food> _recommendedFoods = Food.dummyFoods.take(5).toList();
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  // Data rekomendasi makanan bayi
+  List<BabyFoodRecommendation> get _recommendedFoods {
+    final state = context.read<BabyBloc>().state;
+    return state is BabyFoodRecommendationLoaded
+        ? state.babyFoodRecommendation
+        : [];
+  }
+
+  Baby? _selectedBaby;
+  List<Baby> babies = [];
+
+  @override
+  bool get wantKeepAlive => true;
 
   // Controller PageView untuk bayi (vertikal)
   final PageController _babyController = PageController();
@@ -52,15 +64,35 @@ class _HomeScreenState extends State<HomeScreen>
     _startAutoScroll();
 
     // Load data
-    final babyState = context.read<BabyBloc>().state;
-    if (babyState is! BabyLoaded) {
-      context.read<BabyBloc>().add(FetchBabies());
+    final babyBloc = context.read<BabyBloc>();
+    final babyState = babyBloc.state;
+
+    if (babyState is! BabyLoaded && babyState is! BabyLoading) {
+      babyBloc.add(FetchBabies());
+    } else if (babyState is BabyLoaded) {
+      if (babies.isEmpty) {
+        // Populate local list only if empty (on first load with KeepAlive)
+        babies = babyState.babies;
+        // Assign first baby and fetch recommendations
+        _currentBabyIndex = 0; // Start at the first baby
+        _selectedBaby = babies[_currentBabyIndex];
+        _fetchRecommendationsForCurrentBaby();
+      }
+      _isBabyDataLoading = false;
     } else {
-      // Jika data sudah ter-load, perbarui status loading
-      setState(() {
-        _isBabyDataLoading = false;
-      });
+      _isBabyDataLoading = true;
     }
+  }
+
+  // Helper function to fetch recommendations
+  void _fetchRecommendationsForCurrentBaby() {
+    // _selectedBaby should be non-null if babies list is guaranteed non-empty
+    if (_selectedBaby == null) return;
+
+    setState(() {});
+    context.read<BabyBloc>().add(
+      FetchBabyFoodRecommendation(babyId: _selectedBaby!.id.toString()),
+    );
   }
 
   // Mulai auto scroll untuk rekomendasi
@@ -174,6 +206,8 @@ class _HomeScreenState extends State<HomeScreen>
             currentPageRound < babies.length) {
           setState(() {
             _currentBabyIndex = currentPageRound;
+            _selectedBaby = babies[_currentBabyIndex];
+            _fetchRecommendationsForCurrentBaby();
           });
         }
       });
@@ -194,10 +228,9 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-  List<Baby> babies = [];
-
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: AppColors.pearl,
       appBar: AppBar(backgroundColor: AppColors.bisque, toolbarHeight: 1),
@@ -230,16 +263,67 @@ class _HomeScreenState extends State<HomeScreen>
           if (authState is AuthenticationLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (authState is LoginSuccess) {
-            // Bungkus konten utama dengan BlocConsumer untuk BabyBloc
             return BlocConsumer<BabyBloc, BabyState>(
               listener: (context, babyState) {
                 if (babyState is BabyLoaded) {
+                  final bool wasBabyListEmpty = babies.isEmpty;
                   if (_isBabyDataLoading) {
                     setState(() {
                       babies = babyState.babies;
                       _isBabyDataLoading = false;
+
+                      // Ensure index is valid and select baby
+                      _currentBabyIndex = _currentBabyIndex.clamp(
+                        0,
+                        babies.length - 1,
+                      );
+                      _selectedBaby = babies[_currentBabyIndex];
+
+                      // Fetch recommendations only if the baby list was *just* populated
+                      if (wasBabyListEmpty) {
+                        _fetchRecommendationsForCurrentBaby();
+                      }
+                    });
+
+                    // Sync PageView position
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted && _babyController.hasClients) {
+                        // Removed babies.isNotEmpty check
+                        if (_babyController.page?.round() !=
+                            _currentBabyIndex) {
+                          _babyController.jumpToPage(_currentBabyIndex);
+                        }
+                      }
                     });
                   }
+                } else if (babyState is BabyLoading) {
+                  setState(() {
+                    _isBabyDataLoading = babies.isEmpty;
+                  });
+                } else if (babyState is BabyFoodRecommendationLoading) {
+                  setState(() {});
+                } else if (babyState is BabyFoodRecommendationLoaded) {
+                  setState(() {
+                    _currentRecommendationIndex = 0;
+                    if (_foodRecommendationController.hasClients) {
+                      _foodRecommendationController.jumpToPage(0);
+                    }
+                    _startAutoScroll();
+                  });
+                } else if (babyState is BabyError) {
+                  setState(() {
+                    _isBabyDataLoading = false;
+                  });
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Gagal memuat data bayi: ${babyState.error}',
+                        ),
+                      ),
+                    );
+                  });
                 }
               },
               builder: (context, babyState) {
@@ -578,7 +662,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                     ),
                                                     maxLines: 1,
                                                   ),
-                                                  const SizedBox(height: 16),
+                                                  const SizedBox(height: 4),
                                                   if (baby
                                                       .isProfileComplete) ...[
                                                     // Informasi usia (Age)
@@ -886,7 +970,7 @@ class _HomeScreenState extends State<HomeScreen>
                       width: 100,
                       height: 100,
                       child: Image.network(
-                        _recommendedFoods[0].image,
+                        "https://picsum.photos/200/300?random=16",
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -952,7 +1036,11 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // Card untuk rekomendasi makanan
-  Widget _buildFoodRecommendationCard(Food food) {
+  Widget _buildFoodRecommendationCard(
+    BabyFoodRecommendation foodRecommendation,
+  ) {
+    final food = foodRecommendation.food;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Stack(
@@ -961,7 +1049,7 @@ class _HomeScreenState extends State<HomeScreen>
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
-              food.image,
+              storageUrl + food.image,
               width: double.infinity,
               height: 180,
               fit: BoxFit.cover,
@@ -1022,7 +1110,7 @@ class _HomeScreenState extends State<HomeScreen>
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    food.source,
+                    food.source ?? "Pengguna",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,

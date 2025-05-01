@@ -78,12 +78,13 @@ class _FoodListingScreenState extends State<FoodListingScreen>
       curve: Curves.easeInOut,
     );
 
-        // if (foodState is! FoodLoaded) {
+    // if (foodState is! FoodLoaded) {
     //   context.read<FoodBloc>().add(FetchFoods());
     // }
 
     if (!_initialLoadCompleted) {
       context.read<FoodBloc>().add(FetchFoods());
+      context.read<FoodBloc>().add(FetchCategories());
       _initialLoadCompleted = true;
     }
   }

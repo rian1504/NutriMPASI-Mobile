@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/remote_dio.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/baby.dart';
+import 'package:nutrimpasi/models/baby_food_recommendation.dart';
 
 class BabyController {
   final Dio _dio = RemoteDio().dio;
@@ -21,6 +22,28 @@ class BabyController {
           .toList();
     } on DioException catch (e) {
       debugPrint('Get baby error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<List<BabyFoodRecommendation>> getBabyFoodRecommendation({
+    required String babyId,
+  }) async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.get(
+        '${ApiEndpoints.babyFoodRecommendation}/$babyId',
+      );
+
+      // Debug response
+      debugPrint('Get baby food recommendation response: ${response.data}');
+
+      // Return data
+      return (response.data['data'] as List)
+          .map((e) => BabyFoodRecommendation.fromJson(e))
+          .toList();
+    } on DioException catch (e) {
+      debugPrint('Get baby food recommendation error: ${e.response?.data}');
       throw _handleError(e);
     }
   }
