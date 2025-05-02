@@ -851,25 +851,33 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                             ),
                                           ),
                                           const SizedBox(height: 4),
-                                          Row(
-                                            children:
-                                                babies.map((baby) {
-                                                  return Row(
-                                                    children: [
-                                                      Text(
-                                                        baby.name,
-                                                        style: TextStyle(
-                                                          fontFamily: 'Poppins',
-                                                          fontSize: 12,
-                                                          color:
-                                                              AppColors
-                                                                  .textGrey,
+                                          SizedBox(
+                                            height: 40,
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              child: Column(
+                                                children:
+                                                    babies.map((baby) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                              right: 5,
+                                                            ),
+                                                        child: Text(
+                                                          baby.name,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 12,
+                                                            color:
+                                                                AppColors
+                                                                    .textGrey,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      SizedBox(width: 5),
-                                                    ],
-                                                  );
-                                                }).toList(),
+                                                      );
+                                                    }).toList(),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),

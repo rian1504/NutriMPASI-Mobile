@@ -275,7 +275,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
       return;
     }
 
-    // Membbuat filter untuk sementara
+    // Membuat filter untuk sementara
     Map<String, bool> tempFoodCategoryFilters = Map.from(_foodCategoryFilters);
     Map<String, bool> tempFoodAgeFilters = Map.from(_foodAgeFilters);
     Map<String, bool> tempRecipeSourceFilters = Map.from(_recipeSourceFilters);
