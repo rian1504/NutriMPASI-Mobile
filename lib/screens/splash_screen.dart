@@ -133,31 +133,49 @@ class _SplashScreenState extends State<SplashScreen>
       }
     });
 
-    // Navigasi ke layar berikutnya setelah penundaan
-    Timer(const Duration(milliseconds: 2500), () {
-      if (widget.nextScreen != null) {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder:
-                (context, animation, secondaryAnimation) => widget.nextScreen!,
-            transitionsBuilder: (
-              context,
-              animation,
-              secondaryAnimation,
-              child,
-            ) {
-              const begin = 0.0;
-              const end = 1.0;
-              var tween = Tween(begin: begin, end: end);
-              var fadeAnimation = animation.drive(tween);
+    _ensureNavigationAfterAnimation();
+  }
 
-              return FadeTransition(opacity: fadeAnimation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 1200),
-          ),
-        );
-      }
+  void _ensureNavigationAfterAnimation() {
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (!mounted || _isDisposed) return;
+
+      Future.wait([
+        _primaryController.forward().then((_) => true),
+        _amberController.forward().then((_) => true),
+        _lightAmberController.forward().then((_) => true),
+        _secondaryPrimaryController.forward().then((_) => true),
+      ]).then((_) {
+        if (!mounted || _isDisposed) return;
+
+        Future.delayed(const Duration(milliseconds: 1000), () {
+          if (!mounted || _isDisposed) return;
+
+          if (widget.nextScreen != null) {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                pageBuilder:
+                    (context, animation, secondaryAnimation) =>
+                        widget.nextScreen!,
+                transitionsBuilder: (
+                  context,
+                  animation,
+                  secondaryAnimation,
+                  child,
+                ) {
+                  const begin = 0.0;
+                  const end = 1.0;
+                  var tween = Tween(begin: begin, end: end);
+                  var fadeAnimation = animation.drive(tween);
+                  return FadeTransition(opacity: fadeAnimation, child: child);
+                },
+                transitionDuration: const Duration(milliseconds: 800),
+              ),
+            );
+          }
+        });
+      });
     });
   }
 

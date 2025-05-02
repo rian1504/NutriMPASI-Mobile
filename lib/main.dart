@@ -42,7 +42,11 @@ class MainApp extends StatelessWidget {
             final bloc = AuthenticationBloc(
               controller: AuthenticationController(),
             );
-            bloc.add(CheckAuthStatus());
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (bloc.state is AuthenticationInitial) {
+                bloc.add(CheckAuthStatus());
+              }
+            });
             return bloc;
           },
         ),
@@ -81,11 +85,10 @@ class MainApp extends StatelessWidget {
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
-            if (state is AuthenticationInitial ||
-                state is AuthenticationChecking) {
-              return const SplashScreen();
-            } else if (state is LoginSuccess) {
+            if (state is LoginSuccess) {
               return const SplashScreen(nextScreen: MainPage());
+            } else if (state is AuthenticationUnauthenticated) {
+              return const SplashScreen(nextScreen: OnboardingScreen());
             } else {
               return const SplashScreen(nextScreen: OnboardingScreen());
             }
