@@ -814,10 +814,13 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                     return InkWell(
                       onTap: () {
                         onSelected(option);
+
+                        _searchController.text = option;
                         setState(() {
                           _activeSearchQuery = option;
                           _displayedItemCount = 5;
                         });
+
                         // Hilangkan fokus setelah pemilihan
                         FocusScope.of(context).unfocus();
                       },
@@ -1336,7 +1339,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
 
                       const SizedBox(height: 16),
 
-                      // Info pencarian aktif (jika ada)
+                      // Info pencarian aktif
                       if (_activeSearchQuery.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12.0),
