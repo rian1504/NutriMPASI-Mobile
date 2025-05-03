@@ -16,3 +16,9 @@ class StoreSchedules extends ScheduleEvent {
     required this.date,
   });
 }
+
+class DeleteSchedules extends ScheduleEvent {
+  final int scheduleId;
+
+  DeleteSchedules({required this.scheduleId});
+}

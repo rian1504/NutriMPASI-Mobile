@@ -100,6 +100,21 @@ class ScheduleController {
     }
   }
 
+  Future<void> deleteSchedule({required int scheduleId}) async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.delete(
+        '${ApiEndpoints.schedule}/$scheduleId',
+      );
+
+      // Debug response
+      debugPrint('Delete Schedule response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Delete Schedule error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
   String _handleError(DioException e) {
     if (e.response?.data != null && e.response?.data['message'] != null) {
       return e.response!.data['message'];
