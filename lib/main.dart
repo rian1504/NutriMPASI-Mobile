@@ -10,6 +10,7 @@ import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
+import 'package:nutrimpasi/blocs/schedule_detail/schedule_detail_bloc.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/food_controller.dart';
@@ -60,6 +61,10 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ScheduleBloc(controller: ScheduleController()),
+        ),
+        BlocProvider(
+          create:
+              (context) => ScheduleDetailBloc(controller: ScheduleController()),
         ),
       ],
       child: MaterialApp(

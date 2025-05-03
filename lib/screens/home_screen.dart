@@ -9,7 +9,7 @@ import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
-import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
+// import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
@@ -578,7 +578,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                     ),
                                                     maxLines: 1,
                                                   ),
-                                                  const SizedBox(height: 16),
+                                                  const SizedBox(height: 4),
                                                   if (baby
                                                       .isProfileComplete) ...[
                                                     // Informasi usia (Age)

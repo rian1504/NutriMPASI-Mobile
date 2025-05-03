@@ -10,28 +10,33 @@ String scheduleToJson(Schedule data) => json.encode(data.toJson());
 
 class Schedule {
   int id;
-  int foodId;
-  Food food;
+  DateTime date;
+  int? foodId;
+  Food? food;
   List<Baby> babies;
 
   Schedule({
     required this.id,
-    required this.foodId,
-    required this.food,
+    required this.date,
+    this.foodId,
+    this.food,
     required this.babies,
   });
 
   factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
     id: json["id"],
+    date: DateTime.parse(json["date"]),
     foodId: json["food_id"],
-    food: Food.fromJson(json["food"]),
-    babies: List<Baby>.from(json["babies"].map((x) => Baby.fromJson(x))),
+    food: json["food"] != null ? Food.fromJson(json["food"]) : null,
+    babies: List<Baby>.from(json["babies"]?.map((x) => Baby.fromJson(x)) ?? []),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "date":
+        "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
     "food_id": foodId,
-    "food": food.toJson(),
+    "food": food?.toJson(),
     "babies": List<dynamic>.from(babies.map((x) => x.toJson())),
   };
 }
