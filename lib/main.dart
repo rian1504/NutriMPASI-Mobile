@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
+import 'package:nutrimpasi/blocs/baby_food_recommendation/baby_food_recommendation_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
@@ -49,6 +50,11 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => BabyBloc(controller: BabyController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  BabyFoodRecommendationBloc(controller: BabyController()),
         ),
         BlocProvider(
           create: (context) => FoodBloc(controller: FoodController()),

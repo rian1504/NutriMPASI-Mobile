@@ -25,7 +25,7 @@ class ApiEndpoints {
 
   // Baby
   static const String baby = 'baby';
-  static const String babyFoodRecommendationById = '$baby/food-recommendation';
+  static const String babyFoodRecommendation = '$baby/food-recommendation';
 
   // Food
   static const String food = 'food';
