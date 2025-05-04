@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/models/baby_model.dart';
+import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_add_screen.dart';
 
@@ -20,7 +22,8 @@ class _BabyListScreenState extends State<BabyListScreen> {
   int _currentCarouselPage = 0;
 
   // Data sample bayi
-  final List<Baby> _babies = Baby.dummyBabies;
+  // final List<Baby> _babies = Baby.dummyBabies;
+  List<Baby> _babies = [];
 
   @override
   void initState() {
@@ -34,6 +37,12 @@ class _BabyListScreenState extends State<BabyListScreen> {
         });
       }
     });
+
+    // Load data
+    final babyState = context.read<BabyBloc>().state;
+    if (babyState is! BabyLoaded) {
+      context.read<BabyBloc>().add(FetchBabies());
+    }
   }
 
   @override
@@ -44,176 +53,212 @@ class _BabyListScreenState extends State<BabyListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.pearl,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Material(
-            elevation: 3,
-            shadowColor: Colors.black54,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
+    return BlocConsumer<BabyBloc, BabyState>(
+      listener: (context, state) {
+        if (state is BabyError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error)));
+        }
+
+        if (state is BabyDeleted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profil bayi berhasil dihapus')),
+          );
+
+          context.read<BabyBloc>().add(FetchBabies());
+        }
+      },
+      builder: (context, state) {
+        // Handle loading state
+        if (state is BabyLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Handle loaded state
+        if (state is BabyLoaded) {
+          _babies = state.babies;
+        }
+
+        return Scaffold(
+          backgroundColor: AppColors.pearl,
+          appBar: AppBar(
+            backgroundColor: AppColors.primary,
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Material(
+                elevation: 3,
+                shadowColor: Colors.black54,
                 borderRadius: BorderRadius.circular(16),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Symbols.arrow_back_ios_new_rounded,
-                  color: AppColors.textBlack,
-                  size: 24,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Symbols.arrow_back_ios_new_rounded,
+                      color: AppColors.textBlack,
+                      size: 24,
+                    ),
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.pop(context),
               ),
             ),
           ),
-        ),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Bagian utama dengan latar belakang gradient
-          Expanded(
-            child: Stack(
-              children: [
-                // Background dengan dua bagian: gradient 50% di atas, putih 50% di bawah
-                Column(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Bagian utama dengan latar belakang gradient
+              Expanded(
+                child: Stack(
                   children: [
-                    // Bagian gradient (50% atas)
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: [0.2, 0.7, 0.9],
-                            colors: [
-                              AppColors.primary,
-                              AppColors.bisque,
-                              AppColors.pearl,
-                            ],
-                          ),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Bagian putih (50% bawah)
-                    Expanded(flex: 1, child: Container(color: Colors.white)),
-                  ],
-                ),
-
-                // Konten utama (overlay di atas background)
-                Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    // Judul halaman
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Kelola Profil Bayi Anda',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Tambahkan atau edit data bayi untuk mendapatkan rekomendasi makanan yang lebih sesuai.',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 48),
-                    // PageView untuk carousel bayi
-                    Expanded(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 420,
-                            child: PageView.builder(
-                              controller: _carouselController,
-                              itemCount: _babies.length + 1,
-                              itemBuilder: (context, index) {
-                                final bool isCurrentItem =
-                                    _currentCarouselPage == index;
-
-                                // Kartu tambah bayi baru
-                                if (index == _babies.length) {
-                                  return _buildAddBabyCard(isCurrentItem);
-                                }
-
-                                // Kartu profil bayi
-                                final baby = _babies[index];
-                                return _buildBabyCard(baby, isCurrentItem);
-                              },
-                            ),
-                          ),
-                          // Memberikan jarak yang cukup agar shadow tidak terpotong
-                          const SizedBox(height: 24),
-                          // Indikator dot untuk carousel (pagination)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              _babies.length + 1,
-                              (index) => Container(
-                                width: 8,
-                                height: 8,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color:
-                                      _currentCarouselPage == index
-                                          ? AppColors.primary
-                                          : AppColors.componentGrey!.withAlpha(
-                                            125,
-                                          ),
-                                ),
+                    // Background dengan dua bagian: gradient 50% di atas, putih 50% di bawah
+                    Column(
+                      children: [
+                        // Bagian gradient (50% atas)
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                stops: [0.2, 0.7, 0.9],
+                                colors: [
+                                  AppColors.primary,
+                                  AppColors.bisque,
+                                  AppColors.pearl,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(30),
+                                bottomRight: Radius.circular(30),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        // Bagian putih (50% bawah)
+                        Expanded(
+                          flex: 1,
+                          child: Container(color: Colors.white),
+                        ),
+                      ],
+                    ),
+
+                    // Konten utama (overlay di atas background)
+                    Column(
+                      children: [
+                        const SizedBox(height: 24),
+                        // Judul halaman
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 32.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Kelola Profil Bayi Anda',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Tambahkan atau edit data bayi untuk mendapatkan rekomendasi makanan yang lebih sesuai.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 48),
+                        // PageView untuk carousel bayi
+                        Expanded(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 420,
+                                child: PageView.builder(
+                                  controller: _carouselController,
+                                  itemCount: _babies.length + 1,
+                                  itemBuilder: (context, index) {
+                                    final bool isCurrentItem =
+                                        _currentCarouselPage == index;
+
+                                    // Kartu tambah bayi baru
+                                    if (index == _babies.length) {
+                                      return _buildAddBabyCard(isCurrentItem);
+                                    }
+
+                                    // Kartu profil bayi
+                                    final baby = _babies[index];
+                                    return _buildBabyCard(baby, isCurrentItem);
+                                  },
+                                ),
+                              ),
+                              // Memberikan jarak yang cukup agar shadow tidak terpotong
+                              const SizedBox(height: 24),
+                              // Indikator dot untuk carousel (pagination)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  _babies.length + 1,
+                                  (index) => Container(
+                                    width: 8,
+                                    height: 8,
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color:
+                                          _currentCarouselPage == index
+                                              ? AppColors.primary
+                                              : AppColors.componentGrey!
+                                                  .withAlpha(125),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      // Tombol tambah bayi floating
-      floatingActionButton:
-          _currentCarouselPage == _babies.length
-              ? null
-              : FloatingActionButton(
-                onPressed: () {
-                  // Navigasi ke kartu tambah bayi
-                  _carouselController.animateToPage(
-                    _babies.length,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                backgroundColor: AppColors.secondary,
-                child: const Icon(Symbols.add, color: Colors.white),
               ),
+            ],
+          ),
+          // Tombol tambah bayi floating
+          floatingActionButton:
+              _currentCarouselPage == _babies.length
+                  ? null
+                  : FloatingActionButton(
+                    onPressed: () {
+                      // Navigasi ke kartu tambah bayi
+                      _carouselController.animateToPage(
+                        _babies.length,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    backgroundColor: AppColors.secondary,
+                    child: const Icon(Symbols.add, color: Colors.white),
+                  ),
+        );
+      },
     );
   }
 
@@ -305,7 +350,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                       height: 200,
                       decoration: BoxDecoration(
                         color:
-                            baby.gender == 'Laki-Laki'
+                            baby.gender == 'L'
                                 ? AppColors.lavenderBlue.withAlpha(125)
                                 : AppColors.bisque.withAlpha(125),
                         borderRadius: BorderRadius.circular(16),
@@ -314,7 +359,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                         child:
                             baby.isProfileComplete
                                 ? Image.asset(
-                                  baby.gender == 'Laki-Laki'
+                                  baby.gender == 'L'
                                       ? 'assets/images/component/bayi_laki_laki.png'
                                       : 'assets/images/component/bayi_perempuan.png',
                                   fit: BoxFit.contain,
@@ -337,6 +382,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                             Symbols.cake,
                             'Usia',
                             getAgeDisplay(baby),
+                            // '${baby.ageInMonths} bulan',
                           ),
                           const SizedBox(height: 12),
                           _buildInfoRow(
@@ -354,7 +400,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           _buildInfoRow(
                             Symbols.no_meals,
                             'Alergi',
-                            baby.allergy ?? 'Tidak ada',
+                            baby.condition ?? 'Tidak ada',
                           ),
                         ],
                       ),
@@ -516,15 +562,13 @@ class _BabyListScreenState extends State<BabyListScreen> {
 
   // Fungsi untuk menghitung dan menampilkan usia bayi dalam bulan
   String getAgeDisplay(Baby baby) {
-    if (baby.birthDate == null) return '- bulan';
+    if (baby.dob == null) return '- bulan';
 
     final now = DateTime.now();
     final months =
-        (now.year - baby.birthDate!.year) * 12 +
-        now.month -
-        baby.birthDate!.month;
+        (now.year - baby.dob!.year) * 12 + now.month - baby.dob!.month;
 
-    if (now.day < baby.birthDate!.day) {
+    if (now.day < baby.dob!.day) {
       return '${months - 1} bulan';
     }
 
@@ -582,8 +626,11 @@ class _BabyListScreenState extends State<BabyListScreen> {
                             ),
                           ),
                           onPressed: () {
-                            // TODO: Implementasi hapus bayi
                             Navigator.pop(context);
+
+                            context.read<BabyBloc>().add(
+                              DeleteBabies(babyId: baby.id),
+                            );
                           },
                           child: const Text('Hapus'),
                         ),
