@@ -35,4 +35,7 @@ class ApiEndpoints {
 
   // Schedule
   static const String schedule = 'schedule';
+
+  // Nutritionist
+  static const String nutritionist = 'nutritionist';
 }

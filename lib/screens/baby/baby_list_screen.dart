@@ -21,8 +21,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
   );
   int _currentCarouselPage = 0;
 
-  // Data sample bayi
-  // final List<Baby> _babies = Baby.dummyBabies;
+  // Data bayi
   List<Baby> _babies = [];
 
   @override
