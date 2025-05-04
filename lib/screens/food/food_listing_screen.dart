@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
@@ -78,7 +79,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
       curve: Curves.easeInOut,
     );
 
-        // if (foodState is! FoodLoaded) {
+    // if (foodState is! FoodLoaded) {
     //   context.read<FoodBloc>().add(FetchFoods());
     // }
 
@@ -877,187 +878,225 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                     _foodCategoryFilters = {
                       for (var category in categories) category.name: false,
                     };
-                  }
 
-                  return Column(
-                    children: [
-                      ..._getFilteredFoodItems().take(_displayedItemCount).map((
-                        item,
-                      ) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => FoodDetailScreen(
-                                      foodId: item.id.toString(),
-                                    ),
-                              ),
-                            );
-                          },
-                          child: Card(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                    // Cek jika data kosong
+                    if (_getFilteredFoodItems().isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 20),
+                            Icon(
+                              Symbols.fastfood,
+                              size: 60,
+                              color: AppColors.textGrey,
                             ),
-                            child: Row(
-                              children: [
-                                // Gambar makanan
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    storageUrl + item.image,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
+                            const SizedBox(height: 16),
+                            Text(
+                              _showUserSuggestionsOnly
+                                  ? 'Belum ada usulan makanan dari Anda'
+                                  : 'Tidak ada makanan tersedia',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.textGrey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    // Jika ada data, tampilkan daftar makanan
+                    return Column(
+                      children: [
+                        ..._getFilteredFoodItems().take(_displayedItemCount).map((
+                          item,
+                        ) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => FoodDetailScreen(
+                                        foodId: item.id.toString(),
+                                      ),
                                 ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
+                              );
+                            },
+                            child: Card(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                children: [
+                                  // Gambar makanan
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      storageUrl + item.image,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
                                     ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 5,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              right: 8.0,
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                // Nama makanan
-                                                Text(
-                                                  item.name,
-                                                  style: const TextStyle(
-                                                    fontFamily: 'Poppins',
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: AppColors.textBlack,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                // Deskripsi singkat
-                                                Text(
-                                                  item.description,
-                                                  style: TextStyle(
-                                                    fontFamily: 'Poppins',
-                                                    fontSize: 12,
-                                                    color: AppColors.textGrey,
-                                                  ),
-                                                  textAlign: TextAlign.justify,
-                                                  maxLines: 3,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            // Indikator sumber
-                                            Container(
-                                              padding: const EdgeInsets.all(4),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.secondary
-                                                    .withAlpha(25),
-                                                shape: BoxShape.circle,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 5,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                right: 8.0,
                                               ),
-                                              child: Image.asset(
-                                                item.source == 'WHO'
-                                                    ? 'assets/images/icon/source_who.png'
-                                                    : item.source == 'KEMENKES'
-                                                    ? 'assets/images/icon/source_kemenkes.png'
-                                                    : 'assets/images/icon/source_pengguna.png',
-                                                width: 16,
-                                                height: 16,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 32),
-                                            // Indikator favorit
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 6,
-                                                    vertical: 3,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.primary,
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  item.isFavorite
-                                                      ? Stack(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        children: [
-                                                          Icon(
-                                                            Icons.favorite,
-                                                            color: Colors.white,
-                                                            size: 12,
-                                                          ),
-                                                          Icon(
-                                                            Icons.favorite,
-                                                            color:
-                                                                AppColors.buff,
-                                                            size: 12,
-                                                          ),
-                                                        ],
-                                                      )
-                                                      : Icon(
-                                                        Icons.favorite_border,
-                                                        color: Colors.white,
-                                                        size: 12,
-                                                      ),
-                                                  const SizedBox(width: 4),
+                                                  // Nama makanan
                                                   Text(
-                                                    item.favoritesCount
-                                                        .toString(),
+                                                    item.name,
                                                     style: const TextStyle(
                                                       fontFamily: 'Poppins',
-                                                      fontSize: 8,
-                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color:
+                                                          AppColors.textBlack,
                                                     ),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  // Deskripsi singkat
+                                                  Text(
+                                                    item.description,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 12,
+                                                      color: AppColors.textGrey,
+                                                    ),
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // Indikator sumber
+                                              Container(
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.secondary
+                                                      .withAlpha(25),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Image.asset(
+                                                  item.source == 'WHO'
+                                                      ? 'assets/images/icon/source_who.png'
+                                                      : item.source ==
+                                                          'KEMENKES'
+                                                      ? 'assets/images/icon/source_kemenkes.png'
+                                                      : 'assets/images/icon/source_pengguna.png',
+                                                  width: 16,
+                                                  height: 16,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 32),
+                                              // Indikator favorit
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 6,
+                                                      vertical: 3,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    item.isFavorite
+                                                        ? Stack(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.favorite,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 12,
+                                                            ),
+                                                            Icon(
+                                                              Icons.favorite,
+                                                              color:
+                                                                  AppColors
+                                                                      .buff,
+                                                              size: 12,
+                                                            ),
+                                                          ],
+                                                        )
+                                                        : Icon(
+                                                          Icons.favorite_border,
+                                                          color: Colors.white,
+                                                          size: 12,
+                                                        ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      item.favoritesCount
+                                                          .toString(),
+                                                      style: const TextStyle(
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 8,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        }),
 
-                      // Indikator loading
-                      if (_isLoadingMore)
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primary,
+                        // Indikator loading
+                        if (_isLoadingMore)
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.primary,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                  );
+                      ],
+                    );
+                  }
+                  return SizedBox.shrink();
                 },
               ),
               const SizedBox(height: 76),
