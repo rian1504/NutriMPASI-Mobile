@@ -599,11 +599,6 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                         final babyId = widget.babyId;
                                         final scheduleId = widget.scheduleId;
 
-                                        debugPrint('Sebelum dispatch:');
-                                        debugPrint('FoodID: $foodId');
-                                        debugPrint('BabyID: $babyId');
-                                        debugPrint('ScheduleID: $scheduleId');
-
                                         // Cek apakah scheduleId null atau tidak
                                         if (scheduleId != null) {
                                           context.read<FoodCookingBloc>().add(

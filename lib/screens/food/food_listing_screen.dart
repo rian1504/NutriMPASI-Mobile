@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
@@ -89,7 +90,10 @@ class _FoodListingScreenState extends State<FoodListingScreen>
       curve: Curves.easeInOut,
     );
 
-    // Memuat data awal
+    // if (foodState is! FoodLoaded) {
+    //   context.read<FoodBloc>().add(FetchFoods());
+    // }
+
     if (!_initialLoadCompleted) {
       context.read<FoodBloc>().add(FetchFoods());
       context.read<FoodBloc>().add(FetchCategories());

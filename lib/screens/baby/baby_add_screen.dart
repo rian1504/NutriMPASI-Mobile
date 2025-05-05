@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:intl/intl.dart';
 
@@ -22,7 +24,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
   final TextEditingController _birthDateController = TextEditingController();
 
   // Default value untuk jenis kelamin
-  String _gender = 'Laki-Laki';
+  String _gender = 'L';
   DateTime? _selectedDate;
 
   @override
@@ -56,7 +58,10 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _birthDateController.text = DateFormat('dd-MM-yyyy').format(picked);
+        _birthDateController.text = DateFormat(
+          'EEEE, d MMMM y',
+          'id_ID',
+        ).format(picked);
       });
     }
   }
@@ -64,8 +69,16 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
   /// Fungsi untuk menyimpan data bayi
   void _saveBaby() {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implementasi simpan bayi baru
-      Navigator.pop(context);
+      context.read<BabyBloc>().add(
+        StoreBabies(
+          name: _nameController.text,
+          dob: _selectedDate!,
+          gender: _gender,
+          weight: double.parse(_weightController.text),
+          height: double.parse(_heightController.text),
+          condition: _allergyController.text,
+        ),
+      );
     }
   }
 
@@ -167,7 +180,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Image.asset(
-                              _gender == 'Laki-Laki'
+                              _gender == 'L'
                                   ? 'assets/images/component/bayi_laki_laki.png'
                                   : 'assets/images/component/bayi_perempuan.png',
                               fit: BoxFit.contain,
@@ -295,7 +308,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                 Row(
                                   children: [
                                     Radio(
-                                      value: 'Laki-Laki',
+                                      value: 'L',
                                       groupValue: _gender,
                                       activeColor: AppColors.primary,
                                       onChanged: (value) {
@@ -307,7 +320,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                     const Text('Laki-Laki'),
                                     const SizedBox(width: 20),
                                     Radio(
-                                      value: 'Perempuan',
+                                      value: 'P',
                                       groupValue: _gender,
                                       activeColor: AppColors.primary,
                                       onChanged: (value) {
@@ -618,12 +631,44 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                               ),
                             ),
                             onPressed: _saveBaby,
-                            child: const Text(
-                              'Simpan',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            child: BlocConsumer<BabyBloc, BabyState>(
+                              listener: (context, state) {
+                                if (state is BabyStored) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Data bayi berhasil disimpan!',
+                                      ),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+
+                                  context.read<BabyBloc>().add(FetchBabies());
+                                  Navigator.pop(context);
+                                } else if (state is BabyError) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.error),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is BabyLoading) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+
+                                return const Text(
+                                  'Simpan',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),

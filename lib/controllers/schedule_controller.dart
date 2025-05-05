@@ -54,6 +54,67 @@ class ScheduleController {
     }
   }
 
+  Future<Schedule> editSchedule({required int scheduleId}) async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.get(
+        '${ApiEndpoints.schedule}/$scheduleId/edit',
+      );
+
+      // Debug response
+      debugPrint('Edit Schedule response: ${response.data}');
+
+      // Return data
+      return Schedule.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      debugPrint('Edit Schedule error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> updateSchedule({
+    required int scheduleId,
+    required List<String> babyId,
+    required DateTime date,
+  }) async {
+    try {
+      // data
+      final data = FormData();
+      for (var id in babyId) {
+        data.fields.add(MapEntry('baby_id[]', id)); // Format array PHP
+      }
+      // Tambahkan field satu per satu
+      data.fields.add(MapEntry('date', DateFormat('yyyy-MM-dd').format(date)));
+
+      // Kirim request ke API
+      final response = await _dio.post(
+        '${ApiEndpoints.schedule}/$scheduleId/update',
+        data: data,
+      );
+
+      // Debug response
+      debugPrint('Update Schedule response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Update Schedule error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> deleteSchedule({required int scheduleId}) async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.delete(
+        '${ApiEndpoints.schedule}/$scheduleId',
+      );
+
+      // Debug response
+      debugPrint('Delete Schedule response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Delete Schedule error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
   String _handleError(DioException e) {
     if (e.response?.data != null && e.response?.data['message'] != null) {
       return e.response!.data['message'];

@@ -6,13 +6,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
+import 'package:nutrimpasi/blocs/baby_food_recommendation/baby_food_recommendation_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
+import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
+import 'package:nutrimpasi/blocs/schedule_detail/schedule_detail_bloc.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/food_controller.dart';
+import 'package:nutrimpasi/controllers/nutritionist_controller.dart';
 import 'package:nutrimpasi/controllers/schedule_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
@@ -54,6 +58,11 @@ class MainApp extends StatelessWidget {
           create: (context) => BabyBloc(controller: BabyController()),
         ),
         BlocProvider(
+          create:
+              (context) =>
+                  BabyFoodRecommendationBloc(controller: BabyController()),
+        ),
+        BlocProvider(
           create: (context) => FoodBloc(controller: FoodController()),
         ),
         BlocProvider(
@@ -64,6 +73,15 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ScheduleBloc(controller: ScheduleController()),
+        ),
+        BlocProvider(
+          create:
+              (context) => ScheduleDetailBloc(controller: ScheduleController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  NutritionistBloc(controller: NutritionistController()),
         ),
       ],
       child: MaterialApp(
