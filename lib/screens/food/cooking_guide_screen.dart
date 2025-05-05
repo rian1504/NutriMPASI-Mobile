@@ -411,6 +411,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 24.0,
+                                    vertical: 8.0,
                                   ),
                                   child: ListView.builder(
                                     shrinkWrap: true,
@@ -539,6 +540,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 24.0,
+                                    vertical: 8.0,
                                   ),
                                   child: ListView.builder(
                                     shrinkWrap: true,
