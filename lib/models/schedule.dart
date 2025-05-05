@@ -11,12 +11,14 @@ String scheduleToJson(Schedule data) => json.encode(data.toJson());
 class Schedule {
   int id;
   int foodId;
+  DateTime date;
   Food food;
   List<Baby> babies;
 
   Schedule({
     required this.id,
     required this.foodId,
+    required this.date,
     required this.food,
     required this.babies,
   });
@@ -24,6 +26,7 @@ class Schedule {
   factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
     id: json["id"],
     foodId: json["food_id"],
+    date: DateTime.parse(json["date"]),
     food: Food.fromJson(json["food"]),
     babies: List<Baby>.from(json["babies"].map((x) => Baby.fromJson(x))),
   );
@@ -31,6 +34,7 @@ class Schedule {
   Map<String, dynamic> toJson() => {
     "id": id,
     "food_id": foodId,
+    "date": date.toIso8601String(),
     "food": food.toJson(),
     "babies": List<dynamic>.from(babies.map((x) => x.toJson())),
   };

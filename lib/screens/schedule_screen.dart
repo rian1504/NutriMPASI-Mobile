@@ -23,6 +23,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     viewportFraction: 0.2,
   );
   int _currentDay = 2;
+  DateTime _selectedDate = DateTime.now();
 
   // Variabel untuk card yang sedang terbuka
   String? _openCardId;
@@ -30,13 +31,29 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   // Data schedule
   List<Schedule> get _scheduleItems {
     final state = context.read<ScheduleBloc>().state;
-    return state is ScheduleLoaded ? state.schedules : [];
+    if (state is ScheduleLoaded) {
+      return state.schedules.where((schedule) {
+        return isSameDay(schedule.date, _selectedDate);
+      }).toList();
+    }
+    return [];
+  }
+
+  // Helper method untuk memeriksa apakah dua tanggal adalah hari yang sama
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  // Helper method untuk mendapatkan formatted date string
+  String get formattedSelectedDate {
+    return "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
   }
 
   @override
   void initState() {
     super.initState();
-
     context.read<ScheduleBloc>().add(FetchSchedules());
   }
 
@@ -47,31 +64,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return {
       'day': _getDayName(date.weekday),
       'date': date.day,
+      'fullDate': date,
       'enabled': index >= 2 && index < 9,
     };
   });
-
-  // Fungsi untuk mendapatkan nama hari
-  static String _getDayName(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Senin';
-      case 2:
-        return 'Selasa';
-      case 3:
-        return 'Rabu';
-      case 4:
-        return 'Kamis';
-      case 5:
-        return 'Jumat';
-      case 6:
-        return 'Sabtu';
-      case 7:
-        return 'Minggu';
-      default:
-        return '';
-    }
-  }
 
   void _navigateToFoodList() {
     // Tampilkan snackbar
@@ -98,6 +94,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         context.findAncestorStateOfType<MainPageState>();
     if (mainPage != null) {
       mainPage.changePage(1);
+    }
+  }
+
+  // Metode untuk mengupdate tanggal terpilih
+  void _updateSelectedDate(int index) {
+    if (_days[index]['enabled']) {
+      setState(() {
+        _currentDay = index;
+        _selectedDate = _days[index]['fullDate'];
+      });
     }
   }
 
@@ -163,9 +169,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   );
                   return;
                 }
-                setState(() {
-                  _currentDay = index;
-                });
+                _updateSelectedDate(index);
               },
               itemCount: _days.length,
               itemBuilder: (context, index) {
@@ -179,6 +183,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       );
+                      _updateSelectedDate(index);
                     }
                   },
                   child: Container(
@@ -291,6 +296,26 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
           const SizedBox(height: 14),
 
+          // Menampilkan tanggal yang dipilih
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                Text(
+                  "Jadwal ${_days[_currentDay]['day']}, ${_selectedDate.day} ${_getMonthName(_selectedDate.month)} ${_selectedDate.year}",
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textBlack,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
           // Daftar jadwal makanan
           BlocBuilder<ScheduleBloc, ScheduleState>(
             builder: (context, state) {
@@ -307,6 +332,42 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
               if (state is ScheduleError) {
                 return Center(child: Text(state.error));
+              }
+
+              if (_scheduleItems.isEmpty) {
+                return Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Symbols.menu_book,
+                          size: 60,
+                          color: AppColors.textGrey,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Belum ada jadwal memasak untuk hari ini",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Tambahkan jadwal memasak dengan menekan tombol di atas",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               }
 
               return Expanded(
@@ -851,25 +912,33 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                             ),
                                           ),
                                           const SizedBox(height: 4),
-                                          Row(
-                                            children:
-                                                babies.map((baby) {
-                                                  return Row(
-                                                    children: [
-                                                      Text(
-                                                        baby.name,
-                                                        style: TextStyle(
-                                                          fontFamily: 'Poppins',
-                                                          fontSize: 12,
-                                                          color:
-                                                              AppColors
-                                                                  .textGrey,
+                                          SizedBox(
+                                            height: 40,
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              child: Column(
+                                                children:
+                                                    babies.map((baby) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                              right: 5,
+                                                            ),
+                                                        child: Text(
+                                                          baby.name,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 12,
+                                                            color:
+                                                                AppColors
+                                                                    .textGrey,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      SizedBox(width: 5),
-                                                    ],
-                                                  );
-                                                }).toList(),
+                                                      );
+                                                    }).toList(),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -950,5 +1019,59 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ],
       ),
     );
+  }
+
+  // Helper untuk mendapatkan nama hari
+  static String _getDayName(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Senin';
+      case 2:
+        return 'Selasa';
+      case 3:
+        return 'Rabu';
+      case 4:
+        return 'Kamis';
+      case 5:
+        return 'Jumat';
+      case 6:
+        return 'Sabtu';
+      case 7:
+        return 'Minggu';
+      default:
+        return '';
+    }
+  }
+
+  // Helper untuk mendapatkan nama bulan
+  String _getMonthName(int month) {
+    switch (month) {
+      case 1:
+        return 'Januari';
+      case 2:
+        return 'Februari';
+      case 3:
+        return 'Maret';
+      case 4:
+        return 'April';
+      case 5:
+        return 'Mei';
+      case 6:
+        return 'Juni';
+      case 7:
+        return 'Juli';
+      case 8:
+        return 'Agustus';
+      case 9:
+        return 'September';
+      case 10:
+        return 'Oktober';
+      case 11:
+        return 'November';
+      case 12:
+        return 'Desember';
+      default:
+        return '';
+    }
   }
 }
