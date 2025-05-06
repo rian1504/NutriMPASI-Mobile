@@ -946,6 +946,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                     // Tombol hapus
                                     Container(
                                       width: 60,
+                                      margin: const EdgeInsets.only(right: 2),
                                       decoration: BoxDecoration(
                                         color: AppColors.red,
                                         borderRadius: BorderRadius.only(
