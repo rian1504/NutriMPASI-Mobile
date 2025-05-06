@@ -293,7 +293,6 @@ class _BabyListScreenState extends State<BabyListScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Wrapped in Expanded to contain text overflow
                   Expanded(
                     child: Text(
                       baby.name,

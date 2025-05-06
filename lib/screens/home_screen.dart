@@ -184,6 +184,16 @@ class _HomeScreenState extends State<HomeScreen>
 
           // Fetch rekomendasi untuk bayi yang baru dipilih
           if (babies.isNotEmpty) {
+            // Reset index rekomendasi ketika bayi berubah
+            setState(() {
+              _currentRecommendationIndex = 0;
+            });
+
+            // Pastikan carousel rekomendasi kembali ke halaman pertama
+            if (_foodRecommendationController.hasClients) {
+              _foodRecommendationController.jumpToPage(0);
+            }
+
             context.read<BabyFoodRecommendationBloc>().add(
               FetchBabyFoodRecommendation(babyId: babies[currentPageRound].id),
             );
@@ -825,6 +835,20 @@ class _HomeScreenState extends State<HomeScreen>
         }
 
         if (state is BabyFoodRecommendationLoaded) {
+          // Reset index rekomendasi dan posisi carousel ketika makanan baru dimuat
+          if (_recommendedFoods.isEmpty ||
+              _recommendedFoods.first.food.id != state.foods.first.food.id) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  _currentRecommendationIndex = 0;
+                });
+                if (_foodRecommendationController.hasClients) {
+                  _foodRecommendationController.jumpToPage(0);
+                }
+              }
+            });
+          }
           _recommendedFoods = state.foods;
         }
 
@@ -980,15 +1004,22 @@ class _HomeScreenState extends State<HomeScreen>
       height: 180,
       child: PageView.builder(
         controller: _foodRecommendationController,
-        itemCount: _recommendedFoods.length * 1000,
+        itemCount:
+            _recommendedFoods.isEmpty ? 1 : _recommendedFoods.length * 1000,
         onPageChanged: (index) {
           if (mounted) {
             setState(() {
-              _currentRecommendationIndex = index % _recommendedFoods.length;
+              _currentRecommendationIndex =
+                  _recommendedFoods.isEmpty
+                      ? 0
+                      : index % _recommendedFoods.length;
             });
           }
         },
         itemBuilder: (context, index) {
+          if (_recommendedFoods.isEmpty) {
+            return _buildLoadingRecommendation();
+          }
           final food = _recommendedFoods[index % _recommendedFoods.length];
           return _buildFoodRecommendationCard(food);
         },
