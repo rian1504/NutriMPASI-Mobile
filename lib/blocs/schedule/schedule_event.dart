@@ -17,6 +17,18 @@ class StoreSchedules extends ScheduleEvent {
   });
 }
 
+class UpdateSchedules extends ScheduleEvent {
+  final int scheduleId;
+  final List<String> babyId;
+  final DateTime date;
+
+  UpdateSchedules({
+    required this.scheduleId,
+    required this.babyId,
+    required this.date,
+  });
+}
+
 class DeleteSchedules extends ScheduleEvent {
   final int scheduleId;
 

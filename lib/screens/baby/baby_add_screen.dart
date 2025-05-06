@@ -656,9 +656,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                               },
                               builder: (context, state) {
                                 if (state is BabyLoading) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
+                                  CircularProgressIndicator();
                                 }
 
                                 return const Text(

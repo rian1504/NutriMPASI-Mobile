@@ -12,6 +12,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   ScheduleBloc({required this.controller}) : super(ScheduleInitial()) {
     on<FetchSchedules>(_onFetch);
     on<StoreSchedules>(_onStore);
+    on<UpdateSchedules>(_onUpdate);
     on<DeleteSchedules>(_onDelete);
   }
 
@@ -43,6 +44,23 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       emit(ScheduleStored());
     } catch (e) {
       emit(ScheduleError('Store Schedule gagal: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onUpdate(
+    UpdateSchedules event,
+    Emitter<ScheduleState> emit,
+  ) async {
+    emit(ScheduleLoading());
+    try {
+      await controller.updateSchedule(
+        scheduleId: event.scheduleId,
+        babyId: event.babyId,
+        date: event.date,
+      );
+      emit(ScheduleUpdated());
+    } catch (e) {
+      emit(ScheduleError('Update Schedule gagal: ${e.toString()}'));
     }
   }
 

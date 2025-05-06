@@ -12,7 +12,6 @@ import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
 import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
-import 'package:nutrimpasi/blocs/schedule_detail/schedule_detail_bloc.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/food_controller.dart';
@@ -76,10 +75,6 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider(
           create:
-              (context) => ScheduleDetailBloc(controller: ScheduleController()),
-        ),
-        BlocProvider(
-          create:
               (context) =>
                   NutritionistBloc(controller: NutritionistController()),
         ),
@@ -108,7 +103,7 @@ class MainApp extends StatelessWidget {
             } else if (state is AuthenticationUnauthenticated) {
               return const SplashScreen(nextScreen: OnboardingScreen());
             } else {
-              return const SplashScreen(nextScreen: OnboardingScreen(),);
+              return const SplashScreen(nextScreen: OnboardingScreen());
             }
           },
         ),
