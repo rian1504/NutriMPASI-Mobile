@@ -484,9 +484,12 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
       if (await canLaunchUrl(Uri.parse(webUrl))) {
         await launchUrl(Uri.parse(webUrl));
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Tidak dapat membuka WhatsApp')));
+        if (mounted) {
+          // Tampilkan snackbar jika tidak bisa membuka WhatsApp
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Tidak dapat membuka WhatsApp')),
+          );
+        }
       }
     }
   }
