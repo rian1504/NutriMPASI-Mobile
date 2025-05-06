@@ -9,6 +9,8 @@ final class ScheduleLoading extends ScheduleState {}
 
 final class ScheduleStored extends ScheduleState {}
 
+final class ScheduleUpdated extends ScheduleState {}
+
 final class ScheduleDeleted extends ScheduleState {}
 
 final class ScheduleLoaded extends ScheduleState {

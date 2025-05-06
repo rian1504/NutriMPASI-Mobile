@@ -679,9 +679,7 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
                               },
                               builder: (context, state) {
                                 if (state is BabyLoading) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
+                                  return CircularProgressIndicator();
                                 }
 
                                 return const Text(
