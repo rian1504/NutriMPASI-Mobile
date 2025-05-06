@@ -67,11 +67,14 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
 
   /// Fungsi untuk menampilkan date picker dan memilih tanggal lahir
   Future<void> _selectDate(BuildContext context) async {
+    // Tanggal maksimal adalah 6 bulan yang lalu (untuk bayi minimal usia 6 bulan)
+    final sixMonthsAgo = DateTime.now().subtract(const Duration(days: 182));
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: _selectedDate ?? sixMonthsAgo,
       firstDate: DateTime(2010),
-      lastDate: DateTime.now(),
+      lastDate: sixMonthsAgo,
       // Format tanggal Indonesia
       locale: const Locale('id', 'ID'),
       builder: (BuildContext context, Widget? child) {
@@ -141,40 +144,39 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
         ),
         centerTitle: true,
       ),
-      body: Stack(
-        children: [
-          // Background gradient di bagian atas
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 125,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(50),
-                    offset: const Offset(0, 4),
-                    blurRadius: 8,
-                    spreadRadius: 2,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Background
+                Container(
+                  width: double.infinity,
+                  height: 125,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(50),
+                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ),
+                ),
 
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  // Avatar bayi dengan efek bulat dan shadow
-                  Center(
+                // Avatar bayi
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
                     child: Container(
                       width: 200,
                       height: 200,
@@ -219,488 +221,494 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
                       ),
                     ),
                   ),
+                ),
+              ],
+            ),
 
-                  const SizedBox(height: 16),
+            SizedBox(height: 100),
 
-                  // Form container dengan efek shadow
-                  Stack(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 30),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(15),
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                            ),
-                          ],
+            // Konten utama untuk form input data bayi
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Stack(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 30),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(15),
+                          blurRadius: 10,
+                          spreadRadius: 2,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          // Form untuk input data bayi
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      // Form untuk input data bayi
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Field nama bayi (required)
+                            RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Nama Bayi',
+                                    style: TextStyle(
+                                      color: AppColors.textBlack,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            // Input field untuk nama bayi dengan validasi
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Masukkan nama bayi',
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Nama bayi tidak boleh kosong';
+                                }
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // Pilihan jenis kelamin (required)
+                            RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Jenis Kelamin',
+                                    style: TextStyle(
+                                      color: AppColors.textBlack,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            // Radio button untuk pilihan jenis kelamin
+                            Row(
                               children: [
-                                // Field nama bayi (required)
-                                RichText(
-                                  text: const TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: 'Nama Bayi',
-                                        style: TextStyle(
-                                          color: AppColors.textBlack,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'Poppins',
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: '*',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Poppins',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                // Input field untuk nama bayi dengan validasi
-                                TextFormField(
-                                  controller: _nameController,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Nama bayi tidak boleh kosong';
-                                    }
-                                    return null;
+                                Radio(
+                                  value: 'L',
+                                  groupValue: _gender,
+                                  activeColor: AppColors.primary,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _gender = value!;
+                                    });
                                   },
                                 ),
-
-                                const SizedBox(height: 16),
-
-                                // Pilihan jenis kelamin (required)
-                                RichText(
-                                  text: const TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: 'Jenis Kelamin',
-                                        style: TextStyle(
-                                          color: AppColors.textBlack,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'Poppins',
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: '*',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Poppins',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                // Radio button untuk pilihan jenis kelamin
-                                Row(
-                                  children: [
-                                    Radio(
-                                      value: 'L',
-                                      groupValue: _gender,
-                                      activeColor: AppColors.primary,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _gender = value!;
-                                        });
-                                      },
-                                    ),
-                                    const Text('Laki-Laki'),
-                                    const SizedBox(width: 20),
-                                    Radio(
-                                      value: 'P',
-                                      groupValue: _gender,
-                                      activeColor: AppColors.primary,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _gender = value!;
-                                        });
-                                      },
-                                    ),
-                                    const Text('Perempuan'),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                // Field tanggal lahir (required)
-                                RichText(
-                                  text: const TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: 'Tanggal Lahir',
-                                        style: TextStyle(
-                                          color: AppColors.textBlack,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'Poppins',
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: '*',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Poppins',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                // Input field untuk tanggal lahir dengan date picker
-                                TextFormField(
-                                  controller: _birthDateController,
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.calendar_today),
-                                      onPressed: () => _selectDate(context),
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Tanggal lahir tidak boleh kosong';
-                                    }
-                                    return null;
+                                const Text('Laki-Laki'),
+                                const SizedBox(width: 20),
+                                Radio(
+                                  value: 'P',
+                                  groupValue: _gender,
+                                  activeColor: AppColors.primary,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _gender = value!;
+                                    });
                                   },
                                 ),
-
-                                const SizedBox(height: 16),
-
-                                // Baris untuk tinggi dan berat badan
-                                Row(
-                                  children: [
-                                    // Field tinggi bayi (required) dalam cm
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          RichText(
-                                            text: const TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: 'Tinggi',
-                                                  style: TextStyle(
-                                                    color: AppColors.textBlack,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text: '*',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          // Input field untuk tinggi bayi dengan satuan cm
-                                          TextFormField(
-                                            controller: _heightController,
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                  color:
-                                                      AppColors.componentGrey!,
-                                                ),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                  color:
-                                                      AppColors.componentGrey!,
-                                                ),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                  color:
-                                                      AppColors.componentGrey!,
-                                                ),
-                                              ),
-                                              filled: true,
-                                              fillColor: Colors.white,
-                                              suffixText: 'cm',
-                                            ),
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Tinggi tidak boleh kosong';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-                                    const SizedBox(width: 16),
-
-                                    // Field berat bayi (required) dalam kg
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          RichText(
-                                            text: const TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: 'Berat Badan',
-                                                  style: TextStyle(
-                                                    color: AppColors.textBlack,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text: '*',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'Poppins',
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          // Input field untuk berat bayi (mendukung angka desimal)
-                                          TextFormField(
-                                            controller: _weightController,
-                                            keyboardType:
-                                                const TextInputType.numberWithOptions(
-                                                  decimal: true,
-                                                ),
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                  color:
-                                                      AppColors.componentGrey!,
-                                                ),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                  color:
-                                                      AppColors.componentGrey!,
-                                                ),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide(
-                                                  color:
-                                                      AppColors.componentGrey!,
-                                                ),
-                                              ),
-                                              filled: true,
-                                              fillColor: Colors.white,
-                                            ),
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Berat tidak boleh kosong';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                // Field alergi (opsional)
-                                const Text(
-                                  'Alergi',
-                                  style: TextStyle(
-                                    color: AppColors.textBlack,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                // Input field untuk alergi (opsional)
-                                TextFormField(
-                                  controller: _allergyController,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.componentGrey!,
-                                      ),
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 30),
+                                const Text('Perempuan'),
                               ],
                             ),
-                          ),
-                        ),
-                      ),
-                      // Tombol simpan yang berada di bagian bawah form
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.secondary,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 60,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            onPressed: _saveBaby,
-                            child: BlocConsumer<BabyBloc, BabyState>(
-                              listener: (context, state) {
-                                if (state is BabyUpdated) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Data bayi berhasil disimpan!',
-                                      ),
-                                      duration: Duration(seconds: 2),
-                                    ),
-                                  );
 
-                                  context.read<BabyBloc>().add(FetchBabies());
-                                  Navigator.pop(context);
-                                } else if (state is BabyError) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(state.error),
-                                      duration: const Duration(seconds: 2),
-                                    ),
-                                  );
-                                }
-                              },
-                              builder: (context, state) {
-                                if (state is BabyLoading) {
-                                  return CircularProgressIndicator();
-                                }
+                            const SizedBox(height: 16),
 
-                                return const Text(
-                                  'Simpan',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                            // Field tanggal lahir (required)
+                            RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Tanggal Lahir',
+                                    style: TextStyle(
+                                      color: AppColors.textBlack,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Poppins',
+                                    ),
                                   ),
-                                );
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            // Input field untuk tanggal lahir dengan date picker
+                            TextFormField(
+                              controller: _birthDateController,
+                              readOnly: true,
+                              onTap: () => _selectDate(context),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Pilih tanggal lahir',
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.calendar_today),
+                                  onPressed: () => _selectDate(context),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Tanggal lahir tidak boleh kosong';
+                                }
+                                return null;
                               },
                             ),
-                          ),
+
+                            const SizedBox(height: 16),
+
+                            // Baris untuk tinggi dan berat badan
+                            Row(
+                              children: [
+                                // Field tinggi bayi (required) dalam cm
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: const TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Tinggi',
+                                              style: TextStyle(
+                                                color: AppColors.textBlack,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Poppins',
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: '*',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Poppins',
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      // Input field untuk tinggi bayi dengan satuan cm
+                                      TextFormField(
+                                        controller: _heightController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.componentGrey!,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.componentGrey!,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.componentGrey!,
+                                            ),
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          hintText: '0',
+                                          suffixText: 'cm',
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Tinggi tidak boleh kosong';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                const SizedBox(width: 16),
+
+                                // Field berat bayi (required) dalam kg
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: const TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Berat Badan',
+                                              style: TextStyle(
+                                                color: AppColors.textBlack,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Poppins',
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: '*',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Poppins',
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      // Input field untuk berat bayi (mendukung angka desimal)
+                                      TextFormField(
+                                        controller: _weightController,
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.componentGrey!,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.componentGrey!,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.componentGrey!,
+                                            ),
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          hintText: '0.0',
+                                          suffixText: 'kg',
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Berat tidak boleh kosong';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // Field alergi (opsional)
+                            const Text(
+                              'Alergi',
+                              style: TextStyle(
+                                color: AppColors.textBlack,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            // Input field untuk alergi (opsional)
+                            TextFormField(
+                              controller: _allergyController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: AppColors.componentGrey!,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Opsional',
+                              ),
+                            ),
+
+                            const SizedBox(height: 30),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
+                  ),
+                  // Tombol simpan yang berada di bagian bawah form
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.secondary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 60,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        onPressed: _saveBaby,
+                        child: BlocConsumer<BabyBloc, BabyState>(
+                          listener: (context, state) {
+                            if (state is BabyUpdated) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Data bayi berhasil disimpan!'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+
+                              context.read<BabyBloc>().add(FetchBabies());
+                              Navigator.pop(context);
+                            } else if (state is BabyError) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.error),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state is BabyLoading) {
+                              return CircularProgressIndicator();
+                            }
+
+                            return const Text(
+                              'Simpan',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
