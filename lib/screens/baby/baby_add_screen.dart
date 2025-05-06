@@ -627,54 +627,69 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                     left: 0,
                     right: 0,
                     child: Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.secondary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 60,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        onPressed: _saveBaby,
-                        child: BlocConsumer<BabyBloc, BabyState>(
-                          listener: (context, state) {
-                            if (state is BabyStored) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Data bayi berhasil disimpan!'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
+                      child: BlocBuilder<BabyBloc, BabyState>(
+                        builder: (context, state) {
+                          final isLoading = state is BabyLoading;
 
-                              context.read<BabyBloc>().add(FetchBabies());
-                              Navigator.pop(context);
-                            } else if (state is BabyError) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(state.error),
-                                  duration: const Duration(seconds: 2),
-                                ),
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            if (state is BabyLoading) {
-                              return CircularProgressIndicator();
-                            }
-
-                            return const Text(
-                              'Simpan',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.secondary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 60,
+                                vertical: 12,
                               ),
-                            );
-                          },
-                        ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: isLoading ? null : _saveBaby,
+                            child: BlocConsumer<BabyBloc, BabyState>(
+                              listener: (context, state) {
+                                if (state is BabyStored) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Data bayi berhasil disimpan!',
+                                      ),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+
+                                  context.read<BabyBloc>().add(FetchBabies());
+                                  Navigator.pop(context);
+                                } else if (state is BabyError) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.error),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is BabyLoading) {
+                                  return const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.0,
+                                    ),
+                                  );
+                                }
+
+                                return const Text(
+                                  'Simpan',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
