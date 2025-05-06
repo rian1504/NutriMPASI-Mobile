@@ -599,6 +599,8 @@ class _HomeScreenState extends State<HomeScreen>
                                                           AppColors.textBlack,
                                                     ),
                                                     maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 4),
                                                   if (baby
