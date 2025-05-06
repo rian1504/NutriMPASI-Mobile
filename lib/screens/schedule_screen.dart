@@ -973,11 +973,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
-                                                      const Text(
-                                                        'Anda yakin ingin menghapus Jadwal Memasak ini?',
+                                                      Text(
+                                                        'Anda yakin ingin menghapus Jadwal Memasak "${food!.name}" ini?',
                                                         textAlign:
                                                             TextAlign.center,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w500,
                                                           fontSize: 16,

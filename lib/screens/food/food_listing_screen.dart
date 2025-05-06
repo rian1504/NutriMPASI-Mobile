@@ -1531,7 +1531,124 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                                                   ),
                                                   child: InkWell(
                                                     onTap: () {
-                                                      // TODO: Dialog konfirmasi hapus
+                                                      // Tampilkan dialog konfirmasi hapus
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (
+                                                          BuildContext context,
+                                                        ) {
+                                                          return Dialog(
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    15,
+                                                                  ),
+                                                            ),
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets.all(
+                                                                    20,
+                                                                  ),
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Text(
+                                                                    'Anda yakin ingin menghapus Usulan Resep "${item.name}" ini?',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontSize:
+                                                                          16,
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 24,
+                                                                  ),
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      // Tombol Batal
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                AppColors.componentBlack,
+                                                                            foregroundColor:
+                                                                                Colors.white,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                10,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            Navigator.of(
+                                                                              context,
+                                                                            ).pop();
+                                                                          },
+                                                                          child: const Text(
+                                                                            'Batal',
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      // Tombol Hapus
+                                                                      Expanded(
+                                                                        child: ElevatedButton(
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                AppColors.red,
+                                                                            foregroundColor:
+                                                                                Colors.white,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                10,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            // TODO: Fungsi hapus usulan resep
+                                                                            Navigator.pop(
+                                                                              context,
+                                                                            );
+
+                                                                            // Snackbar konfirmasi hapus
+                                                                            ScaffoldMessenger.of(
+                                                                              context,
+                                                                            ).showSnackBar(
+                                                                              SnackBar(
+                                                                                content: Text(
+                                                                                  'Usulan resep berhasil dihapus',
+                                                                                ),
+                                                                                backgroundColor:
+                                                                                    Colors.green,
+                                                                              ),
+                                                                            );
+                                                                          },
+                                                                          child: const Text(
+                                                                            'Hapus',
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
                                                     },
                                                     child: const Center(
                                                       child: Icon(
