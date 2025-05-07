@@ -52,139 +52,137 @@ class _BabyListScreenState extends State<BabyListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BabyBloc, BabyState>(
-      listener: (context, state) {
-        if (state is BabyError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.error)));
-        }
-
-        if (state is BabyDeleted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profil bayi berhasil dihapus')),
-          );
-
-          context.read<BabyBloc>().add(FetchBabies());
-        }
-      },
-      builder: (context, state) {
-        // Handle loading state
-        if (state is BabyLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        // Handle loaded state
-        if (state is BabyLoaded) {
-          _babies = state.babies;
-        }
-
-        return Scaffold(
-          backgroundColor: AppColors.pearl,
-          appBar: AppBar(
-            backgroundColor: AppColors.primary,
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Material(
-                elevation: 3,
-                shadowColor: Colors.black54,
+    return Scaffold(
+      backgroundColor: AppColors.pearl,
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black54,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Symbols.arrow_back_ios_new_rounded,
-                      color: AppColors.textBlack,
-                      size: 24,
-                    ),
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new_rounded,
+                  color: AppColors.textBlack,
+                  size: 24,
                 ),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Bagian utama dengan latar belakang gradient
-              Expanded(
-                child: Stack(
+        ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Bagian utama dengan latar belakang gradient
+          Expanded(
+            child: Stack(
+              children: [
+                // Background dengan dua bagian: gradient 50% di atas, putih 50% di bawah
+                Column(
                   children: [
-                    // Background dengan dua bagian: gradient 50% di atas, putih 50% di bawah
-                    Column(
-                      children: [
-                        // Bagian gradient (50% atas)
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                stops: [0.2, 0.7, 0.9],
-                                colors: [
-                                  AppColors.primary,
-                                  AppColors.bisque,
-                                  AppColors.pearl,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Bagian putih (50% bawah)
-                        Expanded(
-                          flex: 1,
-                          child: Container(color: Colors.white),
-                        ),
-                      ],
-                    ),
-
-                    // Konten utama (overlay di atas background)
-                    Column(
-                      children: [
-                        const SizedBox(height: 24),
-                        // Judul halaman
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 32.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Kelola Profil Bayi Anda',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Tambahkan atau edit data bayi untuk mendapatkan rekomendasi makanan yang lebih sesuai.',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                    // Bagian gradient (50% atas)
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.2, 0.7, 0.9],
+                            colors: [
+                              AppColors.primary,
+                              AppColors.bisque,
+                              AppColors.pearl,
                             ],
                           ),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
                         ),
+                      ),
+                    ),
+                    // Bagian putih (50% bawah)
+                    Expanded(flex: 1, child: Container(color: Colors.white)),
+                  ],
+                ),
 
-                        const SizedBox(height: 48),
-                        // PageView untuk carousel bayi
-                        Expanded(
-                          child: Column(
+                // Konten utama (overlay di atas background)
+                Column(
+                  children: [
+                    const SizedBox(height: 24),
+                    // Judul halaman
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Kelola Profil Bayi Anda',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Tambahkan atau edit data bayi untuk mendapatkan rekomendasi makanan yang lebih sesuai.',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 48),
+                    // PageView untuk carousel bayi
+                    Expanded(
+                      child: BlocConsumer<BabyBloc, BabyState>(
+                        listener: (context, state) {
+                          if (state is BabyError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(state.error)),
+                            );
+                          }
+
+                          if (state is BabyDeleted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Profil bayi berhasil dihapus'),
+                              ),
+                            );
+
+                            context.read<BabyBloc>().add(FetchBabies());
+                          }
+                        },
+                        builder: (context, state) {
+                          // Handle loading state
+                          if (state is BabyLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          // Handle loaded state
+                          if (state is BabyLoaded) {
+                            _babies = state.babies;
+                          }
+
+                          return Column(
                             children: [
                               SizedBox(
                                 height: 420,
@@ -231,33 +229,33 @@ class _BabyListScreenState extends State<BabyListScreen> {
                                 ),
                               ),
                             ],
-                          ),
-                        ),
-                      ],
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          // Tombol tambah bayi floating
-          floatingActionButton:
-              _currentCarouselPage == _babies.length
-                  ? null
-                  : FloatingActionButton(
-                    onPressed: () {
-                      // Navigasi ke kartu tambah bayi
-                      _carouselController.animateToPage(
-                        _babies.length,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    backgroundColor: AppColors.secondary,
-                    child: const Icon(Symbols.add, color: Colors.white),
-                  ),
-        );
-      },
+        ],
+      ),
+      // Tombol tambah bayi floating
+      floatingActionButton:
+          _currentCarouselPage == _babies.length
+              ? null
+              : FloatingActionButton(
+                onPressed: () {
+                  // Navigasi ke kartu tambah bayi
+                  _carouselController.animateToPage(
+                    _babies.length,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                backgroundColor: AppColors.secondary,
+                child: const Icon(Symbols.add, color: Colors.white),
+              ),
     );
   }
 
