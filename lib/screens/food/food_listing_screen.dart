@@ -7,6 +7,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
+import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 
 class FoodListingScreen extends StatefulWidget {
   final bool showUserSuggestions;
@@ -39,8 +40,6 @@ class _FoodListingScreenState extends State<FoodListingScreen>
   bool _isSearching = false;
   // Daftar saran pencarian
   List<String> _searchSuggestions = [];
-  // Variabel untuk card yang sedang terbuka
-  String? _openCardId;
 
   // Animasi untuk transisi AppBar
   late AnimationController _animationController;
@@ -1437,249 +1436,23 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                               ...filteredItems.take(_displayedItemCount).map((
                                 item,
                               ) {
-                                final itemId = item.id.toString();
-                                final isOpen = _openCardId == itemId;
-
                                 if (_showUserSuggestionsOnly) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: GestureDetector(
-                                      onHorizontalDragEnd: (details) {
-                                        if (details.primaryVelocity! < 0) {
-                                          // Swipe ke kiri
-                                          setState(() {
-                                            _openCardId = itemId;
-                                          });
-                                        } else if (details.primaryVelocity! >
-                                            0) {
-                                          // Swipe ke kanan
-                                          setState(() {
-                                            _openCardId = null;
-                                          });
-                                        }
-                                      },
-                                      child: Stack(
-                                        children: [
-                                          // Tombol aksi (edit dan hapus)
-                                          Positioned(
-                                            right: 0,
-                                            top: 0,
-                                            bottom: 0,
-                                            child: Row(
-                                              children: [
-                                                // Tombol edit
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.red,
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  FoodSuggestionDetailScreen(
+                                                    foodId: item.id.toString(),
                                                   ),
-                                                  child: Container(
-                                                    width: 80,
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          AppColors
-                                                              .brightYellow,
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                            topRight:
-                                                                Radius.circular(
-                                                                  10,
-                                                                ),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                  10,
-                                                                ),
-                                                          ),
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                            left: 20.0,
-                                                          ),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          // TODO: Navigasi ke halaman edit
-                                                        },
-                                                        child: const Center(
-                                                          child: Icon(
-                                                            Icons.edit,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                // Tombol hapus
-                                                Container(
-                                                  width: 60,
-                                                  margin: const EdgeInsets.only(
-                                                    right: 2,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.red,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                          topRight:
-                                                              Radius.circular(
-                                                                10,
-                                                              ),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                10,
-                                                              ),
-                                                        ),
-                                                  ),
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      // Tampilkan dialog konfirmasi hapus
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (
-                                                          BuildContext context,
-                                                        ) {
-                                                          return Dialog(
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    15,
-                                                                  ),
-                                                            ),
-                                                            child: Container(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    20,
-                                                                  ),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                children: [
-                                                                  Text(
-                                                                    'Anda yakin ingin menghapus Usulan Resep "${item.name}" ini?',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontSize:
-                                                                          16,
-                                                                    ),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    height: 24,
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      // Tombol Batal
-                                                                      Expanded(
-                                                                        child: ElevatedButton(
-                                                                          style: ElevatedButton.styleFrom(
-                                                                            backgroundColor:
-                                                                                AppColors.componentBlack,
-                                                                            foregroundColor:
-                                                                                Colors.white,
-                                                                            shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(
-                                                                                10,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onPressed: () {
-                                                                            Navigator.of(
-                                                                              context,
-                                                                            ).pop();
-                                                                          },
-                                                                          child: const Text(
-                                                                            'Batal',
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            10,
-                                                                      ),
-                                                                      // Tombol Hapus
-                                                                      Expanded(
-                                                                        child: ElevatedButton(
-                                                                          style: ElevatedButton.styleFrom(
-                                                                            backgroundColor:
-                                                                                AppColors.red,
-                                                                            foregroundColor:
-                                                                                Colors.white,
-                                                                            shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(
-                                                                                10,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          onPressed: () {
-                                                                            // TODO: Fungsi hapus usulan resep
-                                                                            Navigator.pop(
-                                                                              context,
-                                                                            );
-
-                                                                            // Snackbar konfirmasi hapus
-                                                                            ScaffoldMessenger.of(
-                                                                              context,
-                                                                            ).showSnackBar(
-                                                                              SnackBar(
-                                                                                content: Text(
-                                                                                  'Usulan resep berhasil dihapus',
-                                                                                ),
-                                                                                backgroundColor:
-                                                                                    Colors.green,
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                          child: const Text(
-                                                                            'Hapus',
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        Icons.delete,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-
-                                          // Card makanan dengan animasi slide
-                                          AnimatedContainer(
-                                            duration: const Duration(
-                                              milliseconds: 300,
-                                            ),
-                                            transform:
-                                                Matrix4.translationValues(
-                                                  isOpen ? -120 : 0,
-                                                  0,
-                                                  0,
-                                                ),
-                                            child: _buildFoodCard(
-                                              item,
-                                              context,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 12),
+                                      child: _buildFoodCard(item, context),
                                     ),
                                   );
                                 } else {
@@ -1846,7 +1619,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                             height: 16,
                           ),
                         ),
-                      if (_showUserSuggestionsOnly) const SizedBox(height: 4),
+                      if (_showUserSuggestionsOnly) const SizedBox(height: 24),
                       const SizedBox(height: 32),
                       // Indikator favorit
                       Container(
