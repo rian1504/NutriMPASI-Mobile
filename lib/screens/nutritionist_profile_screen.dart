@@ -152,163 +152,184 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                     padding: const EdgeInsets.only(bottom: 40),
                     child: BlocBuilder<NutritionistBloc, NutritionistState>(
                       builder: (context, state) {
-                        if (state is NutritionistLoading) {
-                          return Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        } else if (state is NutritionistError) {
-                          return Center(child: Text(state.error));
-                        } else if (state is NutritionistLoaded) {
+                        // Mengambil data ahli gizi dari state
+                        if (state is NutritionistLoaded) {
                           _nutritionists = state.nutritionists;
-                          final currentNutritionist =
-                              _nutritionists[_currentCarouselPage];
+                        }
 
-                          return Column(
-                            children: [
-                              // Container untuk carousel gambar ahli gizi
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  top: 48,
-                                  left: 48,
+                        return Column(
+                          children: [
+                            // Container untuk carousel gambar ahli gizi
+                            Container(
+                              margin: const EdgeInsets.only(top: 48, left: 48),
+                              padding: const EdgeInsets.symmetric(vertical: 24),
+                              height: 360,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.elliptical(90, 57),
+                                  bottomLeft: Radius.circular(15),
                                 ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 24,
-                                ),
-                                height: 360,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.elliptical(90, 57),
-                                    bottomLeft: Radius.circular(15),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black38,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 2),
                                   ),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black38,
-                                      blurRadius: 10,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: [
-                                    // PageView untuk carousel gambar ahli gizi
-                                    Expanded(
-                                      child: PageView.builder(
-                                        controller: _carouselController,
-                                        itemCount: _nutritionists.length,
-                                        itemBuilder: (context, index) {
-                                          final bool isCurrentItem =
-                                              _currentCarouselPage == index;
+                                ],
+                              ),
+                              child:
+                                  state is NutritionistLoading
+                                      ? const Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                      : state is NutritionistError
+                                      ? Center(child: Text(state.error))
+                                      : state is NutritionistLoaded &&
+                                          _nutritionists.isNotEmpty
+                                      ? Column(
+                                        children: [
+                                          // PageView untuk carousel gambar ahli gizi
+                                          Expanded(
+                                            child: PageView.builder(
+                                              controller: _carouselController,
+                                              itemCount: _nutritionists.length,
+                                              itemBuilder: (context, index) {
+                                                final bool isCurrentItem =
+                                                    _currentCarouselPage ==
+                                                    index;
 
-                                          // Item carousel dengan animasi
-                                          return AnimatedContainer(
-                                            alignment: Alignment.centerLeft,
-                                            duration: const Duration(
-                                              milliseconds: 300,
-                                            ),
-                                            curve: Curves.easeInOut,
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12.0,
-                                            ),
-                                            margin: EdgeInsets.only(
-                                              top: isCurrentItem ? 0 : 36,
-                                              bottom: isCurrentItem ? 0 : 36,
-                                              right: 48,
-                                            ),
-                                            child: Container(
-                                              padding: const EdgeInsets.all(8),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(30),
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color:
-                                                        isCurrentItem
-                                                            ? Colors.black26
-                                                            : Colors.black12,
-                                                    blurRadius:
-                                                        isCurrentItem ? 10 : 5,
-                                                    offset: const Offset(0, 2),
+                                                // Item carousel dengan animasi
+                                                return AnimatedContainer(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  duration: const Duration(
+                                                    milliseconds: 300,
                                                   ),
-                                                ],
-                                              ),
-                                              // Gambar ahli gizi
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(30),
-                                                ),
-                                                child: Image.asset(
-                                                  _nutritionists[index]
-                                                              .gender ==
-                                                          'L'
-                                                      ? 'assets/images/component/ahli_gizi_laki_laki.png'
-                                                      : 'assets/images/component/ahli_gizi_perempuan.png',
-                                                  fit: BoxFit.contain,
-                                                  errorBuilder: (
-                                                    context,
-                                                    error,
-                                                    stackTrace,
-                                                  ) {
-                                                    return Container(
-                                                      color:
-                                                          AppColors
-                                                              .componentGrey,
-                                                      child: const Icon(
-                                                        Symbols.person,
-                                                        size: 80,
-                                                        color:
-                                                            AppColors.textGrey,
+                                                  curve: Curves.easeInOut,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 12.0,
                                                       ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 8),
-                                    // Indikator dot untuk carousel (pagination)
-                                    Container(
-                                      margin: const EdgeInsets.only(right: 48),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: List.generate(
-                                          _nutritionists.length,
-                                          (index) => Container(
-                                            width: 8,
-                                            height: 8,
-                                            margin: const EdgeInsets.symmetric(
-                                              horizontal: 4,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color:
-                                                  _currentCarouselPage == index
-                                                      ? AppColors.primary
-                                                      : AppColors.componentGrey,
+                                                  margin: EdgeInsets.only(
+                                                    top: isCurrentItem ? 0 : 36,
+                                                    bottom:
+                                                        isCurrentItem ? 0 : 36,
+                                                    right: 48,
+                                                  ),
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                            Radius.circular(30),
+                                                          ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color:
+                                                              isCurrentItem
+                                                                  ? Colors
+                                                                      .black26
+                                                                  : Colors
+                                                                      .black12,
+                                                          blurRadius:
+                                                              isCurrentItem
+                                                                  ? 10
+                                                                  : 5,
+                                                          offset: const Offset(
+                                                            0,
+                                                            2,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    // Gambar ahli gizi
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                            Radius.circular(30),
+                                                          ),
+                                                      child: Image.asset(
+                                                        _nutritionists[index]
+                                                                    .gender ==
+                                                                'L'
+                                                            ? 'assets/images/component/ahli_gizi_laki_laki.png'
+                                                            : 'assets/images/component/ahli_gizi_perempuan.png',
+                                                        fit: BoxFit.contain,
+                                                        errorBuilder: (
+                                                          context,
+                                                          error,
+                                                          stackTrace,
+                                                        ) {
+                                                          return Container(
+                                                            color:
+                                                                AppColors
+                                                                    .componentGrey,
+                                                            child: const Icon(
+                                                              Symbols.person,
+                                                              size: 80,
+                                                              color:
+                                                                  AppColors
+                                                                      .textGrey,
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
 
-                              const SizedBox(height: 48),
-                              // Card informasi detail ahli gizi
+                                          const SizedBox(height: 8),
+                                          // Indikator dot untuk carousel (pagination)
+                                          if (_nutritionists.isNotEmpty)
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                right: 48,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: List.generate(
+                                                  _nutritionists.length,
+                                                  (index) => Container(
+                                                    width: 8,
+                                                    height: 8,
+                                                    margin:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 4,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color:
+                                                          _currentCarouselPage ==
+                                                                  index
+                                                              ? AppColors
+                                                                  .primary
+                                                              : AppColors
+                                                                  .componentGrey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      )
+                                      : const Center(
+                                        child: Text('Tidak ada data ahli gizi'),
+                                      ),
+                            ),
+
+                            const SizedBox(height: 48),
+
+                            // Card informasi detail ahli gizi
+                            if (state is NutritionistLoaded &&
+                                _nutritionists.isNotEmpty &&
+                                _currentCarouselPage < _nutritionists.length)
                               Container(
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 48,
@@ -338,9 +359,10 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                             borderRadius: BorderRadius.circular(
                                               15,
                                             ),
-                                            child: Image.asset(
+                                            child: Image.network(
                                               storageUrl +
-                                                  currentNutritionist.image,
+                                                  _nutritionists[_currentCarouselPage]
+                                                      .image,
                                               width: 50,
                                               height: 50,
                                               fit: BoxFit.cover,
@@ -369,7 +391,8 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  currentNutritionist.name,
+                                                  _nutritionists[_currentCarouselPage]
+                                                      .name,
                                                   style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
@@ -386,7 +409,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
-                                                      currentNutritionist
+                                                      _nutritionists[_currentCarouselPage]
                                                           .specialist,
                                                       style: TextStyle(
                                                         fontSize: 14,
@@ -402,13 +425,16 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                         ],
                                       ),
                                       // Tombol WhatsApp untuk kontak ahli gizi
-                                      if (currentNutritionist.telp.isNotEmpty)
+                                      if (_nutritionists[_currentCarouselPage]
+                                          .telp
+                                          .isNotEmpty)
                                         Container(
                                           margin: EdgeInsets.only(top: 16),
                                           child: ElevatedButton(
                                             onPressed: () {
                                               _launchWhatsApp(
-                                                currentNutritionist.telp,
+                                                _nutritionists[_currentCarouselPage]
+                                                    .telp,
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
@@ -449,13 +475,8 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                   ),
                                 ),
                               ),
-                            ],
-                          );
-                        } else {
-                          return const Center(
-                            child: Text('Tidak ada data ahli gizi'),
-                          );
-                        }
+                          ],
+                        );
                       },
                     ),
                   ),
@@ -475,18 +496,17 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
     // Buat URL WhatsApp
     final url = 'https://wa.me/$cleanedNumber';
 
-    // Cek jika URL bisa diluncurkan
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      // Jika WhatsApp tidak terinstall, buka browser
-      final webUrl = 'https://web.whatsapp.com/send?phone=$cleanedNumber';
-      if (await canLaunchUrl(Uri.parse(webUrl))) {
-        await launchUrl(Uri.parse(webUrl));
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Tidak dapat membuka WhatsApp')));
+    try {
+      // Langsung launch URL
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (e) {
+      if (mounted) {
+        // Tampilkan snackbar jika terjadi error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Tidak dapat membuka WhatsApp: ${e.toString()}'),
+          ),
+        );
       }
     }
   }

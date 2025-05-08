@@ -57,19 +57,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   void initState() {
     super.initState();
     context.read<ScheduleBloc>().add(FetchSchedules());
+    Intl.defaultLocale = 'id';
   }
 
   // Data hari dan tanggal
-  final List<Map<String, dynamic>> _days = List.generate(11, (index) {
+  List<Map<String, dynamic>> get _days {
     final today = DateTime.now();
-    final date = today.add(Duration(days: index - 2));
-    return {
-      'day': _getDayName(date.weekday),
-      'date': date.day,
-      'fullDate': date,
-      'enabled': index >= 2 && index < 9,
-    };
-  });
+    return List.generate(11, (index) {
+      final date = today.add(Duration(days: index - 2));
+      return {
+        'day': DateFormat('E', 'id').format(date),
+        'date': date.day,
+        'fullDate': date,
+        'enabled': index >= 2 && index < 9,
+      };
+    });
+  }
 
   void _navigateToFoodList() {
     // Tampilkan snackbar
@@ -304,7 +307,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             child: Row(
               children: [
                 Text(
-                  "Jadwal ${_days[_currentDay]['day']}, ${_selectedDate.day} ${_getMonthName(_selectedDate.month)} ${_selectedDate.year}",
+                  DateFormat('EEEE, d MMMM yyyy', 'id').format(_selectedDate),
                   style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 14,
@@ -378,9 +381,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Symbols.menu_book,
+                          Symbols.calendar_month,
                           size: 60,
-                          color: AppColors.textGrey,
+                          color: AppColors.primary.withAlpha(175),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -478,7 +481,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       child: Container(
                                         width: 80,
                                         decoration: BoxDecoration(
-                                          color: AppColors.brightYellow,
+                                          color: AppColors.amber,
                                           borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(10),
                                             bottomRight: Radius.circular(10),
@@ -943,6 +946,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                     // Tombol hapus
                                     Container(
                                       width: 60,
+                                      margin: const EdgeInsets.only(right: 2),
                                       decoration: BoxDecoration(
                                         color: AppColors.red,
                                         borderRadius: BorderRadius.only(
@@ -969,11 +973,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
-                                                      const Text(
-                                                        'Anda yakin ingin menghapus Jadwal Memasak ini?',
+                                                      Text(
+                                                        'Anda yakin ingin menghapus Jadwal Memasak "${food!.name}" ini?',
                                                         textAlign:
                                                             TextAlign.center,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w500,
                                                           fontSize: 16,
@@ -1243,59 +1247,5 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ],
       ),
     );
-  }
-
-  // Helper untuk mendapatkan nama hari
-  static String _getDayName(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Senin';
-      case 2:
-        return 'Selasa';
-      case 3:
-        return 'Rabu';
-      case 4:
-        return 'Kamis';
-      case 5:
-        return 'Jumat';
-      case 6:
-        return 'Sabtu';
-      case 7:
-        return 'Minggu';
-      default:
-        return '';
-    }
-  }
-
-  // Helper untuk mendapatkan nama bulan
-  String _getMonthName(int month) {
-    switch (month) {
-      case 1:
-        return 'Januari';
-      case 2:
-        return 'Februari';
-      case 3:
-        return 'Maret';
-      case 4:
-        return 'April';
-      case 5:
-        return 'Mei';
-      case 6:
-        return 'Juni';
-      case 7:
-        return 'Juli';
-      case 8:
-        return 'Agustus';
-      case 9:
-        return 'September';
-      case 10:
-        return 'Oktober';
-      case 11:
-        return 'November';
-      case 12:
-        return 'Desember';
-      default:
-        return '';
-    }
   }
 }
