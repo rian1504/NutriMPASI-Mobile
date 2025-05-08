@@ -381,9 +381,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Symbols.menu_book,
+                          Symbols.calendar_month,
                           size: 60,
-                          color: AppColors.textGrey,
+                          color: AppColors.primary.withAlpha(175),
                         ),
                         const SizedBox(height: 16),
                         Text(

@@ -1423,10 +1423,43 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                           final filteredItems = _getFilteredFoodItems();
 
                           if (filteredItems.isEmpty && state is! FoodLoading) {
-                            return const Center(
+                            return Center(
                               child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 50.0),
-                                child: Text('Tidak ada resep ditemukan.'),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 50.0,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.no_food,
+                                      size: 70,
+                                      color: AppColors.primary.withAlpha(175),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Belum ada resep',
+                                      style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      _activeSearchQuery.isNotEmpty
+                                          ? 'Tidak ada resep yang sesuai dengan pencarian Anda'
+                                          : 'Coba ubah filter atau tambahkan usulan resep baru',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        color: AppColors.textGrey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           }
