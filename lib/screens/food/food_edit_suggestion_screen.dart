@@ -5,7 +5,7 @@ import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
 
 class FoodEditSuggestionScreen extends StatefulWidget {
   final String foodId;
-  
+
   const FoodEditSuggestionScreen({super.key, required this.foodId});
 
   @override
@@ -53,7 +53,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
     // Tambahkan field kosong saat inisialisasi
     _addIngredientField();
     _addStepField();
-    
+
     // TODO: Fetch data resep dari API menggunakan foodId
   }
 
