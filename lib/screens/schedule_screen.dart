@@ -481,7 +481,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       child: Container(
                                         width: 80,
                                         decoration: BoxDecoration(
-                                          color: AppColors.brightYellow,
+                                          color: AppColors.amber,
                                           borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(10),
                                             bottomRight: Radius.circular(10),

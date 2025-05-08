@@ -14,10 +14,9 @@ class AppColors {
   static const Color porcelain = Color(0xFFFDEFC0);
   static const Color bisque = Color(0xFFFFE1BE);
   static const Color buff = Color(0xFFF3D58D);
-  static Color brightYellow = Color(0xFFFFCD29).withAlpha(180);
   static const Color lightAmber = Color(0xFFFFC16B);
   static const Color amber = Color(0xFFFEAC3B);
-  static Color red = Color(0xFFFE2323).withAlpha(180);
+  static Color red = Color(0xFFF54242);
   static Color green = Color(0xFF14AE5C);
 
   // Text color
