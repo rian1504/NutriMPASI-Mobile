@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
-import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
+import 'package:nutrimpasi/blocs/food_recommendation/food_recommendation_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
-import 'package:nutrimpasi/screens/food/food_edit_suggestion_screen.dart';
+// import 'package:nutrimpasi/screens/food/food_edit_suggestion_screen.dart';
 
 class FoodSuggestionDetailScreen extends StatefulWidget {
-  final String foodId;
+  final int foodId;
   const FoodSuggestionDetailScreen({super.key, required this.foodId});
 
   @override
@@ -22,15 +22,17 @@ class _FoodSuggestionDetailScreenState
   void initState() {
     super.initState();
 
-    // Ambil data detail makanan
-    context.read<FoodDetailBloc>().add(FetchFoodDetail(foodId: widget.foodId));
+    // Ambil data rekomendasi makanan
+    context.read<FoodRecommendationBloc>().add(
+      FetchFoodRecommendation(foodId: widget.foodId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FoodDetailBloc, FoodDetailState>(
+    return BlocBuilder<FoodRecommendationBloc, FoodRecommendationState>(
       builder: (context, state) {
-        if (state is FoodDetailLoading) {
+        if (state is FoodRecommendationLoading) {
           return const Scaffold(
             body: Center(
               child: Column(
@@ -41,11 +43,11 @@ class _FoodSuggestionDetailScreenState
           );
         }
 
-        if (state is FoodDetailError) {
+        if (state is FoodRecommendationError) {
           return Center(child: Text(state.error));
         }
 
-        if (state is FoodDetailLoaded) {
+        if (state is FoodRecommendationLoaded) {
           final food = state.food;
 
           return Scaffold(
@@ -174,27 +176,24 @@ class _FoodSuggestionDetailScreenState
                               Row(
                                 children: [
                                   // Tag usia
-                                  if (food.age != null)
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.secondary.withAlpha(
-                                          25,
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        food.age!,
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 12,
-                                          color: AppColors.secondary,
-                                        ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondary.withAlpha(25),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      food.age,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 12,
+                                        color: AppColors.secondary,
                                       ),
                                     ),
+                                  ),
 
                                   const SizedBox(width: 8),
 
@@ -217,54 +216,6 @@ class _FoodSuggestionDetailScreenState
                                           color: AppColors.primary,
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              // Informasi sumber resep
-                              const Text(
-                                'Resep oleh: ',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 12,
-                                  color: AppColors.textBlack,
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  if (food.source == 'WHO')
-                                    Image.asset(
-                                      'assets/images/logo/who.png',
-                                      width: 100,
-                                      height: 30,
-                                    )
-                                  else if (food.source == 'KEMENKES')
-                                    Image.asset(
-                                      'assets/images/logo/kemenkes.png',
-                                      width: 100,
-                                      height: 30,
-                                    )
-                                  else
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.person,
-                                          size: 24,
-                                          color: AppColors.secondary,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Pengguna',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.secondary,
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                 ],
                               ),
@@ -357,6 +308,123 @@ class _FoodSuggestionDetailScreenState
                               ),
 
                               const SizedBox(height: 10),
+
+                              Text('Buah'),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: food.fruit.length,
+                                padding: const EdgeInsets.all(16),
+                                itemBuilder: (context, index) {
+                                  final fruit = food.fruit[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 24,
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${index + 1}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(child: Text(fruit)),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              Text('Bahan'),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: food.recipe.length,
+                                padding: const EdgeInsets.all(16),
+                                itemBuilder: (context, index) {
+                                  final recipe = food.recipe[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 24,
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${index + 1}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(child: Text(recipe)),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              Text('Langkah-langkah'),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: food.step.length,
+                                padding: const EdgeInsets.all(16),
+                                itemBuilder: (context, index) {
+                                  final step = food.step[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 24,
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${index + 1}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(child: Text(step)),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              Text('Total Favorite'),
+                              Text(food.favoriteCount.toString()),
                             ],
                           ),
                         ),
@@ -402,15 +470,15 @@ class _FoodSuggestionDetailScreenState
                             ),
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => FoodEditSuggestionScreen(
-                                          foodId: food.id.toString(),
-                                        ),
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder:
+                                //         (context) => FoodEditSuggestionScreen(
+                                //           food: food,
+                                //         ),
+                                //   ),
+                                // );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.amber,
@@ -521,17 +589,32 @@ class _FoodSuggestionDetailScreenState
                                                       ),
                                                     ),
                                                     onPressed: () {
-                                                      // TODO: Implementasi hapus usulan resep
-                                                      Navigator.pop(context);
+                                                      if (!mounted) {
+                                                        return;
+                                                      }
 
+                                                      context
+                                                          .read<
+                                                            FoodRecommendationBloc
+                                                          >()
+                                                          .add(
+                                                            DeleteFoodRecommendation(
+                                                              foodId: food.id,
+                                                            ),
+                                                          );
+
+                                                      context
+                                                          .read<FoodBloc>()
+                                                          .add(FetchFoods());
+                                                      Navigator.pop(context);
                                                       Navigator.pop(context);
 
                                                       ScaffoldMessenger.of(
                                                         context,
                                                       ).showSnackBar(
-                                                        const SnackBar(
+                                                        SnackBar(
                                                           content: Text(
-                                                            'Usulan resep berhasil dihapus',
+                                                            'Makanan berhasil dihapus',
                                                           ),
                                                           backgroundColor:
                                                               Colors.green,
