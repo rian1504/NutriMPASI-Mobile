@@ -43,7 +43,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
           // Tunggu sebentar lalu navigasi ke home
           Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pushReplacementNamed(context, '/home');
+            if (context.mounted) {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
           });
         } else if (state is AuthenticationError) {
           ScaffoldMessenger.of(

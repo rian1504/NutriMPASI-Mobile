@@ -13,6 +13,7 @@ import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
+import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
@@ -184,6 +185,16 @@ class _HomeScreenState extends State<HomeScreen>
 
           // Fetch rekomendasi untuk bayi yang baru dipilih
           if (babies.isNotEmpty) {
+            // Reset index rekomendasi ketika bayi berubah
+            setState(() {
+              _currentRecommendationIndex = 0;
+            });
+
+            // Pastikan carousel rekomendasi kembali ke halaman pertama
+            if (_foodRecommendationController.hasClients) {
+              _foodRecommendationController.jumpToPage(0);
+            }
+
             context.read<BabyFoodRecommendationBloc>().add(
               FetchBabyFoodRecommendation(babyId: babies[currentPageRound].id),
             );
@@ -599,6 +610,8 @@ class _HomeScreenState extends State<HomeScreen>
                                                           AppColors.textBlack,
                                                     ),
                                                     maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 4),
                                                   if (baby
@@ -872,6 +885,21 @@ class _HomeScreenState extends State<HomeScreen>
 
               if (state is BabyFoodRecommendationLoaded) {
                 _recommendedFoods = state.foods;
+
+                // Reset index rekomendasi dan posisi carousel ketika makanan baru dimuat
+          if (_recommendedFoods.isEmpty ||
+              _recommendedFoods.first.food.id != state.foods.first.food.id) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  _currentRecommendationIndex = 0;
+                });
+                if (_foodRecommendationController.hasClients) {
+                  _foodRecommendationController.jumpToPage(0);
+                }
+              }
+            });
+          }
               }
 
               return _isBabyDataLoading
@@ -982,15 +1010,22 @@ class _HomeScreenState extends State<HomeScreen>
       height: 180,
       child: PageView.builder(
         controller: _foodRecommendationController,
-        itemCount: _recommendedFoods.length * 1000,
+        itemCount:
+            _recommendedFoods.isEmpty ? 1 : _recommendedFoods.length * 1000,
         onPageChanged: (index) {
           if (mounted) {
             setState(() {
-              _currentRecommendationIndex = index % _recommendedFoods.length;
+              _currentRecommendationIndex =
+                  _recommendedFoods.isEmpty
+                      ? 0
+                      : index % _recommendedFoods.length;
             });
           }
         },
         itemBuilder: (context, index) {
+          if (_recommendedFoods.isEmpty) {
+            return _buildLoadingRecommendation();
+          }
           final food = _recommendedFoods[index % _recommendedFoods.length];
           return _buildFoodRecommendationCard(food);
         },
@@ -1006,107 +1041,117 @@ class _HomeScreenState extends State<HomeScreen>
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Stack(
-        children: [
-          // Background image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              storageUrl + food.image,
-              width: double.infinity,
-              height: 180,
-              fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FoodDetailScreen(foodId: "${food.id}"),
             ),
-          ),
+          );
+        },
+        child: Stack(
+          children: [
+            // Gambar makanan
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(
+                storageUrl + food.image,
+                width: double.infinity,
+                height: 180,
+                fit: BoxFit.cover,
+              ),
+            ),
 
-          // Gradient overlay for text at the bottom
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 70,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(16),
-                ),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withAlpha(175)],
+            // Gradient overlay
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: 70,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(16),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withAlpha(175)],
+                  ),
                 ),
               ),
             ),
-          ),
 
-          // Food information
-          Positioned(
-            left: 12,
-            right: 12,
-            bottom: 12,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // Food name
-                Expanded(
-                  child: Text(
-                    food.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-
-                // Source badge
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withAlpha(200),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    food.source ?? "PENGGUNA",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+            // Informasi makanan
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Food name
+                  Expanded(
+                    child: Text(
+                      food.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
 
-          // Page indicator dots
-          Positioned(
-            top: 12,
-            right: 12,
-            child: Row(
-              children: List.generate(_recommendedFoods.length, (i) {
-                return Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.only(left: 4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        i == _currentRecommendationIndex
-                            ? AppColors.secondary
-                            : Colors.white.withAlpha(125),
+                  // Sumber makanan
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withAlpha(200),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      food.source ?? "PENGGUNA",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                );
-              }),
+                ],
+              ),
             ),
-          ),
-        ],
+
+            // Indikator halaman
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Row(
+                children: List.generate(_recommendedFoods.length, (i) {
+                  return Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.only(left: 4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color:
+                          i == _currentRecommendationIndex
+                              ? AppColors.secondary
+                              : Colors.white.withAlpha(125),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -16,9 +16,7 @@ class BabyListScreen extends StatefulWidget {
 
 class _BabyListScreenState extends State<BabyListScreen> {
   // Controller untuk carousel bayi
-  final PageController _carouselController = PageController(
-    viewportFraction: 0.85,
-  );
+  late PageController _carouselController;
   int _currentCarouselPage = 0;
 
   // Data bayi
@@ -27,6 +25,25 @@ class _BabyListScreenState extends State<BabyListScreen> {
   @override
   void initState() {
     super.initState();
+    // Inisialisasi PageController
+    _initPageController();
+
+    // Ambil data bayi dari Bloc
+    final babyState = context.read<BabyBloc>().state;
+    if (babyState is! BabyLoaded) {
+      context.read<BabyBloc>().add(FetchBabies());
+    }
+  }
+
+  // Inisialisasi PageController untuk carousel
+  void _initPageController() {
+    _carouselController = PageController(
+      viewportFraction: 0.85,
+      initialPage: 0,
+    );
+
+    _currentCarouselPage = 0;
+
     // Listener untuk update halaman carousel yang aktif
     _carouselController.addListener(() {
       int page = _carouselController.page?.round() ?? 0;
@@ -36,12 +53,6 @@ class _BabyListScreenState extends State<BabyListScreen> {
         });
       }
     });
-
-    // Load data
-    final babyState = context.read<BabyBloc>().state;
-    if (babyState is! BabyLoaded) {
-      context.read<BabyBloc>().add(FetchBabies());
-    }
   }
 
   @override
@@ -180,6 +191,28 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           // Handle loaded state
                           if (state is BabyLoaded) {
                             _babies = state.babies;
+
+// Reset Carousel
+if (_carouselController.hasClients) {
+            _carouselController.animateToPage(
+              0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+
+
+                            // Jika ada bayi yang sudah ada, set carousel ke halaman pertama
+          if (!_carouselController.hasClients) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (_carouselController.hasClients) {
+                setState(() {
+                  _currentCarouselPage = 0;
+                });
+                _carouselController.jumpToPage(0);
+              }
+            });
+          }
                           }
 
                           return Column(
@@ -291,15 +324,21 @@ class _BabyListScreenState extends State<BabyListScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    baby.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textBlack,
+                  Expanded(
+                    child: Text(
+                      baby.name,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // Tombol edit
                       IconButton(
@@ -315,7 +354,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           });
                         },
                         style: IconButton.styleFrom(
-                          backgroundColor: AppColors.brightYellow,
+                          backgroundColor: AppColors.amber,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.all(8),
                         ),

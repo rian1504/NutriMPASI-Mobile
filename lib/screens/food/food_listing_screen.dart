@@ -7,6 +7,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
+import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 
 class FoodListingScreen extends StatefulWidget {
   final bool showUserSuggestions;
@@ -1422,10 +1423,43 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                           final filteredItems = _getFilteredFoodItems();
 
                           if (filteredItems.isEmpty && state is! FoodLoading) {
-                            return const Center(
+                            return Center(
                               child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 50.0),
-                                child: Text('Tidak ada resep ditemukan.'),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 50.0,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.no_food,
+                                      size: 70,
+                                      color: AppColors.primary.withAlpha(175),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Belum ada resep',
+                                      style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      _activeSearchQuery.isNotEmpty
+                                          ? 'Tidak ada resep yang sesuai dengan pencarian Anda'
+                                          : 'Coba ubah filter atau tambahkan usulan resep baru',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        color: AppColors.textGrey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           }
@@ -1435,207 +1469,44 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                               ...filteredItems.take(_displayedItemCount).map((
                                 item,
                               ) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => FoodDetailScreen(
-                                              foodId: item.id.toString(),
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    margin: const EdgeInsets.only(bottom: 12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        // Gambar makanan
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                          child: Image.network(
-                                            storageUrl + item.image,
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                          right: 8.0,
-                                                        ),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        // Nama makanan
-                                                        Text(
-                                                          item.name,
-                                                          style: const TextStyle(
-                                                            fontFamily:
-                                                                'Poppins',
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            color:
-                                                                AppColors
-                                                                    .textBlack,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 4,
-                                                        ),
-                                                        // Deskripsi singkat
-                                                        Text(
-                                                          item.description,
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Poppins',
-                                                            fontSize: 12,
-                                                            color:
-                                                                AppColors
-                                                                    .textGrey,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.justify,
-                                                          maxLines: 3,
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                        ),
-                                                      ],
-                                                    ),
+                                if (_showUserSuggestionsOnly) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  FoodSuggestionDetailScreen(
+                                                    foodId: item.id.toString(),
                                                   ),
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    // Indikator sumber
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                            4,
-                                                          ),
-                                                      decoration: BoxDecoration(
-                                                        color: AppColors
-                                                            .secondary
-                                                            .withAlpha(25),
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Image.asset(
-                                                        item.source == 'WHO'
-                                                            ? 'assets/images/icon/source_who.png'
-                                                            : item.source ==
-                                                                'KEMENKES'
-                                                            ? 'assets/images/icon/source_kemenkes.png'
-                                                            : 'assets/images/icon/source_pengguna.png',
-                                                        width: 16,
-                                                        height: 16,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 32),
-                                                    // Indikator favorit
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            horizontal: 6,
-                                                            vertical: 3,
-                                                          ),
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            AppColors.primary,
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              8,
-                                                            ),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          item.isFavorite
-                                                              ? Stack(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .favorite,
-                                                                    color:
-                                                                        Colors
-                                                                            .white,
-                                                                    size: 12,
-                                                                  ),
-                                                                  Icon(
-                                                                    Icons
-                                                                        .favorite,
-                                                                    color:
-                                                                        AppColors
-                                                                            .buff,
-                                                                    size: 12,
-                                                                  ),
-                                                                ],
-                                                              )
-                                                              : Icon(
-                                                                Icons
-                                                                    .favorite_border,
-                                                                color:
-                                                                    Colors
-                                                                        .white,
-                                                                size: 12,
-                                                              ),
-                                                          const SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          Text(
-                                                            item.favoritesCount
-                                                                .toString(),
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontSize: 8,
-                                                                  color:
-                                                                      Colors
-                                                                          .white,
-                                                                ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
                                         ),
-                                      ],
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 12),
+                                      child: _buildFoodCard(item, context),
                                     ),
-                                  ),
-                                );
+                                  );
+                                } else {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => FoodDetailScreen(
+                                                foodId: item.id.toString(),
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 12),
+                                      child: _buildFoodCard(item, context),
+                                    ),
+                                  );
+                                }
                               }),
 
                               // Indikator loading
@@ -1696,6 +1567,146 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                   child: const Icon(Icons.arrow_upward, color: Colors.white),
                 )
                 : null,
+      ),
+    );
+  }
+
+  // Widget kartu makanan
+  Widget _buildFoodCard(Food item, BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Row(
+        children: [
+          // Gambar makanan
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
+            ),
+            child: Image.network(
+              storageUrl + item.image,
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Nama makanan
+                          Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          // Deskripsi singkat
+                          Text(
+                            item.description,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              color: AppColors.textGrey,
+                            ),
+                            textAlign: TextAlign.justify,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Indikator sumber (tidak ditampilkan dalam mode usulan saya)
+                      if (!_showUserSuggestionsOnly)
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: AppColors.secondary.withAlpha(25),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Image.asset(
+                            item.source == 'WHO'
+                                ? 'assets/images/icon/source_who.png'
+                                : item.source == 'KEMENKES'
+                                ? 'assets/images/icon/source_kemenkes.png'
+                                : 'assets/images/icon/source_pengguna.png',
+                            width: 16,
+                            height: 16,
+                          ),
+                        ),
+                      if (_showUserSuggestionsOnly) const SizedBox(height: 24),
+                      const SizedBox(height: 32),
+                      // Indikator favorit
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            item.isFavorite
+                                ? Stack(
+                                  alignment: Alignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.favorite,
+                                      color: Colors.white,
+                                      size: 12,
+                                    ),
+                                    Icon(
+                                      Icons.favorite,
+                                      color: AppColors.buff,
+                                      size: 12,
+                                    ),
+                                  ],
+                                )
+                                : const Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                            const SizedBox(width: 4),
+                            Text(
+                              item.favoritesCount.toString(),
+                              style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 8,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -103,7 +103,7 @@ class MainApp extends StatelessWidget {
             } else if (state is AuthenticationUnauthenticated) {
               return const SplashScreen(nextScreen: OnboardingScreen());
             } else {
-              return const SplashScreen(nextScreen: OnboardingScreen());
+              return const SplashScreen();
             }
           },
         ),

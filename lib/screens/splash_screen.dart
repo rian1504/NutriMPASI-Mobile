@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
+import 'package:nutrimpasi/screens/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   final Widget? nextScreen;
+  final int maxRetries;
+  final int retryInterval;
+  final int maxWaitTime;
 
-  const SplashScreen({super.key, this.nextScreen});
+  const SplashScreen({
+    super.key,
+    this.nextScreen,
+    this.maxRetries = 3,
+    this.retryInterval = 5000,
+    this.maxWaitTime = 20000,
+  });
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -32,6 +44,12 @@ class _SplashScreenState extends State<SplashScreen>
 
   // Properti untuk melacak kapan menampilkan lingkaran kelima
   bool _showFifthCircle = false;
+
+  // Variabel untuk menandai apakah sudah dinavigasi
+  int _retryCount = 0;
+  Timer? _navigationFallbackTimer;
+  Timer? _retryTimer;
+  bool _hasNavigated = false;
 
   @override
   void initState() {
@@ -134,6 +152,16 @@ class _SplashScreenState extends State<SplashScreen>
     });
 
     _ensureNavigationAfterAnimation();
+
+    // Menambahkan timer untuk menandai kapan harus menavigasi secara paksa
+    _navigationFallbackTimer = Timer(
+      Duration(milliseconds: widget.maxWaitTime),
+      () {
+        if (!_hasNavigated && mounted && !_isDisposed) {
+          _forceNavigation();
+        }
+      },
+    );
   }
 
   void _ensureNavigationAfterAnimation() {
@@ -150,39 +178,81 @@ class _SplashScreenState extends State<SplashScreen>
 
         Future.delayed(const Duration(milliseconds: 1000), () {
           if (!mounted || _isDisposed) return;
-
-          if (widget.nextScreen != null) {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                pageBuilder:
-                    (context, animation, secondaryAnimation) =>
-                        widget.nextScreen!,
-                transitionsBuilder: (
-                  context,
-                  animation,
-                  secondaryAnimation,
-                  child,
-                ) {
-                  const begin = 0.0;
-                  const end = 1.0;
-                  var tween = Tween(begin: begin, end: end);
-                  var fadeAnimation = animation.drive(tween);
-                  return FadeTransition(opacity: fadeAnimation, child: child);
-                },
-                transitionDuration: const Duration(milliseconds: 800),
-              ),
-            );
-          }
+          _checkAuthAndNavigate();
         });
       });
     });
+  }
+
+  void _checkAuthAndNavigate() {
+    // Hanya jalankan jika belum dinavigasi dan widget masih ada
+    if (_hasNavigated) return;
+
+    // Ambil instance dari AuthenticationBloc
+    final authBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final authState = authBloc.state;
+
+    if (authState is LoginSuccess) {
+      _navigateToNextScreen(widget.nextScreen);
+    } else if (authState is AuthenticationUnauthenticated) {
+      _navigateToNextScreen(const OnboardingScreen());
+    } else if (_retryCount < widget.maxRetries) {
+      // Jika authState tidak terdefinisi, kita coba lagi setelah interval retry
+      _retryCount++;
+      _retryTimer = Timer(Duration(milliseconds: widget.retryInterval), () {
+        if (mounted && !_isDisposed && !_hasNavigated) {
+          // Cek status auth lagi
+          authBloc.add(CheckAuthStatus());
+          _checkAuthAndNavigate();
+        }
+      });
+    } else {
+      // Jika sudah mencapai maxRetries, kita paksa navigasi ke OnboardingScreen
+      _forceNavigation();
+    }
+  }
+
+  void _forceNavigation() {
+    // Hanya jalankan jika belum dinavigasi dan widget masih ada
+    if (!_hasNavigated && mounted && !_isDisposed) {
+      // Batalkan timer yang ada
+      _navigateToNextScreen(const OnboardingScreen());
+    }
+  }
+
+  void _navigateToNextScreen(Widget? screen) {
+    if (_hasNavigated || !mounted || _isDisposed) return;
+
+    setState(() {
+      _hasNavigated = true;
+    });
+
+    if (screen != null) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => screen,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = 0.0;
+            const end = 1.0;
+            var tween = Tween(begin: begin, end: end);
+            var fadeAnimation = animation.drive(tween);
+            return FadeTransition(opacity: fadeAnimation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 800),
+        ),
+      );
+    }
   }
 
   @override
   void dispose() {
     // Tandai sebagai disposed terlebih dahulu
     _isDisposed = true;
+
+    // Batalkan semua timer yang ada
+    _navigationFallbackTimer?.cancel();
+    _retryTimer?.cancel();
 
     // Batalkan semua timer yang tertunda
     for (final timer in _timers) {
