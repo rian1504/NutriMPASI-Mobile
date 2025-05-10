@@ -21,9 +21,9 @@ NutriMPASI adalah aplikasi mobile berbasis Flutter yang dirancang untuk mendukun
 
 <p align="center">
   <!-- Tambahkan screenshot aplikasi di sini -->
-  <img src="https://imgur.com/zgrPcum" width="200" alt="Layar Beranda"/>
-  <img src="https://imgur.com/KETmwX1" width="200" alt="Daftar Makanan"/>
-  <img src="https://imgur.com/y9tGNI9" width="200" alt="Detail Makanan"/>
+  <img src="https://i.imgur.com/zgrPcum.png" width="200" alt="Layar Beranda"/>
+  <img src="https://i.imgur.com/KETmwX1.png" width="200" alt="Daftar Makanan"/>
+  <img src="https://i.imgur.com/y9tGNI9.png" width="200" alt="Detail Makanan"/>
 </p>
 
 ## 🚀 Memulai
