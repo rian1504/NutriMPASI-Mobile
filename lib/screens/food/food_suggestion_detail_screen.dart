@@ -5,7 +5,7 @@ import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
-// import 'package:nutrimpasi/screens/food/food_edit_suggestion_screen.dart';
+import 'package:nutrimpasi/screens/food/food_edit_suggestion_screen.dart';
 
 class FoodSuggestionDetailScreen extends StatefulWidget {
   final int foodId;
@@ -470,15 +470,15 @@ class _FoodSuggestionDetailScreenState
                             ),
                             child: ElevatedButton(
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder:
-                                //         (context) => FoodEditSuggestionScreen(
-                                //           food: food,
-                                //         ),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => FoodEditSuggestionScreen(
+                                          food: food,
+                                        ),
+                                  ),
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.amber,

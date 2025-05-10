@@ -8,6 +8,7 @@ import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/baby_food_recommendation/baby_food_recommendation_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
+import 'package:nutrimpasi/blocs/food_category/food_category_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
@@ -84,6 +85,11 @@ class MainApp extends StatelessWidget {
           create:
               (context) =>
                   FoodSuggestionBloc(controller: FoodSuggestionController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  FoodCategoryBloc(controller: FoodSuggestionController()),
         ),
       ],
       child: MaterialApp(

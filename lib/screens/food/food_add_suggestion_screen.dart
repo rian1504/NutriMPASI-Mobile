@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
+// import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
 
 class FoodAddSuggestionScreen extends StatefulWidget {
   const FoodAddSuggestionScreen({super.key});
@@ -819,17 +819,17 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                             );
                                           }
 
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) =>
-                                                      FoodNutritionCalculatorScreen(
-                                                        ingredients:
-                                                            ingredients,
-                                                      ),
-                                            ),
-                                          );
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //     builder:
+                                          //         (context) =>
+                                          //             FoodNutritionCalculatorScreen(
+                                          //               ingredients:
+                                          //                   ingredients,
+                                          //             ),
+                                          //   ),
+                                          // );
                                         }
                                       },
                                       child: Container(

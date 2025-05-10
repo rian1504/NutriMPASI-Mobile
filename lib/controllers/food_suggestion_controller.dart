@@ -7,6 +7,24 @@ import 'package:nutrimpasi/models/food_suggestion.dart';
 class FoodSuggestionController {
   final Dio _dio = RemoteDio().dio;
 
+  Future<List<FoodCategory>> getFoodCategory() async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.get(ApiEndpoints.foodCategory);
+
+      // Debug response
+      debugPrint('Get Food Category response: ${response.data}');
+
+      // Return data
+      return (response.data['data'] as List)
+          .map((e) => FoodCategory.fromJson(e))
+          .toList();
+    } on DioException catch (e) {
+      debugPrint('Get Food Category error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
   Future<FoodSuggestion> showFood({required int foodId}) async {
     try {
       // Kirim request ke API
@@ -19,6 +37,52 @@ class FoodSuggestionController {
       return FoodSuggestion.fromJson(response.data['data']);
     } on DioException catch (e) {
       debugPrint('Get Food Suggestion error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> updateFood({
+    required int foodId,
+    required int foodCategoryId,
+    required String name,
+    required String image,
+    required String age,
+    required double energy,
+    required double protein,
+    required double fat,
+    required int portion,
+    required List<String> recipe,
+    required List<String> fruit,
+    required List<String> step,
+    required String description,
+  }) async {
+    try {
+      // data
+      final data = {
+        'food_category_id': foodCategoryId,
+        'name': name,
+        'image': image,
+        'age': age,
+        'energy': energy,
+        'protein': protein,
+        'fat': fat,
+        'portion': portion,
+        'recipe': recipe.join(', '),
+        'fruit': fruit.join(', '),
+        'step': step.join(', '),
+        'description': description,
+      };
+
+      // Kirim request ke API
+      final response = await _dio.post(
+        '${ApiEndpoints.foodSuggestion}/$foodId',
+        data: data,
+      );
+
+      // Debug response
+      debugPrint('Update food response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Update food error: ${e.response?.data}');
       throw _handleError(e);
     }
   }

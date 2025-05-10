@@ -16,9 +16,9 @@ class FoodSuggestion {
   String name;
   String image;
   String age;
-  int energy;
+  double energy;
   double protein;
-  int fat;
+  double fat;
   int portion;
   List<String> recipe;
   List<String> fruit;
@@ -53,9 +53,9 @@ class FoodSuggestion {
     name: json["name"],
     image: json["image"],
     age: json["age"],
-    energy: json["energy"],
+    energy: json["energy"]?.toDouble(),
     protein: json["protein"]?.toDouble(),
-    fat: json["fat"],
+    fat: json["fat"]?.toDouble(),
     portion: json["portion"],
     fruit: List<String>.from(json["fruit"].map((x) => x)),
     recipe: List<String>.from(json["recipe"].map((x) => x)),

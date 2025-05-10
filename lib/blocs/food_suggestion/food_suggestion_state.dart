@@ -7,6 +7,8 @@ final class FoodSuggestionInitial extends FoodSuggestionState {}
 
 final class FoodSuggestionLoading extends FoodSuggestionState {}
 
+final class FoodSuggestionUpdated extends FoodSuggestionState {}
+
 final class FoodSuggestionDeleted extends FoodSuggestionState {}
 
 final class FoodSuggestionLoaded extends FoodSuggestionState {
