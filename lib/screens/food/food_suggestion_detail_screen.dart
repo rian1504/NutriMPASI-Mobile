@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
-import 'package:nutrimpasi/blocs/food_recommendation/food_recommendation_bloc.dart';
+import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
 // import 'package:nutrimpasi/screens/food/food_edit_suggestion_screen.dart';
@@ -23,16 +23,16 @@ class _FoodSuggestionDetailScreenState
     super.initState();
 
     // Ambil data rekomendasi makanan
-    context.read<FoodRecommendationBloc>().add(
-      FetchFoodRecommendation(foodId: widget.foodId),
+    context.read<FoodSuggestionBloc>().add(
+      FetchFoodSuggestion(foodId: widget.foodId),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FoodRecommendationBloc, FoodRecommendationState>(
+    return BlocBuilder<FoodSuggestionBloc, FoodSuggestionState>(
       builder: (context, state) {
-        if (state is FoodRecommendationLoading) {
+        if (state is FoodSuggestionLoading) {
           return const Scaffold(
             body: Center(
               child: Column(
@@ -43,11 +43,11 @@ class _FoodSuggestionDetailScreenState
           );
         }
 
-        if (state is FoodRecommendationError) {
+        if (state is FoodSuggestionError) {
           return Center(child: Text(state.error));
         }
 
-        if (state is FoodRecommendationLoaded) {
+        if (state is FoodSuggestionLoaded) {
           final food = state.food;
 
           return Scaffold(
@@ -595,10 +595,10 @@ class _FoodSuggestionDetailScreenState
 
                                                       context
                                                           .read<
-                                                            FoodRecommendationBloc
+                                                            FoodSuggestionBloc
                                                           >()
                                                           .add(
-                                                            DeleteFoodRecommendation(
+                                                            DeleteFoodSuggestion(
                                                               foodId: food.id,
                                                             ),
                                                           );

@@ -1,16 +1,15 @@
 // To parse this JSON data, do
 //
-//     final foodRecommendation = foodRecommendationFromJson(jsonString);
+//     final foodSuggestion = foodSuggestionFromJson(jsonString);
 
 import 'dart:convert';
 
-FoodRecommendation foodRecommendationFromJson(String str) =>
-    FoodRecommendation.fromJson(json.decode(str));
+FoodSuggestion foodSuggestionFromJson(String str) =>
+    FoodSuggestion.fromJson(json.decode(str));
 
-String foodRecommendationToJson(FoodRecommendation data) =>
-    json.encode(data.toJson());
+String foodSuggestionToJson(FoodSuggestion data) => json.encode(data.toJson());
 
-class FoodRecommendation {
+class FoodSuggestion {
   int id;
   int? foodCategoryId;
   int userId;
@@ -28,7 +27,7 @@ class FoodRecommendation {
   int favoriteCount;
   FoodCategory? foodCategory;
 
-  FoodRecommendation({
+  FoodSuggestion({
     required this.id,
     this.foodCategoryId,
     required this.userId,
@@ -47,28 +46,27 @@ class FoodRecommendation {
     this.foodCategory,
   });
 
-  factory FoodRecommendation.fromJson(Map<String, dynamic> json) =>
-      FoodRecommendation(
-        id: json["id"],
-        foodCategoryId: json["food_category_id"] as int?,
-        userId: json["user_id"],
-        name: json["name"],
-        image: json["image"],
-        age: json["age"],
-        energy: json["energy"],
-        protein: json["protein"]?.toDouble(),
-        fat: json["fat"],
-        portion: json["portion"],
-        fruit: List<String>.from(json["fruit"].map((x) => x)),
-        recipe: List<String>.from(json["recipe"].map((x) => x)),
-        step: List<String>.from(json["step"].map((x) => x)),
-        description: json["description"],
-        favoriteCount: json["favorite_count"],
-        foodCategory:
-            json["food_category"] != null
-                ? FoodCategory.fromJson(json["food_category"])
-                : null,
-      );
+  factory FoodSuggestion.fromJson(Map<String, dynamic> json) => FoodSuggestion(
+    id: json["id"],
+    foodCategoryId: json["food_category_id"] as int?,
+    userId: json["user_id"],
+    name: json["name"],
+    image: json["image"],
+    age: json["age"],
+    energy: json["energy"],
+    protein: json["protein"]?.toDouble(),
+    fat: json["fat"],
+    portion: json["portion"],
+    fruit: List<String>.from(json["fruit"].map((x) => x)),
+    recipe: List<String>.from(json["recipe"].map((x) => x)),
+    step: List<String>.from(json["step"].map((x) => x)),
+    description: json["description"],
+    favoriteCount: json["favorite_count"],
+    foodCategory:
+        json["food_category"] != null
+            ? FoodCategory.fromJson(json["food_category"])
+            : null,
+  );
 
   Map<String, dynamic> toJson() => {
     "id": id,

@@ -2,25 +2,23 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/remote_dio.dart';
 import 'package:nutrimpasi/constants/url.dart';
-import 'package:nutrimpasi/models/food_recommendation.dart';
+import 'package:nutrimpasi/models/food_suggestion.dart';
 
-class FoodRecommendationController {
+class FoodSuggestionController {
   final Dio _dio = RemoteDio().dio;
 
-  Future<FoodRecommendation> showFood({required int foodId}) async {
+  Future<FoodSuggestion> showFood({required int foodId}) async {
     try {
       // Kirim request ke API
-      final response = await _dio.get(
-        '${ApiEndpoints.foodRecommendation}/$foodId',
-      );
+      final response = await _dio.get('${ApiEndpoints.foodSuggestion}/$foodId');
 
       // Debug response
-      debugPrint('Get Food Recommendation response: ${response.data}');
+      debugPrint('Get Food Suggestion response: ${response.data}');
 
       // Return data
-      return FoodRecommendation.fromJson(response.data['data']);
+      return FoodSuggestion.fromJson(response.data['data']);
     } on DioException catch (e) {
-      debugPrint('Get Food Recommendation error: ${e.response?.data}');
+      debugPrint('Get Food Suggestion error: ${e.response?.data}');
       throw _handleError(e);
     }
   }
@@ -29,13 +27,13 @@ class FoodRecommendationController {
     try {
       // Kirim request ke API
       final response = await _dio.delete(
-        '${ApiEndpoints.foodRecommendation}/$foodId',
+        '${ApiEndpoints.foodSuggestion}/$foodId',
       );
 
       // Debug response
-      debugPrint('Delete Food Recommendation response: ${response.data}');
+      debugPrint('Delete Food Suggestion response: ${response.data}');
     } on DioException catch (e) {
-      debugPrint('Delete Food Recommendation error: ${e.response?.data}');
+      debugPrint('Delete Food Suggestion error: ${e.response?.data}');
       throw _handleError(e);
     }
   }
