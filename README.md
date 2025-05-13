@@ -69,7 +69,7 @@ Untuk menjalankan aplikasi dengan backend Laravel secara lokal:
 
    ```bash
    git clone https://github.com/rian1504/NutriMPASI-Web.git
-   cd NutriMPASI-Backend
+   cd NutriMPASI-Web
    ```
 
 2. Setup Laravel:
@@ -99,7 +99,7 @@ Untuk menjalankan aplikasi dengan backend Laravel secara lokal:
      ```
    - Untuk perangkat Android fisik, gunakan IP komputer Anda:
      ```dart
-     String baseUrl = 'http://192.168.1.xxx:8000/';
+     String baseUrl = 'http://192.168.x.x:8000/';
      ```
 
 ## 🔧 Struktur Proyek
