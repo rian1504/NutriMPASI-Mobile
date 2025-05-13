@@ -14,6 +14,7 @@ class Food {
   final String description;
   final String foodCategoryId;
   bool isFavorite;
+  final DateTime? cookingDate;
 
   Food({
     required this.id,
@@ -31,6 +32,7 @@ class Food {
     required this.description,
     required this.foodCategoryId,
     required this.isFavorite,
+    this.cookingDate,
   });
 
   // Data dummy makanan
@@ -114,7 +116,7 @@ class Food {
     ),
     Food(
       id: '4',
-      name: 'Finger Food Kentang Keju',
+      name: 'Finger Food Kentang Keju Enak Banget Loh',
       source: 'KEMENKES',
       image: 'https://picsum.photos/200/300?random=4',
       age: '12-23 bulan',
@@ -631,4 +633,111 @@ class Food {
       isFavorite: true,
     ),
   ];
+
+  // Helper untuk data dummy dengan cooking date
+  static List<Food> get dummyFoodsWithDates {
+    final now = DateTime.now();
+
+    return [
+      // Hari ini
+      Food(
+        id: dummyFoods[0].id,
+        name: dummyFoods[0].name,
+        source: dummyFoods[0].source,
+        image: dummyFoods[0].image,
+        age: dummyFoods[0].age,
+        energy: dummyFoods[0].energy,
+        protein: dummyFoods[0].protein,
+        fat: dummyFoods[0].fat,
+        portion: dummyFoods[0].portion,
+        fruit: dummyFoods[0].fruit,
+        recipe: dummyFoods[0].recipe,
+        step: dummyFoods[0].step,
+        description: dummyFoods[0].description,
+        foodCategoryId: dummyFoods[0].foodCategoryId,
+        isFavorite: dummyFoods[0].isFavorite,
+        cookingDate: now,
+      ),
+
+      // Kemarin
+      Food(
+        id: dummyFoods[1].id,
+        name: dummyFoods[1].name,
+        source: dummyFoods[1].source,
+        image: dummyFoods[1].image,
+        age: dummyFoods[1].age,
+        energy: dummyFoods[1].energy,
+        protein: dummyFoods[1].protein,
+        fat: dummyFoods[1].fat,
+        portion: dummyFoods[1].portion,
+        fruit: dummyFoods[1].fruit,
+        recipe: dummyFoods[1].recipe,
+        step: dummyFoods[1].step,
+        description: dummyFoods[1].description,
+        foodCategoryId: dummyFoods[1].foodCategoryId,
+        isFavorite: dummyFoods[1].isFavorite,
+        cookingDate: now.subtract(const Duration(days: 1)),
+      ),
+
+      // Minggu lalu
+      Food(
+        id: dummyFoods[2].id,
+        name: dummyFoods[2].name,
+        source: dummyFoods[2].source,
+        image: dummyFoods[2].image,
+        age: dummyFoods[2].age,
+        energy: dummyFoods[2].energy,
+        protein: dummyFoods[2].protein,
+        fat: dummyFoods[2].fat,
+        portion: dummyFoods[2].portion,
+        fruit: dummyFoods[2].fruit,
+        recipe: dummyFoods[2].recipe,
+        step: dummyFoods[2].step,
+        description: dummyFoods[2].description,
+        foodCategoryId: dummyFoods[2].foodCategoryId,
+        isFavorite: dummyFoods[2].isFavorite,
+        cookingDate: now.subtract(const Duration(days: 7)),
+      ),
+
+      // Bulan lalu
+      Food(
+        id: dummyFoods[3].id,
+        name: dummyFoods[3].name,
+        source: dummyFoods[3].source,
+        image: dummyFoods[3].image,
+        age: dummyFoods[3].age,
+        energy: dummyFoods[3].energy,
+        protein: dummyFoods[3].protein,
+        fat: dummyFoods[3].fat,
+        portion: dummyFoods[3].portion,
+        fruit: dummyFoods[3].fruit,
+        recipe: dummyFoods[3].recipe,
+        step: dummyFoods[3].step,
+        description: dummyFoods[3].description,
+        foodCategoryId: dummyFoods[3].foodCategoryId,
+        isFavorite: dummyFoods[3].isFavorite,
+        cookingDate: now.subtract(const Duration(days: 35)),
+      ),
+
+      // Tahun lalu
+      Food(
+        id: dummyFoods[4].id,
+        name: dummyFoods[4].name,
+        source: dummyFoods[4].source,
+        image: dummyFoods[4].image,
+        age: dummyFoods[4].age,
+        energy: dummyFoods[4].energy,
+        protein: dummyFoods[4].protein,
+        fat: dummyFoods[4].fat,
+        portion: dummyFoods[4].portion,
+        fruit: dummyFoods[4].fruit,
+        recipe: dummyFoods[4].recipe,
+        step: dummyFoods[4].step,
+        description: dummyFoods[4].description,
+        foodCategoryId: dummyFoods[4].foodCategoryId,
+        isFavorite: dummyFoods[4].isFavorite,
+        cookingDate: now.subtract(const Duration(days: 365)),
+      ),
+    ];
+  }
 }

@@ -3,6 +3,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/food_model.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class CookingHistoryScreen extends StatefulWidget {
   const CookingHistoryScreen({super.key});
@@ -13,12 +15,7 @@ class CookingHistoryScreen extends StatefulWidget {
 
 class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   // Data riwayat memasak
-  final List<Food> _historyItems = [
-    Food.dummyFoods[0],
-    Food.dummyFoods[1],
-    Food.dummyFoods[2],
-    Food.dummyFoods[3],
-  ];
+  final List<Food> _historyItems = Food.dummyFoodsWithDates;
 
   // Data dummy nutrisi
   final Map<String, dynamic> _nutritionData = {
@@ -35,13 +32,6 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
   // Filter periode waktu
   String _selectedTimePeriod = 'Harian';
-  final List<String> _timePeriods = [
-    'Harian',
-    'Mingguan',
-    'Bulanan',
-    'Tahunan',
-    'Semua',
-  ];
 
   // Data yang dikelompokkan berdasarkan waktu
   Map<String, List<Food>> _groupedData = {};
@@ -49,40 +39,154 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   @override
   void initState() {
     super.initState();
+    // Inisialisasi format tanggal lokal Indonesia
+    initializeDateFormatting('id_ID', null);
+
     // Inisialisasi pengelompokan data berdasarkan periode waktu default
     _groupFoodByTimePeriod();
+  }
+
+  // Mendapatkan daftar periode waktu yang tersedia berdasarkan data
+  List<String> get _availableTimePeriods {
+    // Periode dasar selalu tersedia
+    final List<String> periods = ['Harian'];
+
+    // Cek apakah ada data dari hari yang berbeda untuk opsi Mingguan
+    final bool hasDifferentDays = _hasItemsInDifferentPeriods(
+      (a, b) => a.year == b.year && a.month == b.month && a.day != b.day,
+    );
+    if (hasDifferentDays) {
+      periods.add('Mingguan');
+    }
+
+    // Cek apakah ada data dari bulan yang berbeda untuk opsi Bulanan
+    final bool hasDifferentMonths = _hasItemsInDifferentPeriods(
+      (a, b) => a.year == b.year && a.month != b.month,
+    );
+    if (hasDifferentMonths) {
+      periods.add('Bulanan');
+    }
+
+    // Cek apakah ada data dari tahun yang berbeda untuk opsi Tahunan
+    final bool hasDifferentYears = _hasItemsInDifferentPeriods(
+      (a, b) => a.year != b.year,
+    );
+    if (hasDifferentYears) {
+      periods.add('Tahunan');
+    }
+
+    // Jika ada lebih dari satu periode waktu, tambahkan opsi "Semua"
+    if (periods.length > 1) {
+      periods.add('Semua');
+    }
+
+    return periods;
+  }
+
+  // Helper method untuk mengecek apakah item memiliki perbedaan waktu berdasarkan kondisi
+  bool _hasItemsInDifferentPeriods(
+    bool Function(DateTime, DateTime) condition,
+  ) {
+    // Filter item yang memiliki cooking date
+    final items =
+        _historyItems.where((food) => food.cookingDate != null).toList();
+    if (items.length <= 1) return false;
+
+    for (int i = 0; i < items.length - 1; i++) {
+      final dateA = items[i].cookingDate!;
+
+      for (int j = i + 1; j < items.length; j++) {
+        final dateB = items[j].cookingDate!;
+
+        if (condition(dateA, dateB)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   // Mengelompokkan data makanan berdasarkan periode waktu
   void _groupFoodByTimePeriod() {
     _groupedData = {};
 
+    // Filter item yang memiliki cooking date
+    final itemsWithDate =
+        _historyItems.where((food) => food.cookingDate != null).toList();
+
     if (_selectedTimePeriod == 'Harian') {
-      _groupedData = {'Hari ini': _historyItems};
+      // Pengelompokan berdasarkan hari
+      for (var food in itemsWithDate) {
+        final date = food.cookingDate!;
+        final today = DateTime.now();
+        final yesterday = DateTime.now().subtract(const Duration(days: 1));
+
+        String formattedDate;
+        if (date.year == today.year &&
+            date.month == today.month &&
+            date.day == today.day) {
+          formattedDate = 'Hari ini';
+        } else if (date.year == yesterday.year &&
+            date.month == yesterday.month &&
+            date.day == yesterday.day) {
+          formattedDate = 'Kemarin';
+        } else {
+          formattedDate = DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(date);
+        }
+
+        if (!_groupedData.containsKey(formattedDate)) {
+          _groupedData[formattedDate] = [];
+        }
+        _groupedData[formattedDate]!.add(food);
+      }
     } else if (_selectedTimePeriod == 'Mingguan') {
-      _groupedData = {
-        'Senin, 22 April': [_historyItems[0]],
-        'Selasa, 23 April': [_historyItems[1]],
-        'Rabu, 24 April': [_historyItems[2]],
-        'Kamis, 25 April': [_historyItems[3]],
-      };
+      // Pengelompokan berdasarkan minggu
+      for (var food in itemsWithDate) {
+        final date = food.cookingDate!;
+        // Mendapatkan tanggal awal minggu (Senin)
+        final startOfWeek = date.subtract(Duration(days: date.weekday - 1));
+        // Mendapatkan tanggal akhir minggu (Minggu)
+        final endOfWeek = startOfWeek.add(const Duration(days: 6));
+
+        final String weekRange =
+            '${DateFormat('d MMM', 'id_ID').format(startOfWeek)} - ${DateFormat('d MMM yyyy', 'id_ID').format(endOfWeek)}';
+
+        if (!_groupedData.containsKey(weekRange)) {
+          _groupedData[weekRange] = [];
+        }
+        _groupedData[weekRange]!.add(food);
+      }
     } else if (_selectedTimePeriod == 'Bulanan') {
-      _groupedData = {
-        'Minggu 1': [_historyItems[0], _historyItems[1]],
-        'Minggu 2': [_historyItems[2], _historyItems[3]],
-      };
+      // Pengelompokan berdasarkan bulan
+      for (var food in itemsWithDate) {
+        final date = food.cookingDate!;
+        final String month = DateFormat('MMMM yyyy', 'id_ID').format(date);
+
+        if (!_groupedData.containsKey(month)) {
+          _groupedData[month] = [];
+        }
+        _groupedData[month]!.add(food);
+      }
     } else if (_selectedTimePeriod == 'Tahunan') {
-      _groupedData = {
-        'Januari': [_historyItems[0]],
-        'Februari': [_historyItems[1]],
-        'Maret': [_historyItems[2], _historyItems[3]],
-      };
+      // Pengelompokan berdasarkan tahun
+      for (var food in itemsWithDate) {
+        final date = food.cookingDate!;
+        final String year = DateFormat('yyyy', 'id_ID').format(date);
+
+        if (!_groupedData.containsKey(year)) {
+          _groupedData[year] = [];
+        }
+        _groupedData[year]!.add(food);
+      }
     } else {
-      _groupedData = {
-        '2025': [_historyItems[0]],
-        '2024': [_historyItems[1]],
-        '2023': [_historyItems[2], _historyItems[3]],
-      };
+      // "Semua" - Tampilkan semua data tanpa pengelompokan
+      _groupedData = {'Semua Waktu': itemsWithDate};
+    }
+
+    // Jika tidak ada data, tampilkan pesan
+    if (_groupedData.isEmpty) {
+      _groupedData = {'Tidak ada data': []};
     }
 
     setState(() {});
@@ -146,182 +250,202 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
   // Widget untuk menampilkan ringkasan nutrisi dalam bentuk chart
   Widget _buildNutritionSummary() {
-    return Material(
-      elevation: 8,
-      shadowColor: Colors.black.withAlpha(150),
-      clipBehavior: Clip.antiAlias,
-      shape: PointedBottomShape(),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(
-          top: 20,
-          bottom: 50,
-          left: 20,
-          right: 20,
-        ),
-        color: AppColors.primary,
-        child: Column(
-          children: [
-            // Indikator nutrisi lingkaran dengan perbandingan bulan lalu
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+    return Stack(
+      children: [
+        // Container dengan bentuk lancip di bagian bawah menggunakan ClipPath
+        ClipPath(
+          clipper: PointedBottomClipper(),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.only(
+              top: 20,
+              bottom: 50,
+              left: 20,
+              right: 20,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(150),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
               children: [
-                // Informasi bulan lalu
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Indikator nutrisi lingkaran dengan perbandingan bulan lalu
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Bulan Lalu',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Row(
+                    // Informasi bulan lalu
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${_nutritionData['lastMonthKcal']}',
-                          style: const TextStyle(
+                        const Text(
+                          'Bulan Lalu',
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
+                        Row(
+                          children: [
+                            Text(
+                              '${_nutritionData['lastMonthKcal']}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Text(
+                              'kkal',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(width: 20),
+
+                    // Indikator progres lingkaran
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Background lingkaran
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withAlpha(50),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 120,
+                            height: 120,
+                            child: CircularProgressIndicator(
+                              value: 0.75,
+                              strokeWidth: 10,
+                              backgroundColor: Colors.white.withAlpha(50),
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.secondary,
+                              ),
+                            ),
+                          ),
+                          // Text di tengah
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${_nutritionData['totalKcal']}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Text(
+                                'Total kkal',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 20),
+
+                    // Informasi bulan ini
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         const Text(
-                          'kkal',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                          'Bulan Ini',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '+${_nutritionData['difference']}',
+                              style: TextStyle(
+                                color: AppColors.green,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'kkal',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
                 ),
 
-                const SizedBox(width: 20),
+                const SizedBox(height: 24),
 
-                // Indikator progres lingkaran
-                SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: Stack(
-                    alignment: Alignment.center,
+                // Indikator nutrisi per bagian (Energi, Protein, Lemak)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      // Background lingkaran
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withAlpha(50),
-                        ),
+                      // Indikator Energi
+                      _buildVerticalNutrientIndicator(
+                        'Energi',
+                        _nutritionData['energy'],
+                        'kkal',
+                        AppColors.secondary,
                       ),
-                      SizedBox(
-                        width: 120,
-                        height: 120,
-                        child: CircularProgressIndicator(
-                          value: 0.75,
-                          strokeWidth: 10,
-                          backgroundColor: Colors.white.withAlpha(50),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppColors.secondary,
-                          ),
-                        ),
+
+                      // Indikator Protein
+                      _buildVerticalNutrientIndicator(
+                        'Protein',
+                        _nutritionData['protein'],
+                        'g',
+                        AppColors.red,
                       ),
-                      // Text di tengah
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${_nutritionData['totalKcal']}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Text(
-                            'Total kkal',
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                        ],
+
+                      // Indikator Lemak
+                      _buildVerticalNutrientIndicator(
+                        'Lemak',
+                        _nutritionData['fat'],
+                        'g',
+                        AppColors.green,
                       ),
                     ],
                   ),
                 ),
-
-                const SizedBox(width: 20),
-
-                // Informasi bulan ini
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Bulan Ini',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '+${_nutritionData['difference']}',
-                          style: TextStyle(
-                            color: AppColors.green,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'kkal',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
               ],
             ),
-
-            const SizedBox(height: 24),
-
-            // Indikator nutrisi per bagian (Energi, Protein, Lemak)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  // Indikator Energi
-                  _buildVerticalNutrientIndicator(
-                    'Energi',
-                    _nutritionData['energy'],
-                    'kkal',
-                    AppColors.secondary,
-                  ),
-
-                  // Indikator Protein
-                  _buildVerticalNutrientIndicator(
-                    'Protein',
-                    _nutritionData['protein'],
-                    'g',
-                    AppColors.red,
-                  ),
-
-                  // Indikator Lemak
-                  _buildVerticalNutrientIndicator(
-                    'Lemak',
-                    _nutritionData['fat'],
-                    'g',
-                    AppColors.green,
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -607,15 +731,16 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final isOdd = _timePeriods.length % 2 != 0;
-                  final lastItemIndex = _timePeriods.length - 1;
+                  final List<String> periods = _availableTimePeriods;
+                  final isOdd = periods.length % 2 != 0;
+                  final lastItemIndex = periods.length - 1;
 
                   return Wrap(
                     spacing: 12,
                     runSpacing: 12,
                     alignment: WrapAlignment.start,
-                    children: List.generate(_timePeriods.length, (index) {
-                      final period = _timePeriods[index];
+                    children: List.generate(periods.length, (index) {
+                      final period = periods[index];
                       final isLastItem = index == lastItemIndex;
 
                       // Kalkulasi lebar item (setengah dari total lebar - padding)
@@ -675,30 +800,77 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
   // Widget untuk daftar riwayat makanan
   Widget _buildFoodHistoryList() {
-    // Jika periode waktu adalah Harian, tampilkan daftar
-    if (_selectedTimePeriod == 'Harian') {
+    // Jika tidak ada data
+    if (_groupedData.isEmpty ||
+        (_groupedData.length == 1 && _groupedData.values.first.isEmpty)) {
+      return const Center(
+        child: Text(
+          'Tidak ada riwayat memasak',
+          style: TextStyle(fontSize: 16, color: AppColors.textGrey),
+        ),
+      );
+    }
+
+    // Jika periode waktu adalah "Semua", tampilkan daftar sederhana
+    if (_selectedTimePeriod == 'Semua') {
+      final foods = _groupedData.values.first;
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _historyItems.length,
+        itemCount: foods.length,
         itemBuilder: (context, index) {
-          final food = _historyItems[index];
+          final food = foods[index];
           return _buildFoodHistoryItem(food);
         },
       );
     }
-    // Untuk periode waktu lainnya, tampilkan accordion
-    else {
-      return ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _groupedData.keys.length,
-        itemBuilder: (context, index) {
-          final timeGroup = _groupedData.keys.elementAt(index);
-          final foodsInGroup = _groupedData[timeGroup]!;
 
-          return _buildAccordionGroup(timeGroup, foodsInGroup);
-        },
-      );
-    }
+    // Untuk periode waktu lainnya, tampilkan accordion
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: _groupedData.keys.length,
+      itemBuilder: (context, index) {
+        final timeGroup = _groupedData.keys.elementAt(index);
+        final foodsInGroup = _groupedData[timeGroup]!;
+
+        // Jika tidak ada makanan dalam grup ini, tampilkan pesan
+        if (foodsInGroup.isEmpty) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(30),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Text(
+                  timeGroup,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppColors.textBlack,
+                  ),
+                ),
+                const Spacer(),
+                const Text(
+                  'Tidak ada data',
+                  style: TextStyle(fontSize: 14, color: AppColors.textGrey),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return _buildAccordionGroup(timeGroup, foodsInGroup);
+      },
+    );
   }
 
   // Widget untuk grup accordion
@@ -786,7 +958,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Nama makanan dan sumber
+                      // Nama makanan dan porsi
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -800,24 +972,40 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textBlack,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
 
-                          // Indikator sumber
+                          // Informasi porsi
                           Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: AppColors.secondary.withAlpha(25),
-                              shape: BoxShape.circle,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
                             ),
-                            child: Image.asset(
-                              food.source == 'WHO'
-                                  ? 'assets/images/icon/source_who.png'
-                                  : food.source == 'KEMENKES'
-                                  ? 'assets/images/icon/source_kemenkes.png'
-                                  : 'assets/images/icon/source_pengguna.png',
-                              width: 16,
-                              height: 16,
+                            decoration: BoxDecoration(
+                              color: AppColors.buff,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/images/icon/set_makanan.png',
+                                  width: 14,
+                                  height: 14,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${food.portion} Porsi',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.textBlack,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -897,51 +1085,15 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 class PointedBottomClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    var path = Path();
+    final path = Path();
     path.lineTo(0, size.height - 40);
-
     path.lineTo(size.width / 2, size.height);
-
     path.lineTo(size.width, size.height - 40);
-
     path.lineTo(size.width, 0);
     path.close();
-
     return path;
   }
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-// Custom shape untuk memberikan shadow yang mengikuti bentuk segitiga
-class PointedBottomShape extends ShapeBorder {
-  @override
-  EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-    return getOuterPath(rect, textDirection: textDirection);
-  }
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    var path = Path();
-    path.lineTo(0, rect.height - 40);
-
-    path.lineTo(rect.width / 2, rect.height);
-
-    path.lineTo(rect.width, rect.height - 40);
-
-    path.lineTo(rect.width, 0);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
-
-  @override
-  ShapeBorder scale(double t) => this;
 }
