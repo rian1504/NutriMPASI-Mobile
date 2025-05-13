@@ -24,6 +24,7 @@ class Food {
   int favoritesCount;
   bool isFavorite;
   FoodCategory? foodCategory;
+  User? user;
 
   Food({
     required this.id,
@@ -41,6 +42,7 @@ class Food {
     required this.favoritesCount,
     required this.isFavorite,
     this.foodCategory,
+    this.user,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) => Food(
@@ -62,6 +64,7 @@ class Food {
         json["food_category"] != null
             ? FoodCategory.fromJson(json["food_category"])
             : null,
+    user: json["user"] != null ? User.fromJson(json["user"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -80,6 +83,7 @@ class Food {
     "favorites_count": favoritesCount,
     "is_favorite": isFavorite,
     "food_category": foodCategory?.toJson(),
+    "user": user?.toJson(),
   };
 
   Food copyWith({
@@ -98,6 +102,7 @@ class Food {
     int? favoritesCount,
     bool? isFavorite,
     FoodCategory? foodCategory,
+    User? user,
   }) {
     return Food(
       id: id ?? this.id,
@@ -115,6 +120,7 @@ class Food {
       favoritesCount: favoritesCount ?? this.favoritesCount,
       isFavorite: isFavorite ?? this.isFavorite,
       foodCategory: foodCategory ?? this.foodCategory,
+      user: user ?? this.user,
     );
   }
 }
@@ -127,6 +133,18 @@ class FoodCategory {
 
   factory FoodCategory.fromJson(Map<String, dynamic> json) =>
       FoodCategory(id: json["id"], name: json["name"]);
+
+  Map<String, dynamic> toJson() => {"id": id, "name": name};
+}
+
+class User {
+  int id;
+  String name;
+
+  User({required this.id, required this.name});
+
+  factory User.fromJson(Map<String, dynamic> json) =>
+      User(id: json["id"], name: json["name"]);
 
   Map<String, dynamic> toJson() => {"id": id, "name": name};
 }

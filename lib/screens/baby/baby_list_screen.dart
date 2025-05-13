@@ -192,27 +192,26 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           if (state is BabyLoaded) {
                             _babies = state.babies;
 
-// Reset Carousel
-if (_carouselController.hasClients) {
-            _carouselController.animateToPage(
-              0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-          }
-
+                            // Reset Carousel
+                            // if (_carouselController.hasClients) {
+                            //   _carouselController.animateToPage(
+                            //     0,
+                            //     duration: const Duration(milliseconds: 300),
+                            //     curve: Curves.easeInOut,
+                            //   );
+                            // }
 
                             // Jika ada bayi yang sudah ada, set carousel ke halaman pertama
-          if (!_carouselController.hasClients) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (_carouselController.hasClients) {
-                setState(() {
-                  _currentCarouselPage = 0;
-                });
-                _carouselController.jumpToPage(0);
-              }
-            });
-          }
+                            if (!_carouselController.hasClients) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (_carouselController.hasClients) {
+                                  setState(() {
+                                    _currentCarouselPage = 0;
+                                  });
+                                  _carouselController.jumpToPage(0);
+                                }
+                              });
+                            }
                           }
 
                           return Column(
@@ -417,8 +416,7 @@ if (_carouselController.hasClients) {
                           _buildInfoRow(
                             Symbols.cake,
                             'Usia',
-                            getAgeDisplay(baby),
-                            // '${baby.ageInMonths} bulan',
+                            baby.ageInMonths!,
                           ),
                           const SizedBox(height: 12),
                           _buildInfoRow(
@@ -594,21 +592,6 @@ if (_carouselController.hasClients) {
         ),
       ],
     );
-  }
-
-  // Fungsi untuk menghitung dan menampilkan usia bayi dalam bulan
-  String getAgeDisplay(Baby baby) {
-    if (baby.dob == null) return '- bulan';
-
-    final now = DateTime.now();
-    final months =
-        (now.year - baby.dob!.year) * 12 + now.month - baby.dob!.month;
-
-    if (now.day < baby.dob!.day) {
-      return '${months - 1} bulan';
-    }
-
-    return '$months bulan';
   }
 
   // Dialog konfirmasi hapus bayi

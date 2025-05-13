@@ -631,7 +631,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                           width: 4,
                                                         ),
                                                         Text(
-                                                          '${baby.ageInMonths} bulan',
+                                                          baby.ageInMonths!,
                                                           style: const TextStyle(
                                                             fontSize: 12,
                                                             color:
@@ -887,19 +887,58 @@ class _HomeScreenState extends State<HomeScreen>
                 _recommendedFoods = state.foods;
 
                 // Reset index rekomendasi dan posisi carousel ketika makanan baru dimuat
-          if (_recommendedFoods.isEmpty ||
-              _recommendedFoods.first.food.id != state.foods.first.food.id) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                setState(() {
-                  _currentRecommendationIndex = 0;
-                });
-                if (_foodRecommendationController.hasClients) {
-                  _foodRecommendationController.jumpToPage(0);
+                if (_recommendedFoods.isEmpty ||
+                    _recommendedFoods.first.food.id !=
+                        state.foods.first.food.id) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) {
+                      setState(() {
+                        _currentRecommendationIndex = 0;
+                      });
+                      if (_foodRecommendationController.hasClients) {
+                        _foodRecommendationController.jumpToPage(0);
+                      }
+                    }
+                  });
                 }
-              }
-            });
-          }
+
+                if (_recommendedFoods.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 50.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.no_food,
+                            size: 70,
+                            color: AppColors.primary.withAlpha(175),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Belum ada rekomendasi',
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Belum ada rekomendasi makanan untuk bayi kamu saat ini.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              color: AppColors.textGrey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
               }
 
               return _isBabyDataLoading

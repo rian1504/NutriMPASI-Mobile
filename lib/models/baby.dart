@@ -57,9 +57,16 @@ class Baby {
   };
 
   // Helper untuk menghitung usia dalam bulan
-  int? get ageInMonths {
-    if (dob == null) return null;
+  String? get ageInMonths {
+    if (dob == null) return '- bulan';
+
     final now = DateTime.now();
-    return (now.difference(dob!).inDays / 30).floor();
+    final months = (now.year - dob!.year) * 12 + now.month - dob!.month;
+
+    if (now.day < dob!.day) {
+      return '${months - 1} bulan';
+    }
+
+    return '$months bulan';
   }
 }

@@ -1478,7 +1478,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                                           builder:
                                               (context) =>
                                                   FoodSuggestionDetailScreen(
-                                                    foodId: item.id.toString(),
+                                                    foodId: item.id,
                                                   ),
                                         ),
                                       );

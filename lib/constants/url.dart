@@ -38,4 +38,7 @@ class ApiEndpoints {
 
   // Nutritionist
   static const String nutritionist = 'nutritionist';
+
+  // Food Suggestion
+  static const String foodSuggestion = 'food-suggestion';
 }

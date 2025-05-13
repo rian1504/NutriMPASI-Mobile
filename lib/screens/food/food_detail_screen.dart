@@ -102,7 +102,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                       ),
                                       padding: EdgeInsets.zero,
                                       onPressed: () {
-                                        context.read<FoodBloc>().add(FetchFoods());
+                                        context.read<FoodBloc>().add(
+                                          FetchFoods(),
+                                        );
                                         Navigator.pop(context);
                                       },
                                     ),
@@ -153,12 +155,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               right: 24,
                               child: GestureDetector(
                                 onTap: () {
-                                        context.read<FoodDetailBloc>().add(
-                                          ToggleFavorite(
-                                            foodId: food.id.toString(),
-                                          ),
-                                        );
-                                      },
+                                  context.read<FoodDetailBloc>().add(
+                                    ToggleFavorite(foodId: food.id.toString()),
+                                  );
+                                },
                                 child: Container(
                                   width: 48,
                                   height: 48,
@@ -308,7 +308,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          'Pengguna',
+                                          food.user!.name,
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 12,

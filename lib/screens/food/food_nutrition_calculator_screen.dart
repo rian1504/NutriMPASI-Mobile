@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nutrimpasi/models/food_suggestion.dart';
 import 'package:nutrimpasi/screens/food/food_recipe_success_screen.dart';
 
 class FoodNutritionCalculatorScreen extends StatefulWidget {
   final List<String> ingredients;
-  const FoodNutritionCalculatorScreen({super.key, required this.ingredients});
+  final FoodSuggestion food;
+
+  const FoodNutritionCalculatorScreen({
+    super.key,
+    required this.ingredients,
+    required this.food,
+  });
 
   @override
   State<FoodNutritionCalculatorScreen> createState() =>
@@ -217,7 +226,6 @@ class _FoodNutritionCalculatorScreenState
 
                   const SizedBox(height: 30),
 
-                  // Container untuk menampilkan daftar bahan yang diinput
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
@@ -378,6 +386,45 @@ class _FoodNutritionCalculatorScreenState
               _isCalculating
                   ? null
                   : () {
+                    if (widget.food.id == null) {
+                      // Jika food.id null, berarti ini adalah penambahan baru
+                      context.read<FoodSuggestionBloc>().add(
+                        StoreFoodSuggestion(
+                          foodCategoryId: widget.food.foodCategoryId!,
+                          name: widget.food.name,
+                          image: widget.food.image,
+                          age: widget.food.age,
+                          energy: _energyValue,
+                          protein: _proteinValue,
+                          fat: _fatValue,
+                          portion: widget.food.portion,
+                          recipe: widget.food.recipe,
+                          fruit: widget.food.fruit!,
+                          step: widget.food.step,
+                          description: widget.food.description,
+                        ),
+                      );
+                    } else {
+                      // update FoodSuggestion
+                      context.read<FoodSuggestionBloc>().add(
+                        UpdateFoodSuggestion(
+                          foodId: widget.food.id!,
+                          foodCategoryId: widget.food.foodCategoryId!,
+                          name: widget.food.name,
+                          image: widget.food.image,
+                          age: widget.food.age,
+                          energy: _energyValue,
+                          protein: _proteinValue,
+                          fat: _fatValue,
+                          portion: widget.food.portion,
+                          recipe: widget.food.recipe,
+                          fruit: widget.food.fruit!,
+                          step: widget.food.step,
+                          description: widget.food.description,
+                        ),
+                      );
+                    }
+
                     // Navigasi ke halaman sukses setelah simpan
                     Navigator.push(
                       context,
