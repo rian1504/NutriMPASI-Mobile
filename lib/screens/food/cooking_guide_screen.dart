@@ -222,7 +222,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                               // Indikator panel
                               Center(
                                 child: Container(
-                                  height: 8,
+                                  height: 5,
                                   width: 75,
                                   margin: const EdgeInsets.symmetric(
                                     vertical: 12,
