@@ -31,9 +31,62 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   };
 
   // Dropdown value untuk pemilihan bayi
-  String? _selectedBaby = 'Pilih Bayi';
-  // Tanggal terpilih
-  DateTime _selectedDate = DateTime.now();
+  String _selectedBaby = 'Bayi 1';
+
+  // Filter periode waktu
+  String _selectedTimePeriod = 'Harian';
+  final List<String> _timePeriods = [
+    'Harian',
+    'Mingguan',
+    'Bulanan',
+    'Tahunan',
+    'Semua',
+  ];
+
+  // Data yang dikelompokkan berdasarkan waktu
+  Map<String, List<Food>> _groupedData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Inisialisasi pengelompokan data berdasarkan periode waktu default
+    _groupFoodByTimePeriod();
+  }
+
+  // Mengelompokkan data makanan berdasarkan periode waktu
+  void _groupFoodByTimePeriod() {
+    _groupedData = {};
+
+    if (_selectedTimePeriod == 'Harian') {
+      _groupedData = {'Hari ini': _historyItems};
+    } else if (_selectedTimePeriod == 'Mingguan') {
+      _groupedData = {
+        'Senin, 22 April': [_historyItems[0]],
+        'Selasa, 23 April': [_historyItems[1]],
+        'Rabu, 24 April': [_historyItems[2]],
+        'Kamis, 25 April': [_historyItems[3]],
+      };
+    } else if (_selectedTimePeriod == 'Bulanan') {
+      _groupedData = {
+        'Minggu 1': [_historyItems[0], _historyItems[1]],
+        'Minggu 2': [_historyItems[2], _historyItems[3]],
+      };
+    } else if (_selectedTimePeriod == 'Tahunan') {
+      _groupedData = {
+        'Januari': [_historyItems[0]],
+        'Februari': [_historyItems[1]],
+        'Maret': [_historyItems[2], _historyItems[3]],
+      };
+    } else {
+      _groupedData = {
+        '2025': [_historyItems[0]],
+        '2024': [_historyItems[1]],
+        '2023': [_historyItems[2], _historyItems[3]],
+      };
+    }
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -359,6 +412,19 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
     );
   }
 
+  // Helper untuk memotong teks nama bayi yang terlalu panjang
+  String _truncateBabyName(String name) {
+    const int charsPerLine = 15;
+    const int maxLines = 2;
+    const int maxChars = charsPerLine * maxLines;
+
+    if (name.length <= maxChars) {
+      return name;
+    }
+
+    return '${name.substring(0, maxChars - 3)}...';
+  }
+
   // Widget untuk pemilihan bayi dan tanggal
   Widget _buildSelectionFilters() {
     return Padding(
@@ -395,18 +461,46 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                 dropdownColor: AppColors.primary,
                 onChanged: (String? newValue) {
                   setState(() {
-                    _selectedBaby = newValue;
+                    _selectedBaby = newValue!;
                   });
+                },
+                selectedItemBuilder: (BuildContext context) {
+                  return <String>[
+                    'Bayi 1',
+                    'Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2',
+                    'Bayi 3',
+                  ].map<Widget>((String value) {
+                    return Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _truncateBabyName(value),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
+                  }).toList();
                 },
                 items:
                     <String>[
-                      'Pilih Bayi',
                       'Bayi 1',
-                      'Bayi 2',
+                      'Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2',
+                      'Bayi 3',
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value),
+                        child: Text(
+                          value,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       );
                     }).toList(),
               ),
@@ -415,7 +509,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
           const SizedBox(width: 8),
 
-          // Tampilan tanggal terpilih
+          // Tampilan periode waktu terpilih
           Expanded(
             child: Container(
               height: 44,
@@ -427,7 +521,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
               ),
               child: Center(
                 child: Text(
-                  'Jumat, 25 April',
+                  _selectedTimePeriod,
                   style: const TextStyle(
                     color: AppColors.textBlack,
                     fontSize: 14,
@@ -439,7 +533,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
           const SizedBox(width: 8),
 
-          // Tombol kalender dengan shadow
+          // Tombol filter
           Container(
             height: 44,
             width: 44,
@@ -457,22 +551,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
             ),
             child: IconButton(
               padding: EdgeInsets.zero,
-              onPressed: () async {
-                // Tampilkan date picker
-                final DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: _selectedDate,
-                  firstDate: DateTime(2020),
-                  lastDate: DateTime.now(),
-                );
-
-                if (pickedDate != null && pickedDate != _selectedDate) {
-                  setState(() {
-                    _selectedDate = pickedDate;
-                  });
-                }
+              onPressed: () {
+                // Tampilkan bottom sheet filter
+                _showFilterBottomSheet(context);
               },
-              icon: const Icon(Icons.calendar_month, size: 20),
+              icon: const Icon(Symbols.filter_list, size: 20),
               color: AppColors.textBlack,
             ),
           ),
@@ -481,141 +564,304 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
     );
   }
 
+  // Menampilkan bottom sheet untuk filter waktu
+  void _showFilterBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Indikator panel
+            Center(
+              child: Container(
+                height: 5,
+                width: 75,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.componentGrey,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+
+            // Judul
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 8, 20, 16),
+              child: Text(
+                'Pilih Rentang Waktu',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textBlack,
+                ),
+              ),
+            ),
+
+            // Grid opsi filter
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isOdd = _timePeriods.length % 2 != 0;
+                  final lastItemIndex = _timePeriods.length - 1;
+
+                  return Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    alignment: WrapAlignment.start,
+                    children: List.generate(_timePeriods.length, (index) {
+                      final period = _timePeriods[index];
+                      final isLastItem = index == lastItemIndex;
+
+                      // Kalkulasi lebar item (setengah dari total lebar - padding)
+                      final itemWidth = (constraints.maxWidth - 12) / 2;
+
+                      return SizedBox(
+                        width:
+                            (isOdd && isLastItem)
+                                ? constraints.maxWidth
+                                : itemWidth,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _selectedTimePeriod = period;
+                            });
+                            _groupFoodByTimePeriod();
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  _selectedTimePeriod == period
+                                      ? AppColors.primary
+                                      : AppColors.buff,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Text(
+                                period,
+                                style: TextStyle(
+                                  color:
+                                      _selectedTimePeriod == period
+                                          ? Colors.white
+                                          : AppColors.textBlack,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Widget untuk daftar riwayat makanan
   Widget _buildFoodHistoryList() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _historyItems.length,
-      itemBuilder: (context, index) {
-        final food = _historyItems[index];
+    // Jika periode waktu adalah Harian, tampilkan daftar
+    if (_selectedTimePeriod == 'Harian') {
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: _historyItems.length,
+        itemBuilder: (context, index) {
+          final food = _historyItems[index];
+          return _buildFoodHistoryItem(food);
+        },
+      );
+    }
+    // Untuk periode waktu lainnya, tampilkan accordion
+    else {
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: _groupedData.keys.length,
+        itemBuilder: (context, index) {
+          final timeGroup = _groupedData.keys.elementAt(index);
+          final foodsInGroup = _groupedData[timeGroup]!;
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FoodDetailScreen(foodId: food.id),
-                ),
+          return _buildAccordionGroup(timeGroup, foodsInGroup);
+        },
+      );
+    }
+  }
+
+  // Widget untuk grup accordion
+  Widget _buildAccordionGroup(String groupTitle, List<Food> foods) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(30),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ExpansionTile(
+        initiallyExpanded: true,
+        backgroundColor: Colors.transparent,
+        collapsedBackgroundColor: Colors.transparent,
+        title: Text(
+          groupTitle,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: AppColors.textBlack,
+          ),
+        ),
+        children:
+            foods.map((food) {
+              return Container(
+                margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                child: _buildFoodHistoryItem(food),
               );
-            },
+            }).toList(),
+      ),
+    );
+  }
+
+  // Widget untuk item makanan pada daftar riwayat
+  Widget _buildFoodHistoryItem(Food food) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FoodDetailScreen(foodId: food.id),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(50),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(50),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Gambar makanan
-                  ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
-                    child: Image.network(
-                      food.image,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Gambar makanan
+              ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                child: Image.network(
+                  food.image,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
 
-                  // Informasi makanan
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              // Informasi makanan
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Nama makanan dan sumber
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Nama makanan dan sumber
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Nama makanan
-                              Expanded(
-                                child: Text(
-                                  food.name,
-                                  style: const TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textBlack,
-                                  ),
-                                ),
+                          // Nama makanan
+                          Expanded(
+                            child: Text(
+                              food.name,
+                              style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textBlack,
                               ),
-
-                              // Indikator sumber
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: AppColors.secondary.withAlpha(25),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Image.asset(
-                                  food.source == 'WHO'
-                                      ? 'assets/images/icon/source_who.png'
-                                      : food.source == 'KEMENKES'
-                                      ? 'assets/images/icon/source_kemenkes.png'
-                                      : 'assets/images/icon/source_pengguna.png',
-                                  width: 16,
-                                  height: 16,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
 
-                          const SizedBox(height: 8),
-
-                          // Informasi nutrisi
-                          Row(
-                            children: [
-                              // Energi
-                              _buildFoodNutrientInfo('Energi', '98kkal'),
-
-                              // Vertical divider
-                              Container(
-                                height: 24,
-                                width: 1,
-                                color: Colors.grey.shade300,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                              ),
-
-                              // Protein
-                              _buildFoodNutrientInfo('Protein', '45.1g'),
-
-                              // Vertical divider
-                              Container(
-                                height: 24,
-                                width: 1,
-                                color: Colors.grey.shade300,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                              ),
-
-                              // Lemak
-                              _buildFoodNutrientInfo('Lemak', '3.5g'),
-                            ],
+                          // Indikator sumber
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withAlpha(25),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Image.asset(
+                              food.source == 'WHO'
+                                  ? 'assets/images/icon/source_who.png'
+                                  : food.source == 'KEMENKES'
+                                  ? 'assets/images/icon/source_kemenkes.png'
+                                  : 'assets/images/icon/source_pengguna.png',
+                              width: 16,
+                              height: 16,
+                            ),
                           ),
                         ],
                       ),
-                    ),
+
+                      const SizedBox(height: 8),
+
+                      // Informasi nutrisi
+                      Row(
+                        children: [
+                          // Energi
+                          _buildFoodNutrientInfo('Energi', '98kkal'),
+
+                          // Vertical divider
+                          Container(
+                            height: 24,
+                            width: 1,
+                            color: Colors.grey.shade300,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                          ),
+
+                          // Protein
+                          _buildFoodNutrientInfo('Protein', '45.1g'),
+
+                          // Vertical divider
+                          Container(
+                            height: 24,
+                            width: 1,
+                            color: Colors.grey.shade300,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                          ),
+
+                          // Lemak
+                          _buildFoodNutrientInfo('Lemak', '3.5g'),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

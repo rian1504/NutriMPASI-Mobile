@@ -144,10 +144,6 @@ Kontribusi sangat diterima! Silakan ajukan Pull Request.
 4. Push ke Branch (`git push origin feature/FiturKeren`)
 5. Buka Pull Request
 
-## 📄 Lisensi
-
-Proyek ini dilisensikan di bawah Lisensi MIT - lihat file LICENSE untuk detail.
-
 ## 📬 Kontak
 
 Link Proyek: [https://github.com/rian1504/NutriMPASI-Mobile](https://github.com/rian1504/NutriMPASI-Mobile)
