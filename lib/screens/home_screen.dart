@@ -11,7 +11,7 @@ import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/baby_food_recommendation.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
-// import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
+import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/screens/notification_screen.dart';
@@ -726,16 +726,17 @@ class _HomeScreenState extends State<HomeScreen>
                                                   ] else
                                                     InkWell(
                                                       onTap: () {
-                                                        // Navigator.push(
-                                                        //   context,
-                                                        //   MaterialPageRoute(
-                                                        //     builder:
-                                                        //         (context) =>
-                                                        //             BabyEditScreen(
-                                                        //               baby: baby,
-                                                        //             ),
-                                                        //   ),
-                                                        // );
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    BabyEditScreen(
+                                                                      baby:
+                                                                          baby,
+                                                                    ),
+                                                          ),
+                                                        );
                                                       },
                                                       child: Text(
                                                         'Lengkapi Data Bayi',
@@ -820,23 +821,72 @@ class _HomeScreenState extends State<HomeScreen>
 
   // Bagian rekomendasi makanan
   Widget _buildRecommendationSection() {
-    return BlocBuilder<BabyFoodRecommendationBloc, BabyFoodRecommendationState>(
-      builder: (context, state) {
-        if (state is BabyFoodRecommendationLoading) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        if (state is BabyFoodRecommendationError) {
-          return Center(
-            child: Text(
-              state.error,
-              style: const TextStyle(fontSize: 16, color: AppColors.textBlack),
+    return Container(
+      margin: const EdgeInsets.only(top: 12, bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Judul bagian
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Rekomendasi',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textBlack,
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => FoodRecommendationScreen(
+                              recommendedFoods: _recommendedFoods,
+                            ),
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Symbols.arrow_forward_ios_rounded,
+                    size: 16,
+                    color: AppColors.textBlack,
+                    weight: 900,
+                  ),
+                ),
+              ],
             ),
-          );
-        }
+          ),
+          const SizedBox(height: 16),
 
-        if (state is BabyFoodRecommendationLoaded) {
-          // Reset index rekomendasi dan posisi carousel ketika makanan baru dimuat
+          // Tampilkan konten berdasarkan status saat ini
+          BlocBuilder<BabyFoodRecommendationBloc, BabyFoodRecommendationState>(
+            builder: (context, state) {
+              if (state is BabyFoodRecommendationLoading) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (state is BabyFoodRecommendationError) {
+                return Center(
+                  child: Text(
+                    state.error,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textBlack,
+                    ),
+                  ),
+                );
+              }
+
+              if (state is BabyFoodRecommendationLoaded) {
+                _recommendedFoods = state.foods;
+
+                // Reset index rekomendasi dan posisi carousel ketika makanan baru dimuat
           if (_recommendedFoods.isEmpty ||
               _recommendedFoods.first.food.id != state.foods.first.food.id) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -850,60 +900,15 @@ class _HomeScreenState extends State<HomeScreen>
               }
             });
           }
-          _recommendedFoods = state.foods;
-        }
+              }
 
-        return Container(
-          margin: const EdgeInsets.only(top: 12, bottom: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Judul bagian
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Rekomendasi',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textBlack,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => FoodRecommendationScreen(
-                                  recommendedFoods: _recommendedFoods,
-                                ),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Symbols.arrow_forward_ios_rounded,
-                        size: 16,
-                        color: AppColors.textBlack,
-                        weight: 900,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Tampilkan konten berdasarkan status saat ini
-              _isBabyDataLoading
+              return _isBabyDataLoading
                   ? _buildLoadingRecommendation()
-                  : _buildRecommendationContent(),
-            ],
+                  : _buildRecommendationContent();
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
