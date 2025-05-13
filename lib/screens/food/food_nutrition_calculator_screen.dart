@@ -386,24 +386,44 @@ class _FoodNutritionCalculatorScreenState
               _isCalculating
                   ? null
                   : () {
-                    // update FoodSuggestion
-                    context.read<FoodSuggestionBloc>().add(
-                      UpdateFoodSuggestion(
-                        foodId: widget.food.id,
-                        foodCategoryId: widget.food.foodCategoryId!,
-                        name: widget.food.name,
-                        image: widget.food.image,
-                        age: widget.food.age,
-                        energy: _energyValue,
-                        protein: _proteinValue,
-                        fat: _fatValue,
-                        portion: widget.food.portion,
-                        recipe: widget.food.recipe,
-                        fruit: widget.food.fruit,
-                        step: widget.food.step,
-                        description: widget.food.description,
-                      ),
-                    );
+                    if (widget.food.id == null) {
+                      // Jika food.id null, berarti ini adalah penambahan baru
+                      context.read<FoodSuggestionBloc>().add(
+                        StoreFoodSuggestion(
+                          foodCategoryId: widget.food.foodCategoryId!,
+                          name: widget.food.name,
+                          image: widget.food.image,
+                          age: widget.food.age,
+                          energy: _energyValue,
+                          protein: _proteinValue,
+                          fat: _fatValue,
+                          portion: widget.food.portion,
+                          recipe: widget.food.recipe,
+                          fruit: widget.food.fruit!,
+                          step: widget.food.step,
+                          description: widget.food.description,
+                        ),
+                      );
+                    } else {
+                      // update FoodSuggestion
+                      context.read<FoodSuggestionBloc>().add(
+                        UpdateFoodSuggestion(
+                          foodId: widget.food.id!,
+                          foodCategoryId: widget.food.foodCategoryId!,
+                          name: widget.food.name,
+                          image: widget.food.image,
+                          age: widget.food.age,
+                          energy: _energyValue,
+                          protein: _proteinValue,
+                          fat: _fatValue,
+                          portion: widget.food.portion,
+                          recipe: widget.food.recipe,
+                          fruit: widget.food.fruit!,
+                          step: widget.food.step,
+                          description: widget.food.description,
+                        ),
+                      );
+                    }
 
                     // Navigasi ke halaman sukses setelah simpan
                     Navigator.push(

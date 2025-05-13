@@ -41,8 +41,7 @@ class FoodSuggestionController {
     }
   }
 
-  Future<void> updateFood({
-    required int foodId,
+  Future<void> storeFood({
     required int foodCategoryId,
     required String name,
     required String image,
@@ -52,7 +51,7 @@ class FoodSuggestionController {
     required double fat,
     required int portion,
     required List<String> recipe,
-    required List<String> fruit,
+    List<String>? fruit,
     required List<String> step,
     required String description,
   }) async {
@@ -68,7 +67,50 @@ class FoodSuggestionController {
         'fat': fat,
         'portion': portion,
         'recipe': recipe.join(', '),
-        'fruit': fruit.join(', '),
+        'fruit': fruit!.join(', '),
+        'step': step.join(', '),
+        'description': description,
+      };
+
+      // Kirim request ke API
+      final response = await _dio.post(ApiEndpoints.foodSuggestion, data: data);
+
+      // Debug response
+      debugPrint('Store food response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Store food error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> updateFood({
+    required int foodId,
+    required int foodCategoryId,
+    required String name,
+    required String image,
+    required String age,
+    required double energy,
+    required double protein,
+    required double fat,
+    required int portion,
+    required List<String> recipe,
+    List<String>? fruit,
+    required List<String> step,
+    required String description,
+  }) async {
+    try {
+      // data
+      final data = {
+        'food_category_id': foodCategoryId,
+        'name': name,
+        'image': image,
+        'age': age,
+        'energy': energy,
+        'protein': protein,
+        'fat': fat,
+        'portion': portion,
+        'recipe': recipe.join(', '),
+        'fruit': fruit!.join(', '),
         'step': step.join(', '),
         'description': description,
       };

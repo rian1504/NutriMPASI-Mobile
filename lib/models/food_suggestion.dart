@@ -10,9 +10,8 @@ FoodSuggestion foodSuggestionFromJson(String str) =>
 String foodSuggestionToJson(FoodSuggestion data) => json.encode(data.toJson());
 
 class FoodSuggestion {
-  int id;
+  int? id;
   int? foodCategoryId;
-  int userId;
   String name;
   String image;
   String age;
@@ -21,16 +20,15 @@ class FoodSuggestion {
   double fat;
   int portion;
   List<String> recipe;
-  List<String> fruit;
+  List<String>? fruit;
   List<String> step;
   String description;
-  int favoriteCount;
+  int? favoriteCount;
   FoodCategory? foodCategory;
 
   FoodSuggestion({
-    required this.id,
+    this.id,
     this.foodCategoryId,
-    required this.userId,
     required this.name,
     required this.image,
     required this.age,
@@ -38,18 +36,17 @@ class FoodSuggestion {
     required this.protein,
     required this.fat,
     required this.portion,
-    required this.fruit,
+    this.fruit,
     required this.recipe,
     required this.step,
     required this.description,
-    required this.favoriteCount,
+    this.favoriteCount,
     this.foodCategory,
   });
 
   factory FoodSuggestion.fromJson(Map<String, dynamic> json) => FoodSuggestion(
-    id: json["id"],
+    id: json["id"] as int?,
     foodCategoryId: json["food_category_id"] as int?,
-    userId: json["user_id"],
     name: json["name"],
     image: json["image"],
     age: json["age"],
@@ -57,11 +54,14 @@ class FoodSuggestion {
     protein: json["protein"]?.toDouble(),
     fat: json["fat"]?.toDouble(),
     portion: json["portion"],
-    fruit: List<String>.from(json["fruit"].map((x) => x)),
+    fruit:
+        json["fruit"] != null
+            ? List<String>.from(json["fruit"].map((x) => x))
+            : null,
     recipe: List<String>.from(json["recipe"].map((x) => x)),
     step: List<String>.from(json["step"].map((x) => x)),
     description: json["description"],
-    favoriteCount: json["favorite_count"],
+    favoriteCount: json["favorite_count"] as int?,
     foodCategory:
         json["food_category"] != null
             ? FoodCategory.fromJson(json["food_category"])
@@ -71,7 +71,6 @@ class FoodSuggestion {
   Map<String, dynamic> toJson() => {
     "id": id,
     "food_category_id": foodCategoryId,
-    "user_id": userId,
     "name": name,
     "image": image,
     "age": age,
@@ -79,7 +78,7 @@ class FoodSuggestion {
     "protein": protein,
     "fat": fat,
     "portion": portion,
-    "fruit": List<dynamic>.from(fruit.map((x) => x)),
+    "fruit": fruit != null ? List<dynamic>.from(fruit!.map((x) => x)) : null,
     "recipe": List<dynamic>.from(recipe.map((x) => x)),
     "step": List<dynamic>.from(step.map((x) => x)),
     "description": description,

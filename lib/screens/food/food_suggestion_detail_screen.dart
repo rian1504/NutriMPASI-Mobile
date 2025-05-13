@@ -313,10 +313,10 @@ class _FoodSuggestionDetailScreenState
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: food.fruit.length,
+                                itemCount: food.fruit!.length,
                                 padding: const EdgeInsets.all(16),
                                 itemBuilder: (context, index) {
-                                  final fruit = food.fruit[index];
+                                  final fruit = food.fruit![index];
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: Row(
@@ -599,7 +599,7 @@ class _FoodSuggestionDetailScreenState
                                                           >()
                                                           .add(
                                                             DeleteFoodSuggestion(
-                                                              foodId: food.id,
+                                                              foodId: food.id!,
                                                             ),
                                                           );
 
