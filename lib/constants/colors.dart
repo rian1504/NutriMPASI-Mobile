@@ -15,6 +15,9 @@ class AppColors {
   static const Color success = Color(0xFF14AE5C);
   static const Color warning = Color(0xFFFFCD29);
 
+  // Transparent color
+  static Color primaryTransparent = Color(0xFFFC8207).withAlpha(100);
+
   // Grey color
   static const Color grey = Color(0xFFD9D9D9);
   static const Color greyDark = Color(0xFF808080);
