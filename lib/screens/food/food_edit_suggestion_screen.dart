@@ -6,6 +6,8 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/food_suggestion.dart';
 import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class FoodEditSuggestionScreen extends StatefulWidget {
   final FoodSuggestion food;
@@ -42,6 +44,12 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
   final List<String> _ageGroups = ['6-8', '9-11', '12-23'];
 
   String? _imagePath;
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+  bool _showPhotoError = false;
+
+  // Menambahkan global key untuk foto untuk validasi bersama dengan form lain
+  final GlobalKey _photoFieldKey = GlobalKey();
 
   @override
   void initState() {
@@ -61,7 +69,9 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
     }
 
     // Inisialisasi buah (fruit)
-    _fruitsController.text = widget.food.fruit!.join(', ');
+    if (widget.food.fruit != null) {
+      _fruitsController.text = widget.food.fruit!.join(', ');
+    }
 
     // Inisialisasi langkah (step)
     for (var step in widget.food.step) {
@@ -71,6 +81,158 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
     // Jika tidak ada bahan/langkah, tambahkan field kosong
     if (_ingredientControllers.isEmpty) _addIngredientField();
     if (_stepControllers.isEmpty) _addStepField();
+  }
+
+  // Method untuk memilih foto dari gallery
+  Future<void> _getImageFromGallery() async {
+    try {
+      final XFile? selectedImage = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+      );
+      if (selectedImage != null) {
+        setState(() {
+          _imageFile = File(selectedImage.path);
+          _imagePath = selectedImage.path;
+          _showPhotoError = false;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mengakses galeri. Coba periksa izin aplikasi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // Method untuk mengambil foto dari kamera
+  Future<void> _getImageFromCamera() async {
+    try {
+      final XFile? takenImage = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+      if (takenImage != null) {
+        setState(() {
+          _imageFile = File(takenImage.path);
+          _imagePath = takenImage.path;
+          _showPhotoError = false;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mengakses kamera. Coba periksa izin aplikasi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // Method untuk menampilkan bottom sheet pilihan foto
+  void _showImageSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Pilih Sumber Foto',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textBlack,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Tombol opsi kamera
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _getImageFromCamera();
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: AppColors.buff,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 30,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Kamera',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Tombol opsi galeri
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _getImageFromGallery();
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: AppColors.buff,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.photo_library,
+                            size: 30,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Galeri',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   // Tambah field bahan baru
@@ -361,56 +523,336 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  InkWell(
-                                    onTap: () {
-                                      // TODO: Implementasi unggah foto
-                                    },
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.buff,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child:
-                                          _imagePath != null &&
-                                                  _imagePath!.isNotEmpty
-                                              ? ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                child: Image.network(
-                                                  storageUrl + _imagePath!,
-                                                  height: 100,
-                                                  fit: BoxFit.cover,
+
+                                  // UI untuk menampilkan gambar yang sudah dipilih
+                                  Container(
+                                    key: _photoFieldKey,
+                                    child:
+                                        _imageFile != null
+                                            ? Column(
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: double.infinity,
+                                                      height: 200,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                        border: Border.all(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                        child: Image.file(
+                                                          _imageFile!,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      top: 5,
+                                                      right: 5,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            _imageFile = null;
+                                                            // Kembalikan ke gambar original jika menghapus
+                                                            _imagePath =
+                                                                widget
+                                                                    .food
+                                                                    .image;
+                                                            _showPhotoError =
+                                                                false;
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets.all(
+                                                                4,
+                                                              ),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withAlpha(
+                                                                      175,
+                                                                    ),
+                                                                shape:
+                                                                    BoxShape
+                                                                        .circle,
+                                                              ),
+                                                          child: const Icon(
+                                                            Icons.close,
+                                                            size: 20,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              )
-                                              : Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: const [
-                                                  Icon(
-                                                    Icons.upload_outlined,
-                                                    color: AppColors.textBlack,
-                                                    size: 18,
-                                                  ),
-                                                  SizedBox(width: 8),
-                                                  Text(
-                                                    'Tambahkan Foto',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color:
-                                                          AppColors.textBlack,
+                                                const SizedBox(height: 8),
+                                                InkWell(
+                                                  onTap:
+                                                      _showImageSourceOptions,
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 8,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.buff,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: const [
+                                                        Icon(
+                                                          Icons.edit,
+                                                          color:
+                                                              AppColors
+                                                                  .textBlack,
+                                                          size: 18,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          'Ganti Foto',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                    ),
+                                                ),
+                                              ],
+                                            )
+                                            : widget.food.image.isNotEmpty
+                                            ? Column(
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: double.infinity,
+                                                      height: 200,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                        border: Border.all(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                        child: Image.network(
+                                                          storageUrl +
+                                                              widget.food.image,
+                                                          fit: BoxFit.cover,
+                                                          loadingBuilder: (
+                                                            context,
+                                                            child,
+                                                            loadingProgress,
+                                                          ) {
+                                                            if (loadingProgress ==
+                                                                null) {
+                                                              return child;
+                                                            }
+                                                            return Center(
+                                                              child: CircularProgressIndicator(
+                                                                value:
+                                                                    loadingProgress.expectedTotalBytes !=
+                                                                            null
+                                                                        ? loadingProgress.cumulativeBytesLoaded /
+                                                                            loadingProgress.expectedTotalBytes!
+                                                                        : null,
+                                                              ),
+                                                            );
+                                                          },
+                                                          errorBuilder: (
+                                                            context,
+                                                            error,
+                                                            stackTrace,
+                                                          ) {
+                                                            return Center(
+                                                              child: Text(
+                                                                'Gagal memuat gambar',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 8),
+                                                InkWell(
+                                                  onTap:
+                                                      _showImageSourceOptions,
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 8,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.buff,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: const [
+                                                        Icon(
+                                                          Icons.edit,
+                                                          color:
+                                                              AppColors
+                                                                  .textBlack,
+                                                          size: 18,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          'Ganti Foto',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                            : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    // Reset error state
+                                                    setState(() {
+                                                      _showPhotoError = false;
+                                                    });
+                                                    _showImageSourceOptions();
+                                                  },
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    height: 60,
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 8,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.buff,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      border: Border.all(
+                                                        color:
+                                                            _showPhotoError
+                                                                ? Colors.red
+                                                                : Colors.grey,
+                                                        width:
+                                                            _showPhotoError
+                                                                ? 1.5
+                                                                : 1,
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: const [
+                                                        Icon(
+                                                          Icons.upload_outlined,
+                                                          color:
+                                                              AppColors
+                                                                  .textBlack,
+                                                          size: 18,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          'Tambahkan Foto',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (_showPhotoError)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          top: 6.0,
+                                                          left: 12.0,
+                                                        ),
+                                                    child: Text(
+                                                      'Foto masakan tidak boleh kosong',
+                                                      style: TextStyle(
+                                                        color: Colors.red[700],
+                                                        fontSize: 12,
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
                                   ),
 
                                   const SizedBox(height: 16),
@@ -878,9 +1320,35 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                       child: Center(
                                         child: GestureDetector(
                                           onTap: () {
+                                            // Validasi foto terlebih dahulu, sebelum validasi form lainnya
+                                            setState(() {
+                                              // Selalu cek foto, terlepas dari validasi input lainnya
+                                              // Foto dianggap valid jika imageFile ada atau foto original masih ada
+                                              _showPhotoError =
+                                                  _imageFile == null &&
+                                                  (widget.food.image.isEmpty);
+                                            });
+
                                             // Validasi form saat tombol next ditekan
-                                            if (_formKey.currentState!
-                                                .validate()) {
+                                            bool formValid =
+                                                _formKey.currentState!
+                                                    .validate();
+
+                                            // Validasi foto
+                                            bool photoValid =
+                                                (_imageFile != null ||
+                                                    (widget
+                                                        .food
+                                                        .image
+                                                        .isNotEmpty));
+
+                                            // Hanya lanjutkan jika form valid dan ada foto
+                                            if (formValid && photoValid) {
+                                              // Reset error state
+                                              setState(() {
+                                                _showPhotoError = false;
+                                              });
+
                                               List<String> ingredients =
                                                   _ingredientControllers
                                                       .map(
@@ -959,6 +1427,17 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                                             food: updatedFood,
                                                           ),
                                                 ),
+                                              );
+                                            } else if (_showPhotoError &&
+                                                _photoFieldKey.currentContext !=
+                                                    null) {
+                                              // Jika foto tidak valid, scroll ke field foto
+                                              Scrollable.ensureVisible(
+                                                _photoFieldKey.currentContext!,
+                                                duration: const Duration(
+                                                  milliseconds: 300,
+                                                ),
+                                                alignment: 0.2,
                                               );
                                             }
                                           },

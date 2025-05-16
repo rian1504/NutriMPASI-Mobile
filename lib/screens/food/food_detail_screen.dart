@@ -339,10 +339,12 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                                   const SizedBox(height: 8),
 
-                                  SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.height *
-                                        0.075,
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight:
+                                          MediaQuery.of(context).size.height *
+                                          0.075,
+                                    ),
                                     child: SingleChildScrollView(
                                       child: Text(
                                         food.description,
