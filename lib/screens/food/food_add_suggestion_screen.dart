@@ -1243,6 +1243,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                             ingredients:
                                                                 ingredients,
                                                             food: storedFood,
+                                                            image: _imageFile,
                                                           ),
                                                 ),
                                               );

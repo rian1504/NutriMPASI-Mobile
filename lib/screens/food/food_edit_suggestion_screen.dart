@@ -1425,6 +1425,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                                             ingredients:
                                                                 ingredients,
                                                             food: updatedFood,
+                                                            image: _imageFile,
                                                           ),
                                                 ),
                                               );

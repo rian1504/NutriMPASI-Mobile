@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -12,11 +13,13 @@ import 'package:nutrimpasi/screens/food/food_recipe_success_screen.dart';
 class FoodNutritionCalculatorScreen extends StatefulWidget {
   final List<String> ingredients;
   final FoodSuggestion food;
+  final File? image;
 
   const FoodNutritionCalculatorScreen({
     super.key,
     required this.ingredients,
     required this.food,
+    required this.image,
   });
 
   @override
@@ -392,14 +395,14 @@ class _FoodNutritionCalculatorScreenState
                         StoreFoodSuggestion(
                           foodCategoryId: widget.food.foodCategoryId!,
                           name: widget.food.name,
-                          image: widget.food.image,
+                          image: widget.image!,
                           age: widget.food.age,
                           energy: _energyValue,
                           protein: _proteinValue,
                           fat: _fatValue,
                           portion: widget.food.portion,
                           recipe: widget.food.recipe,
-                          fruit: widget.food.fruit!,
+                          fruit: widget.food.fruit,
                           step: widget.food.step,
                           description: widget.food.description,
                         ),
@@ -411,14 +414,14 @@ class _FoodNutritionCalculatorScreenState
                           foodId: widget.food.id!,
                           foodCategoryId: widget.food.foodCategoryId!,
                           name: widget.food.name,
-                          image: widget.food.image,
+                          image: widget.image,
                           age: widget.food.age,
                           energy: _energyValue,
                           protein: _proteinValue,
                           fat: _fatValue,
                           portion: widget.food.portion,
                           recipe: widget.food.recipe,
-                          fruit: widget.food.fruit!,
+                          fruit: widget.food.fruit,
                           step: widget.food.step,
                           description: widget.food.description,
                         ),

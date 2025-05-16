@@ -12,7 +12,7 @@ class FetchFoodSuggestion extends FoodSuggestionEvent {
 class StoreFoodSuggestion extends FoodSuggestionEvent {
   final int foodCategoryId;
   final String name;
-  final String image;
+  final File image;
   final String age;
   final double energy;
   final double protein;
@@ -43,7 +43,7 @@ class UpdateFoodSuggestion extends FoodSuggestionEvent {
   final int foodId;
   final int foodCategoryId;
   final String name;
-  final String image;
+  final File? image;
   final String age;
   final double energy;
   final double protein;
@@ -58,7 +58,7 @@ class UpdateFoodSuggestion extends FoodSuggestionEvent {
     required this.foodId,
     required this.foodCategoryId,
     required this.name,
-    required this.image,
+    this.image,
     required this.age,
     required this.energy,
     required this.protein,

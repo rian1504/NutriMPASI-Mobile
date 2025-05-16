@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
 class FoodRecipeSuccessScreen extends StatelessWidget {
@@ -123,6 +125,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             // Navigasi kembali ke halaman awal
+            context.read<FoodBloc>().add(FetchFoods());
             Navigator.of(context).popUntil((route) => route.isFirst);
           },
           style: ElevatedButton.styleFrom(

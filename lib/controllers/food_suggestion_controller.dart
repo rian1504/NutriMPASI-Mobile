@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/remote_dio.dart';
@@ -44,7 +45,7 @@ class FoodSuggestionController {
   Future<void> storeFood({
     required int foodCategoryId,
     required String name,
-    required String image,
+    required File image,
     required String age,
     required double energy,
     required double protein,
@@ -57,20 +58,20 @@ class FoodSuggestionController {
   }) async {
     try {
       // data
-      final data = {
+      FormData data = FormData.fromMap({
         'food_category_id': foodCategoryId,
         'name': name,
-        'image': image,
+        'image': await MultipartFile.fromFile(image.path),
         'age': age,
         'energy': energy,
         'protein': protein,
         'fat': fat,
         'portion': portion,
-        'recipe': recipe.join(', '),
-        'fruit': fruit!.join(', '),
-        'step': step.join(', '),
+        'recipe': recipe.join(','),
+        'fruit': fruit?.join(',') ?? '',
+        'step': step.join(','),
         'description': description,
-      };
+      });
 
       // Kirim request ke API
       final response = await _dio.post(ApiEndpoints.foodSuggestion, data: data);
@@ -87,7 +88,7 @@ class FoodSuggestionController {
     required int foodId,
     required int foodCategoryId,
     required String name,
-    required String image,
+    File? image,
     required String age,
     required double energy,
     required double protein,
@@ -100,20 +101,26 @@ class FoodSuggestionController {
   }) async {
     try {
       // data
-      final data = {
+      FormData data = FormData.fromMap({
         'food_category_id': foodCategoryId,
         'name': name,
-        'image': image,
         'age': age,
         'energy': energy,
         'protein': protein,
         'fat': fat,
         'portion': portion,
-        'recipe': recipe.join(', '),
-        'fruit': fruit!.join(', '),
-        'step': step.join(', '),
+        'recipe': recipe.join(','),
+        'fruit': fruit?.join(',') ?? '',
+        'step': step.join(','),
         'description': description,
-      };
+      });
+
+      // Tambahkan file gambar ke FormData jika image tidak null
+      if (image != null) {
+        data.files.add(
+          MapEntry('image', await MultipartFile.fromFile(image.path)),
+        );
+      }
 
       // Kirim request ke API
       final response = await _dio.post(
