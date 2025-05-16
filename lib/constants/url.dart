@@ -6,7 +6,7 @@
 // php artisan serve --host=0.0.0.0 --port=8000
 // ambil ipv4 untuk baseUrl
 
-String baseUrl = 'http://192.168.1.7:8000/'; //home
+String baseUrl = 'http://192.168.1.3:8000/'; //home
 // String baseUrl = 'http://172.16.26.120:8000/'; //cw
 // String baseUrl = 'http://127.0.0.1:8000/';
 // String baseUrl = 'http://192.168.110.170:8000/';

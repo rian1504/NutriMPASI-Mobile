@@ -6,8 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
-import 'package:nutrimpasi/widgets/forum_info_report_button.dart'
-    show InfoButtonWithReport;
+import 'package:nutrimpasi/widgets/forum_report_button.dart'
+    show ButtonWithReport;
 
 // Widget untuk menampilkan app bar forum diskusi
 import '../../widgets/forum_app_bar.dart' show AppBarForum;
@@ -183,7 +183,7 @@ class PostSection extends StatelessWidget {
         Divider(color: AppColors.grey),
         // Tombol untuk like, comment, dan info
         Padding(
-          padding: EdgeInsets.fromLTRB(16, 4, 0, 16),
+          padding: EdgeInsets.fromLTRB(16, 4, 16, 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -214,7 +214,7 @@ class PostSection extends StatelessWidget {
                   ),
                 ],
               ),
-              InfoButtonWithReport(),
+              ButtonWithReport(content: "postingan"),
             ],
           ),
         ),
@@ -242,7 +242,7 @@ class CommentSection extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -283,7 +283,7 @@ class CommentSection extends StatelessWidget {
         ),
         // Tombol untuk like, comment, dan info
         Padding(
-          padding: const EdgeInsets.fromLTRB(56, 0, 0, 0),
+          padding: const EdgeInsets.fromLTRB(56, 0, 16, 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -314,7 +314,7 @@ class CommentSection extends StatelessWidget {
                   ),
                 ],
               ),
-              InfoButtonWithReport(),
+              ButtonWithReport(content: "komentar"),
             ],
           ),
         ),

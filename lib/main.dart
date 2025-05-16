@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,7 +19,7 @@ import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/forum/forum_screen.dart';
-import 'package:nutrimpasi/screens/forum/post_screen.dart';
+// import 'package:nutrimpasi/screens/forum/post_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
