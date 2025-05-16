@@ -423,7 +423,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                       height: 20,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.pearl, Colors.white],
+                          colors: [AppColors.background, Colors.white],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
@@ -444,7 +444,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: AppColors.pearl,
+                          color: AppColors.background,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.zero,
                             topRight: Radius.circular(30),

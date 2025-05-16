@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       appBar: AppBar(backgroundColor: AppColors.bisque, toolbarHeight: 1),
       body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {

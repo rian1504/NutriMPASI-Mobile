@@ -520,7 +520,7 @@ class _FoodSuggestionDetailScreenState
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: AppColors.pearl,
+                              color: AppColors.background,
                             ),
                             child: ElevatedButton(
                               onPressed: () {
@@ -571,7 +571,7 @@ class _FoodSuggestionDetailScreenState
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: AppColors.pearl,
+                              color: AppColors.background,
                             ),
                             child: ElevatedButton(
                               onPressed: () {

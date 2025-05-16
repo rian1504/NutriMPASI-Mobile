@@ -24,7 +24,6 @@ import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/forum/forum_screen.dart';
-import 'package:nutrimpasi/screens/forum/post_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
@@ -156,9 +155,6 @@ class MainPageState extends State<MainPage> {
     const FoodListingScreen(),
     const ScheduleScreen(),
     const ForumScreen(),
-    // const PostScreen(),
-    // const CreatePostScreen(),
-    // const Center(child: Text('Forum')),
     const Center(child: Text('Settings')),
   ];
 
@@ -173,7 +169,7 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       body:
           _page == 1 && _pageParams.containsKey('showUserSuggestions')
               ? FoodListingScreen(
@@ -181,7 +177,7 @@ class MainPageState extends State<MainPage> {
               )
               : _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         color: AppColors.primary,
         height: MediaQuery.of(context).size.height * 0.070,
         animationDuration: const Duration(milliseconds: 300),

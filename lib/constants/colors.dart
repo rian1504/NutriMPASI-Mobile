@@ -24,7 +24,6 @@ class AppColors {
   static const Color greyLight = Color(0xFFE5E5E5);
 
   // Color pallete
-  static const Color pearl = Color(0xFFF9F9F9);
   static const Color lavenderBlue = Color(0xFFBABAEE);
   static const Color cream = Color(0xFFEBDDC5);
   static const Color porcelain = Color(0xFFFDEFC0);

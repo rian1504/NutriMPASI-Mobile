@@ -867,14 +867,14 @@ class _FoodListingScreenState extends State<FoodListingScreen>
         _searchFocusNode.unfocus();
       },
       child: Scaffold(
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: AnimatedBuilder(
             animation: _appBarAnimation,
             builder: (context, child) {
               return AppBar(
-                backgroundColor: AppColors.pearl,
+                backgroundColor: AppColors.background,
                 elevation: 0,
                 leadingWidth: Tween<double>(
                   begin: 56.0,

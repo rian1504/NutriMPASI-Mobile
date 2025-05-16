@@ -91,7 +91,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       // AppBar dengan styling khusus
       appBar: AppBar(
         backgroundColor: AppColors.primary,

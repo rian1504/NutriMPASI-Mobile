@@ -55,7 +55,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         body: SingleChildScrollView(
           child: SizedBox(
             height: size.height,

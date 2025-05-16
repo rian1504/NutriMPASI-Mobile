@@ -74,7 +74,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.1, 0.7, 0.9],
-            colors: [AppColors.pearl, AppColors.bisque, AppColors.primary],
+            colors: [AppColors.background, AppColors.bisque, AppColors.primary],
           ),
         ),
         child: SafeArea(

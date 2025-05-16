@@ -64,7 +64,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: Padding(
@@ -115,7 +115,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                             colors: [
                               AppColors.primary,
                               AppColors.bisque,
-                              AppColors.pearl,
+                              AppColors.background,
                             ],
                           ),
                           borderRadius: BorderRadius.only(
