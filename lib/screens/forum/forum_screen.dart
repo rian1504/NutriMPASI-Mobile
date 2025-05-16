@@ -1,0 +1,273 @@
+// Nama File: forum.dart
+// Deskripsi: File ini adalah halaman forum yang digunakan untuk menampilkan forum diskusi pengguna aplikasi Nutrimpasi.
+// Dibuat oleh: Firmansyah Pramudia Ariyanto - NIM: 3312301030
+// Tanggal: 12 Mei 2025
+
+import 'package:flutter/material.dart';
+import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
+import 'package:nutrimpasi/screens/forum/post_screen.dart' show PostScreen;
+import 'package:nutrimpasi/widgets/forum_info_report_button.dart'
+    show InfoButtonWithReport;
+
+// // Widget untuk menampilkan app bar forum diskusi
+import '../../widgets/forum_app_bar.dart' show AppBarForum;
+
+class ForumScreen extends StatefulWidget {
+  const ForumScreen({super.key});
+
+  @override
+  State<ForumScreen> createState() => _ForumScreenState();
+}
+
+class _ForumScreenState extends State<ForumScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBarForum(screenTitle: "Forum Diskusi", showTabs: true),
+        body: Container(
+          decoration: BoxDecoration(color: AppColors.primary),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40), // hanya lengkung kanan bawah
+              ),
+            ),
+            child: TabBarView(
+              children: [
+                // Tab "Semua"
+                ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    ForumCard(
+                      username: "Mama Karina (Saya)",
+                      title: "Gizi Seimbang",
+                      content:
+                          "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
+                    ),
+                    ForumCard(
+                      username: "Mama Asa",
+                      title: "Resep Makanan Sehat",
+                      content: "Pentingnya sarapan pagi.",
+                    ),
+                    ForumCard(
+                      username: "Mama Rora",
+                      title: "Gizi Seimbang",
+                      content:
+                          "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
+                    ),
+                    ForumCard(
+                      username: "Mama Yaxian",
+                      title: "Gizi Seimbang",
+                      content:
+                          "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
+                    ),
+                  ],
+                ),
+
+                // Tab "Postingan Saya"
+                Stack(
+                  children: [
+                    ListView(
+                      padding: EdgeInsets.all(16),
+                      children: [
+                        ForumCard(
+                          username: "Mama Karina (Saya)",
+                          title: "Resep Makanan Sehat Anak Saya",
+                          content: "Tips makanan sehat harian.",
+                        ),
+                        ForumCard(
+                          username: "Mama Karina (Saya)",
+                          title: "Anak saya susah makan sayur",
+                          content: "Pengalaman diet seimbang.",
+                        ),
+                        ForumCard(
+                          username: "Mama Karina (Saya)",
+                          title: "Anak saya susah makan sayur",
+                          content: "Pengalaman diet seimbang.",
+                        ),
+                        ForumCard(
+                          username: "Mama Karina (Saya)",
+                          title: "Anak saya susah makan sayur",
+                          content: "Pengalaman diet seimbang.",
+                        ),
+                        ForumCard(
+                          username: "Mama Karina (Saya)",
+                          title: "Anak saya susah makan sayur",
+                          content: "Pengalaman diet seimbang.",
+                        ),
+                        ForumCard(
+                          username: "Mama Karina (Saya)",
+                          title: "Anak saya susah makan sayur",
+                          content: "Pengalaman diet seimbang.",
+                        ),
+                        SizedBox(
+                          height: 100,
+                        ), // untuk memberikan jarak di bawah
+                      ],
+                    ),
+                    Positioned(
+                      bottom: 48,
+                      right: 16,
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: FloatingActionButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          onPressed: () {
+                            // Aksi ketika tombol ditekan
+                          },
+                          child: const Icon(Icons.add),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Widget untuk menampilkan card forum
+class ForumCard extends StatefulWidget {
+  final String username;
+  final String title;
+  final String content;
+  final bool isLiked;
+
+  const ForumCard({
+    super.key,
+    required this.username,
+    required this.title,
+    required this.content,
+    this.isLiked = false,
+  });
+
+  @override
+  _ForumCardState createState() => _ForumCardState();
+}
+
+class _ForumCardState extends State<ForumCard> {
+  late bool isLiked = widget.isLiked;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const PostScreen(), // Ganti sesuai kebutuhan
+          ),
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 2,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryTransparent, // abu-abu muda
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      AppIcons.userFill,
+                      color: AppColors.primary,
+                      size: 20, // opsional, atur agar pas di lingkaran
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.username,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          widget.title,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(widget.content, textAlign: TextAlign.justify),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: AppColors.grey),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Icon(AppIcons.like, size: 20, color: AppColors.error),
+                          GestureDetector(
+                            child: Icon(
+                              isLiked ? AppIcons.likeFill : AppIcons.like,
+                              color: isLiked ? AppColors.error : Colors.black,
+                              size: 20,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                isLiked = !isLiked;
+                              });
+                            },
+                          ),
+                          SizedBox(width: 4),
+                          Text("4", style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                      SizedBox(width: 16),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(AppIcons.comment, size: 20),
+                          SizedBox(width: 4),
+                          Text("2", style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  InfoButtonWithReport(),
+                  // Icon(AppIcons.info, size: 20),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

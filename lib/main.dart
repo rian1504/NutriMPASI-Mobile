@@ -23,6 +23,8 @@ import 'package:nutrimpasi/controllers/schedule_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
+import 'package:nutrimpasi/screens/forum/forum_screen.dart';
+import 'package:nutrimpasi/screens/forum/post_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
@@ -153,7 +155,10 @@ class MainPageState extends State<MainPage> {
     const HomeScreen(),
     const FoodListingScreen(),
     const ScheduleScreen(),
-    const Center(child: Text('Forum')),
+    const ForumScreen(),
+    // const PostScreen(),
+    // const CreatePostScreen(),
+    // const Center(child: Text('Forum')),
     const Center(child: Text('Settings')),
   ];
 
