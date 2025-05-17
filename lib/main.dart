@@ -11,13 +11,17 @@ import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_category/food_category_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
+import 'package:nutrimpasi/blocs/food_record/food_record_bloc.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
+import 'package:nutrimpasi/blocs/notification/notification_bloc.dart';
 import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/food_controller.dart';
+import 'package:nutrimpasi/controllers/food_record_controller.dart';
 import 'package:nutrimpasi/controllers/food_suggestion_controller.dart';
+import 'package:nutrimpasi/controllers/notification_controller.dart';
 import 'package:nutrimpasi/controllers/nutritionist_controller.dart';
 import 'package:nutrimpasi/controllers/schedule_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
@@ -90,6 +94,15 @@ class MainApp extends StatelessWidget {
           create:
               (context) =>
                   FoodCategoryBloc(controller: FoodSuggestionController()),
+        ),
+        BlocProvider(
+          create:
+              (context) => FoodRecordBloc(controller: FoodRecordController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  NotificationBloc(controller: NotificationController()),
         ),
       ],
       child: MaterialApp(
