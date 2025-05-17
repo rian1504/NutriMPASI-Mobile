@@ -25,6 +25,34 @@ class NotificationController {
     }
   }
 
+  Future<void> readNotification({required int notificationId}) async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.post(
+        '${ApiEndpoints.notification}/$notificationId',
+      );
+
+      // Debug response
+      debugPrint('Read Notification response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Read Notification error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> readAllNotification() async {
+    try {
+      // Kirim request ke API
+      final response = await _dio.post(ApiEndpoints.notification);
+
+      // Debug response
+      debugPrint('Read All Notification response: ${response.data}');
+    } on DioException catch (e) {
+      debugPrint('Read All Notification error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
   String _handleError(DioException e) {
     if (e.response?.data != null && e.response?.data['message'] != null) {
       return e.response!.data['message'];

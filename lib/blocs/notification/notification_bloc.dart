@@ -11,6 +11,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
   NotificationBloc({required this.controller}) : super(NotificationInitial()) {
     on<FetchNotifications>(_onFetch);
+    on<ReadNotification>(_onRead);
+    on<ReadAllNotifications>(_onReadAll);
   }
 
   Future<void> _onFetch(
@@ -23,6 +25,36 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       emit(NotificationLoaded(notifications: result));
     } catch (e) {
       emit(NotificationError('Fetch Notification gagal: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onRead(
+    ReadNotification event,
+    Emitter<NotificationState> emit,
+  ) async {
+    if (state is NotificationLoaded) {
+      try {
+        await controller.readNotification(notificationId: event.notificationId);
+        final updatedNotifications = await controller.getNotification();
+        emit(NotificationLoaded(notifications: updatedNotifications));
+      } catch (e) {
+        emit(NotificationError(e.toString()));
+      }
+    }
+  }
+
+  Future<void> _onReadAll(
+    ReadAllNotifications event,
+    Emitter<NotificationState> emit,
+  ) async {
+    if (state is NotificationLoaded) {
+      try {
+        await controller.readAllNotification();
+        final updatedNotifications = await controller.getNotification();
+        emit(NotificationLoaded(notifications: updatedNotifications));
+      } catch (e) {
+        emit(NotificationError(e.toString()));
+      }
     }
   }
 }

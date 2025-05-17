@@ -60,11 +60,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   // Tandai semua notifikasi sebagai sudah dibaca
   void _markAllAsRead() {
-    setState(() {
-      for (var notification in _notifications) {
-        notification.isRead = true;
-      }
-    });
+    context.read<NotificationBloc>().add(ReadAllNotifications());
   }
 
   @override
@@ -276,9 +272,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             final notification = filteredNotifications[index];
                             return InkWell(
                               onTap: () {
-                                setState(() {
-                                  notification.isRead = true;
-                                });
+                                context.read<NotificationBloc>().add(
+                                  ReadNotification(
+                                    notificationId: notification.id,
+                                  ),
+                                );
                                 // TODO: Implementasi aksi ketika notifikasi ditekan
                               },
                               child: Container(
@@ -298,24 +296,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     // Ikon notifikasi
-                                    // Container(
-                                    //   width: 40,
-                                    //   height: 40,
-                                    //   decoration: BoxDecoration(
-                                    //     color:
-                                    //         notification.isRead
-                                    //             ? Colors.grey.shade200
-                                    //             : AppColors.buff,
-                                    //     borderRadius: BorderRadius.circular(20),
-                                    //   ),
-                                    //   child: Icon(
-                                    //     notification.icon,
-                                    //     color:
-                                    //         notification.isRead
-                                    //             ? Colors.grey
-                                    //             : AppColors.primary,
-                                    //   ),
-                                    // ),
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color:
+                                            notification.isRead
+                                                ? Colors.grey.shade200
+                                                : AppColors.buff,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Icon(
+                                        _getNotificationIcon(
+                                          notification.category,
+                                        ),
+                                        color:
+                                            notification.isRead
+                                                ? Colors.grey
+                                                : AppColors.primary,
+                                      ),
+                                    ),
                                     const SizedBox(width: 16),
                                     // Konten notifikasi
                                     Expanded(
@@ -355,5 +355,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
         );
       },
     );
+  }
+}
+
+// Fungsi pembantu untuk mendapatkan ikon berdasarkan kategori
+IconData _getNotificationIcon(String category) {
+  switch (category.toLowerCase()) {
+    case 'report':
+      return Icons.report; // atau Icons.warning
+    case 'thread':
+      return Icons.forum; // atau Icons.chat
+    case 'comment':
+      return Icons.comment;
+    case 'schedule':
+      return Icons.calendar_today; // atau Icons.schedule
+    default:
+      return Icons.notifications; // Ikon default jika kategori tidak dikenali
   }
 }
