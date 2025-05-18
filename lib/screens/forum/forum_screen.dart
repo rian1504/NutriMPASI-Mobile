@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
 import 'package:nutrimpasi/screens/forum/post_screen.dart' show PostScreen;
-import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
+import 'package:nutrimpasi/utils/navigation_animation.dart'
+    show pushWithSlideTransition;
 import 'package:nutrimpasi/widgets/forum_report_button.dart'
     show ButtonWithReport;
 
@@ -48,23 +49,27 @@ class _ForumScreenState extends State<ForumScreen> {
                       children: [
                         ForumCard(
                           username: "Mama Karina (Saya)",
+                          postedAt: "2 jam yang lalu",
                           title: "Gizi Seimbang",
                           content:
                               "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
                         ),
                         ForumCard(
                           username: "Mama Asa",
+                          postedAt: "10 jam yang lalu",
                           title: "Resep Makanan Sehat",
                           content: "Pentingnya sarapan pagi.",
                         ),
                         ForumCard(
                           username: "Mama Rora",
+                          postedAt: "18 Mei 2025",
                           title: "Gizi Seimbang",
                           content:
                               "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
                         ),
                         ForumCard(
                           username: "Mama Yaxian",
+                          postedAt: "10 Mei 2025",
                           title: "Gizi Seimbang",
                           content:
                               "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
@@ -86,31 +91,37 @@ class _ForumScreenState extends State<ForumScreen> {
                             children: [
                               ForumCard(
                                 username: "Mama Karina (Saya)",
+                                postedAt: "2 jam yang lalu",
                                 title: "Resep Makanan Sehat Anak Saya",
                                 content: "Tips makanan sehat harian.",
                               ),
                               ForumCard(
                                 username: "Mama Karina (Saya)",
+                                postedAt: "10 jam yang lalu",
                                 title: "Anak saya susah makan sayur",
                                 content: "Pengalaman diet seimbang.",
                               ),
                               ForumCard(
                                 username: "Mama Karina (Saya)",
+                                postedAt: "18 Mei 2025",
                                 title: "Anak saya susah makan sayur",
                                 content: "Pengalaman diet seimbang.",
                               ),
                               ForumCard(
                                 username: "Mama Karina (Saya)",
+                                postedAt: "10 Mei 2025",
                                 title: "Anak saya susah makan sayur",
                                 content: "Pengalaman diet seimbang.",
                               ),
                               ForumCard(
                                 username: "Mama Karina (Saya)",
+                                postedAt: "10 Mei 2025",
                                 title: "Anak saya susah makan sayur",
                                 content: "Pengalaman diet seimbang.",
                               ),
                               ForumCard(
                                 username: "Mama Karina (Saya)",
+                                postedAt: "8 Mei 2025",
                                 title: "Anak saya susah makan sayur",
                                 content: "Pengalaman diet seimbang.",
                               ),
@@ -152,6 +163,7 @@ class _ForumScreenState extends State<ForumScreen> {
 // Widget untuk menampilkan card forum
 class ForumCard extends StatefulWidget {
   final String username;
+  final String postedAt;
   final String title;
   final String content;
   final bool isLiked;
@@ -159,6 +171,7 @@ class ForumCard extends StatefulWidget {
   const ForumCard({
     super.key,
     required this.username,
+    required this.postedAt,
     required this.title,
     required this.content,
     this.isLiked = false,
@@ -167,8 +180,6 @@ class ForumCard extends StatefulWidget {
   @override
   _ForumCardState createState() => _ForumCardState();
 }
-
-
 
 class _ForumCardState extends State<ForumCard> {
   late bool isLiked = widget.isLiked;
@@ -187,6 +198,7 @@ class _ForumCardState extends State<ForumCard> {
           children: [
             Padding(
               padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+              // menampilkan nama pengguna dan waktu posting
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -208,13 +220,26 @@ class _ForumCardState extends State<ForumCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.username,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: AppColors.textGrey,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              widget.username,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color: AppColors.textGrey,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              widget.postedAt,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12,
+                                color: AppColors.textGrey,
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 4),
                         Text(

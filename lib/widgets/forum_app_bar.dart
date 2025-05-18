@@ -1,3 +1,8 @@
+// Nama File: forum_report_button.dart
+// Deskripsi: Widget untuk menampilkan app bar dengan rounded corner di bagian kanan bawah
+// Dibuat oleh: Firmansyah Pramudia Ariyanto - NIM: 3312301030
+// Tanggal: 13 Mei 2025
+
 // Widget untuk membuat AppBar dengan rounded corner di bagian kanan bawah
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';

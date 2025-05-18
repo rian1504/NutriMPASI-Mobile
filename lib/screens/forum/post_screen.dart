@@ -49,6 +49,7 @@ class _PostScreenState extends State<PostScreen> {
                     children: [
                       PostSection(
                         username: "Mama Karina (Saya)",
+                        postedAt: "1 jam yang lalu",
                         title: "Gizi Seimbang",
                         content:
                             "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
@@ -71,6 +72,7 @@ class _PostScreenState extends State<PostScreen> {
                       ),
                       CommentSection(
                         username: "Dr. Abdullah - Ahli Gizi",
+                        postedAt: "2 jam yang lalu",
                         content:
                             "Halo, moms! GTM pada bayi itu wajar dan sering terjadi, apalagi di usia 6-12 bulan. Bisa disebabkan oleh banyak faktor seperti bosan dengan rasa/tekstur, sedang tumbuh gigi, atau bahkan sedang sakit. Coba beri variasi makanan dan biarkan anak makan sendiri jika memungkinkan. Pastikan juga tidak terlalu banyak camilan sebelum makan utama ya!",
                         likeCount: 5,
@@ -79,6 +81,7 @@ class _PostScreenState extends State<PostScreen> {
                       Divider(color: AppColors.grey),
                       CommentSection(
                         username: "Mama Mia",
+                        postedAt: "1 jam yang lalu",
                         content:
                             "Coba cek apa dia sedang tumbuh gigi, mom. Biasanya kalau lagi teething, anak jadi rewel dan susah makan. Bisa coba kasih makanan yang lebih lembut ya",
                         likeCount: 2,
@@ -87,6 +90,7 @@ class _PostScreenState extends State<PostScreen> {
                       Divider(color: AppColors.grey),
                       CommentSection(
                         username: "Mama Aboy",
+                        postedAt: "30 menit yang lalu",
                         content:
                             "Wah, aku juga pernah ngalamin ini waktu anakku 8 bulan, mom! Aku coba variasi tekstur dan cara penyajiannya, misalnya kasih finger food atau biarkan dia eksplor sendiri. Kadang mereka cuma bosan dengan cara makannya yang itu-itu aja.",
                         likeCount: 3,
@@ -95,6 +99,7 @@ class _PostScreenState extends State<PostScreen> {
                       Divider(color: AppColors.grey),
                       CommentSection(
                         username: "Mama Rora",
+                        postedAt: "20 menit yang lalu",
                         content:
                             "Wah, aku juga pernah ngalamin ini waktu anakku 8 bulan, mom! Aku coba variasi tekstur dan cara penyajiannya, misalnya kasih finger food atau biarkan dia eksplor sendiri. Kadang mereka cuma bosan dengan cara makannya yang itu-itu aja.",
                         likeCount: 0,
@@ -116,21 +121,31 @@ class _PostScreenState extends State<PostScreen> {
   }
 }
 
-class PostSection extends StatelessWidget {
+class PostSection extends StatefulWidget {
   final String username;
+  final String postedAt;
   final String title;
   final String content;
   final int likeCount;
   final int commentCount;
+  final bool isLiked = false;
 
   const PostSection({
     super.key,
     required this.username,
+    required this.postedAt,
     required this.title,
     required this.content,
     required this.likeCount,
     required this.commentCount,
   });
+
+  @override
+  State<PostSection> createState() => _PostSectionState();
+}
+
+class _PostSectionState extends State<PostSection> {
+  late bool isLiked = widget.isLiked;
 
   @override
   Widget build(BuildContext context) {
@@ -160,20 +175,33 @@ class PostSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                        color: AppColors.textGrey,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          widget.username,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          widget.postedAt,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 4),
                     Text(
-                      title,
+                      widget.title,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Text(content, textAlign: TextAlign.justify),
+                    Text(widget.content, textAlign: TextAlign.justify),
                   ],
                 ),
               ),
@@ -187,33 +215,47 @@ class PostSection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Tombol like
               Row(
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(AppIcons.like, size: 20, color: Colors.black),
+                      GestureDetector(
+                        child: Icon(
+                          isLiked ? AppIcons.likeFill : AppIcons.like,
+                          color: isLiked ? AppColors.error : Colors.black,
+                          size: 20,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            isLiked = !isLiked;
+                          });
+                        },
+                      ),
                       SizedBox(width: 4),
                       Text(
-                        likeCount.toString(),
+                        widget.likeCount.toString(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
                   SizedBox(width: 16),
+                  // Tombol komentar
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(AppIcons.comment, size: 20),
                       SizedBox(width: 4),
                       Text(
-                        commentCount.toString(),
+                        widget.commentCount.toString(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
                 ],
               ),
+              // Tombol untuk melaporkan postingan
               ButtonWithReport(content: "postingan"),
             ],
           ),
@@ -223,19 +265,28 @@ class PostSection extends StatelessWidget {
   }
 }
 
-class CommentSection extends StatelessWidget {
+class CommentSection extends StatefulWidget {
   final String username;
+  final String postedAt;
   final String content;
   final int likeCount;
   final int commentCount;
+  final bool isLiked = false;
 
   const CommentSection({
     super.key,
     required this.username,
+    required this.postedAt,
     required this.content,
     required this.likeCount,
     required this.commentCount,
   });
+  @override
+  _CommentSectionState createState() => _CommentSectionState();
+}
+
+class _CommentSectionState extends State<CommentSection> {
+  late bool isLiked = widget.isLiked;
 
   @override
   Widget build(BuildContext context) {
@@ -260,21 +311,37 @@ class CommentSection extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8),
-
+              // Nama pengguna dan isi komentar
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                        color: AppColors.textGrey,
-                      ),
+                    Row(
+                      children: [
+                        // Nama pengguna
+                        Text(
+                          widget.username,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        // Tanggal posting
+                        Text(
+                          widget.postedAt,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 4),
-                    Text(content, textAlign: TextAlign.justify),
+                    // Isi komentar
+                    Text(widget.content, textAlign: TextAlign.justify),
                   ],
                 ),
               ),
@@ -289,31 +356,45 @@ class CommentSection extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  // Tombol like
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(AppIcons.like, size: 20, color: Colors.black),
+                      GestureDetector(
+                        child: Icon(
+                          isLiked ? AppIcons.likeFill : AppIcons.like,
+                          color: isLiked ? AppColors.error : Colors.black,
+                          size: 20,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            isLiked = !isLiked;
+                          });
+                        },
+                      ),
                       SizedBox(width: 4),
                       Text(
-                        likeCount.toString(),
+                        widget.likeCount.toString(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
                   SizedBox(width: 16),
+                  // Tombol komentar
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(AppIcons.comment, size: 20),
                       SizedBox(width: 4),
                       Text(
-                        commentCount.toString(),
+                        widget.commentCount.toString(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
                 ],
               ),
+              // Tombol untuk melaporkan komentar
               ButtonWithReport(content: "komentar"),
             ],
           ),

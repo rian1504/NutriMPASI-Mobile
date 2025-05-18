@@ -1,3 +1,9 @@
+// Nama File: forum_report_button.dart
+// Deskripsi: Widget untuk menampilkan tombol info dengan opsi laporan
+// Dibuat oleh: Firmansyah Pramudia Ariyanto - NIM: 3312301030
+// Tanggal: 15 Mei 2025
+
+
 // Widget untuk menampilkan tombol info dengan opsi laporan
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
@@ -11,7 +17,7 @@ class ButtonWithReport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Icon(AppIcons.report),
+      child: Icon(AppIcons.report, size: 20, color: Colors.black,),
       onTap: () {
         showDialog(
           context: context,
