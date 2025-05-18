@@ -45,4 +45,11 @@ class ApiEndpoints {
 
   // Notification
   static const String notification = 'notification';
+
+  // Report
+  static const String report = 'report';
+
+  // Thread
+  static const String thread = 'thread';
+  static const String threadUser = 'thread-user';
 }
