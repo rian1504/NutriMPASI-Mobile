@@ -7,6 +7,9 @@ class AppColors {
   // Secondary color
   static const Color secondary = Color(0xFF5966B1);
 
+  //accent color
+  static const Color accent = Color(0xFF5966B1);
+
   // Background color
   static const Color background = Color(0xFFF9F9F9);
 
@@ -17,6 +20,7 @@ class AppColors {
 
   // Transparent color
   static Color primaryTransparent = Color(0xFFFC8207).withAlpha(100);
+  static Color accentTransparent = Color(0xFF5966B1).withAlpha(244);
 
   // Grey color
   static const Color grey = Color(0xFFD9D9D9);

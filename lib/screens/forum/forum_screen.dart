@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
 import 'package:nutrimpasi/screens/forum/post_screen.dart' show PostScreen;
-import 'package:nutrimpasi/widgets/forum_info_report_button.dart'
-    show InfoButtonWithReport;
+import 'package:nutrimpasi/utils/navigation_animation.dart'
+    show pushWithSlideTransition;
+import 'package:nutrimpasi/widgets/forum_report_button.dart'
+    show ButtonWithReport;
 
 // // Widget untuk menampilkan app bar forum diskusi
 import '../../widgets/forum_app_bar.dart' show AppBarForum;
@@ -40,75 +42,95 @@ class _ForumScreenState extends State<ForumScreen> {
             child: TabBarView(
               children: [
                 // Tab "Semua"
-                ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    ForumCard(
-                      username: "Mama Karina (Saya)",
-                      title: "Gizi Seimbang",
-                      content:
-                          "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ForumCard(
+                          username: "Mama Karina (Saya)",
+                          postedAt: "2 jam yang lalu",
+                          title: "Gizi Seimbang",
+                          content:
+                              "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
+                        ),
+                        ForumCard(
+                          username: "Mama Asa",
+                          postedAt: "10 jam yang lalu",
+                          title: "Resep Makanan Sehat",
+                          content: "Pentingnya sarapan pagi.",
+                        ),
+                        ForumCard(
+                          username: "Mama Rora",
+                          postedAt: "18 Mei 2025",
+                          title: "Gizi Seimbang",
+                          content:
+                              "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
+                        ),
+                        ForumCard(
+                          username: "Mama Yaxian",
+                          postedAt: "10 Mei 2025",
+                          title: "Gizi Seimbang",
+                          content:
+                              "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
+                        ),
+                      ],
                     ),
-                    ForumCard(
-                      username: "Mama Asa",
-                      title: "Resep Makanan Sehat",
-                      content: "Pentingnya sarapan pagi.",
-                    ),
-                    ForumCard(
-                      username: "Mama Rora",
-                      title: "Gizi Seimbang",
-                      content:
-                          "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
-                    ),
-                    ForumCard(
-                      username: "Mama Yaxian",
-                      title: "Gizi Seimbang",
-                      content:
-                          "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
-                    ),
-                  ],
+                  ),
                 ),
 
                 // Tab "Postingan Saya"
                 Stack(
                   children: [
-                    ListView(
-                      padding: EdgeInsets.all(16),
-                      children: [
-                        ForumCard(
-                          username: "Mama Karina (Saya)",
-                          title: "Resep Makanan Sehat Anak Saya",
-                          content: "Tips makanan sehat harian.",
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ForumCard(
+                                username: "Mama Karina (Saya)",
+                                postedAt: "2 jam yang lalu",
+                                title: "Resep Makanan Sehat Anak Saya",
+                                content: "Tips makanan sehat harian.",
+                              ),
+                              ForumCard(
+                                username: "Mama Karina (Saya)",
+                                postedAt: "10 jam yang lalu",
+                                title: "Anak saya susah makan sayur",
+                                content: "Pengalaman diet seimbang.",
+                              ),
+                              ForumCard(
+                                username: "Mama Karina (Saya)",
+                                postedAt: "18 Mei 2025",
+                                title: "Anak saya susah makan sayur",
+                                content: "Pengalaman diet seimbang.",
+                              ),
+                              ForumCard(
+                                username: "Mama Karina (Saya)",
+                                postedAt: "10 Mei 2025",
+                                title: "Anak saya susah makan sayur",
+                                content: "Pengalaman diet seimbang.",
+                              ),
+                              ForumCard(
+                                username: "Mama Karina (Saya)",
+                                postedAt: "10 Mei 2025",
+                                title: "Anak saya susah makan sayur",
+                                content: "Pengalaman diet seimbang.",
+                              ),
+                              ForumCard(
+                                username: "Mama Karina (Saya)",
+                                postedAt: "8 Mei 2025",
+                                title: "Anak saya susah makan sayur",
+                                content: "Pengalaman diet seimbang.",
+                              ),
+                              // Jarak antara card terakhir dan tombol tambah
+                              SizedBox(height: 100),
+                            ],
+                          ),
                         ),
-                        ForumCard(
-                          username: "Mama Karina (Saya)",
-                          title: "Anak saya susah makan sayur",
-                          content: "Pengalaman diet seimbang.",
-                        ),
-                        ForumCard(
-                          username: "Mama Karina (Saya)",
-                          title: "Anak saya susah makan sayur",
-                          content: "Pengalaman diet seimbang.",
-                        ),
-                        ForumCard(
-                          username: "Mama Karina (Saya)",
-                          title: "Anak saya susah makan sayur",
-                          content: "Pengalaman diet seimbang.",
-                        ),
-                        ForumCard(
-                          username: "Mama Karina (Saya)",
-                          title: "Anak saya susah makan sayur",
-                          content: "Pengalaman diet seimbang.",
-                        ),
-                        ForumCard(
-                          username: "Mama Karina (Saya)",
-                          title: "Anak saya susah makan sayur",
-                          content: "Pengalaman diet seimbang.",
-                        ),
-                        SizedBox(
-                          height: 100,
-                        ), // untuk memberikan jarak di bawah
-                      ],
+                      ),
                     ),
                     Positioned(
                       bottom: 48,
@@ -141,6 +163,7 @@ class _ForumScreenState extends State<ForumScreen> {
 // Widget untuk menampilkan card forum
 class ForumCard extends StatefulWidget {
   final String username;
+  final String postedAt;
   final String title;
   final String content;
   final bool isLiked;
@@ -148,6 +171,7 @@ class ForumCard extends StatefulWidget {
   const ForumCard({
     super.key,
     required this.username,
+    required this.postedAt,
     required this.title,
     required this.content,
     this.isLiked = false,
@@ -164,12 +188,7 @@ class _ForumCardState extends State<ForumCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const PostScreen(), // Ganti sesuai kebutuhan
-          ),
-        );
+        pushWithSlideTransition(context, PostScreen());
       },
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -179,6 +198,7 @@ class _ForumCardState extends State<ForumCard> {
           children: [
             Padding(
               padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+              // menampilkan nama pengguna dan waktu posting
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -200,13 +220,26 @@ class _ForumCardState extends State<ForumCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.username,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: AppColors.textGrey,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              widget.username,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color: AppColors.textGrey,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              widget.postedAt,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12,
+                                color: AppColors.textGrey,
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 4),
                         Text(
@@ -222,7 +255,7 @@ class _ForumCardState extends State<ForumCard> {
             ),
             Divider(color: AppColors.grey),
             Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 // crossAxisAlignment: CrossAxisAlignment.center,
@@ -260,7 +293,7 @@ class _ForumCardState extends State<ForumCard> {
                       ),
                     ],
                   ),
-                  InfoButtonWithReport(),
+                  ButtonWithReport(content: "postingan"),
                   // Icon(AppIcons.info, size: 20),
                 ],
               ),

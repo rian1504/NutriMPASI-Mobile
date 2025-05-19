@@ -15,6 +15,7 @@ class AppIcons {
   static IconData get userFill => PhosphorIcons.user(PhosphorIconsStyle.fill);
   static IconData get comment => PhosphorIcons.chatCircle(PhosphorIconsStyle.bold);
   static IconData get info => PhosphorIcons.info(PhosphorIconsStyle.bold);
+  static IconData get report => PhosphorIcons.warningCircle(PhosphorIconsStyle.bold);
   static IconData get back => PhosphorIcons.caretLeft(PhosphorIconsStyle.bold);
   // static const like = PhosphorIcons.thumbsUp;
   // static const profile = PhosphorIcons.thumbsUp;
