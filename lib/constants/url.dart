@@ -37,6 +37,7 @@ class ApiEndpoints {
   static const String food = 'food';
   static const String foodCategory = '$food/category';
   static const String foodFilter = '$food/filter';
+  static const String foodRecord = '$food/record';
   static const String favorite = 'favorite';
 
   // Schedule
@@ -47,4 +48,7 @@ class ApiEndpoints {
 
   // Food Suggestion
   static const String foodSuggestion = 'food-suggestion';
+
+  // Notification
+  static const String notification = 'notification';
 }
