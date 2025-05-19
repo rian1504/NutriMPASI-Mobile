@@ -175,7 +175,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.secondary,
+                                        backgroundColor: AppColors.accent,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             30,
@@ -218,7 +218,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         TextSpan(
                                           text: 'Masuk',
                                           style: TextStyle(
-                                            color: AppColors.secondary,
+                                            color: AppColors.accent,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                           ),
@@ -245,7 +245,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         TextSpan(
                                           text: 'Daftar',
                                           style: TextStyle(
-                                            color: AppColors.secondary,
+                                            color: AppColors.accent,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                           ),

@@ -40,7 +40,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15, left: 10),
-                      child: Container(height: 4, color: AppColors.secondary),
+                      child: Container(height: 4, color: AppColors.accent),
                     ),
                   ),
 
@@ -51,7 +51,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15, right: 10),
-                      child: Container(height: 4, color: AppColors.secondary),
+                      child: Container(height: 4, color: AppColors.accent),
                     ),
                   ),
 
@@ -96,7 +96,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                         fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.secondary,
+                        color: AppColors.accent,
                       ),
                     ),
 
@@ -106,7 +106,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                         fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.secondary,
+                        color: AppColors.accent,
                       ),
                     ),
                   ],
@@ -129,7 +129,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
             Navigator.of(context).popUntil((route) => route.isFirst);
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.secondary,
+            backgroundColor: AppColors.accent,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),

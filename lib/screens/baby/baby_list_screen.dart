@@ -285,7 +285,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                     curve: Curves.easeInOut,
                   );
                 },
-                backgroundColor: AppColors.secondary,
+                backgroundColor: AppColors.accent,
                 child: const Icon(Symbols.add, color: Colors.white),
               ),
     );
@@ -547,7 +547,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
               icon: const Icon(Symbols.add),
               label: const Text('Tambah Bayi'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: AppColors.accent,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,

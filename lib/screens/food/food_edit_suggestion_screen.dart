@@ -390,7 +390,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   child: Container(
                                     height: 4,
-                                    color: AppColors.secondary,
+                                    color: AppColors.accent,
                                   ),
                                 ),
                               ),

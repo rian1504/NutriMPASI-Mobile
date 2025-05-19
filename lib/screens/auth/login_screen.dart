@@ -265,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: const Text(
                                         'Lupa Kata Sandi?',
                                         style: TextStyle(
-                                          color: AppColors.secondary,
+                                          color: AppColors.accent,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -283,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.secondary,
+                                        backgroundColor: AppColors.accent,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             30,

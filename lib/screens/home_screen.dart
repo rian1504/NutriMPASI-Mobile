@@ -743,8 +743,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                         style: TextStyle(
                                                           fontSize: 14,
                                                           color:
-                                                              AppColors
-                                                                  .secondary,
+                                                              AppColors.accent,
                                                           decoration:
                                                               TextDecoration
                                                                   .underline,
@@ -789,7 +788,7 @@ class _HomeScreenState extends State<HomeScreen>
                       width: 80,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: AppColors.secondary,
+                        color: AppColors.accent,
                         borderRadius: const BorderRadius.horizontal(
                           left: Radius.circular(20),
                         ),
@@ -961,7 +960,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: SizedBox(
           height: 132,
           child: Center(
-            child: CircularProgressIndicator(color: AppColors.secondary),
+            child: CircularProgressIndicator(color: AppColors.accent),
           ),
         ),
       ),
@@ -1182,7 +1181,7 @@ class _HomeScreenState extends State<HomeScreen>
                       shape: BoxShape.circle,
                       color:
                           i == _currentRecommendationIndex
-                              ? AppColors.secondary
+                              ? AppColors.accent
                               : Colors.white.withAlpha(125),
                     ),
                   );

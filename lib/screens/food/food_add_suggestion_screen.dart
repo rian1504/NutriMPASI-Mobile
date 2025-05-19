@@ -353,7 +353,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                   ),
                                   child: Container(
                                     height: 4,
-                                    color: AppColors.secondary,
+                                    color: AppColors.accent,
                                   ),
                                 ),
                               ),

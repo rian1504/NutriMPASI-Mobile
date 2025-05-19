@@ -236,7 +236,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.secondary.withAlpha(25),
+                                      color: AppColors.accent.withAlpha(25),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
@@ -244,7 +244,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 12,
-                                        color: AppColors.secondary,
+                                        color: AppColors.accent,
                                       ),
                                     ),
                                   ),
@@ -304,7 +304,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         const Icon(
                                           Icons.person,
                                           size: 24,
-                                          color: AppColors.secondary,
+                                          color: AppColors.accent,
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
@@ -313,7 +313,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                             fontFamily: 'Poppins',
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
-                                            color: AppColors.secondary,
+                                            color: AppColors.accent,
                                           ),
                                         ),
                                       ],
@@ -781,7 +781,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor:
-                                                      AppColors.secondary,
+                                                      AppColors.accent,
                                                   foregroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
@@ -1042,7 +1042,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
-                                                    AppColors.secondary,
+                                                    AppColors.accent,
                                                 foregroundColor: Colors.white,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
@@ -1149,7 +1149,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     fontFamily: 'Poppins',
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.secondary,
+                    color: AppColors.accent,
                   ),
                 ),
                 const SizedBox(width: 2),

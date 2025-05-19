@@ -340,7 +340,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                               strokeWidth: 10,
                               backgroundColor: Colors.white.withAlpha(50),
                               valueColor: const AlwaysStoppedAnimation<Color>(
-                                AppColors.secondary,
+                                AppColors.accent,
                               ),
                             ),
                           ),
@@ -420,7 +420,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                         'Energi',
                         _nutritionData['energy'],
                         'kkal',
-                        AppColors.secondary,
+                        AppColors.accent,
                       ),
 
                       // Indikator Protein

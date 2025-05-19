@@ -1639,7 +1639,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: AppColors.secondary.withAlpha(25),
+                            color: AppColors.accent.withAlpha(25),
                             shape: BoxShape.circle,
                           ),
                           child: Image.asset(

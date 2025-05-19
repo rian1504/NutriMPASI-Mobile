@@ -659,7 +659,7 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
 
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.secondary,
+                              backgroundColor: AppColors.accent,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 60,

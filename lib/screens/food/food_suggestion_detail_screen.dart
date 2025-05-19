@@ -182,7 +182,7 @@ class _FoodSuggestionDetailScreenState
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.secondary.withAlpha(25),
+                                      color: AppColors.accent.withAlpha(25),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
@@ -190,7 +190,7 @@ class _FoodSuggestionDetailScreenState
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 12,
-                                        color: AppColors.secondary,
+                                        color: AppColors.accent,
                                       ),
                                     ),
                                   ),
@@ -783,7 +783,7 @@ class _FoodSuggestionDetailScreenState
                     fontFamily: 'Poppins',
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.secondary,
+                    color: AppColors.accent,
                   ),
                 ),
                 const SizedBox(width: 2),

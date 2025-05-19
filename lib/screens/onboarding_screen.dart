@@ -134,7 +134,7 @@ class OnboardingPage extends StatelessWidget {
                       fontFamily: 'Poppins',
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
-                      color: AppColors.secondary,
+                      color: AppColors.accent,
                     ),
                   ),
                   // Subjudul
@@ -264,7 +264,7 @@ class OnboardingPage extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: AppColors.accent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),

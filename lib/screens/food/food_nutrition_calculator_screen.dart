@@ -203,10 +203,7 @@ class _FoodNutritionCalculatorScreenState
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 15, left: 10),
-                          child: Container(
-                            height: 4,
-                            color: AppColors.secondary,
-                          ),
+                          child: Container(height: 4, color: AppColors.accent),
                         ),
                       ),
 
@@ -298,9 +295,7 @@ class _FoodNutritionCalculatorScreenState
                       ? const Center(
                         child: Column(
                           children: [
-                            CircularProgressIndicator(
-                              color: AppColors.secondary,
-                            ),
+                            CircularProgressIndicator(color: AppColors.accent),
                             SizedBox(height: 8),
                             Text(
                               'Menghitung nilai nutrisi...',
@@ -437,7 +432,7 @@ class _FoodNutritionCalculatorScreenState
                     );
                   },
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.secondary,
+            backgroundColor: AppColors.accent,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -560,7 +555,7 @@ class _FoodNutritionCalculatorScreenState
                     fontFamily: 'Poppins',
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.secondary,
+                    color: AppColors.accent,
                   ),
                 ),
                 const SizedBox(width: 2),
