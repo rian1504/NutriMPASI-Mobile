@@ -455,7 +455,9 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                 ),
 
                                 // Bagian daftar buah
-                                if (food.fruit.isNotEmpty) ...[
+                                if (food.fruit.any(
+                                  (item) => item.trim().isNotEmpty,
+                                )) ...[
                                   const SizedBox(height: 16),
                                   Container(
                                     margin: const EdgeInsets.symmetric(
