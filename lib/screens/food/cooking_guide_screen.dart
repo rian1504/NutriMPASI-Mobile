@@ -426,7 +426,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                         ),
                                         child: Row(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Container(
                                               width: 24,
@@ -506,7 +506,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                               ),
                                               child: Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Container(
                                                     width: 24,
@@ -557,7 +557,7 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                         ),
                                         child: Row(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Container(
                                               width: 24,

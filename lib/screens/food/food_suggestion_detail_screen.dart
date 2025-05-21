@@ -282,7 +282,7 @@ class _FoodSuggestionDetailScreenState
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 24,
@@ -330,7 +330,7 @@ class _FoodSuggestionDetailScreenState
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 24,
@@ -378,7 +378,7 @@ class _FoodSuggestionDetailScreenState
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 24,
