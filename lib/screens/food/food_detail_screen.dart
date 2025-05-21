@@ -19,6 +19,9 @@ class FoodDetailScreen extends StatefulWidget {
 }
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
+  final formKey = GlobalKey<FormState>();
+  String reportReason = '';
+
   @override
   void initState() {
     super.initState();
@@ -112,6 +115,342 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 ),
                               ),
                             ),
+
+                            // Tombol lapor
+                            if (food.source == null)
+                              Positioned(
+                                top: MediaQuery.of(context).padding.top + 24,
+                                right: 24,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Material(
+                                    elevation: 3,
+                                    shadowColor: Colors.black54,
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Symbols.error_outline_rounded,
+                                          color: AppColors.primary,
+                                          size: 36,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          // Menampilkan dialog laporan
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(
+                                                    16,
+                                                  ),
+                                                  child: Form(
+                                                    key: formKey,
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              'Laporkan Resep',
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color:
+                                                                    AppColors
+                                                                        .textBlack,
+                                                              ),
+                                                            ),
+
+                                                            Material(
+                                                              color:
+                                                                  Colors
+                                                                      .transparent,
+                                                              child: InkWell(
+                                                                onTap:
+                                                                    () => Navigator.pop(
+                                                                      context,
+                                                                    ),
+                                                                customBorder:
+                                                                    const CircleBorder(),
+                                                                child: Container(
+                                                                  width: 24,
+                                                                  height: 24,
+                                                                  decoration: BoxDecoration(
+                                                                    shape:
+                                                                        BoxShape
+                                                                            .circle,
+                                                                    color:
+                                                                        Colors
+                                                                            .white,
+                                                                    border: Border.all(
+                                                                      color:
+                                                                          AppColors
+                                                                              .textBlack,
+                                                                    ),
+                                                                  ),
+                                                                  child: const Center(
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .close,
+                                                                      color:
+                                                                          AppColors
+                                                                              .textBlack,
+                                                                      size: 18,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+
+                                                        const SizedBox(
+                                                          height: 16,
+                                                        ),
+
+                                                        const Text(
+                                                          'Alasan laporan:',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 14,
+                                                            color:
+                                                                AppColors
+                                                                    .textGrey,
+                                                          ),
+                                                        ),
+
+                                                        const SizedBox(
+                                                          height: 8,
+                                                        ),
+
+                                                        TextFormField(
+                                                          onChanged: (value) {
+                                                            reportReason =
+                                                                value;
+                                                          },
+                                                          maxLines: 5,
+                                                          decoration: InputDecoration(
+                                                            hintText:
+                                                                'Tuliskan alasan laporan...',
+                                                            border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    8,
+                                                                  ),
+                                                            ),
+                                                            contentPadding:
+                                                                const EdgeInsets.all(
+                                                                  12,
+                                                                ),
+                                                          ),
+                                                          validator: (value) {
+                                                            if (value == null ||
+                                                                value
+                                                                    .trim()
+                                                                    .isEmpty) {
+                                                              return 'Alasan laporan tidak boleh kosong';
+                                                            }
+                                                            if (value
+                                                                    .trim()
+                                                                    .length <
+                                                                4) {
+                                                              return 'Alasan laporan minimal 4 karakter';
+                                                            }
+                                                            return null;
+                                                          },
+                                                        ),
+
+                                                        const SizedBox(
+                                                          height: 24,
+                                                        ),
+
+                                                        // Tombol Kirim Laporan
+                                                        Align(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: ElevatedButton(
+                                                            onPressed: () {
+                                                              if (formKey
+                                                                  .currentState!
+                                                                  .validate()) {
+                                                                // TODO: Mengirimkan laporan ke server
+
+                                                                // Tutup dialog form laporan
+                                                                Navigator.pop(
+                                                                  context,
+                                                                );
+
+                                                                // Tampilkan dialog sukses
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  barrierDismissible:
+                                                                      false,
+                                                                  builder: (
+                                                                    BuildContext
+                                                                    dialogContext,
+                                                                  ) {
+                                                                    Future.delayed(
+                                                                      Duration(
+                                                                        seconds:
+                                                                            2,
+                                                                      ),
+                                                                      () {
+                                                                        // Cek apakah dialogContext masih terpasang
+                                                                        if (dialogContext.mounted &&
+                                                                            Navigator.canPop(
+                                                                              dialogContext,
+                                                                            )) {
+                                                                          Navigator.of(
+                                                                            dialogContext,
+                                                                          ).pop();
+                                                                        }
+                                                                      },
+                                                                    );
+
+                                                                    return Dialog(
+                                                                      shape: RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                              16,
+                                                                            ),
+                                                                      ),
+                                                                      child: Container(
+                                                                        padding:
+                                                                            const EdgeInsets.all(
+                                                                              24,
+                                                                            ),
+                                                                        child: Column(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            // Gambar sukses
+                                                                            Image.asset(
+                                                                              'assets/images/card/lapor_makanan.png',
+                                                                              height:
+                                                                                  200,
+                                                                              width:
+                                                                                  200,
+                                                                              fit:
+                                                                                  BoxFit.contain,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              height:
+                                                                                  20,
+                                                                            ),
+                                                                            // Teks berhasil
+                                                                            const Text(
+                                                                              'Berhasil Melaporkan Resep',
+                                                                              style: TextStyle(
+                                                                                fontFamily:
+                                                                                    'Poppins',
+                                                                                fontSize:
+                                                                                    18,
+                                                                                fontWeight:
+                                                                                    FontWeight.w600,
+                                                                                color:
+                                                                                    AppColors.accent,
+                                                                              ),
+                                                                              textAlign:
+                                                                                  TextAlign.center,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              height:
+                                                                                  8,
+                                                                            ),
+                                                                            const Text(
+                                                                              'Usulan Makanan',
+                                                                              style: TextStyle(
+                                                                                fontFamily:
+                                                                                    'Poppins',
+                                                                                fontSize:
+                                                                                    18,
+                                                                                fontWeight:
+                                                                                    FontWeight.w600,
+                                                                                color:
+                                                                                    AppColors.accent,
+                                                                              ),
+                                                                              textAlign:
+                                                                                  TextAlign.center,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                );
+                                                              }
+                                                            },
+                                                            style: ElevatedButton.styleFrom(
+                                                              backgroundColor:
+                                                                  AppColors
+                                                                      .accent,
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      8,
+                                                                    ),
+                                                              ),
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    vertical:
+                                                                        12,
+                                                                    horizontal:
+                                                                        24,
+                                                                  ),
+                                                            ),
+                                                            child: const Text(
+                                                              'Kirim Laporan',
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
 
                             Positioned(
                               top: MediaQuery.of(context).padding.top + 60,
