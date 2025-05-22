@@ -38,6 +38,7 @@ class _FoodNutritionCalculatorScreenState
   double _proteinValue = 0;
   double _fatValue = 0;
   bool _isCalculating = true;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -164,288 +165,345 @@ class _FoodNutritionCalculatorScreenState
     }
   }
 
+  void _handleSubmit() {
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    if (widget.food.id == null) {
+      // Jika food.id null, berarti ini adalah penambahan baru
+      context.read<FoodSuggestionBloc>().add(
+        StoreFoodSuggestion(
+          foodCategoryId: widget.food.foodCategoryId!,
+          name: widget.food.name,
+          image: widget.image!,
+          age: widget.food.age,
+          energy: _energyValue,
+          protein: _proteinValue,
+          fat: _fatValue,
+          portion: widget.food.portion,
+          recipe: widget.food.recipe,
+          fruit: widget.food.fruit,
+          step: widget.food.step,
+          description: widget.food.description,
+        ),
+      );
+    } else {
+      // Jika food.id tidak null, berarti ini adalah pembaruan
+      context.read<FoodSuggestionBloc>().add(
+        UpdateFoodSuggestion(
+          foodId: widget.food.id!,
+          foodCategoryId: widget.food.foodCategoryId!,
+          name: widget.food.name,
+          image: widget.image,
+          age: widget.food.age,
+          energy: _energyValue,
+          protein: _proteinValue,
+          fat: _fatValue,
+          portion: widget.food.portion,
+          recipe: widget.food.recipe,
+          fruit: widget.food.fruit,
+          step: widget.food.step,
+          description: widget.food.description,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 60, horizontal: 36),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Judul halaman
-                  Center(
-                    child: const Text(
-                      'Kalkulator Gizi',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textBlack,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Indikator progress step (Isi Form -> Kalkulator Gizi -> Selesai)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildProgressStep(1, 'Isi Form', false),
-
-                      // Garis penghubung
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 15, left: 10),
-                          child: Container(height: 4, color: AppColors.accent),
+    return BlocListener<FoodSuggestionBloc, FoodSuggestionState>(
+      listener: (context, state) {
+        if (state is FoodSuggestionStored || state is FoodSuggestionUpdated) {
+          // Navigasi ke halaman sukses jika berhasil
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FoodRecipeSuccessScreen(),
+            ),
+          );
+        } else if (state is FoodSuggestionError) {
+          // Tampilkan pesan error jika gagal
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          // Reset state submitting
+          setState(() {
+            _isSubmitting = false;
+          });
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 60, horizontal: 36),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Judul halaman
+                    Center(
+                      child: const Text(
+                        'Kalkulator Gizi',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textBlack,
                         ),
+                        textAlign: TextAlign.center,
                       ),
+                    ),
 
-                      _buildProgressStep(2, 'Kalkulator Gizi', true),
+                    const SizedBox(height: 24),
 
-                      // Garis penghubung
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 15, right: 10),
-                          child: Container(
-                            height: 4,
-                            color: AppColors.componentGrey,
+                    // Indikator progress step (Isi Form -> Kalkulator Gizi -> Selesai)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildProgressStep(1, 'Isi Form', false),
+
+                        // Garis penghubung
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: 15,
+                              left: 10,
+                            ),
+                            child: Container(
+                              height: 4,
+                              color: AppColors.accent,
+                            ),
                           ),
                         ),
+
+                        _buildProgressStep(2, 'Kalkulator Gizi', true),
+
+                        // Garis penghubung
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: 15,
+                              right: 10,
+                            ),
+                            child: Container(
+                              height: 4,
+                              color: AppColors.componentGrey,
+                            ),
+                          ),
+                        ),
+
+                        _buildProgressStep(3, 'Selesai', false),
+                      ],
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF1E0),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-
-                      _buildProgressStep(3, 'Selesai', false),
-                    ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF1E0),
-                      borderRadius: BorderRadius.circular(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // Menampilkan pesan jika tidak ada bahan, atau daftar bahan jika ada
+                        children:
+                            widget.ingredients.isEmpty
+                                ? [
+                                  _buildIngredientItem(
+                                    'Tidak ada bahan yang diinput',
+                                  ),
+                                ]
+                                : widget.ingredients
+                                    .map(
+                                      (ingredient) =>
+                                          _buildIngredientItem(ingredient),
+                                    )
+                                    .toList(),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Menampilkan pesan jika tidak ada bahan, atau daftar bahan jika ada
-                      children:
-                          widget.ingredients.isEmpty
-                              ? [
-                                _buildIngredientItem(
-                                  'Tidak ada bahan yang diinput',
-                                ),
-                              ]
-                              : widget.ingredients
-                                  .map(
-                                    (ingredient) =>
-                                        _buildIngredientItem(ingredient),
-                                  )
-                                  .toList(),
+
+                    const SizedBox(height: 20),
+
+                    // Teks penjelasan tentang proses kalkulasi
+                    const Text(
+                      'Menghitung kandungan nutrisi...',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.italic,
+                        color: AppColors.textBlack,
+                      ),
                     ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Teks penjelasan tentang proses kalkulasi
-                  const Text(
-                    'Menghitung kandungan nutrisi...',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.italic,
-                      color: AppColors.textBlack,
+                    const Text(
+                      'Berdasarkan bahan-bahan yang telah diinput, sistem akan menghitung total kandungan gizi meliputi energi (kalori), protein, dan lemak. Hasilnya akan ditampilkan dalam tabel berikut:',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.textBlack,
+                      ),
                     ),
-                  ),
-                  const Text(
-                    'Berdasarkan bahan-bahan yang telah diinput, sistem akan menghitung total kandungan gizi meliputi energi (kalori), protein, dan lemak. Hasilnya akan ditampilkan dalam tabel berikut:',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.textBlack,
+
+                    const SizedBox(height: 20),
+
+                    // Judul hasil perhitungan
+                    const Text(
+                      'Hasil Perhitungan Nutrisi:',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textBlack,
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 16),
 
-                  // Judul hasil perhitungan
-                  const Text(
-                    'Hasil Perhitungan Nutrisi:',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textBlack,
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Widget kondisional: loading indicator atau hasil perhitungan
-                  _isCalculating
-                      ? const Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(color: AppColors.accent),
-                            SizedBox(height: 8),
-                            Text(
-                              'Menghitung nilai nutrisi...',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.italic,
-                                color: AppColors.textBlack,
+                    // Widget kondisional: loading indicator atau hasil perhitungan
+                    _isCalculating
+                        ? const Center(
+                          child: Column(
+                            children: [
+                              CircularProgressIndicator(
+                                color: AppColors.accent,
                               ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Menghitung nilai nutrisi...',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.italic,
+                                  color: AppColors.textBlack,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        // Tampilan hasil perhitungan nutrisi dalam bentuk card
+                        : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Card untuk energi (kalori)
+                            _buildNutritionCard(
+                              'Energi',
+                              _energyValue.toStringAsFixed(1),
+                              'kkal',
+                            ),
+                            // Pembatas vertikal antar card
+                            Container(
+                              height: 40,
+                              width: 1,
+                              color: AppColors.textBlack.withAlpha(75),
+                            ),
+                            // Card untuk protein
+                            _buildNutritionCard(
+                              'Protein',
+                              _proteinValue.toStringAsFixed(1),
+                              'g',
+                            ),
+                            // Pembatas vertikal antar card
+                            Container(
+                              height: 40,
+                              width: 1,
+                              color: AppColors.textBlack.withAlpha(75),
+                            ),
+                            // Card untuk lemak
+                            _buildNutritionCard(
+                              'Lemak',
+                              _fatValue.toStringAsFixed(1),
+                              'g',
                             ),
                           ],
                         ),
-                      )
-                      // Tampilan hasil perhitungan nutrisi dalam bentuk card
-                      : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Card untuk energi (kalori)
-                          _buildNutritionCard(
-                            'Energi',
-                            _energyValue.toStringAsFixed(1),
-                            'kkal',
-                          ),
-                          // Pembatas vertikal antar card
-                          Container(
-                            height: 40,
-                            width: 1,
-                            color: AppColors.textBlack.withAlpha(75),
-                          ),
-                          // Card untuk protein
-                          _buildNutritionCard(
-                            'Protein',
-                            _proteinValue.toStringAsFixed(1),
-                            'g',
-                          ),
-                          // Pembatas vertikal antar card
-                          Container(
-                            height: 40,
-                            width: 1,
-                            color: AppColors.textBlack.withAlpha(75),
-                          ),
-                          // Card untuk lemak
-                          _buildNutritionCard(
-                            'Lemak',
-                            _fatValue.toStringAsFixed(1),
-                            'g',
-                          ),
-                        ],
-                      ),
-                ],
-              ),
-            ),
-          ),
-
-          // Tombol kembali
-          Positioned(
-            top: 35,
-            left: 15,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.componentGrey!),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Symbols.arrow_back_ios_new_rounded,
-                  color: AppColors.textBlack,
-                  size: 24,
+                  ],
                 ),
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.pop(context),
               ),
             ),
-          ),
-        ],
-      ),
-      // Bottom navigation bar dengan tombol simpan
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-        decoration: BoxDecoration(color: Colors.white),
-        child: ElevatedButton(
-          // Button dinonaktifkan selama proses kalkulasi
-          onPressed:
-              _isCalculating
-                  ? null
-                  : () {
-                    if (widget.food.id == null) {
-                      // Jika food.id null, berarti ini adalah penambahan baru
-                      context.read<FoodSuggestionBloc>().add(
-                        StoreFoodSuggestion(
-                          foodCategoryId: widget.food.foodCategoryId!,
-                          name: widget.food.name,
-                          image: widget.image!,
-                          age: widget.food.age,
-                          energy: _energyValue,
-                          protein: _proteinValue,
-                          fat: _fatValue,
-                          portion: widget.food.portion,
-                          recipe: widget.food.recipe,
-                          fruit: widget.food.fruit,
-                          step: widget.food.step,
-                          description: widget.food.description,
-                        ),
-                      );
-                    } else {
-                      // update FoodSuggestion
-                      context.read<FoodSuggestionBloc>().add(
-                        UpdateFoodSuggestion(
-                          foodId: widget.food.id!,
-                          foodCategoryId: widget.food.foodCategoryId!,
-                          name: widget.food.name,
-                          image: widget.image,
-                          age: widget.food.age,
-                          energy: _energyValue,
-                          protein: _proteinValue,
-                          fat: _fatValue,
-                          portion: widget.food.portion,
-                          recipe: widget.food.recipe,
-                          fruit: widget.food.fruit,
-                          step: widget.food.step,
-                          description: widget.food.description,
-                        ),
-                      );
-                    }
 
-                    // Navigasi ke halaman sukses setelah simpan
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FoodRecipeSuccessScreen(),
+            // Tombol kembali
+            Positioned(
+              top: 35,
+              left: 15,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.componentGrey!),
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Symbols.arrow_back_ios_new_rounded,
+                    color: AppColors.textBlack,
+                    size: 24,
+                  ),
+                  padding: EdgeInsets.zero,
+                  onPressed:
+                      _isSubmitting ? null : () => Navigator.pop(context),
+                ),
+              ),
+            ),
+          ],
+        ),
+        // Bottom navigation bar dengan tombol simpan
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+          decoration: BoxDecoration(color: Colors.white),
+          child: ElevatedButton(
+            // Button dinonaktifkan selama proses kalkulasi atau sedang submit
+            onPressed: (_isCalculating || _isSubmitting) ? null : _handleSubmit,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            child:
+                _isSubmitting
+                    ? const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          'Menyimpan...',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    )
+                    : const Text(
+                      'Simpan',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
-                    );
-                  },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.accent,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-          ),
-          child: const Text(
-            'Simpan',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+                    ),
           ),
         ),
       ),
