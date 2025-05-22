@@ -14,12 +14,14 @@ class FoodNutritionCalculatorScreen extends StatefulWidget {
   final List<String> ingredients;
   final FoodSuggestion food;
   final File? image;
+  final bool recalculateNutrition;
 
   const FoodNutritionCalculatorScreen({
     super.key,
     required this.ingredients,
     required this.food,
     required this.image,
+    this.recalculateNutrition = true,
   });
 
   @override
@@ -43,7 +45,19 @@ class _FoodNutritionCalculatorScreenState
   @override
   void initState() {
     super.initState();
-    _calculateNutrition();
+
+    if (widget.recalculateNutrition) {
+      // Jika ada perubahan pada bahan, lakukan kalkulasi nutrisi
+      _calculateNutrition();
+    } else {
+      // Jika tidak ada perubahan pada bahan, gunakan nilai nutrisi yang sudah ada
+      setState(() {
+        _energyValue = widget.food.energy;
+        _proteinValue = widget.food.protein;
+        _fatValue = widget.food.fat;
+        _isCalculating = false;
+      });
+    }
   }
 
   // Fungsi utama untuk menghitung nutrisi dari bahan yang diinput
@@ -63,7 +77,6 @@ class _FoodNutritionCalculatorScreenState
         });
       }
     } catch (e) {
-      debugPrint('Error menggunakan API Gemini: $e');
       // Jika terjadi error, gunakan kalkulasi lokal sebagai fallback
       _calculateNutritionLocally();
     }
@@ -74,7 +87,6 @@ class _FoodNutritionCalculatorScreenState
     List<String> ingredients,
   ) async {
     if (_geminiApiKey == 'YOUR_DEFAULT_API_KEY' || _geminiApiKey.isEmpty) {
-      debugPrint('Error: GEMINI_API_KEY not found in .env file.');
       throw Exception('API Key not configured.');
     }
     try {
@@ -107,8 +119,6 @@ class _FoodNutritionCalculatorScreenState
         throw Exception('Respons kosong dari API Gemini');
       }
 
-      debugPrint('Respons Gemini: $responseText');
-
       // Ekstraksi data JSON dari respons menggunakan regex
       final String jsonPattern =
           r'```(?:json)?\s*(\{[\s\S]*?\})\s*```|(\{[\s\S]*?\})';
@@ -124,8 +134,6 @@ class _FoodNutritionCalculatorScreenState
       if (jsonString == null) {
         throw Exception('Tidak dapat menemukan JSON dalam respons Gemini');
       }
-
-      debugPrint('JSON yang diekstrak: $jsonString');
 
       jsonString = jsonString.trim();
 
@@ -147,7 +155,6 @@ class _FoodNutritionCalculatorScreenState
         'fat': double.parse(nutritionData['fat'].toString()),
       };
     } catch (e) {
-      debugPrint('Error dalam kalkulasi API Gemini: $e');
       throw Exception('Gagal menghitung nutrisi dengan Gemini: $e');
     }
   }

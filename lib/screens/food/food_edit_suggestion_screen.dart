@@ -59,6 +59,9 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
   final List<GlobalKey<FormFieldState>> _ingredientKeys = [];
   final List<GlobalKey<FormFieldState>> _stepKeys = [];
 
+  // Flag untuk melacak apakah bahan atau buah diubah
+  bool _ingredientsChanged = false;
+
   @override
   void initState() {
     super.initState();
@@ -73,13 +76,37 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
 
     // Inisialisasi bahan (recipe)
     for (var ingredient in widget.food.recipe) {
-      _ingredientControllers.add(TextEditingController(text: ingredient));
+      final controller = TextEditingController(text: ingredient);
+      // Tambahkan listener untuk mendeteksi perubahan pada ingredients
+      controller.addListener(() {
+        final originalIngredients = widget.food.recipe;
+        if (originalIngredients.length != _ingredientControllers.length ||
+            originalIngredients.asMap().entries.any(
+              (entry) =>
+                  entry.key < _ingredientControllers.length &&
+                  _ingredientControllers[entry.key].text != entry.value,
+            )) {
+          setState(() {
+            _ingredientsChanged = true;
+          });
+        }
+      });
+      _ingredientControllers.add(controller);
       _ingredientKeys.add(GlobalKey<FormFieldState>());
     }
 
     // Inisialisasi buah (fruit)
     if (widget.food.fruit != null) {
       _fruitsController.text = widget.food.fruit!.join(', ');
+      // Tambahkan listener untuk mendeteksi perubahan pada fruits
+      _fruitsController.addListener(() {
+        final originalFruits = widget.food.fruit?.join(', ') ?? '';
+        if (_fruitsController.text != originalFruits) {
+          setState(() {
+            _ingredientsChanged = true;
+          });
+        }
+      });
     }
 
     // Inisialisasi langkah (step)
@@ -248,7 +275,9 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
   // Tambah field bahan baru
   void _addIngredientField({String? initialValue}) {
     setState(() {
-      _ingredientControllers.add(TextEditingController(text: initialValue));
+      _ingredientsChanged = true;
+      final controller = TextEditingController(text: initialValue);
+      _ingredientControllers.add(controller);
       _ingredientKeys.add(GlobalKey<FormFieldState>());
     });
   }
@@ -256,6 +285,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
   // Hapus field bahan
   void _removeIngredientField(int index) {
     setState(() {
+      _ingredientsChanged = true;
       _ingredientControllers[index].dispose();
       _ingredientControllers.removeAt(index);
       _ingredientKeys.removeAt(index);
@@ -1602,15 +1632,15 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                                 energy:
                                                     widget
                                                         .food
-                                                        .energy, // Akan diupdate di calculator
+                                                        .energy, // Akan diupdate di calculator jika diperlukan
                                                 protein:
                                                     widget
                                                         .food
-                                                        .protein, // Akan diupdate di calculator
+                                                        .protein, // Akan diupdate di calculator jika diperlukan
                                                 fat:
                                                     widget
                                                         .food
-                                                        .fat, // Akan diupdate di calculator
+                                                        .fat, // Akan diupdate di calculator jika diperlukan
                                                 portion:
                                                     int.tryParse(
                                                       _servingsController.text,
@@ -1639,13 +1669,16 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder:
-                                                      (context) =>
-                                                          FoodNutritionCalculatorScreen(
-                                                            ingredients:
-                                                                ingredients,
-                                                            food: updatedFood,
-                                                            image: _imageFile,
-                                                          ),
+                                                      (
+                                                        context,
+                                                      ) => FoodNutritionCalculatorScreen(
+                                                        ingredients:
+                                                            ingredients,
+                                                        food: updatedFood,
+                                                        image: _imageFile,
+                                                        recalculateNutrition:
+                                                            _ingredientsChanged,
+                                                      ),
                                                 ),
                                               );
                                             } else if (_showPhotoError &&
