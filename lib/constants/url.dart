@@ -22,6 +22,7 @@ class ApiEndpoints {
   static const String user = 'user';
   static const String forgotPassword = 'forgot-password';
   static const String resetPassword = 'reset-password';
+  static const String profile = 'profile';
 
   // Baby
   static const String baby = 'baby';

@@ -102,7 +102,8 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                             controller: _scrollController,
                             itemCount: widget.recommendedFoods.length,
                             itemBuilder: (context, index) {
-                              final item = widget.recommendedFoods[index].food;
+                              final item = widget.recommendedFoods[index];
+                              final food = widget.recommendedFoods[index].food;
 
                               // Card rekomendasi makanan
                               return GestureDetector(
@@ -112,7 +113,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                     MaterialPageRoute(
                                       builder:
                                           (context) => FoodDetailScreen(
-                                            foodId: item.id.toString(),
+                                            foodId: food.id.toString(),
                                           ),
                                     ),
                                   );
@@ -130,7 +131,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                       children: [
                                         // Gambar makanan
                                         Image.network(
-                                          storageUrl + item.image,
+                                          storageUrl + food.image,
                                           width: 100,
                                           height: 100,
                                           fit: BoxFit.cover,
@@ -178,7 +179,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                                       children: [
                                                         // Nama makanan
                                                         Text(
-                                                          item.name,
+                                                          food.name,
                                                           style: const TextStyle(
                                                             fontFamily:
                                                                 'Poppins',
@@ -200,7 +201,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
 
                                                         // Deskripsi singkat
                                                         Text(
-                                                          item.description,
+                                                          item.reason,
                                                           style: const TextStyle(
                                                             fontFamily:
                                                                 'Poppins',
@@ -241,9 +242,9 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                                         shape: BoxShape.circle,
                                                       ),
                                                       child: Image.asset(
-                                                        item.source == 'WHO'
+                                                        food.source == 'WHO'
                                                             ? 'assets/images/icon/source_who.png'
-                                                            : item.source ==
+                                                            : food.source ==
                                                                 'KEMENKES'
                                                             ? 'assets/images/icon/source_kemenkes.png'
                                                             : 'assets/images/icon/source_pengguna.png',
