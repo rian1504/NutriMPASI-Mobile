@@ -11,18 +11,19 @@ import 'package:nutrimpasi/constants/icons.dart';
 class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   final bool showTabs;
   final bool showBackButton;
+  final bool showExitButton;
   final String screenTitle;
 
   const AppBarForum({
     super.key,
     this.showTabs = false,
     this.showBackButton = false,
+    this.showExitButton = false,
     required this.screenTitle,
   });
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(showTabs ? kToolbarHeight + 116 : kToolbarHeight + 76);
+  Size get preferredSize => Size.fromHeight(showTabs ? kToolbarHeight + 116 : kToolbarHeight + 56);
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +40,28 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 16),
-                // Judul
-                Text(
-                  screenTitle,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+                if (showTabs == false)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24.0),
+                    child: Text(
+                      screenTitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
+                if (showTabs == true)
+                  // Judul
+                  Text(
+                    screenTitle,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 const SizedBox(height: 16),
                 // TabBar jika diaktifkan
                 if (showTabs)
@@ -70,10 +84,7 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                         indicatorPadding: const EdgeInsets.all(6),
                         labelColor: Colors.white,
                         unselectedLabelColor: AppColors.primary,
-                        tabs: const [
-                          Tab(text: 'Semua'),
-                          Tab(text: 'Postingan Saya'),
-                        ],
+                        tabs: const [Tab(text: 'Semua'), Tab(text: 'Postingan Saya')],
                       ),
                     ),
                   ),
@@ -84,7 +95,7 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
         // Tombol back seperti floating action button
         if (showBackButton)
           Positioned(
-            top: 44,
+            top: 32,
             left: 16,
             child: FloatingActionButton(
               mini: true,
@@ -93,6 +104,19 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
               elevation: 3,
               onPressed: () => Navigator.pop(context),
               child: Icon(AppIcons.back),
+            ),
+          ),
+        if (showExitButton)
+          Positioned(
+            top: 32,
+            left: 16,
+            child: FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              elevation: 3,
+              onPressed: () => Navigator.pop(context),
+              child: Icon(AppIcons.exit),
             ),
           ),
       ],

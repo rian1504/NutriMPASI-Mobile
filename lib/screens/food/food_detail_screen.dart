@@ -67,8 +67,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               padding: const EdgeInsets.only(bottom: 64.0),
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).padding.top + 225,
+                                height: MediaQuery.of(context).padding.top + 225,
                                 decoration: BoxDecoration(
                                   color: AppColors.primary,
                                   borderRadius: const BorderRadius.only(
@@ -153,12 +152,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               right: 24,
                               child: GestureDetector(
                                 onTap: () {
-                                        context.read<FoodDetailBloc>().add(
-                                          ToggleFavorite(
-                                            foodId: food.id.toString(),
-                                          ),
-                                        );
-                                      },
+                                  context.read<FoodDetailBloc>().add(
+                                    ToggleFavorite(foodId: food.id.toString()),
+                                  );
+                                },
                                 child: Container(
                                   width: 48,
                                   height: 48,
@@ -180,9 +177,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                       Positioned(
                                         top: 12,
                                         child: Icon(
-                                          food.isFavorite
-                                              ? Icons.favorite
-                                              : Icons.favorite_border,
+                                          food.isFavorite ? Icons.favorite : Icons.favorite_border,
                                           color: AppColors.red,
                                           size: 20,
                                         ),
@@ -231,10 +226,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 children: [
                                   // Tag usia
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
                                       color: AppColors.secondary.withAlpha(25),
                                       borderRadius: BorderRadius.circular(8),
@@ -253,10 +245,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                                   // Tag kategori
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
                                       color: AppColors.primary.withAlpha(25),
                                       borderRadius: BorderRadius.circular(8),
@@ -340,9 +329,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   const SizedBox(height: 8),
 
                                   SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.height *
-                                        0.075,
+                                    height: MediaQuery.of(context).size.height * 0.075,
                                     child: SingleChildScrollView(
                                       child: Text(
                                         food.description,
@@ -374,37 +361,24 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               const SizedBox(height: 12),
 
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   // Kartu energi
-                                  _buildNutritionCard(
-                                    'Energi',
-                                    '${food.energy}',
-                                    'kkal',
-                                  ),
+                                  _buildNutritionCard('Energi', '${food.energy}', 'kkal'),
                                   Container(
                                     height: 40,
                                     width: 1,
                                     color: AppColors.textBlack.withAlpha(75),
                                   ),
                                   // Kartu protein
-                                  _buildNutritionCard(
-                                    'Protein',
-                                    '${food.protein}',
-                                    'g',
-                                  ),
+                                  _buildNutritionCard('Protein', '${food.protein}', 'g'),
                                   Container(
                                     height: 40,
                                     width: 1,
                                     color: AppColors.textBlack.withAlpha(75),
                                   ),
                                   // Kartu lemak
-                                  _buildNutritionCard(
-                                    'Lemak',
-                                    '${food.fat}',
-                                    'g',
-                                  ),
+                                  _buildNutritionCard('Lemak', '${food.fat}', 'g'),
                                 ],
                               ),
 
@@ -438,10 +412,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 24.0,
-                      horizontal: 36.0,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 36.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -463,19 +434,12 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   };
                                   DateTime? selectedDate;
 
-                                  return BlocListener<
-                                    ScheduleBloc,
-                                    ScheduleState
-                                  >(
+                                  return BlocListener<ScheduleBloc, ScheduleState>(
                                     listener: (context, state) {
                                       if (state is ScheduleStored) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            content: Text(
-                                              'Jadwal berhasil disimpan',
-                                            ),
+                                            content: Text('Jadwal berhasil disimpan'),
                                             backgroundColor: Colors.green,
                                           ),
                                         );
@@ -483,9 +447,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                           context,
                                         ); // Tutup dialog setelah berhasil simpan
                                       } else if (state is ScheduleError) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
                                             content: Text(state.error),
                                             backgroundColor: Colors.red,
@@ -501,22 +463,16 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         padding: const EdgeInsets.all(16),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                              mainAxisAlignment: MainAxisAlignment.end,
                                               children: [
                                                 Material(
                                                   color: Colors.transparent,
                                                   child: InkWell(
-                                                    onTap:
-                                                        () => Navigator.pop(
-                                                          context,
-                                                        ),
-                                                    customBorder:
-                                                        const CircleBorder(),
+                                                    onTap: () => Navigator.pop(context),
+                                                    customBorder: const CircleBorder(),
                                                     child: Container(
                                                       width: 24,
                                                       height: 24,
@@ -524,17 +480,13 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                         shape: BoxShape.circle,
                                                         color: Colors.white,
                                                         border: Border.all(
-                                                          color:
-                                                              AppColors
-                                                                  .textBlack,
+                                                          color: AppColors.textBlack,
                                                         ),
                                                       ),
                                                       child: const Center(
                                                         child: Icon(
                                                           Icons.close,
-                                                          color:
-                                                              AppColors
-                                                                  .textBlack,
+                                                          color: AppColors.textBlack,
                                                           size: 18,
                                                         ),
                                                       ),
@@ -570,39 +522,27 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                             StatefulBuilder(
                                               builder: (context, setState) {
                                                 return Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children:
                                                       babies.map((baby) {
                                                         return Row(
                                                           children: [
                                                             Checkbox(
                                                               value:
-                                                                  selectedBabies[baby
-                                                                      .id] ??
-                                                                  false,
-                                                              onChanged: (
-                                                                value,
-                                                              ) {
+                                                                  selectedBabies[baby.id] ?? false,
+                                                              onChanged: (value) {
                                                                 setState(() {
-                                                                  selectedBabies[baby
-                                                                          .id] =
-                                                                      value!;
+                                                                  selectedBabies[baby.id] = value!;
                                                                 });
                                                               },
-                                                              activeColor:
-                                                                  AppColors
-                                                                      .primary,
+                                                              activeColor: AppColors.primary,
                                                             ),
                                                             Text(
                                                               baby.name,
-                                                              style:
-                                                                  const TextStyle(
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
+                                                              style: const TextStyle(
+                                                                fontFamily: 'Poppins',
+                                                                fontSize: 14,
+                                                              ),
                                                             ),
                                                           ],
                                                         );
@@ -628,85 +568,58 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                   children: [
                                                     InkWell(
                                                       onTap: () async {
-                                                        final DateTime?
-                                                        pickedDate = await showDatePicker(
-                                                          context: context,
-                                                          initialDate:
-                                                              DateTime.now(),
-                                                          firstDate:
-                                                              DateTime.now(),
-                                                          lastDate:
-                                                              DateTime.now().add(
-                                                                const Duration(
-                                                                  days: 6,
-                                                                ),
+                                                        final DateTime? pickedDate =
+                                                            await showDatePicker(
+                                                              context: context,
+                                                              initialDate: DateTime.now(),
+                                                              firstDate: DateTime.now(),
+                                                              lastDate: DateTime.now().add(
+                                                                const Duration(days: 6),
                                                               ),
-                                                          // Format tanggal Indonesia
-                                                          locale: const Locale(
-                                                            'id',
-                                                            'ID',
-                                                          ),
-                                                        );
-                                                        if (pickedDate !=
-                                                            null) {
+                                                              // Format tanggal Indonesia
+                                                              locale: const Locale('id', 'ID'),
+                                                            );
+                                                        if (pickedDate != null) {
                                                           setState(() {
-                                                            selectedDate =
-                                                                pickedDate;
+                                                            selectedDate = pickedDate;
                                                           });
                                                         }
                                                       },
                                                       child: Container(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              horizontal: 12,
-                                                              vertical: 8,
-                                                            ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 8,
+                                                        ),
                                                         decoration: BoxDecoration(
                                                           border: Border.all(
-                                                            color:
-                                                                AppColors
-                                                                    .componentGrey!,
+                                                            color: AppColors.componentGrey!,
                                                           ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                8,
-                                                              ),
+                                                          borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Row(
                                                           mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                              MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Text(
-                                                              selectedDate !=
-                                                                      null
+                                                              selectedDate != null
                                                                   ? DateFormat(
                                                                     'EEEE, d MMMM y',
                                                                     'id_ID',
-                                                                  ).format(
-                                                                    selectedDate!,
-                                                                  )
+                                                                  ).format(selectedDate!)
                                                                   : 'Pilih Tanggal',
                                                               style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
+                                                                fontFamily: 'Poppins',
                                                                 fontSize: 14,
                                                                 color:
-                                                                    selectedDate !=
-                                                                            null
-                                                                        ? AppColors
-                                                                            .textBlack
-                                                                        : AppColors
-                                                                            .textGrey,
+                                                                    selectedDate != null
+                                                                        ? AppColors.textBlack
+                                                                        : AppColors.textGrey,
                                                               ),
                                                             ),
                                                             const Icon(
-                                                              Symbols
-                                                                  .calendar_month,
+                                                              Symbols.calendar_month,
                                                               size: 20,
-                                                              color:
-                                                                  AppColors
-                                                                      .textGrey,
+                                                              color: AppColors.textGrey,
                                                             ),
                                                           ],
                                                         ),
@@ -726,34 +639,21 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                   // Validasi input
                                                   final selectedBabyId =
                                                       selectedBabies.entries
-                                                          .where(
-                                                            (entry) =>
-                                                                entry.value,
-                                                          )
-                                                          .map(
-                                                            (entry) =>
-                                                                entry.key
-                                                                    .toString(),
-                                                          )
+                                                          .where((entry) => entry.value)
+                                                          .map((entry) => entry.key.toString())
                                                           .toList();
 
                                                   if (selectedBabyId.isEmpty) {
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
+                                                    ScaffoldMessenger.of(context).showSnackBar(
                                                       const SnackBar(
-                                                        content: Text(
-                                                          'Pilih minimal satu bayi',
-                                                        ),
+                                                        content: Text('Pilih minimal satu bayi'),
                                                       ),
                                                     );
                                                     return;
                                                   }
 
                                                   if (selectedDate == null) {
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
+                                                    ScaffoldMessenger.of(context).showSnackBar(
                                                       const SnackBar(
                                                         content: Text(
                                                           'Pilih tanggal terlebih dahulu',
@@ -764,44 +664,27 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                   }
 
                                                   // Simpan jadwal
-                                                  context
-                                                      .read<ScheduleBloc>()
-                                                      .add(
-                                                        StoreSchedules(
-                                                          foodId:
-                                                              food.id
-                                                                  .toString(),
-                                                          babyId:
-                                                              selectedBabyId,
-                                                          date: selectedDate!,
-                                                        ),
-                                                      );
+                                                  context.read<ScheduleBloc>().add(
+                                                    StoreSchedules(
+                                                      foodId: food.id.toString(),
+                                                      babyId: selectedBabyId,
+                                                      date: selectedDate!,
+                                                    ),
+                                                  );
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      AppColors.secondary,
+                                                  backgroundColor: AppColors.secondary,
                                                   foregroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          8,
-                                                        ),
+                                                    borderRadius: BorderRadius.circular(8),
                                                   ),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                      ),
+                                                  padding: const EdgeInsets.symmetric(vertical: 12),
                                                 ),
-                                                child: BlocBuilder<
-                                                  ScheduleBloc,
-                                                  ScheduleState
-                                                >(
+                                                child: BlocBuilder<ScheduleBloc, ScheduleState>(
                                                   builder: (context, state) {
-                                                    if (state
-                                                        is ScheduleLoading) {
+                                                    if (state is ScheduleLoading) {
                                                       return Center(
-                                                        child:
-                                                            CircularProgressIndicator(),
+                                                        child: CircularProgressIndicator(),
                                                       );
                                                     }
 
@@ -810,8 +693,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                       style: TextStyle(
                                                         fontFamily: 'Poppins',
                                                         fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                        fontWeight: FontWeight.w600,
                                                       ),
                                                     );
                                                   },
@@ -827,22 +709,15 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Gagal memuat data bayi'),
-                                ),
+                                const SnackBar(content: Text('Gagal memuat data bayi')),
                               );
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: AppColors.textBlack,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 16,
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                             elevation: 2,
                           ),
                           child: const Icon(Symbols.calendar_add_on, size: 28),
@@ -876,22 +751,16 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                       padding: const EdgeInsets.all(16),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                            mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
                                               Material(
                                                 color: Colors.transparent,
                                                 child: InkWell(
-                                                  onTap:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                      ),
-                                                  customBorder:
-                                                      const CircleBorder(),
+                                                  onTap: () => Navigator.pop(context),
+                                                  customBorder: const CircleBorder(),
                                                   child: Container(
                                                     width: 24,
                                                     height: 24,
@@ -899,15 +768,13 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                       shape: BoxShape.circle,
                                                       color: Colors.white,
                                                       border: Border.all(
-                                                        color:
-                                                            AppColors.textBlack,
+                                                        color: AppColors.textBlack,
                                                       ),
                                                     ),
                                                     child: const Center(
                                                       child: Icon(
                                                         Icons.close,
-                                                        color:
-                                                            AppColors.textBlack,
+                                                        color: AppColors.textBlack,
                                                         size: 18,
                                                       ),
                                                     ),
@@ -943,36 +810,26 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                           StatefulBuilder(
                                             builder: (context, setState) {
                                               return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children:
                                                     babies.map((baby) {
                                                       return Row(
                                                         children: [
                                                           Checkbox(
-                                                            value:
-                                                                selectedBabies[baby
-                                                                    .id] ??
-                                                                false,
+                                                            value: selectedBabies[baby.id] ?? false,
                                                             onChanged: (value) {
                                                               setState(() {
-                                                                selectedBabies[baby
-                                                                        .id] =
-                                                                    value!;
+                                                                selectedBabies[baby.id] = value!;
                                                               });
                                                             },
-                                                            activeColor:
-                                                                AppColors
-                                                                    .primary,
+                                                            activeColor: AppColors.primary,
                                                           ),
                                                           Text(
                                                             baby.name,
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontSize: 14,
-                                                                ),
+                                                            style: const TextStyle(
+                                                              fontFamily: 'Poppins',
+                                                              fontSize: 14,
+                                                            ),
                                                           ),
                                                         ],
                                                       );
@@ -989,11 +846,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                             child: ElevatedButton(
                                               onPressed: () {
                                                 // Validasi apakah minimal satu bayi dipilih
-                                                final isAnyBabySelected =
-                                                    selectedBabies.values.any(
-                                                      (isSelected) =>
-                                                          isSelected,
-                                                    );
+                                                final isAnyBabySelected = selectedBabies.values.any(
+                                                  (isSelected) => isSelected,
+                                                );
 
                                                 if (isAnyBabySelected) {
                                                   Navigator.pop(context);
@@ -1001,25 +856,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
-                                                          (
-                                                            context,
-                                                          ) => CookingGuideScreen(
-                                                            foodId:
-                                                                food.id
-                                                                    .toString(),
+                                                          (context) => CookingGuideScreen(
+                                                            foodId: food.id.toString(),
                                                             babyId:
-                                                                selectedBabies
-                                                                    .entries
-                                                                    .where(
-                                                                      (entry) =>
-                                                                          entry
-                                                                              .value,
-                                                                    )
+                                                                selectedBabies.entries
+                                                                    .where((entry) => entry.value)
                                                                     .map(
                                                                       (entry) =>
-                                                                          entry
-                                                                              .key
-                                                                              .toString(),
+                                                                          entry.key.toString(),
                                                                     )
                                                                     .toList(),
                                                           ),
@@ -1027,29 +871,20 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                   );
                                                 } else {
                                                   // Tampilkan pesan error
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
+                                                  ScaffoldMessenger.of(context).showSnackBar(
                                                     const SnackBar(
-                                                      content: Text(
-                                                        'Pilih minimal 1 bayi',
-                                                      ),
+                                                      content: Text('Pilih minimal 1 bayi'),
                                                     ),
                                                   );
                                                 }
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.secondary,
+                                                backgroundColor: AppColors.secondary,
                                                 foregroundColor: Colors.white,
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
+                                                  borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      vertical: 12,
-                                                    ),
+                                                padding: const EdgeInsets.symmetric(vertical: 12),
                                               ),
                                               child: const Text(
                                                 'Lanjutkan',
@@ -1069,18 +904,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Gagal memuat data bayi'),
-                                ),
+                                const SnackBar(content: Text('Gagal memuat data bayi')),
                               );
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: AppColors.textBlack,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             elevation: 2,
                           ),
@@ -1122,10 +953,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
         padding: const EdgeInsets.symmetric(vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
         child: Column(
           children: [
             Text(

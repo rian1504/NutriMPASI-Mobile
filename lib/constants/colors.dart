@@ -19,8 +19,10 @@ class AppColors {
   static const Color warning = Color(0xFFFFCD29);
 
   // Transparent color
-  static Color primaryTransparent = Color(0xFFFC8207).withAlpha(100);
-  static Color accentTransparent = Color(0xFF5966B1).withAlpha(244);
+  static Color primaryTransparent = Color(0xFFFC8207).withAlpha(25);
+  // static Color accentTransparent = Color(0xFF5966B1).withAlpha(244);
+  static Color accentTransparent = Color(0xFF5966B1).withAlpha(25);
+  static Color errorTranparent = Color(0xFFFE2323).withAlpha(25);
 
   // Grey color
   static const Color grey = Color(0xFFD9D9D9);
