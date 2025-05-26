@@ -10,10 +10,9 @@ final class CommentLoading extends CommentState {}
 final class CommentActionInProgress extends CommentState {}
 
 final class CommentLoaded extends CommentState {
-  final int threadId;
-  final List<ThreadDetail> comments;
+  final ThreadDetail thread;
 
-  CommentLoaded({required this.threadId, required this.comments});
+  CommentLoaded({required this.thread});
 }
 
 class CommentError extends CommentState {

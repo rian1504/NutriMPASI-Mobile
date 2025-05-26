@@ -28,6 +28,24 @@ class ThreadDetail {
     required this.comments,
   });
 
+  ThreadDetail copyWith({
+    int? id,
+    String? title,
+    String? content,
+    DateTime? createdAt,
+    int? commentsCount,
+    User? user,
+    List<Comment>? comments,
+  }) => ThreadDetail(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    createdAt: createdAt ?? this.createdAt,
+    commentsCount: commentsCount ?? this.commentsCount,
+    user: user ?? this.user,
+    comments: comments ?? this.comments,
+  );
+
   factory ThreadDetail.fromJson(Map<String, dynamic> json) => ThreadDetail(
     id: json["id"],
     title: json["title"],
@@ -109,6 +127,12 @@ class User {
   String? avatar;
 
   User({required this.id, required this.name, required this.avatar});
+
+  User copyWith({int? id, String? name, String? avatar}) => User(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    avatar: avatar ?? this.avatar,
+  );
 
   factory User.fromJson(Map<String, dynamic> json) =>
       User(id: json["id"], name: json["name"], avatar: json["avatar"]);

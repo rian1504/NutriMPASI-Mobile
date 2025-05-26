@@ -7,25 +7,23 @@ import 'package:nutrimpasi/models/comment.dart';
 class CommentController {
   final Dio _dio = RemoteDio().dio;
 
-  Future<List<ThreadDetail>> getComment({required int threadId}) async {
+  Future<ThreadDetail> getThreadDetail({required int threadId}) async {
     try {
       // Kirim request ke API
       final response = await _dio.get('${ApiEndpoints.thread}/$threadId');
 
       // Debug response
-      debugPrint('Get Comment response: ${response.data}');
+      debugPrint('Get Thread Detail response: ${response.data}');
 
       // Return data
-      return (response.data['data'] as List)
-          .map((e) => ThreadDetail.fromJson(e))
-          .toList();
+      return ThreadDetail.fromJson(response.data['data']);
     } on DioException catch (e) {
-      debugPrint('Get Comment error: ${e.response?.data}');
+      debugPrint('Get Thread Detail error: ${e.response?.data}');
       throw _handleError(e);
     }
   }
 
-  Future<ThreadDetail> storeComment({
+  Future<Comment> storeComment({
     required int threadId,
     required String content,
   }) async {
@@ -40,14 +38,14 @@ class CommentController {
       debugPrint('Store Comment response: ${response.data}');
 
       // Return data
-      return ThreadDetail.fromJson(response.data['data']);
+      return Comment.fromJson(response.data['data']);
     } on DioException catch (e) {
       debugPrint('Store Comment error: ${e.response?.data}');
       throw _handleError(e);
     }
   }
 
-  Future<ThreadDetail> updateComment({
+  Future<Comment> updateComment({
     required int commentId,
     required String content,
   }) async {
@@ -65,7 +63,7 @@ class CommentController {
       debugPrint('Update Comment response: ${response.data}');
 
       // Return data
-      return ThreadDetail.fromJson(response.data['data']);
+      return Comment.fromJson(response.data['data']);
     } on DioException catch (e) {
       debugPrint('Update Comment error: ${e.response?.data}');
       throw _handleError(e);

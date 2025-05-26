@@ -19,10 +19,12 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   Future<void> _onFetch(FetchComments event, Emitter<CommentState> emit) async {
     emit(CommentLoading());
     try {
-      final result = await controller.getComment(threadId: event.threadId);
-      emit(CommentLoaded(threadId: event.threadId, comments: result));
+      final threadDetail = await controller.getThreadDetail(
+        threadId: event.threadId,
+      );
+      emit(CommentLoaded(thread: threadDetail));
     } catch (e) {
-      emit(CommentError('Fetch Comment gagal: ${e.toString()}'));
+      emit(CommentError('Fetch Thread Detail gagal: ${e.toString()}'));
     }
   }
 
@@ -37,13 +39,13 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         content: event.content,
       );
 
-      // Update state lokal tanpa fetch ulang
-      emit(
-        CommentLoaded(
-          threadId: currentState.threadId,
-          comments: [...currentState.comments, newComment],
-        ),
+      // Update thread dengan komentar baru dan increment commentsCount
+      final updatedThread = currentState.thread.copyWith(
+        comments: [...currentState.thread.comments, newComment],
+        commentsCount: currentState.thread.commentsCount + 1,
       );
+
+      emit(CommentLoaded(thread: updatedThread));
     } catch (e) {
       emit(CommentError('Store Comment gagal: ${e.toString()}'));
       emit(currentState);
@@ -64,18 +66,17 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         content: event.content,
       );
 
-      // Update state lokal
+      // Update komentar yang diubah (commentsCount tetap sama)
       final updatedComments =
-          currentState.comments.map((comment) {
+          currentState.thread.comments.map((comment) {
             return comment.id == event.commentId ? updatedComment : comment;
           }).toList();
 
-      emit(
-        CommentLoaded(
-          threadId: currentState.threadId,
-          comments: updatedComments,
-        ),
+      final updatedThread = currentState.thread.copyWith(
+        comments: updatedComments,
       );
+
+      emit(CommentLoaded(thread: updatedThread));
     } catch (e) {
       emit(CommentError('Update Comment gagal: ${e.toString()}'));
       emit(currentState);
@@ -93,18 +94,18 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     try {
       await controller.deleteComment(commentId: event.commentId);
 
-      // Update state lokal
+      // Hapus komentar dan decrement commentsCount
       final updatedComments =
-          currentState.comments
+          currentState.thread.comments
               .where((comment) => comment.id != event.commentId)
               .toList();
 
-      emit(
-        CommentLoaded(
-          threadId: currentState.threadId,
-          comments: updatedComments,
-        ),
+      final updatedThread = currentState.thread.copyWith(
+        comments: updatedComments,
+        commentsCount: currentState.thread.commentsCount - 1,
       );
+
+      emit(CommentLoaded(thread: updatedThread));
     } catch (e) {
       emit(CommentError('Delete Comment gagal: ${e.toString()}'));
       emit(currentState);
