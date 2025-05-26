@@ -37,6 +37,7 @@ flutter:
     - assets/images/component/
     - assets/images/icon/
     - assets/images/logo/
+    - assets/images/profile/
     - .env
   fonts:
     - family: Poppins

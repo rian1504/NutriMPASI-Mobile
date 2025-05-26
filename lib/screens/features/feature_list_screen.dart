@@ -25,9 +25,7 @@ class FeatureListScreen extends StatelessWidget {
         'navigate': (BuildContext context) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const NutritionistProfileScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const NutritionistSettingScreen()),
           );
         },
         'description': 'Konsultasi dengan ahli gizi terpercaya',
@@ -38,9 +36,7 @@ class FeatureListScreen extends StatelessWidget {
         'navigate': (BuildContext context) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const CookingHistoryScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const CookingHistoryScreen()),
           );
         },
         'description': 'Lihat riwayat resep yang sudah kamu masak',
@@ -68,11 +64,7 @@ class FeatureListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Fitur Lainnya',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textBlack,
-          ),
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.textBlack),
         ),
         centerTitle: true,
         backgroundColor: AppColors.pearl,
@@ -117,8 +109,7 @@ class FeatureListScreen extends StatelessWidget {
             itemCount: features.length,
             itemBuilder: (context, index) {
               final feature = features[index];
-              final backgroundColor =
-                  index % 2 == 0 ? AppColors.bisque : AppColors.lavenderBlue;
+              final backgroundColor = index % 2 == 0 ? AppColors.bisque : AppColors.lavenderBlue;
               return Container(
                 margin: const EdgeInsets.only(bottom: 20.0),
                 child: Material(
@@ -145,10 +136,7 @@ class FeatureListScreen extends StatelessWidget {
                             SizedBox(
                               width: 70,
                               height: 70,
-                              child: Image.asset(
-                                feature['image'],
-                                fit: BoxFit.contain,
-                              ),
+                              child: Image.asset(feature['image'], fit: BoxFit.contain),
                             ),
                             const SizedBox(width: 20),
                             // Feature Title and Description
@@ -168,10 +156,7 @@ class FeatureListScreen extends StatelessWidget {
                                   const SizedBox(height: 4),
                                   Text(
                                     feature['description'],
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.textGrey,
-                                    ),
+                                    style: const TextStyle(fontSize: 12, color: AppColors.textGrey),
                                   ),
                                 ],
                               ),

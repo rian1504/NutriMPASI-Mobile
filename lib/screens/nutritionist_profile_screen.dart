@@ -3,19 +3,16 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/nutritionist_model.dart';
 
-class NutritionistProfileScreen extends StatefulWidget {
-  const NutritionistProfileScreen({super.key});
+class NutritionistSettingScreen extends StatefulWidget {
+  const NutritionistSettingScreen({super.key});
 
   @override
-  State<NutritionistProfileScreen> createState() =>
-      _NutritionistProfileScreenState();
+  State<NutritionistSettingScreen> createState() => _NutritionistSettingScreenState();
 }
 
-class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
+class _NutritionistSettingScreenState extends State<NutritionistSettingScreen> {
   // Controller untuk carousel ahli gizi
-  final PageController _carouselController = PageController(
-    viewportFraction: 0.7,
-  );
+  final PageController _carouselController = PageController(viewportFraction: 0.7);
   int _currentCarouselPage = 0;
 
   // Data sample ahli gizi
@@ -82,9 +79,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(60),
-                  ),
+                  borderRadius: const BorderRadius.only(bottomRight: Radius.circular(60)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 60.0),
@@ -104,10 +99,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                       // Deskripsi layanan
                       Text(
                         'Lihat profil lengkap ahli gizi yang terdaftar. Hubungi langsung untuk berkonsultasi dan dapatkan saran terbaik untuk memenuhi kebutuhan gizi si kecil!',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textGrey,
-                        ),
+                        style: TextStyle(fontSize: 12, color: AppColors.textGrey),
                         textAlign: TextAlign.justify,
                       ),
                       const SizedBox(height: 24),
@@ -128,15 +120,9 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       stops: [0.1, 0.7, 0.9],
-                      colors: [
-                        AppColors.primary,
-                        AppColors.bisque,
-                        AppColors.pearl,
-                      ],
+                      colors: [AppColors.primary, AppColors.bisque, AppColors.pearl],
                     ),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.elliptical(100, 70),
-                    ),
+                    borderRadius: const BorderRadius.only(topLeft: Radius.elliptical(100, 70)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 40),
@@ -169,19 +155,14 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                   controller: _carouselController,
                                   itemCount: _nutritionists.length,
                                   itemBuilder: (context, index) {
-                                    final bool isCurrentItem =
-                                        _currentCarouselPage == index;
+                                    final bool isCurrentItem = _currentCarouselPage == index;
 
                                     // Item carousel dengan animasi
                                     return AnimatedContainer(
                                       alignment: Alignment.centerLeft,
-                                      duration: const Duration(
-                                        milliseconds: 300,
-                                      ),
+                                      duration: const Duration(milliseconds: 300),
                                       curve: Curves.easeInOut,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12.0,
-                                      ),
+                                      padding: const EdgeInsets.symmetric(vertical: 12.0),
                                       margin: EdgeInsets.only(
                                         top: isCurrentItem ? 0 : 36,
                                         bottom: isCurrentItem ? 0 : 36,
@@ -191,37 +172,25 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(30),
-                                          ),
+                                          borderRadius: BorderRadius.all(Radius.circular(30)),
                                           boxShadow: [
                                             BoxShadow(
                                               color:
-                                                  isCurrentItem
-                                                      ? Colors.black26
-                                                      : Colors.black12,
-                                              blurRadius:
-                                                  isCurrentItem ? 10 : 5,
+                                                  isCurrentItem ? Colors.black26 : Colors.black12,
+                                              blurRadius: isCurrentItem ? 10 : 5,
                                               offset: const Offset(0, 2),
                                             ),
                                           ],
                                         ),
                                         // Gambar ahli gizi
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(30),
-                                          ),
+                                          borderRadius: BorderRadius.all(Radius.circular(30)),
                                           child: Image.asset(
-                                            _nutritionists[index].gender ==
-                                                    'male'
+                                            _nutritionists[index].gender == 'male'
                                                 ? 'assets/images/component/ahli_gizi_laki_laki.png'
                                                 : 'assets/images/component/ahli_gizi_perempuan.png',
                                             fit: BoxFit.contain,
-                                            errorBuilder: (
-                                              context,
-                                              error,
-                                              stackTrace,
-                                            ) {
+                                            errorBuilder: (context, error, stackTrace) {
                                               return Container(
                                                 color: AppColors.componentGrey,
                                                 child: const Icon(
@@ -250,9 +219,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                     (index) => Container(
                                       width: 8,
                                       height: 8,
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 4,
-                                      ),
+                                      margin: const EdgeInsets.symmetric(horizontal: 4),
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color:
@@ -295,16 +262,11 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
                                       child: Image.asset(
-                                        _nutritionists[_currentCarouselPage]
-                                            .image,
+                                        _nutritionists[_currentCarouselPage].image,
                                         width: 50,
                                         height: 50,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
+                                        errorBuilder: (context, error, stackTrace) {
                                           return Container(
                                             color: AppColors.componentGrey,
                                             child: const Icon(
@@ -320,12 +282,10 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                     // Informasi nama dan spesialisasi
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            _nutritionists[_currentCarouselPage]
-                                                .name,
+                                            _nutritionists[_currentCarouselPage].name,
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
@@ -342,8 +302,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                               ),
                                               const SizedBox(width: 8),
                                               Text(
-                                                _nutritionists[_currentCarouselPage]
-                                                    .specialization,
+                                                _nutritionists[_currentCarouselPage].specialization,
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: AppColors.textGrey,
@@ -357,30 +316,21 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                   ],
                                 ),
                                 // Tombol WhatsApp untuk kontak ahli gizi
-                                if (_nutritionists[_currentCarouselPage]
-                                    .hasWhatsapp)
+                                if (_nutritionists[_currentCarouselPage].hasWhatsapp)
                                   Container(
                                     margin: EdgeInsets.only(top: 16),
                                     child: ElevatedButton(
                                       onPressed: () {},
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF25D366,
-                                        ),
+                                        backgroundColor: const Color(0xFF25D366),
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
-                                        minimumSize: const Size(
-                                          double.infinity,
-                                          46,
-                                        ),
+                                        minimumSize: const Size(double.infinity, 46),
                                       ),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Image.asset(
                                             'assets/images/logo/whatsapp.png',
@@ -390,9 +340,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                                           const SizedBox(width: 8),
                                           const Text(
                                             'Hubungi via WhatsApp',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: TextStyle(fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),

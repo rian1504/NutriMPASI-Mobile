@@ -21,7 +21,7 @@ import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/forum/forum_screen.dart';
 // import 'package:nutrimpasi/screens/forum/post_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
-import 'package:nutrimpasi/screens/profile/profile_screen.dart';
+import 'package:nutrimpasi/screens/setting/profile_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
@@ -43,28 +43,16 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) {
-            final bloc = AuthenticationBloc(
-              controller: AuthenticationController(),
-            );
+            final bloc = AuthenticationBloc(controller: AuthenticationController());
             bloc.add(CheckAuthStatus());
             return bloc;
           },
         ),
-        BlocProvider(
-          create: (context) => BabyBloc(controller: BabyController()),
-        ),
-        BlocProvider(
-          create: (context) => FoodBloc(controller: FoodController()),
-        ),
-        BlocProvider(
-          create: (context) => FoodDetailBloc(controller: FoodController()),
-        ),
-        BlocProvider(
-          create: (context) => FoodCookingBloc(controller: FoodController()),
-        ),
-        BlocProvider(
-          create: (context) => ScheduleBloc(controller: ScheduleController()),
-        ),
+        BlocProvider(create: (context) => BabyBloc(controller: BabyController())),
+        BlocProvider(create: (context) => FoodBloc(controller: FoodController())),
+        BlocProvider(create: (context) => FoodDetailBloc(controller: FoodController())),
+        BlocProvider(create: (context) => FoodCookingBloc(controller: FoodController())),
+        BlocProvider(create: (context) => ScheduleBloc(controller: ScheduleController())),
       ],
       child: MaterialApp(
         title: 'NutriMPASI',
@@ -85,8 +73,7 @@ class MainApp extends StatelessWidget {
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
-            if (state is AuthenticationInitial ||
-                state is AuthenticationChecking) {
+            if (state is AuthenticationInitial || state is AuthenticationChecking) {
               return const SplashScreen();
             } else if (state is LoginSuccess) {
               return const SplashScreen(nextScreen: MainPage());
@@ -129,7 +116,7 @@ class MainPageState extends State<MainPage> {
     const FoodListingScreen(),
     const ScheduleScreen(),
     const ForumScreen(),
-    const ProfileScreen(),
+    const SettingScreen(),
     // const CreatePostScreen(),
     // const Center(child: Text('Forum')),
     const Center(child: Text('Settings')),
@@ -149,45 +136,40 @@ class MainPageState extends State<MainPage> {
       backgroundColor: AppColors.pearl,
       body:
           _page == 1 && _pageParams.containsKey('showUserSuggestions')
-              ? FoodListingScreen(
-                showUserSuggestions: _pageParams['showUserSuggestions'],
-              )
+              ? FoodListingScreen(showUserSuggestions: _pageParams['showUserSuggestions'])
               : _screens[_page],
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.pearl,
-        color: AppColors.primary,
-        height: MediaQuery.of(context).size.height * 0.070,
-        animationDuration: const Duration(milliseconds: 300),
-        index: _page,
-        items: [
-          Icon(
-            Symbols.home_rounded,
-            color: Colors.white,
-            size: _page == 0 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.restaurant_menu,
-            color: Colors.white,
-            size: _page == 1 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.calendar_month,
-            color: Colors.white,
-            size: _page == 2 ? 35 : 25,
-          ),
-          Icon(Symbols.forum, color: Colors.white, size: _page == 3 ? 35 : 25),
-          Icon(
-            Symbols.settings,
-            color: Colors.white,
-            size: _page == 4 ? 35 : 25,
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            _page = index;
-            _pageParams = {};
-          });
-        },
+      bottomNavigationBar: Container(
+        // <-- BUNGKUS DENGAN CONTAINER INI
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05), // Warna shadow
+              blurRadius: 15, // Tingkat blur
+              spreadRadius: 0, // Seberapa jauh shadow menyebar
+              offset: const Offset(0, -8), // Shadow sedikit ke atas (-Y)
+            ),
+          ],
+        ),
+        child: CurvedNavigationBar(
+          backgroundColor: Colors.transparent,
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height * 0.070,
+          animationDuration: const Duration(milliseconds: 300),
+          index: _page,
+          items: [
+            Icon(Symbols.home_rounded, color: AppColors.primary, size: _page == 0 ? 35 : 25),
+            Icon(Symbols.restaurant_menu, color: AppColors.primary, size: _page == 1 ? 35 : 25),
+            Icon(Symbols.calendar_month, color: AppColors.primary, size: _page == 2 ? 35 : 25),
+            Icon(Symbols.forum, color: AppColors.primary, size: _page == 3 ? 35 : 25),
+            Icon(Symbols.settings, color: AppColors.primary, size: _page == 4 ? 35 : 25),
+          ],
+          onTap: (index) {
+            setState(() {
+              _page = index;
+              _pageParams = {};
+            });
+          },
+        ),
       ),
     );
   }

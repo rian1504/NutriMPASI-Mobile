@@ -23,7 +23,7 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(screenTitle: "Post", showBackButton: true),
+      appBar: AppBarForum(title: "Post", showBackButton: true),
       body: Container(
         decoration: BoxDecoration(color: AppColors.primary),
         child: Container(
@@ -169,7 +169,7 @@ class _PostSectionState extends State<_PostSection> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Column(
                   children: [
                     Row(

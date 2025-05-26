@@ -1,4 +1,4 @@
-// Nama File: forum_report_button.dart
+// Nama File: forum_app_bar.dart
 // Deskripsi: Widget untuk menampilkan app bar dengan rounded corner di bagian kanan bawah
 // Dibuat oleh: Firmansyah Pramudia Ariyanto - NIM: 3312301030
 // Tanggal: 13 Mei 2025
@@ -12,18 +12,18 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   final bool showTabs;
   final bool showBackButton;
   final bool showExitButton;
-  final String screenTitle;
+  final String title;
 
   const AppBarForum({
     super.key,
     this.showTabs = false,
     this.showBackButton = false,
     this.showExitButton = false,
-    required this.screenTitle,
+    required this.title,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(showTabs ? kToolbarHeight + 116 : kToolbarHeight + 56);
+  Size get preferredSize => Size.fromHeight(showTabs ? kToolbarHeight + 100 : kToolbarHeight + 44);
 
   @override
   Widget build(BuildContext context) {
@@ -37,29 +37,38 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
             width: double.infinity,
             color: AppColors.primary,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 16),
+                // const SizedBox(height: 16),
                 if (showTabs == false)
                   Padding(
-                    padding: const EdgeInsets.only(top: 24.0),
-                    child: Text(
-                      screenTitle,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16.0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 if (showTabs == true)
                   // Judul
-                  Text(
-                    screenTitle,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16.0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 const SizedBox(height: 16),

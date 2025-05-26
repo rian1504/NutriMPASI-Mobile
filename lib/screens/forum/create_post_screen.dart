@@ -103,7 +103,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(screenTitle: "Buat Postingan", showExitButton: true),
+      appBar: AppBarForum(title: "Buat Postingan", showExitButton: true),
       body: Stack(
         alignment: Alignment.center,
         children: [

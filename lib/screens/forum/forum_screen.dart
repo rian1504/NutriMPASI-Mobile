@@ -27,7 +27,7 @@ class _ForumScreenState extends State<ForumScreen> {
       length: 2,
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBarForum(screenTitle: "Forum Diskusi", showTabs: true),
+        appBar: AppBarForum(title: "Forum Diskusi", showTabs: true),
         body: Container(
           decoration: BoxDecoration(color: AppColors.primary),
           child: Container(
@@ -274,7 +274,7 @@ class _ForumCardState extends State<ForumCard> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ListTile(
-                            leading: Icon(AppIcons.delete, size: 20, color: AppColors.error),
+                            leading: Icon(AppIcons.deleteFill, size: 20, color: AppColors.error),
                             title: Text(
                               "Hapus Postingan",
                               style: TextStyle(fontSize: 16, color: AppColors.error),
@@ -436,9 +436,6 @@ class _ForumCardState extends State<ForumCard> {
     );
   }
 }
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_slidable/flutter_slidable.dart';
