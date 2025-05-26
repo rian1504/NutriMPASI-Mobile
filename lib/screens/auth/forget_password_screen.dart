@@ -167,40 +167,48 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   SizedBox(
                                     width: double.infinity,
                                     height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // Validasi dan navigasi
-                                        if (_formKey.currentState!.validate()) {
-                                          _forgotPassword(context);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.accent,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30,
-                                          ),
-                                        ),
-                                      ),
-                                      child: BlocBuilder<
-                                        AuthenticationBloc,
-                                        AuthenticationState
-                                      >(
-                                        builder: (context, state) {
-                                          if (state is AuthenticationLoading) {
-                                            return const CircularProgressIndicator();
-                                          }
-                                          return const Text(
-                                            'Kirim',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                    child: BlocBuilder<
+                                      AuthenticationBloc,
+                                      AuthenticationState
+                                    >(
+                                      builder: (context, state) {
+                                        final isLoading =
+                                            state is AuthenticationLoading;
+
+                                        return ElevatedButton(
+                                          onPressed:
+                                              isLoading
+                                                  ? null
+                                                  : () {
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
+                                                      _forgotPassword(context);
+                                                    }
+                                                  },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColors.accent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                          child:
+                                              isLoading
+                                                  ? const CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                  )
+                                                  : const Text(
+                                                    'Kirim',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                        );
+                                      },
                                     ),
                                   ),
 
