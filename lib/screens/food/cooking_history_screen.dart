@@ -18,7 +18,8 @@ class CookingHistoryScreen extends StatefulWidget {
   State<CookingHistoryScreen> createState() => _CookingHistoryScreenState();
 }
 
-class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
+class _CookingHistoryScreenState extends State<CookingHistoryScreen>
+    with SingleTickerProviderStateMixin {
   // Data riwayat memasak
   List<FoodRecord> _historyItems = [];
 
@@ -37,9 +38,57 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   // Data yang dikelompokkan berdasarkan waktu
   Map<String, List<FoodRecord>> _groupedData = {};
 
+  // Animation controller untuk indikator progres
+  late AnimationController _animationController;
+  late Animation<double> _progressAnimation;
+
+  // Animasi untuk semua nilai nutrisi
+  late Animation<int> _calorieCountAnimation;
+  late Animation<int> _lastMonthCalorieAnimation;
+  late Animation<int> _differenceAnimation;
+  late Animation<int> _energyAnimation;
+  late Animation<int> _proteinAnimation;
+  late Animation<int> _fatAnimation;
+
   @override
   void initState() {
     super.initState();
+
+    // Inisialisasi animation controller
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    // Inisialisasi animasi progres
+    _progressAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    // Inisialisasi animasi untuk semua nilai nutrisi
+    _calorieCountAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
+    _lastMonthCalorieAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
+    _differenceAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
+    _energyAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
+    _proteinAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
+    _fatAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     // Load data
     final babyState = context.read<BabyBloc>().state;
@@ -61,6 +110,12 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
     // Inisialisasi pengelompokan data berdasarkan periode waktu default
     _groupFoodByTimePeriod();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   // Mendapatkan daftar periode waktu yang tersedia berdasarkan data
@@ -205,6 +260,66 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
     // Setelah pengelompokan, hitung data nutrisi
     _nutritionData = _calculateNutritionData(itemsWithDate);
 
+    // Aktifkan animasi jika data nutrisi tersedia
+    if (_nutritionData.containsKey('currentMonthKcal') &&
+        _nutritionData.containsKey('recommendedCalories')) {
+      final double targetValue =
+          (_nutritionData['currentMonthKcal'] ?? 0) /
+          (_nutritionData['recommendedCalories'] ?? 6000);
+
+      final int targetCalories = _nutritionData['currentMonthKcal'] ?? 0;
+      final int targetLastMonthCalories = _nutritionData['lastMonthKcal'] ?? 0;
+      final int targetDifference = _nutritionData['difference'] ?? 0;
+      final int targetEnergy = _nutritionData['energy'] ?? 0;
+      final int targetProtein = _nutritionData['protein'] ?? 0;
+      final int targetFat = _nutritionData['fat'] ?? 0;
+
+      // Reset animasi
+      _animationController.reset();
+
+      // Perbarui nilai animasi progres
+      _progressAnimation = Tween<double>(
+        begin: 0.0,
+        end: targetValue > 1.0 ? 1.0 : targetValue,
+      ).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
+
+      // Perbarui animasi untuk semua nilai nutrisi
+      _calorieCountAnimation = IntTween(begin: 0, end: targetCalories).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
+
+      _lastMonthCalorieAnimation = IntTween(
+        begin: 0,
+        end: targetLastMonthCalories,
+      ).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
+
+      _differenceAnimation = IntTween(
+        begin: 0,
+        end: targetDifference.abs(),
+      ).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
+
+      _energyAnimation = IntTween(begin: 0, end: targetEnergy).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
+
+      _proteinAnimation = IntTween(begin: 0, end: targetProtein).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
+
+      _fatAnimation = IntTween(begin: 0, end: targetFat).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
+
+      // Mulai animasi
+      _animationController.forward();
+    }
+
     setState(() {});
   }
 
@@ -217,6 +332,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
     int lastMonthKcal = _calculateLastMonthKcal(foods).round();
     int difference = currentMonthKcal - lastMonthKcal;
 
+    // Hitung rekomendasi kalori sesuai umur bayi
+    int recommendedCalories = _calculateRecommendedCaloriesPerMonth();
+
     return {
       'currentMonthKcal': currentMonthKcal,
       'lastMonthKcal': lastMonthKcal,
@@ -224,7 +342,45 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
       'energy': currentMonthNutrition['energy']!.round(),
       'protein': currentMonthNutrition['protein']!.round(),
       'fat': currentMonthNutrition['fat']!.round(),
+      'recommendedCalories': recommendedCalories,
     };
+  }
+
+  // Menghitung rekomendasi kalori per bulan berdasarkan umur bayi
+  int _calculateRecommendedCaloriesPerMonth() {
+    // Temukan data bayi yang dipilih
+    if (_babies.isEmpty) {
+      return 6000;
+    }
+
+    final selectedBabyObject = _babies.firstWhere(
+      (baby) => baby.id.toString() == _selectedBaby,
+      orElse: () => _babies.first,
+    );
+
+    if (selectedBabyObject.dob == null) {
+      return 6000;
+    }
+
+    // Hitung umur dalam bulan
+    final now = DateTime.now();
+    final birthDate = selectedBabyObject.dob!;
+    int ageInMonths =
+        (now.year - birthDate.year) * 12 + now.month - birthDate.month;
+    if (now.day < birthDate.day) {
+      ageInMonths--;
+    }
+
+    // Tentukan rekomendasi kalori sesuai rentang umur
+    if (ageInMonths > 23) {
+      return 32000;
+    } else if (ageInMonths >= 12 && ageInMonths <= 23) {
+      return 16500;
+    } else if (ageInMonths >= 9 && ageInMonths < 12) {
+      return 9000;
+    } else {
+      return 6000;
+    }
   }
 
   int _calculateCurrentMonthKcal(List<FoodRecord> foods) {
@@ -439,13 +595,18 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                         ),
                         Row(
                           children: [
-                            Text(
-                              '${_nutritionData['lastMonthKcal']}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            AnimatedBuilder(
+                              animation: _animationController,
+                              builder: (context, child) {
+                                return Text(
+                                  '${_lastMonthCalorieAnimation.value}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
                             ),
                             const Text(
                               'kkal',
@@ -463,50 +624,86 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
                     // Indikator progres lingkaran
                     SizedBox(
-                      width: 120,
-                      height: 120,
+                      width: 150,
+                      height: 150,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           // Background lingkaran
                           Container(
-                            width: 120,
-                            height: 120,
+                            width: 150,
+                            height: 150,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white.withAlpha(50),
                             ),
                           ),
-                          SizedBox(
-                            width: 120,
-                            height: 120,
-                            child: CircularProgressIndicator(
-                              value: 0.75,
-                              strokeWidth: 10,
-                              backgroundColor: Colors.white.withAlpha(50),
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                AppColors.accent,
-                              ),
-                            ),
+                          AnimatedBuilder(
+                            animation: _animationController,
+                            builder: (context, child) {
+                              return SizedBox(
+                                width: 150,
+                                height: 150,
+                                child: CircularProgressIndicator(
+                                  // Nilai progress berdasarkan animasi
+                                  value: _progressAnimation.value,
+                                  strokeWidth: 10,
+                                  backgroundColor: Colors.white.withAlpha(50),
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                        AppColors.accent,
+                                      ),
+                                ),
+                              );
+                            },
                           ),
                           // Text di tengah
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                '${_nutritionData['currentMonthKcal']}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              AnimatedBuilder(
+                                animation: _animationController,
+                                builder: (context, child) {
+                                  return Text(
+                                    '${_calorieCountAnimation.value}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                },
                               ),
-                              const Text(
-                                'Total kkal Bulan ini',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Total kkal Bulan ini',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  GestureDetector(
+                                    onTap: () {
+                                      _showRecommendationInfo(context);
+                                    },
+                                    child: Container(
+                                      width: 16,
+                                      height: 16,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withAlpha(75),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.info_outline,
+                                        size: 12,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -530,20 +727,27 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                         ),
                         Row(
                           children: [
-                            Text(
-                              _nutritionData['difference'] >= 0
-                                  ? '+${_nutritionData['difference']}'
-                                  : '${_nutritionData['difference']}',
-                              style: TextStyle(
-                                color:
+                            AnimatedBuilder(
+                              animation: _animationController,
+                              builder: (context, child) {
+                                final prefix =
                                     _nutritionData['difference'] >= 0
-                                        ? AppColors.green
-                                        : AppColors.red,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                        ? '+'
+                                        : '-';
+                                return Text(
+                                  '$prefix${_differenceAnimation.value}',
+                                  style: TextStyle(
+                                    color:
+                                        _nutritionData['difference'] >= 0
+                                            ? AppColors.green
+                                            : AppColors.red,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
                             ),
-                            Text(
+                            const Text(
                               'kkal',
                               style: TextStyle(
                                 color: Colors.white,
@@ -566,27 +770,42 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       // Indikator Energi
-                      _buildVerticalNutrientIndicator(
-                        'Energi',
-                        _nutritionData['energy'],
-                        'kkal',
-                        AppColors.accent,
+                      AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return _buildVerticalNutrientIndicator(
+                            'Energi',
+                            _energyAnimation.value,
+                            'kkal',
+                            AppColors.accent,
+                          );
+                        },
                       ),
 
                       // Indikator Protein
-                      _buildVerticalNutrientIndicator(
-                        'Protein',
-                        _nutritionData['protein'],
-                        'g',
-                        AppColors.red,
+                      AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return _buildVerticalNutrientIndicator(
+                            'Protein',
+                            _proteinAnimation.value,
+                            'g',
+                            AppColors.red,
+                          );
+                        },
                       ),
 
                       // Indikator Lemak
-                      _buildVerticalNutrientIndicator(
-                        'Lemak',
-                        _nutritionData['fat'],
-                        'g',
-                        AppColors.green,
+                      AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return _buildVerticalNutrientIndicator(
+                            'Lemak',
+                            _fatAnimation.value,
+                            'g',
+                            AppColors.green,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -1244,6 +1463,89 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Method untuk menampilkan info rekomendasi kalori
+  void _showRecommendationInfo(BuildContext context) {
+    final int recommended = _nutritionData['recommendedCalories'] ?? 6000;
+    final int current = _nutritionData['currentMonthKcal'] ?? 0;
+    final double percentage = (current / recommended * 100).roundToDouble();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Informasi Asupan Kalori',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Rekomendasi kalori: $recommended kkal/bulan',
+                style: const TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Total konsumsi: $current kkal (${percentage.toStringAsFixed(1)}%)',
+                style: const TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 12),
+              _getRecommendationText(percentage),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Tutup'),
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        );
+      },
+    );
+  }
+
+  // Helper untuk menampilkan teks rekomendasi berdasarkan persentase konsumsi
+  Widget _getRecommendationText(double percentage) {
+    String message;
+    Color messageColor;
+
+    if (percentage < 60) {
+      message =
+          'Asupan kalori masih kurang dari kebutuhan bulanan yang direkomendasikan.';
+      messageColor = AppColors.red;
+    } else if (percentage > 110) {
+      message =
+          'Asupan kalori melebihi kebutuhan bulanan yang direkomendasikan.';
+      messageColor = Colors.orange;
+    } else {
+      message =
+          'Asupan kalori sudah sesuai dengan kebutuhan bulanan yang direkomendasikan.';
+      messageColor = AppColors.green;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: messageColor.withAlpha(25),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        message,
+        style: TextStyle(
+          fontSize: 12,
+          color: messageColor,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
