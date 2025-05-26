@@ -42,8 +42,8 @@ class _SettingScreenState extends State<SettingScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: AssetImage(
-                                  'assets/images/profile/profile_picture.jpg',
+                                image: NetworkImage(
+                                  'https://picsum.photos/200/300?random=1',
                                 ), // Ganti dengan gambar xprofil yang sesuai
                                 fit: BoxFit.cover,
                               ),
