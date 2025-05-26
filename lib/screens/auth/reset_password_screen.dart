@@ -6,28 +6,38 @@ import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
-class ForgetPasswordScreen extends StatefulWidget {
-  const ForgetPasswordScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   // Controller untuk form
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
+  // Focus Node untuk perpindahan fokus
+  final _passwordFocusNode = FocusNode();
+  final _confirmPasswordFocusNode = FocusNode();
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
-  void _forgotPassword(BuildContext context) {
-    context.read<AuthenticationBloc>().add(
-      ForgotPasswordRequested(email: _emailController.text),
-    );
+  void _resetPassword(BuildContext context) {
+    // context.read<AuthenticationBloc>().add(
+    //   ForgotPasswordRequested(email: _emailController.text),
+    // );
   }
 
   @override
@@ -55,7 +65,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.pearl,
         body: SingleChildScrollView(
           child: SizedBox(
             height: size.height,
@@ -68,7 +78,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   right: 0,
                   height: size.height * 1,
                   child: Image.asset(
-                    'assets/images/background/lupa_kata_sandi.png',
+                    'assets/images/background/reset_kata_sandi.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -99,22 +109,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         children: [
                           // Tab navigasi
                           const Text(
-                            'Lupa Kata Sandi',
+                            'Reset Kata Sandi',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: AppColors.textBlack,
                             ),
-                          ),
-                          const Text(
-                            'Silahkan masukkan email yang sebelumnya terdaftar, link reset kata sandi baru akan dikirim ke emailmu',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 12,
-                              color: AppColors.textGrey,
-                            ),
-                            textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 24),
                           // Formulir forgot password
@@ -128,11 +129,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                               child: Column(
                                 children: [
                                   TextFormField(
-                                    controller: _emailController,
+                                    controller: _passwordController,
+                                    focusNode: _passwordFocusNode,
                                     textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.emailAddress,
+                                    obscureText: _obscurePassword,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(
+                                        context,
+                                      ).requestFocus(_confirmPasswordFocusNode);
+                                    },
                                     decoration: InputDecoration(
-                                      labelText: 'Email',
+                                      labelText: 'Kata Sandi Baru',
                                       border: UnderlineInputBorder(
                                         borderSide: BorderSide(
                                           color: AppColors.componentGrey!,
@@ -151,11 +158,81 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           width: 2.0,
                                         ),
                                       ),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscurePassword
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: AppColors.componentGrey!,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscurePassword =
+                                                !_obscurePassword;
+                                          });
+                                          _passwordFocusNode.requestFocus();
+                                        },
+                                      ),
                                     ),
-
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Email tidak boleh kosong!';
+                                        return 'Kata sandi tidak boleh kosong!';
+                                      }
+                                      if (value.length < 6) {
+                                        return 'Kata sandi minimal 6 karakter!';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    controller: _confirmPasswordController,
+                                    focusNode: _confirmPasswordFocusNode,
+                                    textInputAction: TextInputAction.done,
+                                    obscureText: _obscureConfirmPassword,
+                                    decoration: InputDecoration(
+                                      labelText: 'Konfirmasi Kata Sandi Baru',
+                                      border: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: AppColors.componentGrey!,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: AppColors.componentGrey!,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      focusedBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: AppColors.primary,
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscureConfirmPassword
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: AppColors.componentGrey!,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _obscureConfirmPassword =
+                                                !_obscureConfirmPassword;
+                                          });
+                                          _confirmPasswordFocusNode
+                                              .requestFocus();
+                                        },
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Konfirmasi kata sandi tidak boleh kosong!';
+                                      }
+                                      if (value != _passwordController.text) {
+                                        return 'Konfirmasi kata sandi tidak sesuai!';
                                       }
                                       return null;
                                     },
@@ -171,11 +248,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                       onPressed: () {
                                         // Validasi dan navigasi
                                         if (_formKey.currentState!.validate()) {
-                                          _forgotPassword(context);
+                                          _resetPassword(context);
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.accent,
+                                        backgroundColor: AppColors.secondary,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             30,
@@ -218,7 +295,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         TextSpan(
                                           text: 'Masuk',
                                           style: TextStyle(
-                                            color: AppColors.accent,
+                                            color: AppColors.secondary,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                           ),
@@ -245,7 +322,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         TextSpan(
                                           text: 'Daftar',
                                           style: TextStyle(
-                                            color: AppColors.accent,
+                                            color: AppColors.secondary,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                           ),
