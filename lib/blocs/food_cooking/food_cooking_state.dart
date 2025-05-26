@@ -9,6 +9,8 @@ final class FoodCookingLoading extends FoodCookingState {}
 
 final class FoodCookingComplete extends FoodCookingState {}
 
+final class FoodCookingCompleteLoading extends FoodCookingState {}
+
 final class FoodCookingLoaded extends FoodCookingState {
   final FoodCooking foodCooking;
 

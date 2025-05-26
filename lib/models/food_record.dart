@@ -17,8 +17,8 @@ class FoodRecord {
   String? source;
   String image;
   int portion;
-  int energy;
-  int protein;
+  double energy;
+  double protein;
   double fat;
   DateTime date;
 
@@ -44,8 +44,8 @@ class FoodRecord {
     source: json["source"],
     image: json["image"],
     portion: json["portion"],
-    energy: json["energy"],
-    protein: json["protein"],
+    energy: json["energy"]?.toDouble(),
+    protein: json["protein"]?.toDouble(),
     fat: json["fat"]?.toDouble(),
     date: DateTime.parse(json["date"]),
   );

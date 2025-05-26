@@ -22,6 +22,7 @@ class ApiEndpoints {
   static const String user = 'user';
   static const String forgotPassword = 'forgot-password';
   static const String resetPassword = 'reset-password';
+  static const String profile = 'profile';
 
   // Baby
   static const String baby = 'baby';
@@ -45,4 +46,11 @@ class ApiEndpoints {
 
   // Notification
   static const String notification = 'notification';
+
+  // Report
+  static const String report = 'report';
+
+  // Thread
+  static const String thread = 'thread';
+  static const String threadUser = 'thread-user';
 }

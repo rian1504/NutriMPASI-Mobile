@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/remote_dio.dart';
@@ -127,6 +129,74 @@ class AuthenticationController {
       return response.data['message'];
     } on DioException catch (e) {
       debugPrint('Forgot password error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  // update profile
+  Future<String> updateProfile({
+    required int userId,
+    required String name,
+    required String email,
+    File? avatar,
+  }) async {
+    try {
+      // data
+      FormData data = FormData.fromMap({'name': name, 'email': email});
+
+      // Tambahkan file gambar ke FormData jika image tidak null
+      if (avatar != null) {
+        data.files.add(
+          MapEntry('avatar', await MultipartFile.fromFile(avatar.path)),
+        );
+      }
+
+      // kirim data ke API
+      final response = await _dio.post(
+        '${ApiEndpoints.profile}/$userId',
+        data: data,
+      );
+
+      // debug response
+      debugPrint('Update Profile response: ${response.data}');
+
+      // return response
+      return response.data['message'];
+    } on DioException catch (e) {
+      debugPrint('Update Profile error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  // update password
+  Future<String> updatePassword({
+    required int userId,
+    required String oldPassword,
+    required String newPassword,
+    required String newPasswordConfirmation,
+    File? avatar,
+  }) async {
+    try {
+      // data
+      final data = {
+        'old_password': oldPassword,
+        'new_password': newPassword,
+        'new_password_confirmation': newPasswordConfirmation,
+      };
+
+      // kirim data ke API
+      final response = await _dio.post(
+        '${ApiEndpoints.profile}/$userId/password',
+        data: data,
+      );
+
+      // debug response
+      debugPrint('Update password response: ${response.data}');
+
+      // return response
+      return response.data['message'];
+    } on DioException catch (e) {
+      debugPrint('Update password error: ${e.response?.data}');
       throw _handleError(e);
     }
   }
