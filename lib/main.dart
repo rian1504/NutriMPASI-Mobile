@@ -29,6 +29,7 @@ import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
 import 'package:nutrimpasi/screens/forum/forum_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
+import 'package:nutrimpasi/screens/setting/profile_screen.dart';
 import 'package:nutrimpasi/screens/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
@@ -168,6 +169,7 @@ class MainPageState extends State<MainPage> {
     const FoodListingScreen(),
     const ScheduleScreen(),
     const ForumScreen(),
+    const SettingScreen(),
     const Center(child: Text('Settings')),
   ];
 
@@ -189,41 +191,57 @@ class MainPageState extends State<MainPage> {
                 showUserSuggestions: _pageParams['showUserSuggestions'],
               )
               : _screens[_page],
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.background,
-        color: AppColors.primary,
-        height: MediaQuery.of(context).size.height * 0.070,
-        animationDuration: const Duration(milliseconds: 300),
-        index: _page,
-        items: [
-          Icon(
-            Symbols.home_rounded,
-            color: Colors.white,
-            size: _page == 0 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.restaurant_menu,
-            color: Colors.white,
-            size: _page == 1 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.calendar_month,
-            color: Colors.white,
-            size: _page == 2 ? 35 : 25,
-          ),
-          Icon(Symbols.forum, color: Colors.white, size: _page == 3 ? 35 : 25),
-          Icon(
-            Symbols.settings,
-            color: Colors.white,
-            size: _page == 4 ? 35 : 25,
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            _page = index;
-            _pageParams = {};
-          });
-        },
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(10),
+              blurRadius: 15,
+              spreadRadius: 0,
+              offset: const Offset(0, -8),
+            ),
+          ],
+        ),
+        child: CurvedNavigationBar(
+          backgroundColor: Colors.transparent,
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height * 0.070,
+          animationDuration: const Duration(milliseconds: 300),
+          index: _page,
+          items: [
+            Icon(
+              Symbols.home_rounded,
+              color: AppColors.primary,
+              size: _page == 0 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.restaurant_menu,
+              color: AppColors.primary,
+              size: _page == 1 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.calendar_month,
+              color: AppColors.primary,
+              size: _page == 2 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.forum,
+              color: AppColors.primary,
+              size: _page == 3 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.settings,
+              color: AppColors.primary,
+              size: _page == 4 ? 35 : 25,
+            ),
+          ],
+          onTap: (index) {
+            setState(() {
+              _page = index;
+              _pageParams = {};
+            });
+          },
+        ),
       ),
     );
   }
