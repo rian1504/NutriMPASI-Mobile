@@ -350,7 +350,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                                           children: [
                                                                             // Gambar sukses
                                                                             Image.asset(
-                                                                              'assets/images/component/lapor_makanan.png',
+                                                                              'assets/images/component/berhasil_melaporkan_makanan.png',
                                                                               height:
                                                                                   200,
                                                                               width:
