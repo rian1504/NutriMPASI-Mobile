@@ -99,17 +99,69 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
     return BlocConsumer<FoodCookingBloc, FoodCookingState>(
       listener: (context, state) {
         if (state is FoodCookingComplete) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Memasak berhasil diselesaikan')),
-          );
+          // Tampilkan dialog sukses setelah memasak selesai
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext dialogContext) {
+              // Otomatis tutup dialog setelah 2 detik
+              Future.delayed(const Duration(seconds: 2), () {
+                if (dialogContext.mounted && Navigator.canPop(dialogContext)) {
+                  Navigator.pop(dialogContext);
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) =>
-                      MainPage(initialPage: 1), // 1 untuk FoodListingScreen
-            ),
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MainPage(initialPage: 1),
+                    ),
+                  );
+                }
+              });
+
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Gambar sukses
+                      Image.asset(
+                        'assets/images/component/berhasil_memasak.png',
+                        height: 200,
+                        width: 200,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 20),
+                      // Teks sukses
+                      const Text(
+                        'Selesai Memasak!',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.accent,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Proses memasak selesai. Informasi resep ini telah dicatat di Riwayat Memasak.',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.textGrey,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           );
         }
       },
