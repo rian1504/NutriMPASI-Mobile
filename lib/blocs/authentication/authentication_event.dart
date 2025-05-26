@@ -32,4 +32,18 @@ class ForgotPasswordRequested extends AuthenticationEvent {
   ForgotPasswordRequested({required this.email});
 }
 
+class ResetPasswordRequested extends AuthenticationEvent {
+  final String email;
+  final String token;
+  final String password;
+  final String passwordConfirmation;
+
+  ResetPasswordRequested({
+    required this.email,
+    required this.token,
+    required this.password,
+    required this.passwordConfirmation,
+  });
+}
+
 class CheckAuthStatus extends AuthenticationEvent {}
