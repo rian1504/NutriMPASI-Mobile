@@ -226,7 +226,10 @@ class _FoodNutritionCalculatorScreenState
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const FoodRecipeSuccessScreen(),
+              builder:
+                  (context) => FoodRecipeSuccessScreen(
+                    isEditing: widget.food.id != null,
+                  ),
             ),
           );
         } else if (state is FoodSuggestionError) {

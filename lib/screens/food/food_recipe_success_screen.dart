@@ -4,7 +4,8 @@ import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
 class FoodRecipeSuccessScreen extends StatefulWidget {
-  const FoodRecipeSuccessScreen({super.key});
+  final bool isEditing;
+  const FoodRecipeSuccessScreen({super.key, this.isEditing = false});
 
   @override
   State<FoodRecipeSuccessScreen> createState() =>
@@ -101,17 +102,17 @@ class _FoodRecipeSuccessScreenState extends State<FoodRecipeSuccessScreen> {
                   children: [
                     // Gambar ilustrasi resep
                     Image.asset(
-                      'assets/images/component/resep.png',
+                      'assets/images/component/berhasil_mengusulkan_makanan.png',
                       height: 200,
                       fit: BoxFit.contain,
                     ),
 
                     const SizedBox(height: 24),
 
-                    // Teks status keberhasilan (2 baris)
-                    const Text(
-                      'Berhasil Menambahkan',
-                      style: TextStyle(
+                    // Teks status keberhasilan (2 baris) - diubah sesuai mode edit/tambah
+                    Text(
+                      'Berhasil ${widget.isEditing ? 'Memperbarui' : 'Menambahkan'}',
+                      style: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
