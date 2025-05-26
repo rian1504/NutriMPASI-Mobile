@@ -36,6 +36,12 @@ class ForgotPasswordSuccess extends AuthenticationState {
   ForgotPasswordSuccess({required this.message});
 }
 
+class ResetPasswordSuccess extends AuthenticationState {
+  final String message;
+
+  ResetPasswordSuccess({required this.message});
+}
+
 class AuthenticationError extends AuthenticationState {
   final String error;
 

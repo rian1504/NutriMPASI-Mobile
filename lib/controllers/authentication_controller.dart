@@ -128,7 +128,37 @@ class AuthenticationController {
       // return response
       return response.data['message'];
     } on DioException catch (e) {
-      debugPrint('Forgot password error: ${e.response?.data}');
+      debugPrint('Forgot Password error: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  // reset password
+  Future<String> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      // data
+      final data = {
+        'email': email,
+        'token': token,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      };
+
+      // kirim data ke API
+      final response = await _dio.post(ApiEndpoints.resetPassword, data: data);
+
+      // debug response
+      debugPrint('Reset Password response: ${response.data}');
+
+      // return response
+      return response.data['message'];
+    } on DioException catch (e) {
+      debugPrint('Reset Password error: ${e.response?.data}');
       throw _handleError(e);
     }
   }

@@ -53,4 +53,7 @@ class ApiEndpoints {
   // Thread
   static const String thread = 'thread';
   static const String threadUser = 'thread-user';
+
+  // Comment
+  static const String comment = 'comment';
 }
