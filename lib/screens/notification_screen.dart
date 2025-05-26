@@ -60,6 +60,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   // Tandai semua notifikasi sebagai sudah dibaca
   void _markAllAsRead() {
+    setState(() {
+      for (var notification in _notifications) {
+        notification.isRead = true;
+      }
+    });
     context.read<NotificationBloc>().add(ReadAllNotifications());
   }
 
@@ -272,6 +277,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             final notification = filteredNotifications[index];
                             return InkWell(
                               onTap: () {
+                                setState(() {
+                                  notification.isRead = true;
+                                });
                                 context.read<NotificationBloc>().add(
                                   ReadNotification(
                                     notificationId: notification.id,

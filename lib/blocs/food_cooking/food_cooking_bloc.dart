@@ -34,7 +34,7 @@ class FoodCookingBloc extends Bloc<FoodCookingEvent, FoodCookingState> {
     CompleteFoodCooking event,
     Emitter<FoodCookingState> emit,
   ) async {
-    emit(FoodCookingLoading());
+    emit(FoodCookingCompleteLoading());
     try {
       await controller.completeCookingGuide(
         foodId: event.foodId,

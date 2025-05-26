@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
+import 'package:nutrimpasi/blocs/food_record/food_record_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/models/food_model.dart';
+import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/models/baby.dart';
+import 'package:nutrimpasi/models/food_record.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -15,30 +20,42 @@ class CookingHistoryScreen extends StatefulWidget {
 
 class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   // Data riwayat memasak
-  final List<Food> _historyItems = Food.dummyFoodsWithDates;
+  List<FoodRecord> _historyItems = [];
 
-  // Data dummy nutrisi
-  final Map<String, dynamic> _nutritionData = {
-    'totalKcal': 2279,
-    'lastMonthKcal': 2050,
-    'difference': 229,
-    'energy': 317,
-    'protein': 127,
-    'fat': 29,
-  };
+  // Data bayi
+  List<Baby> _babies = [];
+
+  // Data nutrisi
+  Map<String, dynamic> _nutritionData = {};
 
   // Dropdown value untuk pemilihan bayi
-  String _selectedBaby = 'Bayi 1';
+  late String _selectedBaby;
 
   // Filter periode waktu
-  String _selectedTimePeriod = 'Harian';
+  String _selectedTimePeriod = 'Hari ini';
 
   // Data yang dikelompokkan berdasarkan waktu
-  Map<String, List<Food>> _groupedData = {};
+  Map<String, List<FoodRecord>> _groupedData = {};
 
   @override
   void initState() {
     super.initState();
+
+    // Load data
+    final babyState = context.read<BabyBloc>().state;
+    if (babyState is! BabyLoaded) {
+      context.read<BabyBloc>().add(FetchBabies());
+    } else {
+      // Jika data sudah ter-load, perbarui status loading
+      setState(() {
+        _babies = babyState.babies;
+        _selectedBaby = _babies.first.id.toString();
+      });
+    }
+
+    // Load data makanan
+    context.read<FoodRecordBloc>().add(FetchFoodRecords());
+
     // Inisialisasi format tanggal lokal Indonesia
     initializeDateFormatting('id_ID', null);
 
@@ -49,23 +66,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   // Mendapatkan daftar periode waktu yang tersedia berdasarkan data
   List<String> get _availableTimePeriods {
     // Periode dasar selalu tersedia
-    final List<String> periods = ['Harian'];
+    final List<String> periods = ['Hari ini'];
 
-    // Cek apakah ada data dari hari yang berbeda untuk opsi Mingguan
-    final bool hasDifferentDays = _hasItemsInDifferentPeriods(
-      (a, b) => a.year == b.year && a.month == b.month && a.day != b.day,
-    );
-    if (hasDifferentDays) {
-      periods.add('Mingguan');
-    }
-
-    // Cek apakah ada data dari bulan yang berbeda untuk opsi Bulanan
-    final bool hasDifferentMonths = _hasItemsInDifferentPeriods(
-      (a, b) => a.year == b.year && a.month != b.month,
-    );
-    if (hasDifferentMonths) {
-      periods.add('Bulanan');
-    }
+    // Selalu tampilkan Mingguan dan Bulanan
+    periods.add('Mingguan');
+    periods.add('Bulanan');
 
     // Cek apakah ada data dari tahun yang berbeda untuk opsi Tahunan
     final bool hasDifferentYears = _hasItemsInDifferentPeriods(
@@ -88,15 +93,15 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
     bool Function(DateTime, DateTime) condition,
   ) {
     // Filter item yang memiliki cooking date
-    final items =
-        _historyItems.where((food) => food.cookingDate != null).toList();
+    // final items = _historyItems.where((food) => food.date != null).toList();
+    final items = _historyItems.toList();
     if (items.length <= 1) return false;
 
     for (int i = 0; i < items.length - 1; i++) {
-      final dateA = items[i].cookingDate!;
+      final dateA = items[i].date;
 
       for (int j = i + 1; j < items.length; j++) {
-        final dateB = items[j].cookingDate!;
+        final dateB = items[j].date;
 
         if (condition(dateA, dateB)) {
           return true;
@@ -110,74 +115,82 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   // Mengelompokkan data makanan berdasarkan periode waktu
   void _groupFoodByTimePeriod() {
     _groupedData = {};
+    final now = DateTime.now();
 
     // Filter item yang memiliki cooking date
-    final itemsWithDate =
-        _historyItems.where((food) => food.cookingDate != null).toList();
+    final itemsWithDate = _historyItems.toList();
 
-    if (_selectedTimePeriod == 'Harian') {
-      // Pengelompokan berdasarkan hari
-      for (var food in itemsWithDate) {
-        final date = food.cookingDate!;
-        final today = DateTime.now();
-        final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    if (_selectedTimePeriod == 'Hari ini') {
+      // Hanya ambil data hari ini
+      final todayItems =
+          itemsWithDate
+              .where(
+                (food) =>
+                    food.date.year == now.year &&
+                    food.date.month == now.month &&
+                    food.date.day == now.day,
+              )
+              .toList();
 
-        String formattedDate;
-        if (date.year == today.year &&
-            date.month == today.month &&
-            date.day == today.day) {
-          formattedDate = 'Hari ini';
-        } else if (date.year == yesterday.year &&
-            date.month == yesterday.month &&
-            date.day == yesterday.day) {
-          formattedDate = 'Kemarin';
-        } else {
-          formattedDate = DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(date);
-        }
-
-        if (!_groupedData.containsKey(formattedDate)) {
-          _groupedData[formattedDate] = [];
-        }
-        _groupedData[formattedDate]!.add(food);
-      }
+      _groupedData = {'Hari ini': todayItems};
     } else if (_selectedTimePeriod == 'Mingguan') {
-      // Pengelompokan berdasarkan minggu
-      for (var food in itemsWithDate) {
-        final date = food.cookingDate!;
-        // Mendapatkan tanggal awal minggu (Senin)
-        final startOfWeek = date.subtract(Duration(days: date.weekday - 1));
-        // Mendapatkan tanggal akhir minggu (Minggu)
-        final endOfWeek = startOfWeek.add(const Duration(days: 6));
+      // Kelompokkan menjadi minggu 1-4 bulan ini
+      for (int week = 1; week <= 4; week++) {
+        final startDate = DateTime(now.year, now.month, 1 + (week - 1) * 7);
+        final endDate =
+            week == 4
+                ? DateTime(now.year, now.month + 1, 0)
+                : DateTime(now.year, now.month, week * 7);
 
-        final String weekRange =
-            '${DateFormat('d MMM', 'id_ID').format(startOfWeek)} - ${DateFormat('d MMM yyyy', 'id_ID').format(endOfWeek)}';
+        final weekItems =
+            itemsWithDate
+                .where(
+                  (food) =>
+                      food.date.isAfter(
+                        startDate.subtract(const Duration(days: 1)),
+                      ) &&
+                      food.date.isBefore(endDate.add(const Duration(days: 1))),
+                )
+                .toList();
 
-        if (!_groupedData.containsKey(weekRange)) {
-          _groupedData[weekRange] = [];
+        if (weekItems.isNotEmpty) {
+          _groupedData['Minggu $week'] = weekItems;
         }
-        _groupedData[weekRange]!.add(food);
       }
     } else if (_selectedTimePeriod == 'Bulanan') {
-      // Pengelompokan berdasarkan bulan
-      for (var food in itemsWithDate) {
-        final date = food.cookingDate!;
-        final String month = DateFormat('MMMM yyyy', 'id_ID').format(date);
+      // Kelompokkan menjadi 12 bulan tahun ini
+      for (int month = 1; month <= 12; month++) {
+        final firstDay = DateTime(now.year, month, 1);
+        final lastDay = DateTime(now.year, month + 1, 0);
 
-        if (!_groupedData.containsKey(month)) {
-          _groupedData[month] = [];
+        final monthItems =
+            itemsWithDate
+                .where(
+                  (food) =>
+                      food.date.isAfter(
+                        firstDay.subtract(const Duration(days: 1)),
+                      ) &&
+                      food.date.isBefore(lastDay.add(const Duration(days: 1))),
+                )
+                .toList();
+
+        if (monthItems.isNotEmpty) {
+          _groupedData[DateFormat('MMMM', 'id_ID').format(firstDay)] =
+              monthItems;
         }
-        _groupedData[month]!.add(food);
       }
     } else if (_selectedTimePeriod == 'Tahunan') {
-      // Pengelompokan berdasarkan tahun
+      // Kelompokkan per tahun (hanya tahun yang ada datanya)
+      final years = <int>{};
       for (var food in itemsWithDate) {
-        final date = food.cookingDate!;
-        final String year = DateFormat('yyyy', 'id_ID').format(date);
+        years.add(food.date.year);
+      }
 
-        if (!_groupedData.containsKey(year)) {
-          _groupedData[year] = [];
-        }
-        _groupedData[year]!.add(food);
+      for (var year in years) {
+        final yearItems =
+            itemsWithDate.where((food) => food.date.year == year).toList();
+
+        _groupedData[year.toString()] = yearItems;
       }
     } else {
       // "Semua" - Tampilkan semua data tanpa pengelompokan
@@ -189,61 +202,193 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
       _groupedData = {'Tidak ada data': []};
     }
 
+    // Setelah pengelompokan, hitung data nutrisi
+    _nutritionData = _calculateNutritionData(itemsWithDate);
+
     setState(() {});
+  }
+
+  Map<String, dynamic> _calculateNutritionData(List<FoodRecord> foods) {
+    // Hitung nutrisi bulan ini
+    final currentMonthNutrition = _calculateCurrentMonthNutrition(foods);
+
+    // Hitung kalori bulan ini dan bulan lalu
+    int currentMonthKcal = _calculateCurrentMonthKcal(foods);
+    int lastMonthKcal = _calculateLastMonthKcal(foods).round();
+    int difference = currentMonthKcal - lastMonthKcal;
+
+    return {
+      'currentMonthKcal': currentMonthKcal,
+      'lastMonthKcal': lastMonthKcal,
+      'difference': difference,
+      'energy': currentMonthNutrition['energy']!.round(),
+      'protein': currentMonthNutrition['protein']!.round(),
+      'fat': currentMonthNutrition['fat']!.round(),
+    };
+  }
+
+  int _calculateCurrentMonthKcal(List<FoodRecord> foods) {
+    // Jika tidak ada data makanan sama sekali, langsung return 0
+    if (foods.isEmpty) return 0;
+
+    final nutrition = _calculateCurrentMonthNutrition(foods);
+
+    // Convert nutrition values to double with null safety
+    final energy = nutrition['energy'] ?? 0.0;
+    final protein = nutrition['protein'] ?? 0.0;
+    final fat = nutrition['fat'] ?? 0.0;
+
+    // Calculate total calories with proper rounding
+    return (energy + (protein * 4) + (fat * 9)).round();
+  }
+
+  double _calculateLastMonthKcal(List<FoodRecord> foods) {
+    // Jika tidak ada data makanan sama sekali, langsung return 0
+    if (foods.isEmpty) return 0;
+
+    final now = DateTime.now();
+    final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+    final firstDayOfLastMonth = DateTime(now.year, now.month - 1, 1);
+
+    double lastMonthTotal = 0;
+    bool hasLastMonthData = false;
+
+    for (var food in foods) {
+      if (food.date.isAfter(
+            firstDayOfLastMonth.subtract(const Duration(days: 1)),
+          ) &&
+          food.date.isBefore(firstDayOfCurrentMonth)) {
+        lastMonthTotal += food.energy + (food.protein * 4) + (food.fat * 9);
+        hasLastMonthData = true;
+      }
+    }
+
+    // Jika tidak ada data di bulan lalu, return 0
+    return hasLastMonthData ? lastMonthTotal : 0;
+  }
+
+  Map<String, double> _calculateCurrentMonthNutrition(List<FoodRecord> foods) {
+    final now = DateTime.now();
+    final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+    final lastDayOfCurrentMonth = DateTime(now.year, now.month + 1, 0);
+
+    double energy = 0;
+    double protein = 0;
+    double fat = 0;
+
+    for (var food in foods) {
+      if (food.date.isAfter(
+            firstDayOfCurrentMonth.subtract(const Duration(days: 1)),
+          ) &&
+          food.date.isBefore(
+            lastDayOfCurrentMonth.add(const Duration(days: 1)),
+          )) {
+        energy += food.energy;
+        protein += food.protein;
+        fat += food.fat;
+      }
+    }
+
+    return {'energy': energy, 'protein': protein, 'fat': fat};
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Material(
-            elevation: 3,
-            shadowColor: Colors.black54,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Symbols.arrow_back_ios_new_rounded,
-                  color: AppColors.textBlack,
-                  size: 24,
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<BabyBloc, BabyState>(
+          listener: (context, state) {
+            if (state is BabyLoaded) {
+              setState(() {
+                _babies = state.babies;
+                _selectedBaby = _babies.first.name;
+              });
+            }
+          },
+        ),
+        BlocListener<FoodRecordBloc, FoodRecordState>(
+          listener: (context, state) {
+            if (state is FoodRecordLoaded) {
+              setState(() {
+                _historyItems =
+                    state.foodRecords
+                        .where(
+                          (food) => food.babyId.toString() == _selectedBaby,
+                        )
+                        .toList();
+                _groupFoodByTimePeriod();
+              });
+            } else if (state is FoodRecordError) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
+            }
+          },
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          elevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Material(
+              elevation: 3,
+              shadowColor: Colors.black54,
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.pop(context),
+                child: IconButton(
+                  icon: const Icon(
+                    Symbols.arrow_back_ios_new_rounded,
+                    color: AppColors.textBlack,
+                    size: 24,
+                  ),
+                  padding: EdgeInsets.zero,
+                  onPressed: () => Navigator.pop(context),
+                ),
               ),
             ),
           ),
-        ),
-        title: const Text(
-          'Riwayat Memasak',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+          title: const Text(
+            'Riwayat Memasak',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Bagian atas dengan ringkasan nutrisi
-          _buildNutritionSummary(),
+        body: BlocBuilder<FoodRecordBloc, FoodRecordState>(
+          builder: (context, state) {
+            if (state is FoodRecordLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          // Widget untuk pemilihan bayi dan tanggal
-          _buildSelectionFilters(),
+            if (state is FoodRecordError) {
+              return Center(child: Text(state.error));
+            }
 
-          // Daftar riwayat makanan
-          Expanded(child: _buildFoodHistoryList()),
-        ],
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Bagian atas dengan ringkasan nutrisi
+                _buildNutritionSummary(),
+
+                // Widget untuk pemilihan bayi dan tanggal
+                _buildSelectionFilters(),
+
+                // Daftar riwayat makanan
+                Expanded(child: _buildFoodHistoryList()),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -349,7 +494,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                '${_nutritionData['totalKcal']}',
+                                '${_nutritionData['currentMonthKcal']}',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 28,
@@ -357,7 +502,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                                 ),
                               ),
                               const Text(
-                                'Total kkal',
+                                'Total kkal Bulan ini',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -386,9 +531,14 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                         Row(
                           children: [
                             Text(
-                              '+${_nutritionData['difference']}',
+                              _nutritionData['difference'] >= 0
+                                  ? '+${_nutritionData['difference']}'
+                                  : '${_nutritionData['difference']}',
                               style: TextStyle(
-                                color: AppColors.green,
+                                color:
+                                    _nutritionData['difference'] >= 0
+                                        ? AppColors.green
+                                        : AppColors.red,
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -523,7 +673,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
 
             // Teks nilai
             Text(
-              '$value$unit',
+              '${value.toInt()}$unit',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,
@@ -584,20 +734,28 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                 ),
                 dropdownColor: AppColors.primary,
                 onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedBaby = newValue!;
-                  });
+                  final currentState = context.read<FoodRecordBloc>().state;
+                  if (currentState is FoodRecordLoaded) {
+                    setState(() {
+                      _selectedBaby = newValue!;
+
+                      _historyItems =
+                          currentState.foodRecords
+                              .where(
+                                (food) =>
+                                    food.babyId.toString() == _selectedBaby,
+                              )
+                              .toList();
+                      _groupFoodByTimePeriod();
+                    });
+                  }
                 },
                 selectedItemBuilder: (BuildContext context) {
-                  return <String>[
-                    'Bayi 1',
-                    'Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2',
-                    'Bayi 3',
-                  ].map<Widget>((String value) {
+                  return _babies.map<Widget>((baby) {
                     return Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        _truncateBabyName(value),
+                        _truncateBabyName(baby.name),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -610,15 +768,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                   }).toList();
                 },
                 items:
-                    <String>[
-                      'Bayi 1',
-                      'Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2 Bayi 2',
-                      'Bayi 3',
-                    ].map<DropdownMenuItem<String>>((String value) {
+                    _babies.map<DropdownMenuItem<String>>((baby) {
                       return DropdownMenuItem<String>(
-                        value: value,
+                        value: baby.id.toString(),
                         child: Text(
-                          value,
+                          baby.name,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -874,7 +1028,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   }
 
   // Widget untuk grup accordion
-  Widget _buildAccordionGroup(String groupTitle, List<Food> foods) {
+  Widget _buildAccordionGroup(String groupTitle, List<FoodRecord> foods) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -912,17 +1066,28 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
   }
 
   // Widget untuk item makanan pada daftar riwayat
-  Widget _buildFoodHistoryItem(Food food) {
+  Widget _buildFoodHistoryItem(FoodRecord food) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FoodDetailScreen(foodId: food.id),
-            ),
-          );
+          if (food.foodId == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Data makanan sudah tidak tersedia'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) =>
+                        FoodDetailScreen(foodId: food.foodId.toString()),
+              ),
+            );
+          }
         },
         borderRadius: BorderRadius.circular(12),
         child: Container(
@@ -944,7 +1109,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
               ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(12)),
                 child: Image.network(
-                  food.image,
+                  storageUrl + food.image,
                   width: 100,
                   height: 100,
                   fit: BoxFit.cover,
@@ -1017,7 +1182,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                       Row(
                         children: [
                           // Energi
-                          _buildFoodNutrientInfo('Energi', '98kkal'),
+                          _buildFoodNutrientInfo(
+                            'Energi',
+                            '${food.energy}kkal',
+                          ),
 
                           // Vertical divider
                           Container(
@@ -1028,7 +1196,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                           ),
 
                           // Protein
-                          _buildFoodNutrientInfo('Protein', '45.1g'),
+                          _buildFoodNutrientInfo('Protein', '${food.protein}g'),
 
                           // Vertical divider
                           Container(
@@ -1039,7 +1207,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen> {
                           ),
 
                           // Lemak
-                          _buildFoodNutrientInfo('Lemak', '3.5g'),
+                          _buildFoodNutrientInfo('Lemak', '${food.fat}g'),
                         ],
                       ),
                     ],
