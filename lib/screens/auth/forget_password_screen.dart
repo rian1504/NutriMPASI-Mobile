@@ -55,7 +55,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         body: SingleChildScrollView(
           child: SizedBox(
             height: size.height,
@@ -117,7 +117,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 24),
-                          // Formulir login
+                          // Formulir forgot password
                           Form(
                             key: _formKey,
                             child: Padding(
@@ -163,44 +163,52 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
                                   const SizedBox(height: 48),
 
-                                  // Tombol masuk
+                                  // Tombol kirim
                                   SizedBox(
                                     width: double.infinity,
                                     height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // Validasi dan navigasi
-                                        if (_formKey.currentState!.validate()) {
-                                          _forgotPassword(context);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.secondary,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30,
-                                          ),
-                                        ),
-                                      ),
-                                      child: BlocBuilder<
-                                        AuthenticationBloc,
-                                        AuthenticationState
-                                      >(
-                                        builder: (context, state) {
-                                          if (state is AuthenticationLoading) {
-                                            return const CircularProgressIndicator();
-                                          }
-                                          return const Text(
-                                            'Kirim',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                    child: BlocBuilder<
+                                      AuthenticationBloc,
+                                      AuthenticationState
+                                    >(
+                                      builder: (context, state) {
+                                        final isLoading =
+                                            state is AuthenticationLoading;
+
+                                        return ElevatedButton(
+                                          onPressed:
+                                              isLoading
+                                                  ? null
+                                                  : () {
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
+                                                      _forgotPassword(context);
+                                                    }
+                                                  },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColors.accent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                          child:
+                                              isLoading
+                                                  ? const CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                  )
+                                                  : const Text(
+                                                    'Kirim',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                        );
+                                      },
                                     ),
                                   ),
 
@@ -218,7 +226,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         TextSpan(
                                           text: 'Masuk',
                                           style: TextStyle(
-                                            color: AppColors.secondary,
+                                            color: AppColors.accent,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                           ),
@@ -245,7 +253,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         TextSpan(
                                           text: 'Daftar',
                                           style: TextStyle(
-                                            color: AppColors.secondary,
+                                            color: AppColors.accent,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                           ),

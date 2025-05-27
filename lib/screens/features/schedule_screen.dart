@@ -82,7 +82,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           "Pilih makanan yang ingin di tambahkan ke Jadwal Memasak",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: AppColors.secondary,
+        backgroundColor: AppColors.accent,
         duration: Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
@@ -115,9 +115,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
         title: const Text(
           'Jadwal Memasak',
@@ -885,7 +885,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                     style: ElevatedButton.styleFrom(
                                                                       backgroundColor:
                                                                           AppColors
-                                                                              .secondary,
+                                                                              .accent,
                                                                       foregroundColor:
                                                                           Colors
                                                                               .white,
@@ -1177,7 +1177,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                 fontFamily: 'Poppins',
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
-                                                color: AppColors.secondary,
+                                                color: AppColors.accent,
                                               ),
                                             ),
                                             const SizedBox(height: 12),
@@ -1216,7 +1216,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                   10,
                                                 ),
                                                 decoration: BoxDecoration(
-                                                  color: AppColors.secondary,
+                                                  color: AppColors.accent,
                                                   shape: BoxShape.circle,
                                                 ),
                                                 child: const Icon(

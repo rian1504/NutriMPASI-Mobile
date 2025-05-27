@@ -74,7 +74,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.1, 0.7, 0.9],
-            colors: [AppColors.pearl, AppColors.bisque, AppColors.primary],
+            colors: [AppColors.background, AppColors.bisque, AppColors.primary],
           ),
         ),
         child: SafeArea(
@@ -236,7 +236,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                                           ),
                                                       decoration: BoxDecoration(
                                                         color: AppColors
-                                                            .secondary
+                                                            .accent
                                                             .withAlpha(25),
                                                         shape: BoxShape.circle,
                                                       ),

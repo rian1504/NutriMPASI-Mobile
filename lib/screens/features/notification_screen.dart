@@ -74,13 +74,32 @@ class _NotificationScreenState extends State<NotificationScreen> {
       builder: (context, state) {
         if (state is NotificationLoading) {
           return Scaffold(
-            backgroundColor: AppColors.pearl,
+            backgroundColor: AppColors.background,
             appBar: AppBar(
-              backgroundColor: AppColors.pearl,
+              backgroundColor: AppColors.background,
               foregroundColor: AppColors.textBlack,
-              leading: IconButton(
-                icon: const Icon(Symbols.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Material(
+                  elevation: 3,
+                  shadowColor: Colors.black54,
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Symbols.arrow_back_ios_new_rounded,
+                        color: AppColors.textBlack,
+                        size: 24,
+                      ),
+                      padding: EdgeInsets.zero,
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ),
               ),
               title: Container(
                 margin: const EdgeInsets.only(right: 42),
@@ -134,13 +153,32 @@ class _NotificationScreenState extends State<NotificationScreen> {
         }
 
         return Scaffold(
-          backgroundColor: AppColors.pearl,
+          backgroundColor: AppColors.background,
           appBar: AppBar(
-            backgroundColor: AppColors.pearl,
+            backgroundColor: AppColors.background,
             foregroundColor: AppColors.textBlack,
-            leading: IconButton(
-              icon: const Icon(Symbols.arrow_back),
-              onPressed: () => Navigator.of(context).pop(),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Material(
+                elevation: 3,
+                shadowColor: Colors.black54,
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Symbols.arrow_back_ios_new_rounded,
+                      color: AppColors.textBlack,
+                      size: 24,
+                    ),
+                    padding: EdgeInsets.zero,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+              ),
             ),
             title: Container(
               margin: const EdgeInsets.only(right: 42),
@@ -291,7 +329,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 decoration: BoxDecoration(
                                   color:
                                       notification.isRead
-                                          ? AppColors.pearl
+                                          ? AppColors.background
                                           : AppColors.bisque,
                                   border: Border(
                                     bottom: BorderSide(

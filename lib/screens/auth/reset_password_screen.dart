@@ -1,82 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
+import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   // Controller untuk form
   final _formKey = GlobalKey<FormState>();
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   // Focus Node untuk perpindahan fokus
-  final _nameFocusNode = FocusNode();
-  final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _confirmPasswordFocusNode = FocusNode();
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _nameFocusNode.dispose();
-    _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
-  void _register(BuildContext context) {
-    context.read<AuthenticationBloc>().add(
-      RegisterRequested(
-        name: _nameController.text,
-        email: _emailController.text,
-        password: _passwordController.text,
-        passwordConfirmation: _confirmPasswordController.text,
-      ),
-    );
+  void _resetPassword(BuildContext context) {
+    // context.read<AuthenticationBloc>().add(
+    //   ForgotPasswordRequested(email: _emailController.text),
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: const Color.fromRGBO(251, 245, 230, 1),
-      body: BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if (state is RegistrationSuccess) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is ForgotPasswordSuccess) {
+          // Tampilkan snackbar sukses dan arahkan ke halaman utama
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
 
-            // Tunggu sebentar lalu navigasi ke login
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (context.mounted) {
-                Navigator.pushReplacementNamed(context, '/login');
-              }
-            });
-          } else if (state is AuthenticationError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
-          }
-        },
-        child: SingleChildScrollView(
+          // Tunggu sebentar lalu navigasi ke home
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (context.mounted) {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+          });
+        } else if (state is AuthenticationError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error)));
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.background,
+        body: SingleChildScrollView(
           child: SizedBox(
             height: size.height,
             child: Stack(
@@ -88,13 +78,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   right: 0,
                   height: size.height * 1,
                   child: Image.asset(
-                    'assets/images/background/auth.png',
+                    'assets/images/background/reset_kata_sandi.png',
                     fit: BoxFit.cover,
                   ),
                 ),
                 // Panel utama
                 Positioned(
-                  top: size.height * 0.4,
+                  top: size.height * 0.5,
                   left: 24,
                   right: 24,
                   child: Card(
@@ -118,66 +108,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           // Tab navigasi
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => const LoginScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: AppColors.textGrey,
-                                  ),
-                                  child: const Text(
-                                    'Masuk',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {},
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: AppColors.textBlack,
-                                        padding: EdgeInsets.zero,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            'Daftar',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.w900,
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 70,
-                                            height: 2,
-                                            color: AppColors.textBlack,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          const Text(
+                            'Reset Kata Sandi',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textBlack,
+                            ),
                           ),
                           const SizedBox(height: 24),
-                          // Formulir pendaftaran
+                          // Formulir forgot password
                           Form(
                             key: _formKey,
                             child: Padding(
@@ -187,94 +128,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  TextFormField(
-                                    controller: _nameController,
-                                    focusNode: _nameFocusNode,
-                                    textInputAction: TextInputAction.next,
-                                    onFieldSubmitted: (_) {
-                                      FocusScope.of(
-                                        context,
-                                      ).requestFocus(_emailFocusNode);
-                                    },
-                                    decoration: InputDecoration(
-                                      labelText: 'Nama',
-                                      border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.componentGrey!,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.componentGrey!,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.primary,
-                                          width: 2.0,
-                                        ),
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Nama tidak boleh kosong!';
-                                      }
-                                      if (value.length > 255) {
-                                        return 'Nama tidak boleh lebih dari 255 karakter!';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-                                  TextFormField(
-                                    controller: _emailController,
-                                    focusNode: _emailFocusNode,
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.emailAddress,
-                                    onFieldSubmitted: (_) {
-                                      FocusScope.of(
-                                        context,
-                                      ).requestFocus(_passwordFocusNode);
-                                    },
-                                    decoration: InputDecoration(
-                                      labelText: 'Email',
-                                      border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.componentGrey!,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.componentGrey!,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.primary,
-                                          width: 2.0,
-                                        ),
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Email tidak boleh kosong!';
-                                      }
-                                      if (value.length > 255) {
-                                        return 'Email tidak boleh lebih dari 255 karakter!';
-                                      }
-                                      if (!RegExp(
-                                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                      ).hasMatch(value)) {
-                                        return 'Format email tidak valid!';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
                                   TextFormField(
                                     controller: _passwordController,
                                     focusNode: _passwordFocusNode,
@@ -286,7 +139,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ).requestFocus(_confirmPasswordFocusNode);
                                     },
                                     decoration: InputDecoration(
-                                      labelText: 'Kata Sandi',
+                                      labelText: 'Kata Sandi Baru',
                                       border: UnderlineInputBorder(
                                         borderSide: BorderSide(
                                           color: AppColors.componentGrey!,
@@ -325,23 +178,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       if (value == null || value.isEmpty) {
                                         return 'Kata sandi tidak boleh kosong!';
                                       }
-                                      if (value.length < 8) {
-                                        return 'Kata sandi minimal 8 karakter!';
+                                      if (value.length < 6) {
+                                        return 'Kata sandi minimal 6 karakter!';
                                       }
-                                      // if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu huruf kapital!';
-                                      // }
-                                      // if (!RegExp(r'[a-z]').hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu huruf kecil!';
-                                      // }
-                                      // if (!RegExp(r'[0-9]').hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu angka!';
-                                      // }
-                                      // if (!RegExp(
-                                      //   r'[!@#$%^&*(),.?":{}|<>]',
-                                      // ).hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu karakter spesial!';
-                                      // }
                                       return null;
                                     },
                                   ),
@@ -352,7 +191,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     textInputAction: TextInputAction.done,
                                     obscureText: _obscureConfirmPassword,
                                     decoration: InputDecoration(
-                                      labelText: 'Konfirmasi Kata Sandi',
+                                      labelText: 'Konfirmasi Kata Sandi Baru',
                                       border: UnderlineInputBorder(
                                         borderSide: BorderSide(
                                           color: AppColors.componentGrey!,
@@ -398,8 +237,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       return null;
                                     },
                                   ),
-                                  const SizedBox(height: 24),
-                                  // Tombol daftar
+
+                                  const SizedBox(height: 48),
+
+                                  // Tombol kirim
                                   SizedBox(
                                     width: double.infinity,
                                     height: 50,
@@ -418,7 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   : () {
                                                     if (_formKey.currentState!
                                                         .validate()) {
-                                                      _register(context);
+                                                      _resetPassword(context);
                                                     }
                                                   },
                                           style: ElevatedButton.styleFrom(
@@ -434,17 +275,79 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                     color: Colors.white,
                                                   )
                                                   : const Text(
-                                                    'Daftar',
+                                                    'Kirim',
                                                     style: TextStyle(
                                                       fontFamily: 'Poppins',
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                          FontWeight.w600,
                                                       color: Colors.white,
                                                     ),
                                                   ),
                                         );
                                       },
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 16),
+
+                                  // Link kembali ke halaman masuk atau daftar
+                                  RichText(
+                                    text: TextSpan(
+                                      text: 'kembali ke halaman ',
+                                      style: TextStyle(
+                                        color: AppColors.textBlack,
+                                        fontSize: 12,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: 'Masuk',
+                                          style: TextStyle(
+                                            color: AppColors.accent,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                          recognizer:
+                                              TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder:
+                                                          (context) =>
+                                                              const LoginScreen(),
+                                                    ),
+                                                  );
+                                                },
+                                        ),
+                                        TextSpan(
+                                          text: ' atau ',
+                                          style: TextStyle(
+                                            color: AppColors.textBlack,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Daftar',
+                                          style: TextStyle(
+                                            color: AppColors.accent,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                          recognizer:
+                                              TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder:
+                                                          (context) =>
+                                                              const RegisterScreen(),
+                                                    ),
+                                                  );
+                                                },
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],

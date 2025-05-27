@@ -36,9 +36,11 @@ import 'package:nutrimpasi/controllers/schedule_controller.dart';
 import 'package:nutrimpasi/controllers/thread_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
-import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
+import 'package:nutrimpasi/screens/food/food_list_screen.dart';
+import 'package:nutrimpasi/screens/forum/forum_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
-import 'package:nutrimpasi/screens/schedule_screen.dart';
+import 'package:nutrimpasi/screens/setting/profile_screen.dart';
+import 'package:nutrimpasi/screens/features/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
@@ -152,7 +154,7 @@ class MainApp extends StatelessWidget {
           primaryColor: AppColors.primary,
           colorScheme: ColorScheme.light(
             primary: AppColors.primary,
-            secondary: AppColors.secondary,
+            secondary: AppColors.accent,
           ),
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -197,9 +199,10 @@ class MainPageState extends State<MainPage> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const FoodListingScreen(),
+    const FoodListScreen(),
     const ScheduleScreen(),
-    const Center(child: Text('Forum')),
+    const ForumScreen(),
+    const SettingScreen(),
     const Center(child: Text('Settings')),
   ];
 
@@ -214,15 +217,15 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       body:
           _page == 1 && _pageParams.containsKey('showUserSuggestions')
-              ? FoodListingScreen(
+              ? FoodListScreen(
                 showUserSuggestions: _pageParams['showUserSuggestions'],
               )
               : _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         color: AppColors.primary,
         height: MediaQuery.of(context).size.height * 0.070,
         animationDuration: const Duration(milliseconds: 300),

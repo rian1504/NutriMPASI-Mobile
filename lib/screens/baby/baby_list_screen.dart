@@ -64,7 +64,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: Padding(
@@ -115,7 +115,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                             colors: [
                               AppColors.primary,
                               AppColors.bisque,
-                              AppColors.pearl,
+                              AppColors.background,
                             ],
                           ),
                           borderRadius: BorderRadius.only(
@@ -285,7 +285,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                     curve: Curves.easeInOut,
                   );
                 },
-                backgroundColor: AppColors.secondary,
+                backgroundColor: AppColors.accent,
                 child: const Icon(Symbols.add, color: Colors.white),
               ),
     );
@@ -547,7 +547,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
               icon: const Icon(Symbols.add),
               label: const Text('Tambah Bayi'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: AppColors.accent,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,

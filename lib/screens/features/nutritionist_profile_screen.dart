@@ -141,7 +141,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
                       colors: [
                         AppColors.primary,
                         AppColors.bisque,
-                        AppColors.pearl,
+                        AppColors.background,
                       ],
                     ),
                     borderRadius: const BorderRadius.only(

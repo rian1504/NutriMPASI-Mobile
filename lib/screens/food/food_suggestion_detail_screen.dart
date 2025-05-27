@@ -182,7 +182,7 @@ class _FoodSuggestionDetailScreenState
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.secondary.withAlpha(25),
+                                      color: AppColors.accent.withAlpha(25),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
@@ -190,7 +190,7 @@ class _FoodSuggestionDetailScreenState
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 12,
-                                        color: AppColors.secondary,
+                                        color: AppColors.accent,
                                       ),
                                     ),
                                   ),
@@ -282,7 +282,7 @@ class _FoodSuggestionDetailScreenState
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 24,
@@ -330,7 +330,7 @@ class _FoodSuggestionDetailScreenState
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 24,
@@ -378,7 +378,7 @@ class _FoodSuggestionDetailScreenState
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 24,
@@ -520,7 +520,7 @@ class _FoodSuggestionDetailScreenState
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: AppColors.pearl,
+                              color: AppColors.background,
                             ),
                             child: ElevatedButton(
                               onPressed: () {
@@ -571,7 +571,7 @@ class _FoodSuggestionDetailScreenState
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: AppColors.pearl,
+                              color: AppColors.background,
                             ),
                             child: ElevatedButton(
                               onPressed: () {
@@ -783,7 +783,7 @@ class _FoodSuggestionDetailScreenState
                     fontFamily: 'Poppins',
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.secondary,
+                    color: AppColors.accent,
                   ),
                 ),
                 const SizedBox(width: 2),

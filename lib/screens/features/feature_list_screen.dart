@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
-import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
+import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 
 class FeatureListScreen extends StatelessWidget {
   const FeatureListScreen({super.key});
@@ -64,7 +64,7 @@ class FeatureListScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           'Fitur Lainnya',
@@ -75,7 +75,7 @@ class FeatureListScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         elevation: 0,
         automaticallyImplyLeading: false, // Remove default back button
         leading: Padding(
@@ -108,7 +108,7 @@ class FeatureListScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.1, 0.7, 0.9],
-            colors: [AppColors.pearl, AppColors.bisque, AppColors.primary],
+            colors: [AppColors.background, AppColors.bisque, AppColors.primary],
           ),
         ),
         child: Padding(

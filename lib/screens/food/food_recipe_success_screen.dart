@@ -3,13 +3,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
-class FoodRecipeSuccessScreen extends StatelessWidget {
-  const FoodRecipeSuccessScreen({super.key});
+class FoodRecipeSuccessScreen extends StatefulWidget {
+  final bool isEditing;
+  const FoodRecipeSuccessScreen({super.key, this.isEditing = false});
+
+  @override
+  State<FoodRecipeSuccessScreen> createState() =>
+      _FoodRecipeSuccessScreenState();
+}
+
+class _FoodRecipeSuccessScreenState extends State<FoodRecipeSuccessScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Set timer untuk auto-navigasi setelah 2 detik
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        // Trigger fetch foods kemudian navigasi ke home
+        context.read<FoodBloc>().add(FetchFoods());
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 36),
@@ -40,7 +60,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15, left: 10),
-                      child: Container(height: 4, color: AppColors.secondary),
+                      child: Container(height: 4, color: AppColors.accent),
                     ),
                   ),
 
@@ -51,7 +71,7 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15, right: 10),
-                      child: Container(height: 4, color: AppColors.secondary),
+                      child: Container(height: 4, color: AppColors.accent),
                     ),
                   ),
 
@@ -82,21 +102,21 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                   children: [
                     // Gambar ilustrasi resep
                     Image.asset(
-                      'assets/images/component/resep.png',
+                      'assets/images/component/berhasil_mengusulkan_makanan.png',
                       height: 200,
                       fit: BoxFit.contain,
                     ),
 
                     const SizedBox(height: 24),
 
-                    // Teks status keberhasilan (2 baris)
-                    const Text(
-                      'Berhasil Menambahkan',
-                      style: TextStyle(
+                    // Teks status keberhasilan (2 baris) - diubah sesuai mode edit/tambah
+                    Text(
+                      'Berhasil ${widget.isEditing ? 'Memperbarui' : 'Menambahkan'}',
+                      style: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.secondary,
+                        color: AppColors.accent,
                       ),
                     ),
 
@@ -106,7 +126,20 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
                         fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.secondary,
+                        color: AppColors.accent,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Teks informasi bahwa halaman akan otomatis berpindah
+                    const Text(
+                      'Anda akan dialihkan otomatis...',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                        color: AppColors.textGrey,
                       ),
                     ),
                   ],
@@ -115,34 +148,6 @@ class FoodRecipeSuccessScreen extends StatelessWidget {
 
               const Expanded(child: SizedBox()),
             ],
-          ),
-        ),
-      ),
-      // Bottom navigation bar dengan tombol Selesai
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-        decoration: const BoxDecoration(color: Colors.white),
-        child: ElevatedButton(
-          onPressed: () {
-            // Navigasi kembali ke halaman awal
-            context.read<FoodBloc>().add(FetchFoods());
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.secondary,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-          ),
-          child: const Text(
-            'Selesai',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
           ),
         ),
       ),

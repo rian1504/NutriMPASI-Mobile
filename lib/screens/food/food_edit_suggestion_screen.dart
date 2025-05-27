@@ -47,9 +47,20 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
   bool _showPhotoError = false;
+  bool _showImageSizeError = false;
 
   // Menambahkan global key untuk foto untuk validasi bersama dengan form lain
   final GlobalKey _photoFieldKey = GlobalKey();
+  final GlobalKey<FormFieldState> _recipeNameKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _categoryKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _ageKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _portionKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _descriptionKey = GlobalKey<FormFieldState>();
+  final List<GlobalKey<FormFieldState>> _ingredientKeys = [];
+  final List<GlobalKey<FormFieldState>> _stepKeys = [];
+
+  // Flag untuk melacak apakah bahan atau buah diubah
+  bool _ingredientsChanged = false;
 
   @override
   void initState() {
@@ -65,17 +76,43 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
 
     // Inisialisasi bahan (recipe)
     for (var ingredient in widget.food.recipe) {
-      _ingredientControllers.add(TextEditingController(text: ingredient));
+      final controller = TextEditingController(text: ingredient);
+      // Tambahkan listener untuk mendeteksi perubahan pada ingredients
+      controller.addListener(() {
+        final originalIngredients = widget.food.recipe;
+        if (originalIngredients.length != _ingredientControllers.length ||
+            originalIngredients.asMap().entries.any(
+              (entry) =>
+                  entry.key < _ingredientControllers.length &&
+                  _ingredientControllers[entry.key].text != entry.value,
+            )) {
+          setState(() {
+            _ingredientsChanged = true;
+          });
+        }
+      });
+      _ingredientControllers.add(controller);
+      _ingredientKeys.add(GlobalKey<FormFieldState>());
     }
 
     // Inisialisasi buah (fruit)
     if (widget.food.fruit != null) {
       _fruitsController.text = widget.food.fruit!.join(', ');
+      // Tambahkan listener untuk mendeteksi perubahan pada fruits
+      _fruitsController.addListener(() {
+        final originalFruits = widget.food.fruit?.join(', ') ?? '';
+        if (_fruitsController.text != originalFruits) {
+          setState(() {
+            _ingredientsChanged = true;
+          });
+        }
+      });
     }
 
     // Inisialisasi langkah (step)
     for (var step in widget.food.step) {
       _stepControllers.add(TextEditingController(text: step));
+      _stepKeys.add(GlobalKey<FormFieldState>());
     }
 
     // Jika tidak ada bahan/langkah, tambahkan field kosong
@@ -238,15 +275,20 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
   // Tambah field bahan baru
   void _addIngredientField({String? initialValue}) {
     setState(() {
-      _ingredientControllers.add(TextEditingController(text: initialValue));
+      _ingredientsChanged = true;
+      final controller = TextEditingController(text: initialValue);
+      _ingredientControllers.add(controller);
+      _ingredientKeys.add(GlobalKey<FormFieldState>());
     });
   }
 
   // Hapus field bahan
   void _removeIngredientField(int index) {
     setState(() {
+      _ingredientsChanged = true;
       _ingredientControllers[index].dispose();
       _ingredientControllers.removeAt(index);
+      _ingredientKeys.removeAt(index);
     });
   }
 
@@ -254,6 +296,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
   void _addStepField({String? initialValue}) {
     setState(() {
       _stepControllers.add(TextEditingController(text: initialValue));
+      _stepKeys.add(GlobalKey<FormFieldState>());
     });
   }
 
@@ -262,6 +305,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
     setState(() {
       _stepControllers[index].dispose();
       _stepControllers.removeAt(index);
+      _stepKeys.removeAt(index);
     });
   }
 
@@ -303,6 +347,157 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
         borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
       ),
     );
+  }
+
+  // Method untuk validasi total panjang karakter dari bahan
+  String? validateIngredientsLength(String? value, int index) {
+    if (value == null || value.isEmpty) {
+      return 'Bahan tidak boleh kosong';
+    }
+
+    // Hitung total panjang karakter dari semua bahan
+    String combinedRecipe = '';
+    for (var i = 0; i < _ingredientControllers.length; i++) {
+      // Skip controller yang sedang divalidasi
+      if (i == index) {
+        combinedRecipe += value;
+      } else {
+        combinedRecipe += _ingredientControllers[i].text;
+      }
+
+      // Tambahkan separator jika bukan elemen terakhir
+      if (i < _ingredientControllers.length - 1) {
+        combinedRecipe += ', ';
+      }
+    }
+
+    if (combinedRecipe.length < 5) {
+      return 'Total bahan minimal 5 karakter';
+    }
+
+    return null;
+  }
+
+  // Method untuk validasi total panjang karakter dari langkah
+  String? validateStepsLength(String? value, int index) {
+    if (value == null || value.isEmpty) {
+      return 'Langkah tidak boleh kosong';
+    }
+
+    // Hitung total panjang karakter dari semua langkah
+    String combinedSteps = '';
+    for (var i = 0; i < _stepControllers.length; i++) {
+      // Skip controller yang sedang divalidasi
+      if (i == index) {
+        combinedSteps += value;
+      } else {
+        combinedSteps += _stepControllers[i].text;
+      }
+
+      // Tambahkan separator jika bukan elemen terakhir
+      if (i < _stepControllers.length - 1) {
+        combinedSteps += ', ';
+      }
+    }
+
+    if (combinedSteps.length < 5) {
+      return 'Total langkah minimal 5 karakter';
+    }
+
+    return null;
+  }
+
+  // Method untuk melakukan scroll ke field error pertama yang ditemukan
+  void _scrollToFirstError() {
+    // Cek apakah ada error pada foto
+    if (_showPhotoError && _photoFieldKey.currentContext != null) {
+      Scrollable.ensureVisible(
+        _photoFieldKey.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0.2,
+      );
+      return;
+    }
+
+    // Cek apakah ada error pada ukuran gambar
+    if (_showImageSizeError && _photoFieldKey.currentContext != null) {
+      Scrollable.ensureVisible(
+        _photoFieldKey.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0.2,
+      );
+      return;
+    }
+
+    // Cek apakah ada error pada field lainnya
+    if (_recipeNameKey.currentState?.hasError ?? false) {
+      Scrollable.ensureVisible(
+        _recipeNameKey.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0.2,
+      );
+      return;
+    }
+
+    if (_categoryKey.currentState?.hasError ?? false) {
+      Scrollable.ensureVisible(
+        _categoryKey.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0.2,
+      );
+      return;
+    }
+
+    if (_ageKey.currentState?.hasError ?? false) {
+      Scrollable.ensureVisible(
+        _ageKey.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0.2,
+      );
+      return;
+    }
+
+    if (_portionKey.currentState?.hasError ?? false) {
+      Scrollable.ensureVisible(
+        _portionKey.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0.2,
+      );
+      return;
+    }
+
+    if (_descriptionKey.currentState?.hasError ?? false) {
+      Scrollable.ensureVisible(
+        _descriptionKey.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        alignment: 0.2,
+      );
+      return;
+    }
+
+    for (int i = 0; i < _ingredientKeys.length; i++) {
+      final key = _ingredientKeys[i];
+      if (key.currentState?.hasError ?? false) {
+        Scrollable.ensureVisible(
+          key.currentContext!,
+          duration: const Duration(milliseconds: 300),
+          alignment: 0.2,
+        );
+        return;
+      }
+    }
+
+    for (int i = 0; i < _stepKeys.length; i++) {
+      final key = _stepKeys[i];
+      if (key.currentState?.hasError ?? false) {
+        Scrollable.ensureVisible(
+          key.currentContext!,
+          duration: const Duration(milliseconds: 300),
+          alignment: 0.2,
+        );
+        return;
+      }
+    }
   }
 
   @override
@@ -390,7 +585,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   child: Container(
                                     height: 4,
-                                    color: AppColors.secondary,
+                                    color: AppColors.accent,
                                   ),
                                 ),
                               ),
@@ -423,7 +618,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                       height: 20,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.pearl, Colors.white],
+                          colors: [AppColors.background, Colors.white],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
@@ -444,7 +639,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: AppColors.pearl,
+                          color: AppColors.background,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.zero,
                             topRight: Radius.circular(30),
@@ -485,11 +680,18 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   TextFormField(
+                                    key: _recipeNameKey,
                                     controller: _recipeNameController,
                                     decoration: _getInputDecoration(),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Nama resep tidak boleh kosong';
+                                      }
+                                      if (value.length < 4) {
+                                        return 'Nama resep minimal 4 karakter';
+                                      }
+                                      if (value.length > 255) {
+                                        return 'Nama resep maksimal 255 karakter';
                                       }
                                       return null;
                                     },
@@ -648,6 +850,22 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                                     ),
                                                   ),
                                                 ),
+                                                if (_showImageSizeError)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          top: 6.0,
+                                                          left: 12.0,
+                                                        ),
+                                                    child: Text(
+                                                      'Ukuran gambar maksimal 1MB',
+                                                      style: TextStyle(
+                                                        color: Colors.red[700],
+                                                        fontSize: 12,
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  ),
                                               ],
                                             )
                                             : widget.food.image.isNotEmpty
@@ -884,6 +1102,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   DropdownButtonFormField<FoodCategory>(
+                                    key: _categoryKey,
                                     value: _selectedCategory,
                                     decoration: _getInputDecoration(),
                                     icon: const SizedBox.shrink(),
@@ -939,6 +1158,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   DropdownButtonFormField<String>(
+                                    key: _ageKey,
                                     value: _selectedAgeGroup,
                                     decoration: _getInputDecoration(),
                                     icon: const SizedBox.shrink(),
@@ -994,12 +1214,18 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   TextFormField(
+                                    key: _portionKey,
                                     controller: _servingsController,
                                     decoration: _getInputDecoration(),
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Jumlah porsi tidak boleh kosong';
+                                      }
+                                      try {
+                                        int.parse(value);
+                                      } catch (e) {
+                                        return 'Porsi harus berupa angka';
                                       }
                                       return null;
                                     },
@@ -1034,12 +1260,16 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   TextFormField(
+                                    key: _descriptionKey,
                                     controller: _descriptionController,
                                     maxLines: 2,
                                     decoration: _getInputDecoration(),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Deskripsi tidak boleh kosong';
+                                      }
+                                      if (value.length < 5) {
+                                        return 'Deskripsi minimal 5 karakter';
                                       }
                                       return null;
                                     },
@@ -1111,19 +1341,19 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                             // Field input bahan
                                             Expanded(
                                               child: TextFormField(
+                                                key: _ingredientKeys[index],
                                                 controller:
                                                     _ingredientControllers[index],
                                                 decoration: _getInputDecoration(
                                                   hintText:
                                                       'Bahan ${index + 1}',
                                                 ),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Bahan tidak boleh kosong';
-                                                  }
-                                                  return null;
-                                                },
+                                                validator:
+                                                    (value) =>
+                                                        validateIngredientsLength(
+                                                          value,
+                                                          index,
+                                                        ),
                                               ),
                                             ),
                                             // Tombol hapus
@@ -1245,19 +1475,19 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                             // Field input langkah
                                             Expanded(
                                               child: TextFormField(
+                                                key: _stepKeys[index],
                                                 controller:
                                                     _stepControllers[index],
                                                 decoration: _getInputDecoration(
                                                   hintText:
                                                       'Langkah ${index + 1}',
                                                 ),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Langkah tidak boleh kosong';
-                                                  }
-                                                  return null;
-                                                },
+                                                validator:
+                                                    (value) =>
+                                                        validateStepsLength(
+                                                          value,
+                                                          index,
+                                                        ),
                                               ),
                                             ),
                                             // Tombol hapus
@@ -1320,33 +1550,52 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                       child: Center(
                                         child: GestureDetector(
                                           onTap: () {
-                                            // Validasi foto terlebih dahulu, sebelum validasi form lainnya
+                                            // Reset semua error state terlebih dahulu
                                             setState(() {
-                                              // Selalu cek foto, terlepas dari validasi input lainnya
                                               // Foto dianggap valid jika imageFile ada atau foto original masih ada
                                               _showPhotoError =
                                                   _imageFile == null &&
                                                   (widget.food.image.isEmpty);
+                                              _showImageSizeError = false;
                                             });
+
+                                            // Validasi ukuran gambar jika ada
+                                            if (_imageFile != null) {
+                                              final fileSize =
+                                                  _imageFile!.lengthSync();
+                                              final fileSizeInMB =
+                                                  fileSize / (1024 * 1024);
+                                              if (fileSizeInMB > 1) {
+                                                setState(() {
+                                                  _showImageSizeError = true;
+                                                });
+                                              }
+                                            }
 
                                             // Validasi form saat tombol next ditekan
                                             bool formValid =
                                                 _formKey.currentState!
                                                     .validate();
 
-                                            // Validasi foto
-                                            bool photoValid =
-                                                (_imageFile != null ||
-                                                    (widget
-                                                        .food
-                                                        .image
-                                                        .isNotEmpty));
+                                            // Scroll ke error pertama jika ada
+                                            if (!formValid ||
+                                                _showPhotoError ||
+                                                _showImageSizeError) {
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback((_) {
+                                                    _scrollToFirstError();
+                                                  });
+                                              return;
+                                            }
 
                                             // Hanya lanjutkan jika form valid dan ada foto
-                                            if (formValid && photoValid) {
-                                              // Reset error state
+                                            if (formValid &&
+                                                !_showPhotoError &&
+                                                !_showImageSizeError) {
+                                              // Reset state error
                                               setState(() {
                                                 _showPhotoError = false;
+                                                _showImageSizeError = false;
                                               });
 
                                               List<String> ingredients =
@@ -1383,15 +1632,15 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                                 energy:
                                                     widget
                                                         .food
-                                                        .energy, // Akan diupdate di calculator
+                                                        .energy, // Akan diupdate di calculator jika diperlukan
                                                 protein:
                                                     widget
                                                         .food
-                                                        .protein, // Akan diupdate di calculator
+                                                        .protein, // Akan diupdate di calculator jika diperlukan
                                                 fat:
                                                     widget
                                                         .food
-                                                        .fat, // Akan diupdate di calculator
+                                                        .fat, // Akan diupdate di calculator jika diperlukan
                                                 portion:
                                                     int.tryParse(
                                                       _servingsController.text,
@@ -1420,13 +1669,16 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder:
-                                                      (context) =>
-                                                          FoodNutritionCalculatorScreen(
-                                                            ingredients:
-                                                                ingredients,
-                                                            food: updatedFood,
-                                                            image: _imageFile,
-                                                          ),
+                                                      (
+                                                        context,
+                                                      ) => FoodNutritionCalculatorScreen(
+                                                        ingredients:
+                                                            ingredients,
+                                                        food: updatedFood,
+                                                        image: _imageFile,
+                                                        recalculateNutrition:
+                                                            _ingredientsChanged,
+                                                      ),
                                                 ),
                                               );
                                             } else if (_showPhotoError &&

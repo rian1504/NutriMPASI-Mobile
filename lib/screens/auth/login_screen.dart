@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
@@ -265,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: const Text(
                                         'Lupa Kata Sandi?',
                                         style: TextStyle(
-                                          color: AppColors.secondary,
+                                          color: AppColors.accent,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -276,39 +276,48 @@ class _LoginScreenState extends State<LoginScreen> {
                                   SizedBox(
                                     width: double.infinity,
                                     height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          _login(context);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.secondary,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30,
-                                          ),
-                                        ),
-                                      ),
-                                      child: BlocBuilder<
-                                        AuthenticationBloc,
-                                        AuthenticationState
-                                      >(
-                                        builder: (context, state) {
-                                          if (state is AuthenticationLoading) {
-                                            return const CircularProgressIndicator();
-                                          }
-                                          return const Text(
-                                            'Masuk',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                    child: BlocBuilder<
+                                      AuthenticationBloc,
+                                      AuthenticationState
+                                    >(
+                                      builder: (context, state) {
+                                        final isLoading =
+                                            state is AuthenticationLoading;
+
+                                        return ElevatedButton(
+                                          onPressed:
+                                              isLoading
+                                                  ? null
+                                                  : () {
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
+                                                      _login(context);
+                                                    }
+                                                  },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColors.accent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                          child:
+                                              isLoading
+                                                  ? const CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                  )
+                                                  : const Text(
+                                                    'Masuk',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],

@@ -9,16 +9,16 @@ import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 
-class FoodListingScreen extends StatefulWidget {
+class FoodListScreen extends StatefulWidget {
   final bool showUserSuggestions;
 
-  const FoodListingScreen({super.key, this.showUserSuggestions = false});
+  const FoodListScreen({super.key, this.showUserSuggestions = false});
 
   @override
-  State<FoodListingScreen> createState() => _FoodListingScreenState();
+  State<FoodListScreen> createState() => _FoodListScreenState();
 }
 
-class _FoodListingScreenState extends State<FoodListingScreen>
+class _FoodListScreenState extends State<FoodListScreen>
     with SingleTickerProviderStateMixin {
   // Controller untuk pencarian
   final TextEditingController _searchController = TextEditingController();
@@ -867,14 +867,14 @@ class _FoodListingScreenState extends State<FoodListingScreen>
         _searchFocusNode.unfocus();
       },
       child: Scaffold(
-        backgroundColor: AppColors.pearl,
+        backgroundColor: AppColors.background,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: AnimatedBuilder(
             animation: _appBarAnimation,
             builder: (context, child) {
               return AppBar(
-                backgroundColor: AppColors.pearl,
+                backgroundColor: AppColors.background,
                 elevation: 0,
                 leadingWidth: Tween<double>(
                   begin: 56.0,
@@ -1639,7 +1639,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: AppColors.secondary.withAlpha(25),
+                            color: AppColors.accent.withAlpha(25),
                             shape: BoxShape.circle,
                           ),
                           child: Image.asset(

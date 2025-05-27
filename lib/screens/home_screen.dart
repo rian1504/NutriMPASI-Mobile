@@ -14,10 +14,11 @@ import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
-import 'package:nutrimpasi/screens/notification_screen.dart';
-import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
+import 'package:nutrimpasi/screens/features/notification_screen.dart';
+import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
+import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -224,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pearl,
+      backgroundColor: AppColors.background,
       appBar: AppBar(backgroundColor: AppColors.bisque, toolbarHeight: 1),
       body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
@@ -743,8 +744,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                         style: TextStyle(
                                                           fontSize: 14,
                                                           color:
-                                                              AppColors
-                                                                  .secondary,
+                                                              AppColors.accent,
                                                           decoration:
                                                               TextDecoration
                                                                   .underline,
@@ -789,7 +789,7 @@ class _HomeScreenState extends State<HomeScreen>
                       width: 80,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: AppColors.secondary,
+                        color: AppColors.accent,
                         borderRadius: const BorderRadius.horizontal(
                           left: Radius.circular(20),
                         ),
@@ -829,40 +829,48 @@ class _HomeScreenState extends State<HomeScreen>
           // Judul bagian
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Rekomendasi',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => FoodRecommendationScreen(
-                              recommendedFoods: _recommendedFoods,
-                            ),
+            child: InkWell(
+              onTap: () {
+                // Navigasi hanya jika memiliki rekomendasi
+                if (_recommendedFoods.isNotEmpty &&
+                    babies.any((baby) => baby.isProfileComplete)) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => FoodRecommendationScreen(
+                            recommendedFoods: _recommendedFoods,
+                          ),
+                    ),
+                  );
+                }
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Rekomendasi',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
                       ),
-                    );
-                  },
-                  child: const Icon(
-                    Symbols.arrow_forward_ios_rounded,
-                    size: 16,
-                    color: AppColors.textBlack,
-                    weight: 900,
-                  ),
+                    ),
+                    const Icon(
+                      Symbols.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: AppColors.textBlack,
+                      weight: 900,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 4),
 
           // Tampilkan konten berdasarkan status saat ini
           BlocBuilder<BabyFoodRecommendationBloc, BabyFoodRecommendationState>(
@@ -872,6 +880,10 @@ class _HomeScreenState extends State<HomeScreen>
               }
 
               if (state is BabyFoodRecommendationError) {
+                // Periksa apakah ada profil yang belum lengkap
+                if (!babies.any((baby) => baby.isProfileComplete)) {
+                  return _buildLockedRecommendation();
+                }
                 return Center(
                   child: Text(
                     state.error,
@@ -887,9 +899,11 @@ class _HomeScreenState extends State<HomeScreen>
                 _recommendedFoods = state.foods;
 
                 // Reset index rekomendasi dan posisi carousel ketika makanan baru dimuat
-                if (_recommendedFoods.isEmpty ||
-                    _recommendedFoods.first.food.id !=
-                        state.foods.first.food.id) {
+                if (_recommendedFoods.isNotEmpty &&
+                    (_currentRecommendationIndex >= _recommendedFoods.length ||
+                        (_recommendedFoods.isNotEmpty &&
+                            _recommendedFoods.first.food.id !=
+                                state.foods.first.food.id))) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (mounted) {
                       setState(() {
@@ -900,44 +914,6 @@ class _HomeScreenState extends State<HomeScreen>
                       }
                     }
                   });
-                }
-
-                if (_recommendedFoods.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 50.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.no_food,
-                            size: 70,
-                            color: AppColors.primary.withAlpha(175),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Belum ada rekomendasi',
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textBlack,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Belum ada rekomendasi makanan untuk bayi kamu saat ini.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 14,
-                              color: AppColors.textGrey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
                 }
               }
 
@@ -961,7 +937,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: SizedBox(
           height: 132,
           child: Center(
-            child: CircularProgressIndicator(color: AppColors.secondary),
+            child: CircularProgressIndicator(color: AppColors.accent),
           ),
         ),
       ),
@@ -971,19 +947,67 @@ class _HomeScreenState extends State<HomeScreen>
   // Konten untuk rekomendasi (terkunci atau carousel)
   Widget _buildRecommendationContent() {
     // Periksa apakah ada bayi yang profilnya lengkap
-    bool hasCompleteBabyProfile = babies.any((baby) => baby.isProfileComplete);
+    bool hasCompleteBabyProfile = babies.any((baby) {
+      return baby.isProfileComplete == true;
+    });
 
+    // Tampilkan rekomendasi terkunci jika profil tidak lengkap
     if (!hasCompleteBabyProfile) {
       return _buildLockedRecommendation();
-    } else {
+    }
+    // Tampilkan carousel jika kita memiliki data makanan dan profil lengkap
+    else if (_recommendedFoods.isNotEmpty) {
       return _buildRecommendationCarousel();
     }
+    // Tampilkan status kosong untuk kasus lainnya (profil lengkap tapi tidak ada makanan)
+    else {
+      return _buildEmptyRecommendation();
+    }
+  }
+
+  // Widget untuk menampilkan status kosong ketika tidak ada rekomendasi
+  Widget _buildEmptyRecommendation() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 50.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.no_food,
+              size: 70,
+              color: AppColors.primary.withAlpha(175),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Belum ada rekomendasi',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textBlack,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Belum ada rekomendasi makanan untuk bayi kamu saat ini.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 14,
+                color: AppColors.textGrey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // Kartu rekomendasi terkunci
   Widget _buildLockedRecommendation() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -999,9 +1023,17 @@ class _HomeScreenState extends State<HomeScreen>
                     child: SizedBox(
                       width: 100,
                       height: 100,
-                      child: Image.network(
-                        "https://picsum.photos/200/300?random=16",
+                      child: Image.asset(
+                        "assets/images/component/rekomendasi_terkunci.png",
                         fit: BoxFit.cover,
+                        errorBuilder:
+                            (context, error, stackTrace) => Container(
+                              color: Colors.grey[300],
+                              child: const Icon(
+                                Icons.image_not_supported,
+                                size: 40,
+                              ),
+                            ),
                       ),
                     ),
                   ),
@@ -1026,13 +1058,38 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Buka fitur ini dengan melengkapi\nprofil bayi kamu!',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    // Tombol untuk melengkapi profil
+                    if (babies.isNotEmpty)
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => BabyEditScreen(
+                                    baby: babies[_currentBabyIndex],
+                                  ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accent,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        child: const Text('Lengkapi Profil'),
+                      ),
                   ],
                 ),
               ),
@@ -1182,7 +1239,7 @@ class _HomeScreenState extends State<HomeScreen>
                       shape: BoxShape.circle,
                       color:
                           i == _currentRecommendationIndex
-                              ? AppColors.secondary
+                              ? AppColors.accent
                               : Colors.white.withAlpha(125),
                     ),
                   );
@@ -1203,7 +1260,12 @@ class _HomeScreenState extends State<HomeScreen>
         'title': 'Materi Pembelajaran',
         'image': 'assets/images/card/materi_pembelajaran.png',
         'navigate': (BuildContext context) {
-          // TODO: Halaman Materi Pembelajaran
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LearningMaterialScreen(),
+            ),
+          );
         },
       },
       {
@@ -1254,41 +1316,41 @@ class _HomeScreenState extends State<HomeScreen>
           // Judul bagian
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Fitur Lainnya',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FeatureListScreen(),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FeatureListScreen(),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Fitur Lainnya',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
                       ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Icon(
+                    ),
+                    const Icon(
                       Symbols.arrow_forward_ios_rounded,
                       size: 16,
                       color: AppColors.textBlack,
                       weight: 900,
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 4),
           // Carousel kartu fitur
           SizedBox(
             height: 180,
