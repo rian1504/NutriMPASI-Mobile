@@ -112,9 +112,8 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder:
-                                          (context) => FoodDetailScreen(
-                                            foodId: food.id.toString(),
-                                          ),
+                                          (context) =>
+                                              FoodDetailScreen(foodId: food.id),
                                     ),
                                   );
                                 },

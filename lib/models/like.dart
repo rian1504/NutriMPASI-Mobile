@@ -1,12 +1,32 @@
 // To parse this JSON data, do
 //
-//     final thread = threadFromJson(jsonString);
+//     final like = likeFromJson(jsonString);
 
 import 'dart:convert';
 
-Thread threadFromJson(String str) => Thread.fromJson(json.decode(str));
+Like likeFromJson(String str) => Like.fromJson(json.decode(str));
 
-String threadToJson(Thread data) => json.encode(data.toJson());
+String likeToJson(Like data) => json.encode(data.toJson());
+
+class Like {
+  int threadId;
+  Thread thread;
+
+  Like({required this.threadId, required this.thread});
+
+  Like copyWith({int? threadId, Thread? thread}) =>
+      Like(threadId: threadId ?? this.threadId, thread: thread ?? this.thread);
+
+  factory Like.fromJson(Map<String, dynamic> json) => Like(
+    threadId: json["thread_id"],
+    thread: Thread.fromJson(json["thread"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "thread_id": threadId,
+    "thread": thread.toJson(),
+  };
+}
 
 class Thread {
   int id;
@@ -16,7 +36,6 @@ class Thread {
   DateTime createdAt;
   int likesCount;
   int commentsCount;
-  bool isLike;
   User user;
 
   Thread({
@@ -27,7 +46,6 @@ class Thread {
     required this.createdAt,
     required this.likesCount,
     required this.commentsCount,
-    required this.isLike,
     required this.user,
   });
 
@@ -39,7 +57,6 @@ class Thread {
     DateTime? createdAt,
     int? likesCount,
     int? commentsCount,
-    bool? isLike,
     User? user,
   }) => Thread(
     id: id ?? this.id,
@@ -49,7 +66,6 @@ class Thread {
     createdAt: createdAt ?? this.createdAt,
     likesCount: likesCount ?? this.likesCount,
     commentsCount: commentsCount ?? this.commentsCount,
-    isLike: isLike ?? this.isLike,
     user: user ?? this.user,
   );
 
@@ -61,7 +77,6 @@ class Thread {
     createdAt: DateTime.parse(json["created_at"]),
     likesCount: json["likes_count"],
     commentsCount: json["comments_count"],
-    isLike: json["is_like"],
     user: User.fromJson(json["user"]),
   );
 
@@ -73,7 +88,6 @@ class Thread {
     "created_at": createdAt.toIso8601String(),
     "likes_count": likesCount,
     "comments_count": commentsCount,
-    "is_like": isLike,
     "user": user.toJson(),
   };
 }
@@ -84,6 +98,12 @@ class User {
   String? avatar;
 
   User({required this.id, required this.name, required this.avatar});
+
+  User copyWith({int? id, String? name, String? avatar}) => User(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    avatar: avatar ?? this.avatar,
+  );
 
   factory User.fromJson(Map<String, dynamic> json) =>
       User(id: json["id"], name: json["name"], avatar: json["avatar"]);

@@ -1319,9 +1319,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder:
-                    (context) =>
-                        FoodDetailScreen(foodId: food.foodId.toString()),
+                builder: (context) => FoodDetailScreen(foodId: food.foodId!),
               ),
             );
           }

@@ -39,6 +39,8 @@ class ApiEndpoints {
   static const String foodCategory = '$food/category';
   static const String foodFilter = '$food/filter';
   static const String foodRecord = '$food/record';
+
+  // Favorite
   static const String favorite = 'favorite';
 
   // Schedule
@@ -59,4 +61,10 @@ class ApiEndpoints {
   // Thread
   static const String thread = 'thread';
   static const String threadUser = 'thread-user';
+
+  // Comment
+  static const String comment = 'comment';
+
+  // Like
+  static const String like = 'like';
 }

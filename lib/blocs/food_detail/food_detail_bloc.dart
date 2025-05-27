@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/controllers/favorite_controller.dart';
 import 'package:nutrimpasi/controllers/food_controller.dart';
 import 'package:nutrimpasi/models/food.dart';
 
@@ -8,8 +9,10 @@ part 'food_detail_state.dart';
 
 class FoodDetailBloc extends Bloc<FoodDetailEvent, FoodDetailState> {
   final FoodController controller;
+  final FavoriteController favoriteController;
 
-  FoodDetailBloc({required this.controller}) : super(FoodDetailInitial()) {
+  FoodDetailBloc({required this.controller, required this.favoriteController})
+    : super(FoodDetailInitial()) {
     on<FetchFoodDetail>(_onFetch);
     on<ToggleFavorite>(_onToggleFavorite);
   }
@@ -20,7 +23,7 @@ class FoodDetailBloc extends Bloc<FoodDetailEvent, FoodDetailState> {
   ) async {
     emit(FoodDetailLoading());
     try {
-      final result = await controller.showFood(id: event.foodId);
+      final result = await controller.showFood(foodId: event.foodId);
       emit(FoodDetailLoaded(food: result));
     } catch (e) {
       emit(FoodDetailError('Gagal memuat detail makanan: ${e.toString()}'));
@@ -51,16 +54,10 @@ class FoodDetailBloc extends Bloc<FoodDetailEvent, FoodDetailState> {
       );
 
       // API call
-      await controller.toggleFavorite(id: event.foodId);
-
-      // Jika perlu, fetch ulang data untuk memastikan sync
-      // final updatedFood = await controller.showFood(id: event.foodId);
-      // emit(FoodDetailLoaded(food: updatedFood));
+      await favoriteController.toggleFavorite(foodId: event.foodId);
     } catch (e) {
       // Rollback jika error
       emit(FoodDetailLoaded(food: currentFood));
-      // Anda bisa menambahkan snackbar atau alert untuk menampilkan error
-      // ScaffoldMessenger.of(context).showSnackBar(...);
     }
   }
 }

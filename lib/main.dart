@@ -7,23 +7,33 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/baby_food_recommendation/baby_food_recommendation_bloc.dart';
+import 'package:nutrimpasi/blocs/comment/comment_bloc.dart';
+import 'package:nutrimpasi/blocs/favorite/favorite_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_category/food_category_bloc.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
 import 'package:nutrimpasi/blocs/food_record/food_record_bloc.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
+import 'package:nutrimpasi/blocs/like/like_bloc.dart';
 import 'package:nutrimpasi/blocs/notification/notification_bloc.dart';
 import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
+import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
+import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
+import 'package:nutrimpasi/controllers/comment_controller.dart';
+import 'package:nutrimpasi/controllers/favorite_controller.dart';
 import 'package:nutrimpasi/controllers/food_controller.dart';
 import 'package:nutrimpasi/controllers/food_record_controller.dart';
 import 'package:nutrimpasi/controllers/food_suggestion_controller.dart';
+import 'package:nutrimpasi/controllers/like_controller.dart';
 import 'package:nutrimpasi/controllers/notification_controller.dart';
 import 'package:nutrimpasi/controllers/nutritionist_controller.dart';
+import 'package:nutrimpasi/controllers/report_controller.dart';
 import 'package:nutrimpasi/controllers/schedule_controller.dart';
+import 'package:nutrimpasi/controllers/thread_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_list_screen.dart';
@@ -71,31 +81,28 @@ class MainApp extends StatelessWidget {
                   BabyFoodRecommendationBloc(controller: BabyController()),
         ),
         BlocProvider(
+          create: (context) => CommentBloc(controller: CommentController()),
+        ),
+        BlocProvider(
+          create: (context) => FavoriteBloc(controller: FavoriteController()),
+        ),
+        BlocProvider(
           create: (context) => FoodBloc(controller: FoodController()),
-        ),
-        BlocProvider(
-          create: (context) => FoodDetailBloc(controller: FoodController()),
-        ),
-        BlocProvider(
-          create: (context) => FoodCookingBloc(controller: FoodController()),
-        ),
-        BlocProvider(
-          create: (context) => ScheduleBloc(controller: ScheduleController()),
-        ),
-        BlocProvider(
-          create:
-              (context) =>
-                  NutritionistBloc(controller: NutritionistController()),
-        ),
-        BlocProvider(
-          create:
-              (context) =>
-                  FoodSuggestionBloc(controller: FoodSuggestionController()),
         ),
         BlocProvider(
           create:
               (context) =>
                   FoodCategoryBloc(controller: FoodSuggestionController()),
+        ),
+        BlocProvider(
+          create: (context) => FoodCookingBloc(controller: FoodController()),
+        ),
+        BlocProvider(
+          create:
+              (context) => FoodDetailBloc(
+                controller: FoodController(),
+                favoriteController: FavoriteController(),
+              ),
         ),
         BlocProvider(
           create:
@@ -104,7 +111,33 @@ class MainApp extends StatelessWidget {
         BlocProvider(
           create:
               (context) =>
+                  FoodSuggestionBloc(controller: FoodSuggestionController()),
+        ),
+        BlocProvider(
+          create: (context) => LikeBloc(controller: LikeController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
                   NotificationBloc(controller: NotificationController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  NutritionistBloc(controller: NutritionistController()),
+        ),
+        BlocProvider(
+          create: (context) => ReportBloc(controller: ReportController()),
+        ),
+        BlocProvider(
+          create: (context) => ScheduleBloc(controller: ScheduleController()),
+        ),
+        BlocProvider(
+          create:
+              (context) => ThreadBloc(
+                controller: ThreadController(),
+                likeController: LikeController(),
+              ),
         ),
       ],
       child: MaterialApp(

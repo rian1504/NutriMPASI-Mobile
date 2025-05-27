@@ -4,13 +4,13 @@ part of 'food_detail_bloc.dart';
 sealed class FoodDetailEvent {}
 
 class FetchFoodDetail extends FoodDetailEvent {
-  final String foodId;
+  final int foodId;
 
   FetchFoodDetail({required this.foodId});
 }
 
 class ToggleFavorite extends FoodDetailEvent {
-  final String foodId;
+  final int foodId;
 
   ToggleFavorite({required this.foodId});
 }

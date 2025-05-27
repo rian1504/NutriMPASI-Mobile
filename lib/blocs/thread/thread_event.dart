@@ -5,6 +5,12 @@ sealed class ThreadEvent {}
 
 class FetchThreads extends ThreadEvent {}
 
+class ToggleLike extends ThreadEvent {
+  final int threadId;
+
+  ToggleLike({required this.threadId});
+}
+
 class StoreThreads extends ThreadEvent {
   final String title;
   final String content;
