@@ -18,6 +18,7 @@ import 'package:nutrimpasi/screens/notification_screen.dart';
 import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
+import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -1255,7 +1256,12 @@ class _HomeScreenState extends State<HomeScreen>
         'title': 'Materi Pembelajaran',
         'image': 'assets/images/card/materi_pembelajaran.png',
         'navigate': (BuildContext context) {
-          // TODO: Halaman Materi Pembelajaran
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LearningMaterialScreen(),
+            ),
+          );
         },
       },
       {
