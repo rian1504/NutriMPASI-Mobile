@@ -14,8 +14,8 @@ import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
-import 'package:nutrimpasi/screens/notification_screen.dart';
-import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
+import 'package:nutrimpasi/screens/features/notification_screen.dart';
+import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
 import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
@@ -829,44 +829,48 @@ class _HomeScreenState extends State<HomeScreen>
           // Judul bagian
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Rekomendasi',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
-                  ),
+            child: InkWell(
+              onTap: () {
+                // Navigasi hanya jika memiliki rekomendasi
+                if (_recommendedFoods.isNotEmpty &&
+                    babies.any((baby) => baby.isProfileComplete)) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => FoodRecommendationScreen(
+                            recommendedFoods: _recommendedFoods,
+                          ),
+                    ),
+                  );
+                }
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Rekomendasi',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
+                      ),
+                    ),
+                    const Icon(
+                      Symbols.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: AppColors.textBlack,
+                      weight: 900,
+                    ),
+                  ],
                 ),
-                InkWell(
-                  onTap: () {
-                    // Navigasi hanya jika memiliki rekomendasi
-                    if (_recommendedFoods.isNotEmpty &&
-                        babies.any((baby) => baby.isProfileComplete)) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => FoodRecommendationScreen(
-                                recommendedFoods: _recommendedFoods,
-                              ),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Icon(
-                    Symbols.arrow_forward_ios_rounded,
-                    size: 16,
-                    color: AppColors.textBlack,
-                    weight: 900,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 4),
 
           // Tampilkan konten berdasarkan status saat ini
           BlocBuilder<BabyFoodRecommendationBloc, BabyFoodRecommendationState>(
@@ -1312,41 +1316,41 @@ class _HomeScreenState extends State<HomeScreen>
           // Judul bagian
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Fitur Lainnya',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FeatureListScreen(),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FeatureListScreen(),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Fitur Lainnya',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
                       ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Icon(
+                    ),
+                    const Icon(
                       Symbols.arrow_forward_ios_rounded,
                       size: 16,
                       color: AppColors.textBlack,
                       weight: 900,
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 4),
           // Carousel kartu fitur
           SizedBox(
             height: 180,

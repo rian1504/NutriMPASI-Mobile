@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
-import 'package:nutrimpasi/screens/nutritionist_profile_screen.dart';
+import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 
 class FeatureListScreen extends StatelessWidget {
   const FeatureListScreen({super.key});
