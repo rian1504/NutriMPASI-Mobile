@@ -27,6 +27,7 @@ class AppColors {
 
   // Color pallete
   static const Color lavenderBlue = Color(0xFFBABAEE);
+  static const Color champagne = Color(0xFFFFF9EB);
   static const Color cream = Color(0xFFEBDDC5);
   static const Color porcelain = Color(0xFFFDEFC0);
   static const Color bisque = Color(0xFFFFE1BE);

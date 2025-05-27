@@ -11,7 +11,7 @@ class LearningMaterialScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.champagne,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -39,7 +39,7 @@ class LearningMaterialScreen extends StatelessWidget {
         title: const Text(
           'Materi Pembelajaran',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.textBlack,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
