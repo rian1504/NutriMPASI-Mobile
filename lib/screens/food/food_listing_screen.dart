@@ -1496,7 +1496,7 @@ class _FoodListingScreenState extends State<FoodListingScreen>
                                         MaterialPageRoute(
                                           builder:
                                               (context) => FoodDetailScreen(
-                                                foodId: item.id.toString(),
+                                                foodId: item.id,
                                               ),
                                         ),
                                       );
