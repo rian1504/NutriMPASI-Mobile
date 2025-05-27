@@ -42,6 +42,7 @@ import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/setting/profile_screen.dart';
 import 'package:nutrimpasi/screens/features/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
 
@@ -49,6 +50,10 @@ Future<void> main() async {
   // Make main async
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+
+  // set locale timeago package
+  timeago.setLocaleMessages('id', timeago.IdMessages());
+  timeago.setDefaultLocale('id');
   runApp(const MainApp());
 }
 

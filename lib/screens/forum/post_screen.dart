@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
-import 'package:nutrimpasi/widgets/forum_report_button.dart' show ReportButton;
+// import 'package:nutrimpasi/widgets/forum_report_button.dart' show ReportButton;
 
 // Widget untuk menampilkan app bar forum diskusi
 import '../../widgets/forum_app_bar.dart' show AppBarForum;
@@ -277,7 +277,7 @@ class _PostSectionState extends State<_PostSection> {
                           ],
                         ),
                         // Tombol untuk melaporkan postingan
-                        ReportButton(content: "postingan"),
+                        // ReportButton(category: "thread", refersId: ,),
                       ],
                     ),
                   ],
@@ -434,7 +434,7 @@ class _CommentSectionState extends State<_CommentSection> {
                 ],
               ),
               // Tombol untuk melaporkan komentar
-              ReportButton(content: "komentar"),
+              // ReportButton(category: "comment", refersId: ,),
             ],
           ),
         ),
