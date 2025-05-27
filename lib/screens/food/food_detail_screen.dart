@@ -297,7 +297,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                               if (formKey
                                                                   .currentState!
                                                                   .validate()) {
-                                                                // TODO: Mengirimkan laporan ke server
+                                                                // TODO: Mengirimkan laporan
 
                                                                 // Tutup dialog form laporan
                                                                 Navigator.pop(
@@ -803,174 +803,214 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                     for (var baby in babies) baby.id: false,
                                   };
                                   DateTime? selectedDate;
+                                  String? babyValidationError;
+                                  String? dateValidationError;
 
-                                  return BlocListener<
-                                    ScheduleBloc,
-                                    ScheduleState
-                                  >(
-                                    listener: (context, state) {
-                                      if (state is ScheduleStored) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Jadwal berhasil disimpan',
+                                  return StatefulBuilder(
+                                    builder: (context, setState) {
+                                      return BlocListener<
+                                        ScheduleBloc,
+                                        ScheduleState
+                                      >(
+                                        listener: (context, state) {
+                                          if (state is ScheduleStored) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Jadwal berhasil disimpan',
+                                                ),
+                                                backgroundColor: Colors.green,
+                                              ),
+                                            );
+                                            Navigator.pop(context);
+                                          } else if (state is ScheduleError) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(state.error),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              16,
                                             ),
-                                            backgroundColor: Colors.green,
                                           ),
-                                        );
-                                        Navigator.pop(
-                                          context,
-                                        ); // Tutup dialog setelah berhasil simpan
-                                      } else if (state is ScheduleError) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(state.error),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(16),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Material(
-                                                  color: Colors.transparent,
-                                                  child: InkWell(
-                                                    onTap:
-                                                        () => Navigator.pop(
-                                                          context,
-                                                        ),
-                                                    customBorder:
-                                                        const CircleBorder(),
-                                                    child: Container(
-                                                      width: 24,
-                                                      height: 24,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: Colors.white,
-                                                        border: Border.all(
-                                                          color:
-                                                              AppColors
-                                                                  .textBlack,
-                                                        ),
-                                                      ),
-                                                      child: const Center(
-                                                        child: Icon(
-                                                          Icons.close,
-                                                          color:
-                                                              AppColors
-                                                                  .textBlack,
-                                                          size: 18,
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Material(
+                                                      color: Colors.transparent,
+                                                      child: InkWell(
+                                                        onTap:
+                                                            () => Navigator.pop(
+                                                              context,
+                                                            ),
+                                                        customBorder:
+                                                            const CircleBorder(),
+                                                        child: Container(
+                                                          width: 24,
+                                                          height: 24,
+                                                          decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            color: Colors.white,
+                                                            border: Border.all(
+                                                              color:
+                                                                  AppColors
+                                                                      .textBlack,
+                                                            ),
+                                                          ),
+                                                          child: const Center(
+                                                            child: Icon(
+                                                              Icons.close,
+                                                              color:
+                                                                  AppColors
+                                                                      .textBlack,
+                                                              size: 18,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
+                                                  ],
+                                                ),
+                                                Center(
+                                                  child: Text(
+                                                    'Atur Jadwal Memasak',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color:
+                                                          AppColors.textBlack,
+                                                    ),
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                            Center(
-                                              child: Text(
-                                                'Atur Jadwal Memasak',
-                                                style: TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors.textBlack,
+
+                                                const SizedBox(height: 16),
+
+                                                // Pilihan bayi
+                                                const Text(
+                                                  'Pilih Profil Bayi',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 14,
+                                                    color: AppColors.textGrey,
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
+                                                const SizedBox(height: 8),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color:
+                                                          babyValidationError !=
+                                                                  null
+                                                              ? Colors.red
+                                                              : AppColors
+                                                                  .componentGrey!,
+                                                      width:
+                                                          babyValidationError !=
+                                                                  null
+                                                              ? 1.5
+                                                              : 1.0,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 8,
+                                                      ),
+                                                  child: Column(
+                                                    children:
+                                                        babies.map((baby) {
+                                                          return Row(
+                                                            children: [
+                                                              Checkbox(
+                                                                value:
+                                                                    selectedBabies[baby
+                                                                        .id] ??
+                                                                    false,
+                                                                onChanged: (
+                                                                  value,
+                                                                ) {
+                                                                  setState(() {
+                                                                    selectedBabies[baby
+                                                                            .id] =
+                                                                        value!;
+                                                                    if (value) {
+                                                                      babyValidationError =
+                                                                          null;
+                                                                    }
+                                                                  });
+                                                                },
+                                                                activeColor:
+                                                                    AppColors
+                                                                        .primary,
+                                                              ),
+                                                              Text(
+                                                                baby.name,
+                                                                style: const TextStyle(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }).toList(),
+                                                  ),
+                                                ),
+                                                if (babyValidationError != null)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          top: 6,
+                                                          left: 12,
+                                                        ),
+                                                    child: Text(
+                                                      babyValidationError!,
+                                                      style: const TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 12,
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  ),
+                                                const SizedBox(height: 16),
 
-                                            const SizedBox(height: 16),
-
-                                            // Pilihan bayi
-                                            const Text(
-                                              'Pilih Profil Bayi',
-                                              style: TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontSize: 14,
-                                                color: AppColors.textGrey,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children:
-                                                      babies.map((baby) {
-                                                        return Row(
-                                                          children: [
-                                                            Checkbox(
-                                                              value:
-                                                                  selectedBabies[baby
-                                                                      .id] ??
-                                                                  false,
-                                                              onChanged: (
-                                                                value,
-                                                              ) {
-                                                                setState(() {
-                                                                  selectedBabies[baby
-                                                                          .id] =
-                                                                      value!;
-                                                                });
-                                                              },
-                                                              activeColor:
-                                                                  AppColors
-                                                                      .primary,
-                                                            ),
-                                                            Text(
-                                                              baby.name,
-                                                              style:
-                                                                  const TextStyle(
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      }).toList(),
-                                                );
-                                              },
-                                            ),
-                                            const SizedBox(height: 16),
-
-                                            // Pilihan tanggal
-                                            const Text(
-                                              'Pilih Tanggal',
-                                              style: TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontSize: 14,
-                                                color: AppColors.textGrey,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return Column(
-                                                  children: [
-                                                    InkWell(
-                                                      onTap: () async {
-                                                        final DateTime?
-                                                        pickedDate = await showDatePicker(
+                                                // Pilihan tanggal
+                                                const Text(
+                                                  'Pilih Tanggal',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 14,
+                                                    color: AppColors.textGrey,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                InkWell(
+                                                  onTap: () async {
+                                                    final DateTime? pickedDate =
+                                                        await showDatePicker(
                                                           context: context,
                                                           initialDate:
                                                               DateTime.now(),
@@ -982,187 +1022,243 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                                   days: 6,
                                                                 ),
                                                               ),
-                                                          // Format tanggal Indonesia
                                                           locale: const Locale(
                                                             'id',
                                                             'ID',
                                                           ),
                                                         );
-                                                        if (pickedDate !=
-                                                            null) {
-                                                          setState(() {
-                                                            selectedDate =
-                                                                pickedDate;
-                                                          });
-                                                        }
-                                                      },
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              horizontal: 12,
-                                                              vertical: 8,
-                                                            ),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                            color:
-                                                                AppColors
+                                                    if (pickedDate != null) {
+                                                      setState(() {
+                                                        selectedDate =
+                                                            pickedDate;
+                                                        dateValidationError =
+                                                            null;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 12,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                        color:
+                                                            dateValidationError !=
+                                                                    null
+                                                                ? Colors.red
+                                                                : AppColors
                                                                     .componentGrey!,
+                                                        width:
+                                                            dateValidationError !=
+                                                                    null
+                                                                ? 1.5
+                                                                : 1.0,
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
                                                           ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                8,
-                                                              ),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          selectedDate != null
+                                                              ? DateFormat(
+                                                                'EEEE, d MMMM y',
+                                                                'id_ID',
+                                                              ).format(
+                                                                selectedDate!,
+                                                              )
+                                                              : 'Pilih Tanggal',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontSize: 14,
+                                                            color:
+                                                                selectedDate !=
+                                                                        null
+                                                                    ? AppColors
+                                                                        .textBlack
+                                                                    : AppColors
+                                                                        .textGrey,
+                                                          ),
                                                         ),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              selectedDate !=
-                                                                      null
-                                                                  ? DateFormat(
-                                                                    'EEEE, d MMMM y',
-                                                                    'id_ID',
-                                                                  ).format(
-                                                                    selectedDate!,
-                                                                  )
-                                                                  : 'Pilih Tanggal',
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontSize: 14,
-                                                                color:
-                                                                    selectedDate !=
-                                                                            null
-                                                                        ? AppColors
-                                                                            .textBlack
-                                                                        : AppColors
-                                                                            .textGrey,
-                                                              ),
-                                                            ),
-                                                            const Icon(
-                                                              Symbols
-                                                                  .calendar_month,
-                                                              size: 20,
-                                                              color:
-                                                                  AppColors
-                                                                      .textGrey,
-                                                            ),
-                                                          ],
+                                                        const Icon(
+                                                          Symbols
+                                                              .calendar_month,
+                                                          size: 20,
+                                                          color:
+                                                              AppColors
+                                                                  .textGrey,
                                                         ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (dateValidationError != null)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          top: 6,
+                                                          left: 12,
+                                                        ),
+                                                    child: Text(
+                                                      dateValidationError!,
+                                                      style: const TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 12,
+                                                        fontFamily: 'Poppins',
                                                       ),
                                                     ),
-                                                  ],
-                                                );
-                                              },
-                                            ),
-                                            const SizedBox(height: 24),
-
-                                            // Tombol simpan jadwal
-                                            SizedBox(
-                                              width: double.infinity,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // Validasi input
-                                                  final selectedBabyId =
-                                                      selectedBabies.entries
-                                                          .where(
-                                                            (entry) =>
-                                                                entry.value,
-                                                          )
-                                                          .map(
-                                                            (entry) =>
-                                                                entry.key
-                                                                    .toString(),
-                                                          )
-                                                          .toList();
-
-                                                  if (selectedBabyId.isEmpty) {
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text(
-                                                          'Pilih minimal satu bayi',
-                                                        ),
-                                                      ),
-                                                    );
-                                                    return;
-                                                  }
-
-                                                  if (selectedDate == null) {
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text(
-                                                          'Pilih tanggal terlebih dahulu',
-                                                        ),
-                                                      ),
-                                                    );
-                                                    return;
-                                                  }
-
-                                                  // Simpan jadwal
-                                                  context
-                                                      .read<ScheduleBloc>()
-                                                      .add(
-                                                        StoreSchedules(
-                                                          foodId:
-                                                              food.id
-                                                                  .toString(),
-                                                          babyId:
-                                                              selectedBabyId,
-                                                          date: selectedDate!,
-                                                        ),
-                                                      );
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      AppColors.accent,
-                                                  foregroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          8,
-                                                        ),
                                                   ),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                      ),
-                                                ),
-                                                child: BlocBuilder<
-                                                  ScheduleBloc,
-                                                  ScheduleState
-                                                >(
-                                                  builder: (context, state) {
-                                                    if (state
-                                                        is ScheduleLoading) {
-                                                      return Center(
-                                                        child:
-                                                            CircularProgressIndicator(),
-                                                      );
-                                                    }
+                                                const SizedBox(height: 24),
 
-                                                    return const Text(
-                                                      'Simpan',
-                                                      style: TextStyle(
-                                                        fontFamily: 'Poppins',
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    );
-                                                  },
+                                                // Tombol simpan jadwal
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: BlocBuilder<
+                                                    ScheduleBloc,
+                                                    ScheduleState
+                                                  >(
+                                                    builder: (
+                                                      context,
+                                                      blocState,
+                                                    ) {
+                                                      final isLoading =
+                                                          blocState
+                                                              is ScheduleLoading;
+
+                                                      return ElevatedButton(
+                                                        onPressed:
+                                                            isLoading
+                                                                ? null
+                                                                : () {
+                                                                  bool isValid =
+                                                                      true;
+
+                                                                  // Validasi bayi
+                                                                  final selectedBabyId =
+                                                                      selectedBabies
+                                                                          .entries
+                                                                          .where(
+                                                                            (
+                                                                              entry,
+                                                                            ) =>
+                                                                                entry.value,
+                                                                          )
+                                                                          .map(
+                                                                            (
+                                                                              entry,
+                                                                            ) =>
+                                                                                entry.key.toString(),
+                                                                          )
+                                                                          .toList();
+
+                                                                  if (selectedBabyId
+                                                                      .isEmpty) {
+                                                                    setState(() {
+                                                                      babyValidationError =
+                                                                          'Pilih minimal satu bayi';
+                                                                    });
+                                                                    isValid =
+                                                                        false;
+                                                                  } else {
+                                                                    setState(() {
+                                                                      babyValidationError =
+                                                                          null;
+                                                                    });
+                                                                  }
+
+                                                                  // Validasi tanggal
+                                                                  if (selectedDate ==
+                                                                      null) {
+                                                                    setState(() {
+                                                                      dateValidationError =
+                                                                          'Pilih tanggal terlebih dahulu';
+                                                                    });
+                                                                    isValid =
+                                                                        false;
+                                                                  } else {
+                                                                    setState(() {
+                                                                      dateValidationError =
+                                                                          null;
+                                                                    });
+                                                                  }
+
+                                                                  // Jika valid, simpan jadwal
+                                                                  if (isValid) {
+                                                                    context
+                                                                        .read<
+                                                                          ScheduleBloc
+                                                                        >()
+                                                                        .add(
+                                                                          StoreSchedules(
+                                                                            foodId:
+                                                                                food.id.toString(),
+                                                                            babyId:
+                                                                                selectedBabyId,
+                                                                            date:
+                                                                                selectedDate!,
+                                                                          ),
+                                                                        );
+                                                                  }
+                                                                },
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              AppColors.accent,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  8,
+                                                                ),
+                                                          ),
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                vertical: 12,
+                                                              ),
+                                                        ),
+                                                        child:
+                                                            isLoading
+                                                                ? const SizedBox(
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  child: CircularProgressIndicator(
+                                                                    color:
+                                                                        Colors
+                                                                            .white,
+                                                                    strokeWidth:
+                                                                        2.0,
+                                                                  ),
+                                                                )
+                                                                : const Text(
+                                                                  'Simpan',
+                                                                  style: TextStyle(
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                  ),
+                                                                ),
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   );
                                 },
                               );
@@ -1208,203 +1304,253 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   Map<int, bool> selectedBabies = {
                                     for (var baby in babies) baby.id: false,
                                   };
+                                  String? babyValidationError;
 
-                                  return Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                  return StatefulBuilder(
+                                    builder: (context, setState) {
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Material(
-                                                color: Colors.transparent,
-                                                child: InkWell(
-                                                  onTap:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                      ),
-                                                  customBorder:
-                                                      const CircleBorder(),
-                                                  child: Container(
-                                                    width: 24,
-                                                    height: 24,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Colors.white,
-                                                      border: Border.all(
-                                                        color:
-                                                            AppColors.textBlack,
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Material(
+                                                    color: Colors.transparent,
+                                                    child: InkWell(
+                                                      onTap:
+                                                          () => Navigator.pop(
+                                                            context,
+                                                          ),
+                                                      customBorder:
+                                                          const CircleBorder(),
+                                                      child: Container(
+                                                        width: 24,
+                                                        height: 24,
+                                                        decoration: BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
+                                                          ),
+                                                        ),
+                                                        child: const Center(
+                                                          child: Icon(
+                                                            Icons.close,
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
+                                                            size: 18,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color:
-                                                            AppColors.textBlack,
-                                                        size: 18,
+                                                  ),
+                                                ],
+                                              ),
+                                              Center(
+                                                child: Text(
+                                                  'Masak Sekarang',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: AppColors.textBlack,
+                                                  ),
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 16),
+
+                                              // Pilihan bayi dengan validasi visual
+                                              const Text(
+                                                'Pilih Profil Bayi',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 14,
+                                                  color: AppColors.textGrey,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color:
+                                                        babyValidationError !=
+                                                                null
+                                                            ? Colors.red
+                                                            : AppColors
+                                                                .componentGrey!,
+                                                    width:
+                                                        babyValidationError !=
+                                                                null
+                                                            ? 1.5
+                                                            : 1.0,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      vertical: 8,
+                                                    ),
+                                                child: Column(
+                                                  children:
+                                                      babies.map((baby) {
+                                                        return Row(
+                                                          children: [
+                                                            Checkbox(
+                                                              value:
+                                                                  selectedBabies[baby
+                                                                      .id] ??
+                                                                  false,
+                                                              onChanged: (
+                                                                value,
+                                                              ) {
+                                                                setState(() {
+                                                                  selectedBabies[baby
+                                                                          .id] =
+                                                                      value!;
+                                                                  if (value) {
+                                                                    babyValidationError =
+                                                                        null;
+                                                                  }
+                                                                });
+                                                              },
+                                                              activeColor:
+                                                                  AppColors
+                                                                      .primary,
+                                                            ),
+                                                            Text(
+                                                              baby.name,
+                                                              style:
+                                                                  const TextStyle(
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      }).toList(),
+                                                ),
+                                              ),
+                                              if (babyValidationError != null)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        top: 6,
+                                                        left: 12,
                                                       ),
+                                                  child: Text(
+                                                    babyValidationError!,
+                                                    style: const TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 12,
+                                                      fontFamily: 'Poppins',
+                                                    ),
+                                                  ),
+                                                ),
+
+                                              const SizedBox(height: 24),
+
+                                              // Tombol lanjutkan
+                                              SizedBox(
+                                                width: double.infinity,
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    // Validasi apakah minimal satu bayi dipilih
+                                                    final isAnyBabySelected =
+                                                        selectedBabies.values
+                                                            .any(
+                                                              (isSelected) =>
+                                                                  isSelected,
+                                                            );
+
+                                                    if (isAnyBabySelected) {
+                                                      Navigator.pop(context);
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder:
+                                                              (
+                                                                context,
+                                                              ) => CookingGuideScreen(
+                                                                foodId:
+                                                                    food.id
+                                                                        .toString(),
+                                                                babyId:
+                                                                    selectedBabies
+                                                                        .entries
+                                                                        .where(
+                                                                          (
+                                                                            entry,
+                                                                          ) =>
+                                                                              entry.value,
+                                                                        )
+                                                                        .map(
+                                                                          (
+                                                                            entry,
+                                                                          ) =>
+                                                                              entry.key.toString(),
+                                                                        )
+                                                                        .toList(),
+                                                              ),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      setState(() {
+                                                        babyValidationError =
+                                                            'Pilih minimal 1 bayi';
+                                                      });
+                                                    }
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.accent,
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 12,
+                                                        ),
+                                                  ),
+                                                  child: const Text(
+                                                    'Lanjutkan',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ],
                                           ),
-                                          Center(
-                                            child: Text(
-                                              'Masak Sekarang',
-                                              style: TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.textBlack,
-                                              ),
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 16),
-
-                                          // Pilihan bayi
-                                          const Text(
-                                            'Pilih Profil Bayi',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 14,
-                                              color: AppColors.textGrey,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          StatefulBuilder(
-                                            builder: (context, setState) {
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children:
-                                                    babies.map((baby) {
-                                                      return Row(
-                                                        children: [
-                                                          Checkbox(
-                                                            value:
-                                                                selectedBabies[baby
-                                                                    .id] ??
-                                                                false,
-                                                            onChanged: (value) {
-                                                              setState(() {
-                                                                selectedBabies[baby
-                                                                        .id] =
-                                                                    value!;
-                                                              });
-                                                            },
-                                                            activeColor:
-                                                                AppColors
-                                                                    .primary,
-                                                          ),
-                                                          Text(
-                                                            baby.name,
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontSize: 14,
-                                                                ),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    }).toList(),
-                                              );
-                                            },
-                                          ),
-
-                                          const SizedBox(height: 24),
-
-                                          // Tombol lanjutkan
-                                          SizedBox(
-                                            width: double.infinity,
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                // Validasi apakah minimal satu bayi dipilih
-                                                final isAnyBabySelected =
-                                                    selectedBabies.values.any(
-                                                      (isSelected) =>
-                                                          isSelected,
-                                                    );
-
-                                                if (isAnyBabySelected) {
-                                                  Navigator.pop(context);
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder:
-                                                          (
-                                                            context,
-                                                          ) => CookingGuideScreen(
-                                                            foodId:
-                                                                food.id
-                                                                    .toString(),
-                                                            babyId:
-                                                                selectedBabies
-                                                                    .entries
-                                                                    .where(
-                                                                      (entry) =>
-                                                                          entry
-                                                                              .value,
-                                                                    )
-                                                                    .map(
-                                                                      (entry) =>
-                                                                          entry
-                                                                              .key
-                                                                              .toString(),
-                                                                    )
-                                                                    .toList(),
-                                                          ),
-                                                    ),
-                                                  );
-                                                } else {
-                                                  // Tampilkan pesan error
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    const SnackBar(
-                                                      content: Text(
-                                                        'Pilih minimal 1 bayi',
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.accent,
-                                                foregroundColor: Colors.white,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      vertical: 12,
-                                                    ),
-                                              ),
-                                              child: const Text(
-                                                'Lanjutkan',
-                                                style: TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               );
