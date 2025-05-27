@@ -9,7 +9,8 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/screens/forum/create_post_screen.dart';
 import 'package:nutrimpasi/screens/forum/post_screen.dart';
-import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
+import 'package:nutrimpasi/utils/navigation_animation.dart'
+    show pushWithSlideTransition;
 import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
 import 'package:nutrimpasi/widgets/forum_report_button.dart';
 
@@ -35,7 +36,9 @@ class _ForumScreenState extends State<ForumScreen> {
               color: AppColors.background,
               borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
             ),
-            child: const TabBarView(children: [ForumTabAll(), ForumTabMyPosts()]),
+            child: const TabBarView(
+              children: [ForumTabAll(), ForumTabMyPosts()],
+            ),
           ),
         ),
       ),
@@ -164,7 +167,9 @@ class ForumTabMyPosts extends StatelessWidget {
           bottom: 48,
           right: 16,
           child: FloatingActionButton(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
             onPressed: () {
               pushWithSlideTransition(context, const CreatePostScreen());
             },
@@ -251,10 +256,17 @@ class _ForumCardState extends State<ForumCard> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: ListTile(
-                          leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
+                          leading: Icon(
+                            AppIcons.edit,
+                            size: 20,
+                            color: AppColors.accent,
+                          ),
                           title: Text(
                             "Edit Postingan",
-                            style: TextStyle(fontSize: 16, color: AppColors.accent),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.accent,
+                            ),
                           ),
                           onTap: _hideMenu,
                         ),
@@ -274,10 +286,17 @@ class _ForumCardState extends State<ForumCard> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ListTile(
-                            leading: Icon(AppIcons.deleteFill, size: 20, color: AppColors.error),
+                            leading: Icon(
+                              AppIcons.deleteFill,
+                              size: 20,
+                              color: AppColors.error,
+                            ),
                             title: Text(
                               "Hapus Postingan",
-                              style: TextStyle(fontSize: 16, color: AppColors.error),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.error,
+                              ),
                             ),
                             onTap: () async {
                               _hideMenu(); // Sembunyikan menu terlebih dahulu
@@ -292,11 +311,18 @@ class _ForumCardState extends State<ForumCard> {
                                       actions: [
                                         TextButton(
                                           child: Text("Batal"),
-                                          onPressed: () => Navigator.pop(context, false),
+                                          onPressed:
+                                              () =>
+                                                  Navigator.pop(context, false),
                                         ),
                                         TextButton(
-                                          child: Text("Hapus", style: TextStyle(color: Colors.red)),
-                                          onPressed: () => Navigator.pop(context, true),
+                                          child: Text(
+                                            "Hapus",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                          onPressed:
+                                              () =>
+                                                  Navigator.pop(context, true),
                                         ),
                                       ],
                                     ),
@@ -316,7 +342,7 @@ class _ForumCardState extends State<ForumCard> {
           ),
     );
 
-    Overlay.of(context)!.insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
   void _hideMenu() {
@@ -350,31 +376,42 @@ class _ForumCardState extends State<ForumCard> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: AppColors.primaryTransparent, // abu-abu muda
+                                color:
+                                    AppColors
+                                        .primaryTransparent, // abu-abu muda
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 AppIcons.userFill,
                                 color: AppColors.primary,
-                                size: 20, // opsional, atur agar pas di lingkaran
+                                size:
+                                    20, // opsional, atur agar pas di lingkaran
                               ),
                             ),
                             SizedBox(width: 8),
                             Text(
                               widget.username,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      Text(widget.postedAt, style: TextStyle(color: AppColors.greyDark)),
+                      Text(
+                        widget.postedAt,
+                        style: TextStyle(color: AppColors.greyDark),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   // Title
                   Text(
                     widget.title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   // Content
@@ -400,22 +437,34 @@ class _ForumCardState extends State<ForumCard> {
                         children: [
                           IconButton(
                             icon: Icon(
-                              isLiked ? AppIcons.favoriteFill : AppIcons.favorite,
+                              isLiked
+                                  ? AppIcons.favoriteFill
+                                  : AppIcons.favorite,
                               color: Colors.red,
                               size: 24,
                             ),
                             onPressed: _toggleLike,
                           ),
-                          Text(widget.likeCount, style: const TextStyle(fontSize: 18)),
+                          Text(
+                            widget.likeCount,
+                            style: const TextStyle(fontSize: 18),
+                          ),
                         ],
                       ),
                       SizedBox(width: 16),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(AppIcons.comment, size: 24, color: AppColors.textBlack),
+                          Icon(
+                            AppIcons.comment,
+                            size: 24,
+                            color: AppColors.textBlack,
+                          ),
                           const SizedBox(width: 8),
-                          Text(widget.commentCount, style: const TextStyle(fontSize: 18)),
+                          Text(
+                            widget.commentCount,
+                            style: const TextStyle(fontSize: 18),
+                          ),
                         ],
                       ),
                     ],

@@ -134,7 +134,7 @@ class _PostSection extends StatefulWidget {
     required this.likeCount,
     required this.commentCount,
     required this.isLiked,
-    super.key,
+    // super.key,
   });
 
   @override
@@ -206,7 +206,10 @@ class _PostSectionState extends State<_PostSection> {
                       children: [
                         Text(
                           widget.title,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -240,21 +243,30 @@ class _PostSectionState extends State<_PostSection> {
                               children: [
                                 IconButton(
                                   icon: Icon(
-                                    isLiked ? AppIcons.favoriteFill : AppIcons.favorite,
+                                    isLiked
+                                        ? AppIcons.favoriteFill
+                                        : AppIcons.favorite,
                                     color: Colors.red,
                                     size: 24,
                                   ),
                                   onPressed: _toggleLike,
                                 ),
                                 SizedBox(width: 4),
-                                Text(widget.likeCount.toString(), style: TextStyle(fontSize: 16)),
+                                Text(
+                                  widget.likeCount.toString(),
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               ],
                             ),
                             SizedBox(width: 16),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(AppIcons.comment, size: 24, color: AppColors.textBlack),
+                                Icon(
+                                  AppIcons.comment,
+                                  size: 24,
+                                  color: AppColors.textBlack,
+                                ),
                                 const SizedBox(width: 8),
                                 Text(
                                   widget.commentCount.toString(),
@@ -396,7 +408,10 @@ class _CommentSectionState extends State<_CommentSection> {
                           });
                         },
                       ),
-                      Text(widget.likeCount.toString(), style: const TextStyle(fontSize: 18)),
+                      Text(
+                        widget.likeCount.toString(),
+                        style: const TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
                   SizedBox(width: 16),
@@ -404,9 +419,16 @@ class _CommentSectionState extends State<_CommentSection> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(AppIcons.comment, size: 24, color: AppColors.textBlack),
+                      Icon(
+                        AppIcons.comment,
+                        size: 24,
+                        color: AppColors.textBlack,
+                      ),
                       const SizedBox(width: 8),
-                      Text(widget.commentCount.toString(), style: const TextStyle(fontSize: 18)),
+                      Text(
+                        widget.commentCount.toString(),
+                        style: const TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
                 ],
@@ -442,7 +464,10 @@ class _CommentInputBar extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                 hintText: 'Tulis komentar...',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(color: Colors.grey.shade300),

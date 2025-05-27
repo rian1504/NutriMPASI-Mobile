@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
+import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
@@ -32,6 +34,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Dapatkan data user dari authentication bloc
+    final authState = context.watch<AuthenticationBloc>().state;
+    final loggedInUser = authState is LoginSuccess ? authState.user : null;
+
     return BlocBuilder<FoodDetailBloc, FoodDetailState>(
       builder: (context, state) {
         if (state is FoodDetailLoading) {
@@ -117,7 +123,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                             ),
 
                             // Tombol lapor
-                            if (food.source == null)
+                            if (food.source == null &&
+                                food.userId != loggedInUser?.id)
                               Positioned(
                                 top: MediaQuery.of(context).padding.top + 24,
                                 right: 24,
@@ -146,302 +153,262 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return Dialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                ),
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    16,
-                                                  ),
-                                                  child: Form(
-                                                    key: formKey,
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                              return BlocConsumer<
+                                                ReportBloc,
+                                                ReportState
+                                              >(
+                                                listener: (context, state) {
+                                                  if (state is ReportSuccess) {
+                                                    Navigator.pop(context);
+
+                                                    _showDialogReportSuccess();
+                                                  } else if (state
+                                                      is ReportError) {
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          state.error,
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.red,
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                                builder: (context, state) {
+                                                  return Dialog(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            16,
+                                                          ),
+                                                    ),
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            16,
+                                                          ),
+                                                      child: Form(
+                                                        key: formKey,
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            Text(
-                                                              'Laporkan Resep',
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color:
-                                                                    AppColors
-                                                                        .textBlack,
-                                                              ),
-                                                            ),
-
-                                                            Material(
-                                                              color:
-                                                                  Colors
-                                                                      .transparent,
-                                                              child: InkWell(
-                                                                onTap:
-                                                                    () => Navigator.pop(
-                                                                      context,
-                                                                    ),
-                                                                customBorder:
-                                                                    const CircleBorder(),
-                                                                child: Container(
-                                                                  width: 24,
-                                                                  height: 24,
-                                                                  decoration: BoxDecoration(
-                                                                    shape:
-                                                                        BoxShape
-                                                                            .circle,
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  'Laporkan Resep',
+                                                                  style: TextStyle(
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
                                                                     color:
-                                                                        Colors
-                                                                            .white,
-                                                                    border: Border.all(
-                                                                      color:
-                                                                          AppColors
-                                                                              .textBlack,
-                                                                    ),
-                                                                  ),
-                                                                  child: const Center(
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .close,
-                                                                      color:
-                                                                          AppColors
-                                                                              .textBlack,
-                                                                      size: 18,
-                                                                    ),
+                                                                        AppColors
+                                                                            .textBlack,
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
 
-                                                        const SizedBox(
-                                                          height: 16,
-                                                        ),
-
-                                                        const Text(
-                                                          'Alasan laporan:',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Poppins',
-                                                            fontSize: 14,
-                                                            color:
-                                                                AppColors
-                                                                    .textGrey,
-                                                          ),
-                                                        ),
-
-                                                        const SizedBox(
-                                                          height: 8,
-                                                        ),
-
-                                                        TextFormField(
-                                                          onChanged: (value) {
-                                                            reportReason =
-                                                                value;
-                                                          },
-                                                          maxLines: 5,
-                                                          decoration: InputDecoration(
-                                                            hintText:
-                                                                'Tuliskan alasan laporan...',
-                                                            border: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    8,
-                                                                  ),
-                                                            ),
-                                                            contentPadding:
-                                                                const EdgeInsets.all(
-                                                                  12,
-                                                                ),
-                                                          ),
-                                                          validator: (value) {
-                                                            if (value == null ||
-                                                                value
-                                                                    .trim()
-                                                                    .isEmpty) {
-                                                              return 'Alasan laporan tidak boleh kosong';
-                                                            }
-                                                            if (value
-                                                                    .trim()
-                                                                    .length <
-                                                                4) {
-                                                              return 'Alasan laporan minimal 4 karakter';
-                                                            }
-                                                            return null;
-                                                          },
-                                                        ),
-
-                                                        const SizedBox(
-                                                          height: 24,
-                                                        ),
-
-                                                        // Tombol Kirim Laporan
-                                                        Align(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          child: ElevatedButton(
-                                                            onPressed: () {
-                                                              if (formKey
-                                                                  .currentState!
-                                                                  .validate()) {
-                                                                // TODO: Mengirimkan laporan
-
-                                                                // Tutup dialog form laporan
-                                                                Navigator.pop(
-                                                                  context,
-                                                                );
-
-                                                                // Tampilkan dialog sukses
-                                                                showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  barrierDismissible:
-                                                                      false,
-                                                                  builder: (
-                                                                    BuildContext
-                                                                    dialogContext,
-                                                                  ) {
-                                                                    Future.delayed(
-                                                                      Duration(
-                                                                        seconds:
-                                                                            2,
-                                                                      ),
-                                                                      () {
-                                                                        // Cek apakah dialogContext masih terpasang
-                                                                        if (dialogContext.mounted &&
-                                                                            Navigator.canPop(
-                                                                              dialogContext,
-                                                                            )) {
-                                                                          Navigator.of(
-                                                                            dialogContext,
-                                                                          ).pop();
-                                                                        }
-                                                                      },
-                                                                    );
-
-                                                                    return Dialog(
-                                                                      shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                              16,
+                                                                Material(
+                                                                  color:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  child: InkWell(
+                                                                    onTap:
+                                                                        state
+                                                                                is ReportLoading
+                                                                            ? null
+                                                                            : () => Navigator.pop(
+                                                                              context,
                                                                             ),
-                                                                      ),
-                                                                      child: Container(
-                                                                        padding:
-                                                                            const EdgeInsets.all(
-                                                                              24,
-                                                                            ),
-                                                                        child: Column(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          children: [
-                                                                            // Gambar sukses
-                                                                            Image.asset(
-                                                                              'assets/images/component/berhasil_melaporkan_makanan.png',
-                                                                              height:
-                                                                                  200,
-                                                                              width:
-                                                                                  200,
-                                                                              fit:
-                                                                                  BoxFit.contain,
-                                                                            ),
-                                                                            const SizedBox(
-                                                                              height:
-                                                                                  20,
-                                                                            ),
-                                                                            // Teks berhasil
-                                                                            const Text(
-                                                                              'Berhasil Melaporkan Resep',
-                                                                              style: TextStyle(
-                                                                                fontFamily:
-                                                                                    'Poppins',
-                                                                                fontSize:
-                                                                                    18,
-                                                                                fontWeight:
-                                                                                    FontWeight.w600,
-                                                                                color:
-                                                                                    AppColors.accent,
-                                                                              ),
-                                                                              textAlign:
-                                                                                  TextAlign.center,
-                                                                            ),
-                                                                            const SizedBox(
-                                                                              height:
-                                                                                  8,
-                                                                            ),
-                                                                            const Text(
-                                                                              'Usulan Makanan',
-                                                                              style: TextStyle(
-                                                                                fontFamily:
-                                                                                    'Poppins',
-                                                                                fontSize:
-                                                                                    18,
-                                                                                fontWeight:
-                                                                                    FontWeight.w600,
-                                                                                color:
-                                                                                    AppColors.accent,
-                                                                              ),
-                                                                              textAlign:
-                                                                                  TextAlign.center,
-                                                                            ),
-                                                                          ],
+                                                                    customBorder:
+                                                                        const CircleBorder(),
+                                                                    child: Container(
+                                                                      width: 24,
+                                                                      height:
+                                                                          24,
+                                                                      decoration: BoxDecoration(
+                                                                        shape:
+                                                                            BoxShape.circle,
+                                                                        color:
+                                                                            Colors.white,
+                                                                        border: Border.all(
+                                                                          color:
+                                                                              AppColors.textBlack,
                                                                         ),
                                                                       ),
-                                                                    );
-                                                                  },
-                                                                );
-                                                              }
-                                                            },
-                                                            style: ElevatedButton.styleFrom(
-                                                              backgroundColor:
-                                                                  AppColors
-                                                                      .accent,
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      8,
+                                                                      child: const Center(
+                                                                        child: Icon(
+                                                                          Icons
+                                                                              .close,
+                                                                          color:
+                                                                              AppColors.textBlack,
+                                                                          size:
+                                                                              18,
+                                                                        ),
+                                                                      ),
                                                                     ),
-                                                              ),
-                                                              padding:
-                                                                  const EdgeInsets.symmetric(
-                                                                    vertical:
-                                                                        12,
-                                                                    horizontal:
-                                                                        24,
                                                                   ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                            child: const Text(
-                                                              'Kirim Laporan',
+
+                                                            const SizedBox(
+                                                              height: 16,
+                                                            ),
+
+                                                            const Text(
+                                                              'Alasan laporan:',
                                                               style: TextStyle(
                                                                 fontFamily:
                                                                     'Poppins',
                                                                 fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                color:
+                                                                    AppColors
+                                                                        .textGrey,
                                                               ),
                                                             ),
-                                                          ),
+
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+
+                                                            TextFormField(
+                                                              onChanged: (
+                                                                value,
+                                                              ) {
+                                                                reportReason =
+                                                                    value;
+                                                              },
+                                                              maxLines: 5,
+                                                              decoration: InputDecoration(
+                                                                hintText:
+                                                                    'Tuliskan alasan laporan...',
+                                                                border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        8,
+                                                                      ),
+                                                                ),
+                                                                contentPadding:
+                                                                    const EdgeInsets.all(
+                                                                      12,
+                                                                    ),
+                                                              ),
+                                                              validator: (
+                                                                value,
+                                                              ) {
+                                                                if (value ==
+                                                                        null ||
+                                                                    value
+                                                                        .trim()
+                                                                        .isEmpty) {
+                                                                  return 'Alasan laporan tidak boleh kosong';
+                                                                }
+                                                                if (value
+                                                                        .trim()
+                                                                        .length <
+                                                                    4) {
+                                                                  return 'Alasan laporan minimal 4 karakter';
+                                                                }
+                                                                return null;
+                                                              },
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 24,
+                                                            ),
+
+                                                            // Tombol Kirim Laporan
+                                                            Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              child: ElevatedButton(
+                                                                onPressed:
+                                                                    state
+                                                                            is ReportLoading
+                                                                        ? null
+                                                                        : () {
+                                                                          if (formKey
+                                                                              .currentState!
+                                                                              .validate()) {
+                                                                            context
+                                                                                .read<
+                                                                                  ReportBloc
+                                                                                >()
+                                                                                .add(
+                                                                                  Report(
+                                                                                    category:
+                                                                                        "food",
+                                                                                    refersId:
+                                                                                        food.id,
+                                                                                    content:
+                                                                                        reportReason,
+                                                                                  ),
+                                                                                );
+                                                                          }
+                                                                        },
+                                                                style: ElevatedButton.styleFrom(
+                                                                  backgroundColor:
+                                                                      AppColors
+                                                                          .accent,
+                                                                  foregroundColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          8,
+                                                                        ),
+                                                                  ),
+                                                                  padding:
+                                                                      const EdgeInsets.symmetric(
+                                                                        vertical:
+                                                                            12,
+                                                                        horizontal:
+                                                                            24,
+                                                                      ),
+                                                                ),
+                                                                child:
+                                                                    state
+                                                                            is ReportLoading
+                                                                        ? const CircularProgressIndicator(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          strokeWidth:
+                                                                              2,
+                                                                        )
+                                                                        : const Text(
+                                                                          'Kirim Laporan',
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                          ),
+                                                                        ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
+                                                  );
+                                                },
                                               );
                                             },
                                           );
@@ -1651,6 +1618,66 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showDialogReportSuccess() {
+    // Tampilkan dialog sukses
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        Future.delayed(Duration(seconds: 2), () {
+          // Cek apakah dialogContext masih terpasang
+          if (dialogContext.mounted && Navigator.canPop(dialogContext)) {
+            Navigator.of(dialogContext).pop();
+          }
+        });
+
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Gambar sukses
+                Image.asset(
+                  'assets/images/component/berhasil_melaporkan_makanan.png',
+                  height: 200,
+                  width: 200,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 20),
+                // Teks berhasil
+                const Text(
+                  'Berhasil Melaporkan Resep',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.accent,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Usulan Makanan',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.accent,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
