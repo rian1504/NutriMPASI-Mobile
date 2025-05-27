@@ -11,7 +11,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
 
 class FoodDetailScreen extends StatefulWidget {
-  final String foodId;
+  final int foodId;
   const FoodDetailScreen({super.key, required this.foodId});
 
   @override
@@ -156,7 +156,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               child: GestureDetector(
                                 onTap: () {
                                   context.read<FoodDetailBloc>().add(
-                                    ToggleFavorite(foodId: food.id.toString()),
+                                    ToggleFavorite(foodId: food.id),
                                   );
                                 },
                                 child: Container(

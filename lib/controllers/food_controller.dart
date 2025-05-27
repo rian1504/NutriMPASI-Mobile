@@ -78,10 +78,10 @@ class FoodController {
     }
   }
 
-  Future<Food> showFood({required String id}) async {
+  Future<Food> showFood({required int foodId}) async {
     try {
       // Kirim request ke API
-      final response = await _dio.get('${ApiEndpoints.food}/$id');
+      final response = await _dio.get('${ApiEndpoints.food}/$foodId');
 
       // Debug response
       debugPrint('Get Food Detail response: ${response.data}');
@@ -90,19 +90,6 @@ class FoodController {
       return Food.fromJson(response.data['data']);
     } on DioException catch (e) {
       debugPrint('Get Food Detail error: ${e.response?.data}');
-      throw _handleError(e);
-    }
-  }
-
-  Future<void> toggleFavorite({required String id}) async {
-    try {
-      // Kirim request ke API
-      final response = await _dio.post('${ApiEndpoints.favorite}/$id');
-
-      // Debug response
-      debugPrint('Favorite response: ${response.data}');
-    } on DioException catch (e) {
-      debugPrint('Favorite error: ${e.response?.data}');
       throw _handleError(e);
     }
   }
