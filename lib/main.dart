@@ -26,7 +26,7 @@ import 'package:nutrimpasi/controllers/nutritionist_controller.dart';
 import 'package:nutrimpasi/controllers/schedule_controller.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
-import 'package:nutrimpasi/screens/food/food_listing_screen.dart';
+import 'package:nutrimpasi/screens/food/food_list_screen.dart';
 import 'package:nutrimpasi/screens/forum/forum_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/setting/profile_screen.dart';
@@ -166,7 +166,7 @@ class MainPageState extends State<MainPage> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const FoodListingScreen(),
+    const FoodListScreen(),
     const ScheduleScreen(),
     const ForumScreen(),
     const SettingScreen(),
@@ -187,7 +187,7 @@ class MainPageState extends State<MainPage> {
       backgroundColor: AppColors.background,
       body:
           _page == 1 && _pageParams.containsKey('showUserSuggestions')
-              ? FoodListingScreen(
+              ? FoodListScreen(
                 showUserSuggestions: _pageParams['showUserSuggestions'],
               )
               : _screens[_page],

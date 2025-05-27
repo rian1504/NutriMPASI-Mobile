@@ -9,16 +9,16 @@ import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 
-class FoodListingScreen extends StatefulWidget {
+class FoodListScreen extends StatefulWidget {
   final bool showUserSuggestions;
 
-  const FoodListingScreen({super.key, this.showUserSuggestions = false});
+  const FoodListScreen({super.key, this.showUserSuggestions = false});
 
   @override
-  State<FoodListingScreen> createState() => _FoodListingScreenState();
+  State<FoodListScreen> createState() => _FoodListScreenState();
 }
 
-class _FoodListingScreenState extends State<FoodListingScreen>
+class _FoodListScreenState extends State<FoodListScreen>
     with SingleTickerProviderStateMixin {
   // Controller untuk pencarian
   final TextEditingController _searchController = TextEditingController();
