@@ -4,6 +4,7 @@
 // Tanggal: 26 Mei 2025
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/widgets/profile_app_bar.dart' show AppBarProfile;
@@ -30,22 +31,45 @@ class _SettingScreenState extends State<SettingScreen> {
                 Container(
                   height: MediaQuery.of(context).size.height * 1 / 3,
                   width: double.infinity,
-                  color: AppColors.primary,
+                  // color: AppColors.primary,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        'assets/images/banner/setting_wallpaper.png',
+                      ), // Ganti dengan gambar latar belakang yang sesuai
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text(
+                        "Pengaturan",
+                        style: const TextStyle(
+                          color: AppColors.textWhite, // Warna teks judul
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 14),
                       Stack(
                         children: [
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  'https://picsum.photos/200/300?random=1',
-                                ), // Ganti dengan gambar xprofil yang sesuai
-                                fit: BoxFit.cover,
+                          CircleAvatar(
+                            radius: 60, // Ukuran avatar
+                            backgroundColor: Colors.grey.shade200,
+                            child: ClipOval(
+                              child: SvgPicture.network(
+                                // <<< Ganti Image.network() dengan SvgPicture.network()
+                                'https://api.dicebear.com/8.x/lorelei/svg?seed=JaneDoe', // Ganti dengan URL gambar SVG yang sesuai
+                                width: 140, // Lebar gambar (radius * 2)
+                                height: 140, // Tinggi gambar (radius * 2)
+                                fit: BoxFit.cover, // Cara gambar di-fit
+                                // placeholderBuilder untuk SVG network
+                                placeholderBuilder:
+                                    (BuildContext context) => Container(
+                                      padding: const EdgeInsets.all(20),
+                                      child: const CircularProgressIndicator(),
+                                    ),
                               ),
                             ),
                           ),
@@ -64,11 +88,12 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 8),
                       Text(
                         'Pipit Lolita',
                         style: TextStyle(
                           color: AppColors.textWhite,
+                          // color: Colors.black,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -77,10 +102,10 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
                 Positioned(
-                  top: MediaQuery.of(context).padding.top + 8,
+                  top: 36,
                   right: 8,
                   child: IconButton(
-                    icon: Icon(AppIcons.favorite, color: AppColors.textWhite, size: 24),
+                    icon: Icon(AppIcons.favoriteFill, color: AppColors.textWhite, size: 24),
                     onPressed: () {
                       Navigator.pop(context);
                     },
