@@ -221,6 +221,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       if (value == null || value.isEmpty) {
                                         return 'Nama tidak boleh kosong!';
                                       }
+                                      if (value.length > 255) {
+                                        return 'Nama tidak boleh lebih dari 255 karakter!';
+                                      }
                                       return null;
                                     },
                                   ),
@@ -260,10 +263,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       if (value == null || value.isEmpty) {
                                         return 'Email tidak boleh kosong!';
                                       }
+                                      if (value.length > 255) {
+                                        return 'Email tidak boleh lebih dari 255 karakter!';
+                                      }
                                       if (!RegExp(
                                         r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                                       ).hasMatch(value)) {
-                                        return 'Email tidak valid!';
+                                        return 'Format email tidak valid!';
                                       }
                                       return null;
                                     },
@@ -319,9 +325,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       if (value == null || value.isEmpty) {
                                         return 'Kata sandi tidak boleh kosong!';
                                       }
-                                      if (value.length < 6) {
-                                        return 'Kata sandi minimal 6 karakter!';
+                                      if (value.length < 8) {
+                                        return 'Kata sandi minimal 8 karakter!';
                                       }
+                                      // if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                      //   return 'Kata sandi harus mengandung setidaknya satu huruf kapital!';
+                                      // }
+                                      // if (!RegExp(r'[a-z]').hasMatch(value)) {
+                                      //   return 'Kata sandi harus mengandung setidaknya satu huruf kecil!';
+                                      // }
+                                      // if (!RegExp(r'[0-9]').hasMatch(value)) {
+                                      //   return 'Kata sandi harus mengandung setidaknya satu angka!';
+                                      // }
+                                      // if (!RegExp(
+                                      //   r'[!@#$%^&*(),.?":{}|<>]',
+                                      // ).hasMatch(value)) {
+                                      //   return 'Kata sandi harus mengandung setidaknya satu karakter spesial!';
+                                      // }
                                       return null;
                                     },
                                   ),

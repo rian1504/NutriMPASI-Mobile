@@ -283,6 +283,12 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                 if (value == null || value.isEmpty) {
                                   return 'Nama bayi tidak boleh kosong';
                                 }
+                                if (value.length < 4) {
+                                  return 'Nama bayi minimal 4 karakter';
+                                }
+                                if (value.length > 255) {
+                                  return 'Nama bayi maksimal 255 karakter';
+                                }
                                 return null;
                               },
                             ),
@@ -486,6 +492,9 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                           if (value == null || value.isEmpty) {
                                             return 'Tinggi tidak boleh kosong';
                                           }
+                                          if (double.tryParse(value) == null) {
+                                            return 'Tinggi harus berupa angka';
+                                          }
                                           return null;
                                         },
                                       ),
@@ -567,6 +576,9 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                           if (value == null || value.isEmpty) {
                                             return 'Berat tidak boleh kosong';
                                           }
+                                          if (double.tryParse(value) == null) {
+                                            return 'Berat harus berupa angka';
+                                          }
                                           return null;
                                         },
                                       ),
@@ -613,6 +625,14 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                 fillColor: Colors.white,
                                 hintText: 'Opsional',
                               ),
+                              validator: (value) {
+                                if (value != null &&
+                                    value.isNotEmpty &&
+                                    value.length < 3) {
+                                  return 'Alergi minimal 3 karakter';
+                                }
+                                return null;
+                              },
                             ),
 
                             const SizedBox(height: 30),
