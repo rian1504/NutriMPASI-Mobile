@@ -56,4 +56,7 @@ class ApiEndpoints {
 
   // Comment
   static const String comment = 'comment';
+
+  // Like
+  static const String like = 'like';
 }

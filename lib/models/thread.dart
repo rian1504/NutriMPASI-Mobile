@@ -31,6 +31,28 @@ class Thread {
     required this.user,
   });
 
+  Thread copyWith({
+    int? id,
+    int? userId,
+    String? title,
+    String? content,
+    DateTime? createdAt,
+    int? likesCount,
+    int? commentsCount,
+    bool? isLike,
+    User? user,
+  }) => Thread(
+    id: id ?? this.id,
+    userId: userId ?? this.userId,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    createdAt: createdAt ?? this.createdAt,
+    likesCount: likesCount ?? this.likesCount,
+    commentsCount: commentsCount ?? this.commentsCount,
+    isLike: isLike ?? this.isLike,
+    user: user ?? this.user,
+  );
+
   factory Thread.fromJson(Map<String, dynamic> json) => Thread(
     id: json["id"],
     userId: json["user_id"],
