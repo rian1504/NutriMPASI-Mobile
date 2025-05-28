@@ -43,7 +43,11 @@ class _PostScreenState extends State<PostScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Post", showBackButton: true),
+      appBar: AppBarForum(
+        title: "Post",
+        showBackButton: true,
+        category: 'forum',
+      ),
       body: Container(
         decoration: BoxDecoration(color: AppColors.primary),
         child: Container(
@@ -131,7 +135,7 @@ class _PostScreenState extends State<PostScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: MediaQuery.of(context).viewInsets,
-        child: const _CommentInputBar(),
+        child: _CommentInputBar(threadId: widget.threadId),
       ),
     );
   }
@@ -167,41 +171,60 @@ class _PostSectionState extends State<_PostSection> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryTransparent, // abu-abu muda
-                            shape: BoxShape.circle,
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color:
+                                      AppColors
+                                          .primaryTransparent, // abu-abu muda
+                                  shape: BoxShape.circle,
+                                ),
+                                child:
+                                    widget.thread.user.avatar != null
+                                        ? ClipOval(
+                                          child: Image.network(
+                                            storageUrl +
+                                                widget.thread.user.avatar!,
+                                            width: 32,
+                                            height: 32,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                        : Icon(
+                                          AppIcons.userFill,
+                                          color: AppColors.primary,
+                                          size:
+                                              20, // opsional, atur agar pas di lingkaran
+                                        ),
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                widget.thread.user.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                  color: AppColors.textBlack,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
-                          child:
-                              widget.thread.user.avatar != null
-                                  ? ClipOval(
-                                    child: Image.network(
-                                      storageUrl + widget.thread.user.avatar!,
-                                      width: 32,
-                                      height: 32,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                  : Icon(
-                                    AppIcons.userFill,
-                                    color: AppColors.primary,
-                                    size:
-                                        20, // opsional, atur agar pas di lingkaran
-                                  ),
                         ),
-                        SizedBox(width: 8),
                         Text(
-                          widget.thread.user.name,
+                          timeago.format(widget.thread.createdAt),
                           style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: AppColors.textBlack,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                            color: AppColors.textGrey,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -226,16 +249,6 @@ class _PostSectionState extends State<_PostSection> {
                           textAlign: TextAlign.justify,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          timeago.format(widget.thread.createdAt),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 12,
-                            color: AppColors.textGrey,
-                          ),
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
@@ -537,51 +550,126 @@ class _CommentSectionState extends State<_CommentSection> {
 }
 
 // Widget untuk menampilkan input komentar
-class _CommentInputBar extends StatelessWidget {
-  const _CommentInputBar();
+class _CommentInputBar extends StatefulWidget {
+  final int threadId;
+  const _CommentInputBar({required this.threadId});
+
+  @override
+  State<_CommentInputBar> createState() => _CommentInputBarState();
+}
+
+class _CommentInputBarState extends State<_CommentInputBar> {
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey.shade300)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              maxLines: null, // Membuatnya bisa auto-expand vertikal
-              // minLines: 1, // Jumlah minimum baris
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                hintText: 'Tulis komentar...',
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+    return BlocConsumer<CommentBloc, CommentState>(
+      listener: (context, state) {
+        if (state is CommentStored) {
+          // _showDialogReportSuccess(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Berhasil Komen"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state is CommentDeleted) {
+          // _showDialogReportSuccess(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Komentar dihapus"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (state is CommentError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(top: BorderSide(color: Colors.grey.shade300)),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Form(
+                  key: formKey,
+                  child: TextFormField(
+                    controller: _controller,
+                    maxLines: null, // Membuatnya bisa auto-expand vertikal
+                    // minLines: 1, // Jumlah minimum baris
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      hintText: 'Tulis komentar...',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Komentar tidak boleh kosong';
+                      }
+                      if (value.trim().length < 4) {
+                        return 'Komentar minimal 4 karakter';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(width: 8),
+              CircleAvatar(
+                backgroundColor: AppColors.primary,
+                child: IconButton(
+                  icon:
+                      state is CommentActionInProgress
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : const Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                  onPressed:
+                      state is CommentActionInProgress
+                          ? null
+                          : () async {
+                            if (formKey.currentState!.validate()) {
+                              context.read<CommentBloc>().add(
+                                StoreComments(
+                                  threadId: widget.threadId,
+                                  content: _controller.text.trim(),
+                                ),
+                              );
+                              _controller.clear();
+                            }
+                          },
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 8),
-          CircleAvatar(
-            backgroundColor: AppColors.primary,
-            child: IconButton(
-              icon: const Icon(Icons.send, color: Colors.white, size: 18),
-              onPressed: () {},
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

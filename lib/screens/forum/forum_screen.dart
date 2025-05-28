@@ -46,7 +46,11 @@ class _ForumScreenState extends State<ForumScreen> {
       length: 2,
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBarForum(title: "Forum Diskusi", showTabs: true),
+        appBar: AppBarForum(
+          title: "Forum Diskusi",
+          showTabs: true,
+          category: '',
+        ),
         body: Container(
           decoration: BoxDecoration(color: AppColors.primary),
           child: Container(
@@ -408,7 +412,7 @@ class _ForumCardState extends State<ForumCard> {
                         ),
                       ),
                       Text(
-                        timeago.format(widget.thread.createdAt, locale: 'id'),
+                        timeago.format(widget.thread.createdAt),
                         style: TextStyle(color: AppColors.greyDark),
                       ),
                     ],
@@ -433,7 +437,6 @@ class _ForumCardState extends State<ForumCard> {
                 ],
               ),
             ),
-            // const SizedBox(height: 8),
             // Bottom actions
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

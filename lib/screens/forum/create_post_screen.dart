@@ -103,7 +103,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Buat Postingan", showExitButton: true),
+      appBar: AppBarForum(
+        title: "Buat Postingan",
+        showExitButton: true,
+        category: '',
+      ),
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -116,7 +120,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 60), // beri ruang bawah untuk tombol
+                padding: const EdgeInsets.fromLTRB(
+                  16,
+                  16,
+                  16,
+                  60,
+                ), // beri ruang bawah untuk tombol
                 child: Center(
                   child: Card(
                     child: SingleChildScrollView(
@@ -135,7 +144,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           TextFormField(
                             maxLines: 30,
                             decoration: InputDecoration(
-                              hintText: 'Tanyakan sesuatu atau bagikan pengalamanmu di sini...',
+                              hintText:
+                                  'Tanyakan sesuatu atau bagikan pengalamanmu di sini...',
                               border: InputBorder.none,
                             ),
                           ),
