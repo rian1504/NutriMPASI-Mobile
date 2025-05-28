@@ -10,15 +10,20 @@ class AppColors {
   // Background color
   static const Color background = Color(0xFFF9F9F9);
 
+  // BW color
+  static const Color black = Color(0xFF000000);
+  static const Color white = Color(0xFFFFFFFF);
+
   // Semantic color
   static const Color error = Color(0xFFFE2323);
   static const Color success = Color(0xFF14AE5C);
   static const Color warning = Color(0xFFFFCD29);
 
   // Transparent color
-  static Color primaryTransparent = Color(0xFFFC8207).withAlpha(25);
-  static Color accentTransparent = Color(0xFF5966B1).withAlpha(25);
-  static Color errorTranparent = Color(0xFFFE2323).withAlpha(25);
+  static Color primaryHighTransparent = Color(0xFFFC8207).withAlpha(25);
+  static Color accentHighTransparent = Color(0xFF5966B1).withAlpha(25);
+  static Color errorHighTranparent = Color(0xFFFE2323).withAlpha(25);
+  static Color primaryLowTransparent = Color(0xFFFC8207).withAlpha(175);
 
   // Grey color
   static const Color grey = Color(0xFFD9D9D9);

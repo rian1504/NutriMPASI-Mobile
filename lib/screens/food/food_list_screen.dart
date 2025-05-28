@@ -1431,7 +1431,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                     Icon(
                                       Icons.no_food,
                                       size: 70,
-                                      color: AppColors.primary.withAlpha(175),
+                                      color: AppColors.primaryLowTransparent,
                                     ),
                                     const SizedBox(height: 16),
                                     Text(

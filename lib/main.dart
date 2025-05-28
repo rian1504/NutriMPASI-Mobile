@@ -39,7 +39,7 @@ import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_list_screen.dart';
 import 'package:nutrimpasi/screens/forum/forum_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
-import 'package:nutrimpasi/screens/setting/profile_screen.dart';
+import 'package:nutrimpasi/screens/setting/setting_screen.dart';
 import 'package:nutrimpasi/screens/features/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;

@@ -15,8 +15,7 @@ import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/create_post_screen.dart';
 import 'package:nutrimpasi/screens/forum/edit_post_screen.dart';
 import 'package:nutrimpasi/screens/forum/post_screen.dart';
-import 'package:nutrimpasi/utils/navigation_animation.dart'
-    show pushWithSlideTransition;
+import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
 import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
 import 'package:nutrimpasi/widgets/forum_report_button.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -47,11 +46,7 @@ class _ForumScreenState extends State<ForumScreen> {
       length: 2,
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBarForum(
-          title: "Forum Diskusi",
-          showTabs: true,
-          category: '',
-        ),
+        appBar: AppBarForum(title: "Forum Diskusi", showTabs: true, category: ''),
         body: Container(
           decoration: BoxDecoration(color: AppColors.primary),
           child: Container(
@@ -72,19 +67,14 @@ class _ForumScreenState extends State<ForumScreen> {
 
                   context.read<ThreadBloc>().add(FetchThreads());
                 } else if (state is ThreadError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.error),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
                 }
               },
               builder: (context, state) {
                 if (state is ThreadLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(color: AppColors.primary),
-                  );
+                  return Center(child: CircularProgressIndicator(color: AppColors.primary));
                 }
 
                 if (state is ThreadLoaded) {
@@ -93,16 +83,8 @@ class _ForumScreenState extends State<ForumScreen> {
 
                 return TabBarView(
                   children: [
-                    ForumTab(
-                      threads: threads,
-                      isMyPosts: false,
-                      currentUserId: loggedInUser!.id,
-                    ),
-                    ForumTab(
-                      threads: threads,
-                      isMyPosts: true,
-                      currentUserId: loggedInUser.id,
-                    ),
+                    ForumTab(threads: threads, isMyPosts: false, currentUserId: loggedInUser!.id),
+                    ForumTab(threads: threads, isMyPosts: true, currentUserId: loggedInUser.id),
                   ],
                 );
               },
@@ -159,14 +141,8 @@ class ForumTab extends StatelessWidget {
             bottom: 48,
             right: 16,
             child: FloatingActionButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              onPressed:
-                  () => pushWithSlideTransition(
-                    context,
-                    const CreatePostScreen(),
-                  ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+              onPressed: () => pushWithSlideTransition(context, const CreatePostScreen()),
               child: const Icon(Icons.add),
             ),
           ),
@@ -195,11 +171,7 @@ class _EmptyStateWidget extends StatelessWidget {
           if (isMyPosts) ...[
             const SizedBox(height: 8),
             ElevatedButton(
-              onPressed:
-                  () => pushWithSlideTransition(
-                    context,
-                    const CreatePostScreen(),
-                  ),
+              onPressed: () => pushWithSlideTransition(context, const CreatePostScreen()),
               child: const Text("Buat Postingan Pertama"),
             ),
           ],
@@ -276,30 +248,21 @@ class _ForumCardState extends State<ForumCard> {
                       borderRadius: BorderRadius.circular(4),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.accentTransparent,
+                          color: AppColors.accentHighTransparent,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: ListTile(
-                          leading: Icon(
-                            AppIcons.edit,
-                            size: 20,
-                            color: AppColors.accent,
-                          ),
+                          leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
                           title: Text(
                             "Edit Postingan",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.accent,
-                            ),
+                            style: TextStyle(fontSize: 16, color: AppColors.accent),
                           ),
                           onTap: () {
                             _hideMenu();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder:
-                                    (context) =>
-                                        EditPostScreen(thread: widget.thread),
+                                builder: (context) => EditPostScreen(thread: widget.thread),
                               ),
                             );
                           },
@@ -310,27 +273,20 @@ class _ForumCardState extends State<ForumCard> {
 
                     // Tombol Hapus Postingan
                     if (widget.showMenu)
-                      // const SizedBox(height: 8),
+                      // const SizedBox(height: 8)
                       Material(
                         elevation: 4,
                         borderRadius: BorderRadius.circular(4),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.errorTranparent,
+                            color: AppColors.errorHighTranparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ListTile(
-                            leading: Icon(
-                              AppIcons.deleteFill,
-                              size: 20,
-                              color: AppColors.error,
-                            ),
+                            leading: Icon(AppIcons.deleteFill, size: 20, color: AppColors.error),
                             title: Text(
                               "Hapus Postingan",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.error,
-                              ),
+                              style: TextStyle(fontSize: 16, color: AppColors.error),
                             ),
                             onTap: _confirmDelete,
                           ),
@@ -353,9 +309,7 @@ class _ForumCardState extends State<ForumCard> {
       builder:
           (context) => AlertDialog(
             title: const Text("Konfirmasi Hapus"),
-            content: const Text(
-              "Apakah Anda yakin ingin menghapus postingan ini?",
-            ),
+            content: const Text("Apakah Anda yakin ingin menghapus postingan ini?"),
             actions: [
               TextButton(
                 child: const Text("Batal"),
@@ -382,11 +336,7 @@ class _ForumCardState extends State<ForumCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap:
-          () => pushWithSlideTransition(
-            context,
-            PostScreen(threadId: widget.thread.id),
-          ),
+      onTap: () => pushWithSlideTransition(context, PostScreen(threadId: widget.thread.id)),
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -409,17 +359,14 @@ class _ForumCardState extends State<ForumCard> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color:
-                                    AppColors
-                                        .primaryTransparent, // abu-abu muda
+                                color: AppColors.primaryHighTransparent, // abu-abu muda
                                 shape: BoxShape.circle,
                               ),
                               child:
                                   widget.thread.user.avatar != null
                                       ? ClipOval(
                                         child: Image.network(
-                                          storageUrl +
-                                              widget.thread.user.avatar!,
+                                          storageUrl + widget.thread.user.avatar!,
                                           width: 32,
                                           height: 32,
                                           fit: BoxFit.cover,
@@ -428,8 +375,7 @@ class _ForumCardState extends State<ForumCard> {
                                       : Icon(
                                         AppIcons.userFill,
                                         color: AppColors.primary,
-                                        size:
-                                            20, // opsional, atur agar pas di lingkaran
+                                        size: 20, // opsional, atur agar pas di lingkaran
                                       ),
                             ),
                             SizedBox(width: 8),
@@ -437,6 +383,8 @@ class _ForumCardState extends State<ForumCard> {
                               widget.thread.user.name,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: AppColors.black,
                               ),
                             ),
                           ],
@@ -444,7 +392,7 @@ class _ForumCardState extends State<ForumCard> {
                       ),
                       Text(
                         timeago.format(widget.thread.createdAt),
-                        style: TextStyle(color: AppColors.greyDark),
+                        style: TextStyle(color: AppColors.greyDark, fontSize: 12),
                       ),
                     ],
                   ),
@@ -452,10 +400,7 @@ class _ForumCardState extends State<ForumCard> {
                   // Title
                   Text(
                     widget.thread.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   // Content
@@ -469,59 +414,85 @@ class _ForumCardState extends State<ForumCard> {
               ),
             ),
             // Bottom actions
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              isLiked
-                                  ? AppIcons.favoriteFill
-                                  : AppIcons.favorite,
-                              color: Colors.red,
-                              size: 24,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(6, 0, 0, 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Row(
+                                mainAxisSize:
+                                    MainAxisSize.min, // Agar Row hanya mengambil ruang minimal
+                                children: [
+                                  Icon(
+                                    isLiked
+                                        ? AppIcons.favoriteFill
+                                        : AppIcons.favorite, // Ikon berubah
+                                    color:
+                                        isLiked
+                                            ? Colors.red
+                                            : AppColors.black, // Warna ikon berubah jika liked
+                                    size: 24,
+                                  ),
+                                  const SizedBox(width: 4), // Jarak antara ikon dan teks
+                                  Text(
+                                    likeCount.toString(),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color:
+                                          isLiked
+                                              ? Colors.red
+                                              : AppColors.black, // Warna teks juga berubah
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onPressed: _toggleLike,
                             ),
-                            onPressed: _toggleLike,
+                          ],
+                        ),
+                        SizedBox(width: 4),
+                        IconButton(
+                          icon: Row(
+                            mainAxisSize:
+                                MainAxisSize.min, // Penting agar Row tidak memakan ruang lebih
+                            children: [
+                              Icon(AppIcons.comment, size: 24, color: AppColors.black),
+                              const SizedBox(width: 4), // Sedikit jarak antara ikon dan teks
+                              Text(
+                                widget.thread.commentsCount.toString(),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.black,
+                                ), // Sesuaikan warna teks
+                              ),
+                            ],
                           ),
-                          Text(
-                            likeCount.toString(),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 16),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            AppIcons.comment,
-                            size: 24,
-                            color: AppColors.textBlack,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            widget.thread.commentsCount.toString(),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ],
+                          onPressed:
+                              () => pushWithSlideTransition(
+                                context,
+                                PostScreen(threadId: widget.thread.id),
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                if (widget.showMenu)
-                  IconButton(
-                    key: _menuKey,
-                    icon: Icon(AppIcons.menu, size: 20),
-                    onPressed: _showMenu,
-                  ),
-                if (widget.showReport)
-                  ReportButton(category: "thread", refersId: widget.thread.id),
-              ],
+                  if (widget.showMenu)
+                    IconButton(
+                      key: _menuKey,
+                      icon: Icon(AppIcons.menu, size: 20),
+                      onPressed: _showMenu,
+                    ),
+                  if (widget.showReport)
+                    ReportButton(category: "thread", refersId: widget.thread.id),
+                ],
+              ),
             ),
           ],
         ),

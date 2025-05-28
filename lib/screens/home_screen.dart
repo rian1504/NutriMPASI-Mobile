@@ -27,8 +27,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   // Controller PageView untuk bayi (vertikal)
   final PageController _babyController = PageController();
   // Controller untuk carousel rekomendasi makanan
@@ -79,8 +78,7 @@ class _HomeScreenState extends State<HomeScreen>
       if (_foodRecommendationController.hasClients &&
           _foodRecommendationController.positions.isNotEmpty &&
           _foodRecommendationController.position.hasContentDimensions) {
-        final nextIndex =
-            (_currentRecommendationIndex + 1) % _recommendedFoods.length;
+        final nextIndex = (_currentRecommendationIndex + 1) % _recommendedFoods.length;
 
         _foodRecommendationController.animateToPage(
           nextIndex,
@@ -104,18 +102,12 @@ class _HomeScreenState extends State<HomeScreen>
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 0.95,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween<double>(begin: 0.95, end: 1.0).chain(CurveTween(curve: Curves.easeIn)),
         weight: 40,
       ),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 20),
       TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 1.0,
-          end: 0.95,
-        ).chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(begin: 1.0, end: 0.95).chain(CurveTween(curve: Curves.easeOut)),
         weight: 40,
       ),
     ]).animate(_imageAnimationController);
@@ -140,9 +132,7 @@ class _HomeScreenState extends State<HomeScreen>
       if (!mounted) return;
 
       _babyController.addListener(() {
-        if (!mounted ||
-            !_babyController.hasClients ||
-            _babyController.positions.isEmpty) {
+        if (!mounted || !_babyController.hasClients || _babyController.positions.isEmpty) {
           return;
         }
 
@@ -152,10 +142,8 @@ class _HomeScreenState extends State<HomeScreen>
 
         final double currentOffset = _babyController.offset;
         final double maxScrollExtent = _babyController.position.maxScrollExtent;
-        final int currentPageFloor =
-            _babyController.page?.floor() ?? _currentBabyIndex;
-        final int currentPageRound =
-            _babyController.page?.round() ?? _currentBabyIndex;
+        final int currentPageFloor = _babyController.page?.floor() ?? _currentBabyIndex;
+        final int currentPageRound = _babyController.page?.round() ?? _currentBabyIndex;
         const double overscrollThreshold = 50.0;
 
         if (babies.isEmpty) return;
@@ -232,9 +220,7 @@ class _HomeScreenState extends State<HomeScreen>
           if (state is AuthenticationError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               // Tampilkan pesan error
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.error)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
 
               // Navigasi ke login
               Navigator.pushReplacementNamed(context, '/login');
@@ -242,9 +228,7 @@ class _HomeScreenState extends State<HomeScreen>
           } else if (state is LogoutSuccess) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               // Tampilkan pesan logout sukses
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
               // Reset Baby
               context.read<BabyBloc>().add(ResetBaby());
               // Navigasi ke login
@@ -268,9 +252,7 @@ class _HomeScreenState extends State<HomeScreen>
                     // Trigger fetch rekomendasi saat bayi pertama kali load
                     if (babyState.babies.isNotEmpty) {
                       context.read<BabyFoodRecommendationBloc>().add(
-                        FetchBabyFoodRecommendation(
-                          babyId: babyState.babies.first.id,
-                        ),
+                        FetchBabyFoodRecommendation(babyId: babyState.babies.first.id),
                       );
                     }
                   }
@@ -308,11 +290,7 @@ class _HomeScreenState extends State<HomeScreen>
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildFeaturesSection(),
-            _buildRecommendationSection(),
-          ],
+          children: [_buildHeader(), _buildFeaturesSection(), _buildRecommendationSection()],
         ),
       ),
     );
@@ -343,10 +321,7 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   Row(
                     children: [
-                      Image.asset(
-                        'assets/images/logo/nutrimpasi.png',
-                        height: 55,
-                      ),
+                      Image.asset('assets/images/logo/nutrimpasi.png', height: 55),
                       const Text(
                         'NutriMPASI',
                         style: TextStyle(
@@ -373,9 +348,7 @@ class _HomeScreenState extends State<HomeScreen>
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const NotificationScreen()),
                       );
                     },
                   ),
@@ -430,12 +403,8 @@ class _HomeScreenState extends State<HomeScreen>
                       if (state is BabyLoading) {
                         return Card(
                           elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          child: const Center(child: CircularProgressIndicator()),
                         );
                       } else if (state is BabyLoaded) {
                         babies = state.babies;
@@ -448,26 +417,21 @@ class _HomeScreenState extends State<HomeScreen>
                         children: [
                           // Kartu latar belakang bertumpuk
                           ...List.generate(babies.length, (index) {
-                            if (index > _currentBabyIndex &&
-                                index <= _currentBabyIndex + 2) {
+                            if (index > _currentBabyIndex && index <= _currentBabyIndex + 2) {
                               final offset = (index - _currentBabyIndex) * 4.0;
                               final cardWidth =
                                   MediaQuery.of(context).size.width -
                                   48 -
                                   ((index - _currentBabyIndex) * 30.0);
                               final horizontalOffset =
-                                  (MediaQuery.of(context).size.width -
-                                      48 -
-                                      cardWidth) /
-                                  2;
+                                  (MediaQuery.of(context).size.width - 48 - cardWidth) / 2;
 
                               return Positioned(
                                 top: offset * 2.5,
                                 left: horizontalOffset,
                                 right: horizontalOffset,
                                 child: Opacity(
-                                  opacity:
-                                      1.0 - ((index - _currentBabyIndex) * 0.3),
+                                  opacity: 1.0 - ((index - _currentBabyIndex) * 0.3),
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 10),
                                     width: cardWidth,
@@ -505,10 +469,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     child: Center(
                                       child: Text(
                                         "Belum ada data bayi",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: AppColors.textGrey,
-                                        ),
+                                        style: TextStyle(fontSize: 16, color: AppColors.textGrey),
                                       ),
                                     ),
                                   ),
@@ -516,8 +477,7 @@ class _HomeScreenState extends State<HomeScreen>
                               }
 
                               final baby = babies[index];
-                              final bool isCurrentItem =
-                                  index == _currentBabyIndex;
+                              final bool isCurrentItem = index == _currentBabyIndex;
 
                               return AnimatedOpacity(
                                 duration: const Duration(milliseconds: 300),
@@ -540,26 +500,21 @@ class _HomeScreenState extends State<HomeScreen>
                                               width: 120,
                                               height: 120,
                                               child:
-                                                  babies[index]
-                                                          .isProfileComplete
+                                                  babies[index].isProfileComplete
                                                       ? Image.asset(
-                                                        babies[index].gender ==
-                                                                'L'
+                                                        babies[index].gender == 'L'
                                                             ? 'assets/images/component/bayi_laki_laki.png'
                                                             : 'assets/images/component/bayi_perempuan.png',
                                                         fit: BoxFit.contain,
                                                       )
                                                       : Stack(
-                                                        alignment:
-                                                            Alignment.center,
+                                                        alignment: Alignment.center,
                                                         children: [
                                                           Opacity(
                                                             opacity: 0,
                                                             child: Image.asset(
                                                               'assets/images/component/bayi_laki_laki_awal.png',
-                                                              fit:
-                                                                  BoxFit
-                                                                      .contain,
+                                                              fit: BoxFit.contain,
                                                               width: 120,
                                                               height: 120,
                                                             ),
@@ -568,23 +523,18 @@ class _HomeScreenState extends State<HomeScreen>
                                                             opacity: 0,
                                                             child: Image.asset(
                                                               'assets/images/component/bayi_perempuan_awal.png',
-                                                              fit:
-                                                                  BoxFit
-                                                                      .contain,
+                                                              fit: BoxFit.contain,
                                                               width: 120,
                                                               height: 120,
                                                             ),
                                                           ),
                                                           ScaleTransition(
-                                                            scale:
-                                                                _scaleAnimation,
+                                                            scale: _scaleAnimation,
                                                             child: Image.asset(
                                                               _showFirstImage
                                                                   ? 'assets/images/component/bayi_laki_laki_awal.png'
                                                                   : 'assets/images/component/bayi_perempuan_awal.png',
-                                                              fit:
-                                                                  BoxFit
-                                                                      .contain,
+                                                              fit: BoxFit.contain,
                                                               width: 120,
                                                               height: 120,
                                                             ),
@@ -596,27 +546,21 @@ class _HomeScreenState extends State<HomeScreen>
                                             // Informasi bayi
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     baby.name,
                                                     style: const TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color:
-                                                          AppColors.textBlack,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: AppColors.textBlack,
                                                     ),
                                                     maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 4),
-                                                  if (baby
-                                                      .isProfileComplete) ...[
+                                                  if (baby.isProfileComplete) ...[
                                                     // Informasi usia (Age)
                                                     Row(
                                                       children: [
@@ -624,20 +568,14 @@ class _HomeScreenState extends State<HomeScreen>
                                                           'assets/images/icon/umur.png',
                                                           width: 12,
                                                           height: 12,
-                                                          color:
-                                                              AppColors
-                                                                  .textGrey,
+                                                          color: AppColors.textGrey,
                                                         ),
-                                                        const SizedBox(
-                                                          width: 4,
-                                                        ),
+                                                        const SizedBox(width: 4),
                                                         Text(
                                                           baby.ageInMonths!,
                                                           style: const TextStyle(
                                                             fontSize: 12,
-                                                            color:
-                                                                AppColors
-                                                                    .textGrey,
+                                                            color: AppColors.textGrey,
                                                           ),
                                                         ),
                                                       ],
@@ -651,20 +589,14 @@ class _HomeScreenState extends State<HomeScreen>
                                                           'assets/images/icon/tinggi.png',
                                                           width: 12,
                                                           height: 12,
-                                                          color:
-                                                              AppColors
-                                                                  .textGrey,
+                                                          color: AppColors.textGrey,
                                                         ),
-                                                        const SizedBox(
-                                                          width: 4,
-                                                        ),
+                                                        const SizedBox(width: 4),
                                                         Text(
                                                           '${baby.height ?? '-'} cm',
                                                           style: const TextStyle(
                                                             fontSize: 12,
-                                                            color:
-                                                                AppColors
-                                                                    .textGrey,
+                                                            color: AppColors.textGrey,
                                                           ),
                                                         ),
                                                       ],
@@ -678,20 +610,14 @@ class _HomeScreenState extends State<HomeScreen>
                                                           'assets/images/icon/berat.png',
                                                           width: 12,
                                                           height: 12,
-                                                          color:
-                                                              AppColors
-                                                                  .textGrey,
+                                                          color: AppColors.textGrey,
                                                         ),
-                                                        const SizedBox(
-                                                          width: 4,
-                                                        ),
+                                                        const SizedBox(width: 4),
                                                         Text(
                                                           '${baby.weight ?? '-'} kg',
                                                           style: const TextStyle(
                                                             fontSize: 12,
-                                                            color:
-                                                                AppColors
-                                                                    .textGrey,
+                                                            color: AppColors.textGrey,
                                                           ),
                                                         ),
                                                       ],
@@ -705,21 +631,14 @@ class _HomeScreenState extends State<HomeScreen>
                                                           'assets/images/icon/alergi.png',
                                                           width: 12,
                                                           height: 12,
-                                                          color:
-                                                              AppColors
-                                                                  .textGrey,
+                                                          color: AppColors.textGrey,
                                                         ),
-                                                        const SizedBox(
-                                                          width: 4,
-                                                        ),
+                                                        const SizedBox(width: 4),
                                                         Text(
-                                                          baby.condition ??
-                                                              'Tidak ada alergi',
+                                                          baby.condition ?? 'Tidak ada alergi',
                                                           style: const TextStyle(
                                                             fontSize: 12,
-                                                            color:
-                                                                AppColors
-                                                                    .textGrey,
+                                                            color: AppColors.textGrey,
                                                           ),
                                                         ),
                                                       ],
@@ -732,10 +651,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                           MaterialPageRoute(
                                                             builder:
                                                                 (context) =>
-                                                                    BabyEditScreen(
-                                                                      baby:
-                                                                          baby,
-                                                                    ),
+                                                                    BabyEditScreen(baby: baby),
                                                           ),
                                                         );
                                                       },
@@ -743,11 +659,8 @@ class _HomeScreenState extends State<HomeScreen>
                                                         'Lengkapi Data Bayi',
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          color:
-                                                              AppColors.accent,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
+                                                          color: AppColors.accent,
+                                                          decoration: TextDecoration.underline,
                                                         ),
                                                       ),
                                                     ),
@@ -777,22 +690,16 @@ class _HomeScreenState extends State<HomeScreen>
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const BabyListScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const BabyListScreen()),
                       );
                     },
-                    borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(20),
-                    ),
+                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(20)),
                     child: Container(
                       width: 80,
                       height: 60,
                       decoration: BoxDecoration(
                         color: AppColors.accent,
-                        borderRadius: const BorderRadius.horizontal(
-                          left: Radius.circular(20),
-                        ),
+                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(20)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withAlpha(50),
@@ -832,15 +739,13 @@ class _HomeScreenState extends State<HomeScreen>
             child: InkWell(
               onTap: () {
                 // Navigasi hanya jika memiliki rekomendasi
-                if (_recommendedFoods.isNotEmpty &&
-                    babies.any((baby) => baby.isProfileComplete)) {
+                if (_recommendedFoods.isNotEmpty && babies.any((baby) => baby.isProfileComplete)) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => FoodRecommendationScreen(
-                            recommendedFoods: _recommendedFoods,
-                          ),
+                          (context) =>
+                              FoodRecommendationScreen(recommendedFoods: _recommendedFoods),
                     ),
                   );
                 }
@@ -887,10 +792,7 @@ class _HomeScreenState extends State<HomeScreen>
                 return Center(
                   child: Text(
                     state.error,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textBlack,
-                    ),
+                    style: const TextStyle(fontSize: 16, color: AppColors.textBlack),
                   ),
                 );
               }
@@ -902,8 +804,7 @@ class _HomeScreenState extends State<HomeScreen>
                 if (_recommendedFoods.isNotEmpty &&
                     (_currentRecommendationIndex >= _recommendedFoods.length ||
                         (_recommendedFoods.isNotEmpty &&
-                            _recommendedFoods.first.food.id !=
-                                state.foods.first.food.id))) {
+                            _recommendedFoods.first.food.id != state.foods.first.food.id))) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (mounted) {
                       setState(() {
@@ -936,9 +837,7 @@ class _HomeScreenState extends State<HomeScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: SizedBox(
           height: 132,
-          child: Center(
-            child: CircularProgressIndicator(color: AppColors.accent),
-          ),
+          child: Center(child: CircularProgressIndicator(color: AppColors.accent)),
         ),
       ),
     );
@@ -973,11 +872,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.no_food,
-              size: 70,
-              color: AppColors.primary.withAlpha(175),
-            ),
+            Icon(Icons.no_food, size: 70, color: AppColors.primaryLowTransparent),
             const SizedBox(height: 16),
             const Text(
               'Belum ada rekomendasi',
@@ -992,11 +887,7 @@ class _HomeScreenState extends State<HomeScreen>
             const Text(
               'Belum ada rekomendasi makanan untuk bayi kamu saat ini.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 14,
-                color: AppColors.textGrey,
-              ),
+              style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.textGrey),
             ),
           ],
         ),
@@ -1029,10 +920,7 @@ class _HomeScreenState extends State<HomeScreen>
                         errorBuilder:
                             (context, error, stackTrace) => Container(
                               color: Colors.grey[300],
-                              child: const Icon(
-                                Icons.image_not_supported,
-                                size: 40,
-                              ),
+                              child: const Icon(Icons.image_not_supported, size: 40),
                             ),
                       ),
                     ),
@@ -1046,9 +934,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   ),
                   Positioned.fill(
-                    child: Center(
-                      child: Icon(Symbols.lock, color: Colors.white, size: 24),
-                    ),
+                    child: Center(child: Icon(Symbols.lock, color: Colors.white, size: 24)),
                   ),
                 ],
               ),
@@ -1060,10 +946,7 @@ class _HomeScreenState extends State<HomeScreen>
                   children: [
                     const Text(
                       'Buka fitur ini dengan melengkapi\nprofil bayi kamu!',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 12),
                     // Tombol untuk melengkapi profil
@@ -1073,19 +956,14 @@ class _HomeScreenState extends State<HomeScreen>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder:
-                                  (context) => BabyEditScreen(
-                                    baby: babies[_currentBabyIndex],
-                                  ),
+                              builder: (context) => BabyEditScreen(baby: babies[_currentBabyIndex]),
                             ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.accent,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                         ),
                         child: const Text('Lengkapi Profil'),
@@ -1106,15 +984,12 @@ class _HomeScreenState extends State<HomeScreen>
       height: 180,
       child: PageView.builder(
         controller: _foodRecommendationController,
-        itemCount:
-            _recommendedFoods.isEmpty ? 1 : _recommendedFoods.length * 1000,
+        itemCount: _recommendedFoods.isEmpty ? 1 : _recommendedFoods.length * 1000,
         onPageChanged: (index) {
           if (mounted) {
             setState(() {
               _currentRecommendationIndex =
-                  _recommendedFoods.isEmpty
-                      ? 0
-                      : index % _recommendedFoods.length;
+                  _recommendedFoods.isEmpty ? 0 : index % _recommendedFoods.length;
             });
           }
         },
@@ -1130,9 +1005,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // Card untuk rekomendasi makanan
-  Widget _buildFoodRecommendationCard(
-    BabyFoodRecommendation babyFoodRecommendation,
-  ) {
+  Widget _buildFoodRecommendationCard(BabyFoodRecommendation babyFoodRecommendation) {
     final food = babyFoodRecommendation.food;
 
     return Padding(
@@ -1141,9 +1014,7 @@ class _HomeScreenState extends State<HomeScreen>
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => FoodDetailScreen(foodId: food.id),
-            ),
+            MaterialPageRoute(builder: (context) => FoodDetailScreen(foodId: food.id)),
           );
         },
         child: Stack(
@@ -1167,9 +1038,7 @@ class _HomeScreenState extends State<HomeScreen>
               height: 70,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(16),
-                  ),
+                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -1204,10 +1073,7 @@ class _HomeScreenState extends State<HomeScreen>
 
                   // Sumber makanan
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withAlpha(200),
                       borderRadius: BorderRadius.circular(12),
@@ -1262,9 +1128,7 @@ class _HomeScreenState extends State<HomeScreen>
         'navigate': (BuildContext context) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const LearningMaterialScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const LearningMaterialScreen()),
           );
         },
       },
@@ -1274,9 +1138,7 @@ class _HomeScreenState extends State<HomeScreen>
         'navigate': (BuildContext context) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const NutritionistProfileScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const NutritionistProfileScreen()),
           );
         },
       },
@@ -1286,9 +1148,7 @@ class _HomeScreenState extends State<HomeScreen>
         'navigate': (BuildContext context) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const CookingHistoryScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const CookingHistoryScreen()),
           );
         },
       },
@@ -1320,9 +1180,7 @@ class _HomeScreenState extends State<HomeScreen>
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const FeatureListScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const FeatureListScreen()),
                 );
               },
               borderRadius: BorderRadius.circular(8),
@@ -1360,8 +1218,7 @@ class _HomeScreenState extends State<HomeScreen>
               itemCount: features.length,
               itemBuilder: (context, index) {
                 final feature = features[index];
-                final cardColor =
-                    index % 2 == 0 ? AppColors.bisque : AppColors.lavenderBlue;
+                final cardColor = index % 2 == 0 ? AppColors.bisque : AppColors.lavenderBlue;
 
                 return Column(
                   children: [
@@ -1406,10 +1263,7 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Text(
                         feature['title'],
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                       ),
                     ),
                   ],
@@ -1424,13 +1278,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   void _navigateToFoodList({bool showUserSuggestions = false}) {
     // Fungsi untuk navigasi ke FoodListScreen
-    final MainPageState? mainPage =
-        context.findAncestorStateOfType<MainPageState>();
+    final MainPageState? mainPage = context.findAncestorStateOfType<MainPageState>();
     if (mainPage != null) {
-      mainPage.changePage(
-        1,
-        additionalParams: {'showUserSuggestions': showUserSuggestions},
-      );
+      mainPage.changePage(1, additionalParams: {'showUserSuggestions': showUserSuggestions});
     }
   }
 }
