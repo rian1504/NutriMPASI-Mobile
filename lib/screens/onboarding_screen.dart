@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/widgets/button.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -170,9 +171,7 @@ class OnboardingPage extends StatelessWidget {
                         child: CircularProgressIndicator(
                           value: (currentPage + 1) / totalPages,
                           backgroundColor: const Color(0xFFE0E0E0),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppColors.primary,
-                          ),
+                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
                           strokeWidth: 3,
                         ),
                       ),
@@ -193,16 +192,11 @@ class OnboardingPage extends StatelessWidget {
                             } else {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
-                                ),
+                                MaterialPageRoute(builder: (context) => const LoginScreen()),
                               );
                             }
                           },
-                          icon: const Icon(
-                            Symbols.arrow_forward,
-                            color: Colors.white,
-                          ),
+                          icon: const Icon(Symbols.arrow_forward, color: Colors.white),
                         ),
                       ),
                     ],
@@ -236,18 +230,12 @@ class OnboardingPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 padding: const EdgeInsets.all(8),
                 minimumSize: const Size(42, 42),
                 elevation: 1,
               ),
-              child: const Icon(
-                Symbols.arrow_back_ios_new_rounded,
-                color: Colors.white,
-                size: 16,
-              ),
+              child: const Icon(Symbols.arrow_back_ios_new_rounded, color: Colors.white, size: 16),
             ),
           ),
 
@@ -256,31 +244,14 @@ class OnboardingPage extends StatelessWidget {
           Positioned(
             top: 40,
             right: 16,
-            child: ElevatedButton(
+            child: SmallButton(
+              text: "Lewati",
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.accent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                padding: const EdgeInsets.all(8),
-                minimumSize: const Size(42, 42),
-                elevation: 1,
-              ),
-              child: const Text(
-                'Lewati',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
             ),
           ),
       ],
