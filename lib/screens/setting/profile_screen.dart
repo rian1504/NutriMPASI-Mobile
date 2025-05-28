@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
-import 'package:nutrimpasi/widgets/profile_app_bar.dart' show AppBarProfile;
+// import 'package:nutrimpasi/widgets/profile_app_bar.dart' show AppBarProfile;
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -20,7 +20,9 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background, // Ganti dengan warna latar belakang yang diinginkan
+      backgroundColor:
+          AppColors
+              .background, // Ganti dengan warna latar belakang yang diinginkan
 
       body: SingleChildScrollView(
         child: Column(
@@ -80,10 +82,17 @@ class _SettingScreenState extends State<SettingScreen> {
                               padding: EdgeInsets.all(2),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                border: Border.all(color: AppColors.textWhite, width: 2),
+                                border: Border.all(
+                                  color: AppColors.textWhite,
+                                  width: 2,
+                                ),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(AppIcons.editFill, color: Colors.black, size: 20),
+                              child: Icon(
+                                AppIcons.editFill,
+                                color: Colors.black,
+                                size: 20,
+                              ),
                             ),
                           ),
                         ],
@@ -120,7 +129,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: Card(
                       shape: RoundedRectangleBorder(
                         // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                        borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                        borderRadius: BorderRadius.circular(
+                          12.0,
+                        ), // Atur radius sudut
                       ),
                       color: AppColors.textWhite,
                       elevation: 1,
@@ -183,7 +194,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   Card(
                     shape: RoundedRectangleBorder(
                       // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                      borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                      borderRadius: BorderRadius.circular(
+                        12.0,
+                      ), // Atur radius sudut
                     ),
                     color: AppColors.textWhite,
                     elevation: 1,
@@ -196,7 +209,11 @@ class _SettingScreenState extends State<SettingScreen> {
                             size: 24, // opsional, atur agar pas di lingkaran
                           ),
                           title: Text('Resep Favorit'),
-                          trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                          trailing: Icon(
+                            AppIcons.arrowRight,
+                            color: AppColors.greyDark,
+                            size: 20,
+                          ),
                           // subtitle: Text('Deskripsi singkat untuk item ini.'),
                         ),
                         ListTile(
@@ -206,7 +223,11 @@ class _SettingScreenState extends State<SettingScreen> {
                             size: 24, // opsional, atur agar pas di lingkaran
                           ),
                           title: Text('Postingan yang Disukai'),
-                          trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                          trailing: Icon(
+                            AppIcons.arrowRight,
+                            color: AppColors.greyDark,
+                            size: 20,
+                          ),
                           // subtitle: Text('Deskripsi singkat untuk item ini.'),
                         ),
                       ],
@@ -215,7 +236,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   Card(
                     shape: RoundedRectangleBorder(
                       // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                      borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                      borderRadius: BorderRadius.circular(
+                        12.0,
+                      ), // Atur radius sudut
                     ),
                     color: AppColors.textWhite,
                     elevation: 1,
@@ -228,7 +251,11 @@ class _SettingScreenState extends State<SettingScreen> {
                             size: 24, // opsional, atur agar pas di lingkaran
                           ),
                           title: Text('Notifikasi'),
-                          trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                          trailing: Icon(
+                            AppIcons.arrowRight,
+                            color: AppColors.greyDark,
+                            size: 20,
+                          ),
                           // subtitle: Text('Deskripsi singkat untuk item ini.'),
                         ),
                         ListTile(
@@ -238,7 +265,11 @@ class _SettingScreenState extends State<SettingScreen> {
                             size: 24, // opsional, atur agar pas di lingkaran
                           ),
                           title: Text('Bahasa'),
-                          trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                          trailing: Icon(
+                            AppIcons.arrowRight,
+                            color: AppColors.greyDark,
+                            size: 20,
+                          ),
                           // subtitle: Text('Deskripsi singkat untuk item ini.'),
                         ),
                       ],
@@ -248,7 +279,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   Card(
                     shape: RoundedRectangleBorder(
                       // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                      borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                      borderRadius: BorderRadius.circular(
+                        12.0,
+                      ), // Atur radius sudut
                     ),
                     color: AppColors.textWhite,
                     elevation: 1,
@@ -260,8 +293,15 @@ class _SettingScreenState extends State<SettingScreen> {
                             color: AppColors.error,
                             size: 24, // opsional, atur agar pas di lingkaran
                           ),
-                          title: Text('Keluar', style: TextStyle(color: AppColors.error)),
-                          trailing: Icon(AppIcons.arrowRight, color: AppColors.error, size: 20),
+                          title: Text(
+                            'Keluar',
+                            style: TextStyle(color: AppColors.error),
+                          ),
+                          trailing: Icon(
+                            AppIcons.arrowRight,
+                            color: AppColors.error,
+                            size: 20,
+                          ),
                           // subtitle: Text('Deskripsi singkat untuk item ini.'),
                         ),
                       ],

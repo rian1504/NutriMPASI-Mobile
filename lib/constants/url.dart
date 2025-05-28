@@ -12,7 +12,7 @@
 String baseUrl = 'http://172.16.69.252:8000/';
 
 // jika menggunakan emulator android
-// String baseUrl = 'http://10.0.2.2:8000/'; 
+// String baseUrl = 'http://10.0.2.2:8000/';
 
 // jika menggunakan android device (USB Debugging)
 // String baseUrl = 'http://192.168.x.x:8000/';

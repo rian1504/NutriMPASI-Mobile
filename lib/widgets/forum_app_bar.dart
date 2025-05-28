@@ -5,6 +5,9 @@
 
 // Widget untuk membuat AppBar dengan rounded corner di bagian kanan bawah
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/like/like_bloc.dart';
+import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 
@@ -13,6 +16,7 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
   final bool showExitButton;
   final String title;
+  final String category;
 
   const AppBarForum({
     super.key,
@@ -20,10 +24,12 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
     this.showBackButton = false,
     this.showExitButton = false,
     required this.title,
+    required this.category,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(showTabs ? kToolbarHeight + 100 : kToolbarHeight + 44);
+  Size get preferredSize =>
+      Size.fromHeight(showTabs ? kToolbarHeight + 100 : kToolbarHeight + 44);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,9 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                 // const SizedBox(height: 16),
                 if (showTabs == false)
                   Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16.0),
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top + 16.0,
+                    ),
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Text(
@@ -58,7 +66,9 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                 if (showTabs == true)
                   // Judul
                   Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16.0),
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top + 16.0,
+                    ),
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Text(
@@ -93,7 +103,10 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                         indicatorPadding: const EdgeInsets.all(6),
                         labelColor: Colors.white,
                         unselectedLabelColor: AppColors.primary,
-                        tabs: const [Tab(text: 'Semua'), Tab(text: 'Postingan Saya')],
+                        tabs: const [
+                          Tab(text: 'Semua'),
+                          Tab(text: 'Postingan Saya'),
+                        ],
                       ),
                     ),
                   ),
@@ -111,7 +124,20 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               elevation: 3,
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                Navigator.pop(context);
+
+                switch (category) {
+                  case 'forum':
+                    context.read<ThreadBloc>().add(FetchThreads());
+                    break;
+                  case 'like':
+                    context.read<LikeBloc>().add(FetchLikes());
+                    break;
+                  default:
+                    '';
+                }
+              },
               child: Icon(AppIcons.back),
             ),
           ),

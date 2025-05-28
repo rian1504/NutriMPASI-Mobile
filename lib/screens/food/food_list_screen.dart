@@ -298,8 +298,6 @@ class _FoodListScreenState extends State<FoodListScreen>
     if (hasSourceFilter) {
       filteredItems =
           filteredItems.where((food) {
-            if (food.source == null) return false;
-
             if (_recipeSourceFilters['KEMENKES']! &&
                 food.source == 'KEMENKES') {
               return true;
@@ -310,8 +308,7 @@ class _FoodListScreenState extends State<FoodListScreen>
             }
 
             if (_recipeSourceFilters['Rekomendasi Pengguna']! &&
-                food.source != 'WHO' &&
-                food.source != 'KEMENKES') {
+                food.source == null) {
               return true;
             }
 

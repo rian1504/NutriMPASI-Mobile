@@ -15,6 +15,8 @@ class ThreadDetail {
   String content;
   DateTime createdAt;
   int commentsCount;
+  int likesCount;
+  bool isLike;
   User user;
   List<Comment> comments;
 
@@ -24,6 +26,8 @@ class ThreadDetail {
     required this.content,
     required this.createdAt,
     required this.commentsCount,
+    required this.likesCount,
+    required this.isLike,
     required this.user,
     required this.comments,
   });
@@ -34,6 +38,8 @@ class ThreadDetail {
     String? content,
     DateTime? createdAt,
     int? commentsCount,
+    int? likesCount,
+    bool? isLike,
     User? user,
     List<Comment>? comments,
   }) => ThreadDetail(
@@ -42,6 +48,8 @@ class ThreadDetail {
     content: content ?? this.content,
     createdAt: createdAt ?? this.createdAt,
     commentsCount: commentsCount ?? this.commentsCount,
+    likesCount: likesCount ?? this.likesCount,
+    isLike: isLike ?? this.isLike,
     user: user ?? this.user,
     comments: comments ?? this.comments,
   );
@@ -52,6 +60,8 @@ class ThreadDetail {
     content: json["content"],
     createdAt: DateTime.parse(json["created_at"]),
     commentsCount: json["comments_count"],
+    likesCount: json["likes_count"],
+    isLike: json["is_like"],
     user: User.fromJson(json["user"]),
     comments: List<Comment>.from(
       json["comments"].map((x) => Comment.fromJson(x)),
@@ -64,6 +74,8 @@ class ThreadDetail {
     "content": content,
     "created_at": createdAt.toIso8601String(),
     "comments_count": commentsCount,
+    "likes_count": likesCount,
+    "is_like": isLike,
     "user": user.toJson(),
     "comments": List<dynamic>.from(comments.map((x) => x.toJson())),
   };
