@@ -20,7 +20,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         refersId: event.refersId,
         content: event.content,
       );
-      // emit(ReportSuccess());
+      emit(ReportSuccess());
 
       // // Jika ingin kembali ke state sebelumnya setelah beberapa detik
       // await Future.delayed(const Duration(seconds: 2));

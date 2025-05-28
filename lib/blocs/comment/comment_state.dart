@@ -9,6 +9,12 @@ final class CommentLoading extends CommentState {}
 
 final class CommentActionInProgress extends CommentState {}
 
+final class CommentStored extends CommentState {}
+
+final class CommentUpdated extends CommentState {}
+
+final class CommentDeleted extends CommentState {}
+
 final class CommentLoaded extends CommentState {
   final ThreadDetail thread;
 

@@ -41,10 +41,11 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
       // Update thread dengan komentar baru dan increment commentsCount
       final updatedThread = currentState.thread.copyWith(
-        comments: [...currentState.thread.comments, newComment],
+        comments: [newComment, ...currentState.thread.comments],
         commentsCount: currentState.thread.commentsCount + 1,
       );
 
+      emit(CommentStored());
       emit(CommentLoaded(thread: updatedThread));
     } catch (e) {
       emit(CommentError('Store Comment gagal: ${e.toString()}'));
@@ -76,6 +77,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         comments: updatedComments,
       );
 
+      emit(CommentUpdated());
       emit(CommentLoaded(thread: updatedThread));
     } catch (e) {
       emit(CommentError('Update Comment gagal: ${e.toString()}'));
@@ -105,6 +107,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         commentsCount: currentState.thread.commentsCount - 1,
       );
 
+      emit(CommentDeleted());
       emit(CommentLoaded(thread: updatedThread));
     } catch (e) {
       emit(CommentError('Delete Comment gagal: ${e.toString()}'));
