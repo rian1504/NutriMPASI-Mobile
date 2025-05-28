@@ -13,6 +13,7 @@ import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/create_post_screen.dart';
+import 'package:nutrimpasi/screens/forum/edit_post_screen.dart';
 import 'package:nutrimpasi/screens/forum/post_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart'
     show pushWithSlideTransition;
@@ -58,7 +59,27 @@ class _ForumScreenState extends State<ForumScreen> {
               color: AppColors.background,
               borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
             ),
-            child: BlocBuilder<ThreadBloc, ThreadState>(
+            child: BlocConsumer<ThreadBloc, ThreadState>(
+              listener: (context, state) {
+                if (state is ThreadDeleted) {
+                  // _showDialogReportSuccess(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Berhasil menghapus thread"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+
+                  context.read<ThreadBloc>().add(FetchThreads());
+                } else if (state is ThreadError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
               builder: (context, state) {
                 if (state is ThreadLoading) {
                   return Center(
@@ -271,7 +292,17 @@ class _ForumCardState extends State<ForumCard> {
                               color: AppColors.accent,
                             ),
                           ),
-                          onTap: _hideMenu,
+                          onTap: () {
+                            _hideMenu();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        EditPostScreen(thread: widget.thread),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
 class MediumButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
+  final Widget text;
+  final VoidCallback? onPressed;
 
   const MediumButton({super.key, required this.text, required this.onPressed});
 
@@ -16,13 +16,8 @@ class MediumButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
         elevation: 6,
       ),
-      onPressed: () {
-        // aksi unggah
-      },
-      child: Text(
-        text,
-        style: TextStyle(color: AppColors.textWhite, fontSize: 16, fontWeight: FontWeight.bold),
-      ),
+      onPressed: onPressed,
+      child: text,
     );
   }
 }

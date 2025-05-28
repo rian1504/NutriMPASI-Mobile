@@ -7,20 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/widgets/button.dart';
 import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
 
-class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({super.key});
+class EditPostScreen extends StatefulWidget {
+  final Thread thread;
+  const EditPostScreen({super.key, required this.thread});
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  State<EditPostScreen> createState() => _EditPostScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
+class _EditPostScreenState extends State<EditPostScreen> {
   final formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
+  late TextEditingController _titleController = TextEditingController();
+  late TextEditingController _contentController = TextEditingController();
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
 
@@ -34,23 +36,30 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.thread.title);
+    _contentController = TextEditingController(text: widget.thread.content);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBarForum(
-        title: "Buat Postingan",
+        title: "Edit Postingan",
         showExitButton: true,
         category: '',
       ),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
-          if (state is ThreadStored) {
+          if (state is ThreadUpdated) {
             Navigator.of(context).pop();
 
             // _showDialogReportSuccess(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text("Berhasil menambah thread"),
+                content: Text("Berhasil mengubah thread"),
                 backgroundColor: Colors.green,
               ),
             );
@@ -154,11 +163,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           ? null
                           : () {
                             if (formKey.currentState!.validate()) {
+                              final threadId = widget.thread.id;
                               final title = _titleController.text.trim();
                               final content = _contentController.text.trim();
 
                               context.read<ThreadBloc>().add(
-                                StoreThreads(title: title, content: content),
+                                UpdateThreads(
+                                  threadId: threadId,
+                                  title: title,
+                                  content: content,
+                                ),
                               );
 
                               _titleController.clear();
