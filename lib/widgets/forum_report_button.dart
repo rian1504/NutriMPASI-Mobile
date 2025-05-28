@@ -23,7 +23,16 @@ class ReportButton extends StatefulWidget {
 
   // Method untuk mengubah tampilan category
   String get displayCategory {
-    return category == 'thread' ? 'postingan' : category;
+    switch (category) {
+      case 'thread':
+        return 'postingan';
+      case 'comment':
+        return 'Komentar';
+      case 'food':
+        return 'makanan';
+      default:
+        return "konten";
+    }
   }
 
   @override
@@ -47,6 +56,7 @@ class _ReportButtonState extends State<ReportButton> {
                 if (state is ReportSuccess) {
                   _showDialogReportSuccess(context);
                 } else if (state is ReportError) {
+                  Navigator.of(context, rootNavigator: true).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),

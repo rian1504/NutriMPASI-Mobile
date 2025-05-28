@@ -347,7 +347,11 @@ class _ForumCardState extends State<ForumCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => pushWithSlideTransition(context, const PostScreen()),
+      onTap:
+          () => pushWithSlideTransition(
+            context,
+            PostScreen(threadId: widget.thread.id),
+          ),
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -376,8 +380,7 @@ class _ForumCardState extends State<ForumCard> {
                                 shape: BoxShape.circle,
                               ),
                               child:
-                                  widget.thread.user.avatar != null &&
-                                          widget.thread.user.avatar!.isNotEmpty
+                                  widget.thread.user.avatar != null
                                       ? ClipOval(
                                         child: Image.network(
                                           storageUrl +

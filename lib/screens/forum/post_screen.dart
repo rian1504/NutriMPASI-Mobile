@@ -4,23 +4,43 @@
 // Tanggal: 13 Mei 2025
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
+import 'package:nutrimpasi/blocs/comment/comment_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
-// import 'package:nutrimpasi/widgets/forum_report_button.dart' show ReportButton;
+import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/models/comment.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:nutrimpasi/widgets/forum_report_button.dart' show ReportButton;
 
 // Widget untuk menampilkan app bar forum diskusi
 import '../../widgets/forum_app_bar.dart' show AppBarForum;
 
 class PostScreen extends StatefulWidget {
-  const PostScreen({super.key});
+  final int threadId;
+
+  const PostScreen({super.key, required this.threadId});
 
   @override
   State<PostScreen> createState() => _PostScreenState();
 }
 
 class _PostScreenState extends State<PostScreen> {
+  ThreadDetail? thread;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CommentBloc>().add(FetchComments(threadId: widget.threadId));
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Dapatkan data user dari authentication bloc
+    final authState = context.watch<AuthenticationBloc>().state;
+    final loggedInUser = authState is LoginSuccess ? authState.user : null;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBarForum(title: "Post", showBackButton: true),
@@ -33,79 +53,79 @@ class _PostScreenState extends State<PostScreen> {
               topLeft: Radius.circular(40), // hanya lengkung kanan bawah
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height - 200,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                  child: Column(
-                    children: [
-                      _PostSection(
-                        isLiked: false,
-                        username: "Mama Karina (Saya)",
-                        postedAt: "1 jam yang lalu",
-                        title: "Gizi Seimbang",
-                        content:
-                            "Gizi seimbang adalah susunan makanan sehari-hari yang mengandung zat-zat gizi dalam jenis dan jumlah yang sesuai dengan kebutuhan tubuh, dengan memperhatikan prinsip keanekaragaman pangan, aktivitas fisik, perilaku hidup bersih, serta mempertahankan berat badan ideal.",
-                        likeCount: 2,
-                        commentCount: 4,
-                      ), // Komentar
-                      Card(
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(12),
-                            bottomRight: Radius.circular(12),
+          child: BlocBuilder<CommentBloc, CommentState>(
+            builder: (context, state) {
+              if (state is CommentLoading) {
+                return Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                );
+              }
+
+              if (state is CommentLoaded) {
+                thread = state.thread;
+              }
+
+              if (thread == null) {
+                return Center(
+                  child: Text(
+                    "Tidak ada data thread.",
+                    style: TextStyle(color: AppColors.textBlack),
+                  ),
+                );
+              }
+
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height - 200,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                      child: Column(
+                        children: [
+                          _PostSection(
+                            thread: thread!,
+                            showReport:
+                                loggedInUser != null &&
+                                loggedInUser.id != thread!.user.id,
                           ),
-                        ),
-                        elevation: 2,
-                        child: Column(
-                          children: [
-                            _CommentSection(
-                              username: "Dr. Abdullah - Ahli Gizi",
-                              postedAt: "2 jam yang lalu",
-                              content:
-                                  "Halo, moms! GTM pada bayi itu wajar dan sering terjadi, apalagi di usia 6-12 bulan. Bisa disebabkan oleh banyak faktor seperti bosan dengan rasa/tekstur, sedang tumbuh gigi, atau bahkan sedang sakit. Coba beri variasi makanan dan biarkan anak makan sendiri jika memungkinkan. Pastikan juga tidak terlalu banyak camilan sebelum makan utama ya!",
-                              likeCount: 5,
-                              commentCount: 0,
+                          // Komentar
+                          if (thread!.comments.isEmpty)
+                            _buildEmptyComments(context)
+                          else
+                            Card(
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(12),
+                                  bottomRight: Radius.circular(12),
+                                ),
+                              ),
+                              elevation: 2,
+                              child: Column(
+                                children: [
+                                  ...thread!.comments.map((comment) {
+                                    return _CommentSection(
+                                      comment: comment,
+                                      showMenu:
+                                          loggedInUser != null &&
+                                          loggedInUser.id == comment.user.id,
+                                      showReport:
+                                          loggedInUser != null &&
+                                          loggedInUser.id != comment.user.id,
+                                    );
+                                  }),
+                                  Divider(color: AppColors.grey),
+                                ],
+                              ),
                             ),
-                            Divider(color: AppColors.grey),
-                            _CommentSection(
-                              username: "Mama Mia",
-                              postedAt: "1 jam yang lalu",
-                              content:
-                                  "Coba cek apa dia sedang tumbuh gigi, mom. Biasanya kalau lagi teething, anak jadi rewel dan susah makan. Bisa coba kasih makanan yang lebih lembut ya",
-                              likeCount: 2,
-                              commentCount: 0,
-                            ),
-                            Divider(color: AppColors.grey),
-                            _CommentSection(
-                              username: "Mama Aboy",
-                              postedAt: "30 menit yang lalu",
-                              content:
-                                  "Wah, aku juga pernah ngalamin ini waktu anakku 8 bulan, mom! Aku coba variasi tekstur dan cara penyajiannya, misalnya kasih finger food atau biarkan dia eksplor sendiri. Kadang mereka cuma bosan dengan cara makannya yang itu-itu aja.",
-                              likeCount: 3,
-                              commentCount: 0,
-                            ),
-                            Divider(color: AppColors.grey),
-                            _CommentSection(
-                              username: "Mama Rora",
-                              postedAt: "20 menit yang lalu",
-                              content:
-                                  "Wah, aku juga pernah ngalamin ini waktu anakku 8 bulan, mom! Aku coba variasi tekstur dan cara penyajiannya, misalnya kasih finger food atau biarkan dia eksplor sendiri. Kadang mereka cuma bosan dengan cara makannya yang itu-itu aja.",
-                              likeCount: 0,
-                              commentCount: 0,
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -118,40 +138,16 @@ class _PostScreenState extends State<PostScreen> {
 }
 
 class _PostSection extends StatefulWidget {
-  final String username;
-  final String postedAt;
-  final String title;
-  final String content;
-  final int likeCount;
-  final int commentCount;
-  final bool isLiked;
+  final ThreadDetail thread;
+  final bool showReport;
 
-  _PostSection({
-    required this.username,
-    required this.postedAt,
-    required this.title,
-    required this.content,
-    required this.likeCount,
-    required this.commentCount,
-    required this.isLiked,
-    // super.key,
-  });
+  const _PostSection({required this.thread, this.showReport = false});
 
   @override
   State<_PostSection> createState() => _PostSectionState();
 }
 
 class _PostSectionState extends State<_PostSection> {
-  late bool isLiked;
-
-  @override
-  void initState() {
-    super.initState();
-    isLiked = widget.isLiked;
-  }
-
-  void _toggleLike() => setState(() => isLiked = !isLiked);
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -182,15 +178,26 @@ class _PostSectionState extends State<_PostSection> {
                             color: AppColors.primaryTransparent, // abu-abu muda
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(
-                            AppIcons.userFill,
-                            color: AppColors.primary,
-                            size: 20, // opsional, atur agar pas di lingkaran
-                          ),
+                          child:
+                              widget.thread.user.avatar != null
+                                  ? ClipOval(
+                                    child: Image.network(
+                                      storageUrl + widget.thread.user.avatar!,
+                                      width: 32,
+                                      height: 32,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                  : Icon(
+                                    AppIcons.userFill,
+                                    color: AppColors.primary,
+                                    size:
+                                        20, // opsional, atur agar pas di lingkaran
+                                  ),
                         ),
                         SizedBox(width: 8),
                         Text(
-                          widget.username,
+                          widget.thread.user.name,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 14,
@@ -205,7 +212,7 @@ class _PostSectionState extends State<_PostSection> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.title,
+                          widget.thread.title,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -215,14 +222,14 @@ class _PostSectionState extends State<_PostSection> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          widget.content,
+                          widget.thread.content,
                           textAlign: TextAlign.justify,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                         ),
                         SizedBox(height: 4),
                         Text(
-                          widget.postedAt,
+                          timeago.format(widget.thread.createdAt),
                           style: const TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 12,
@@ -241,43 +248,28 @@ class _PostSectionState extends State<_PostSection> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                IconButton(
-                                  icon: Icon(
-                                    isLiked
-                                        ? AppIcons.favoriteFill
-                                        : AppIcons.favorite,
-                                    color: Colors.red,
-                                    size: 24,
-                                  ),
-                                  onPressed: _toggleLike,
+                                Icon(
+                                  widget.thread.isLike
+                                      ? AppIcons.favoriteFill
+                                      : AppIcons.favorite,
+                                  color: Colors.red,
+                                  size: 24,
                                 ),
                                 SizedBox(width: 4),
                                 Text(
-                                  widget.likeCount.toString(),
+                                  widget.thread.likesCount.toString(),
                                   style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: 16),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  AppIcons.comment,
-                                  size: 24,
-                                  color: AppColors.textBlack,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  widget.commentCount.toString(),
-                                  style: const TextStyle(fontSize: 18),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        // Tombol untuk melaporkan postingan
-                        // ReportButton(category: "thread", refersId: ,),
+                        if (widget.showReport)
+                          // Tombol untuk melaporkan postingan
+                          ReportButton(
+                            category: "thread",
+                            refersId: widget.thread.id,
+                          ),
                       ],
                     ),
                   ],
@@ -289,7 +281,7 @@ class _PostSectionState extends State<_PostSection> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Text(
-                    "4 Komentar",
+                    "${widget.thread.commentsCount} komentar",
                     style: TextStyle(fontSize: 14, color: AppColors.textBlack),
                   ),
                 ),
@@ -303,26 +295,144 @@ class _PostSectionState extends State<_PostSection> {
 }
 
 class _CommentSection extends StatefulWidget {
-  final String username;
-  final String postedAt;
-  final String content;
-  final int likeCount;
-  final int commentCount;
-  final bool isLiked = false;
+  final Comment comment;
+  final bool showMenu;
+  final bool showReport;
 
   const _CommentSection({
-    required this.username,
-    required this.postedAt,
-    required this.content,
-    required this.likeCount,
-    required this.commentCount,
+    required this.comment,
+    this.showMenu = false,
+    this.showReport = false,
   });
   @override
   _CommentSectionState createState() => _CommentSectionState();
 }
 
 class _CommentSectionState extends State<_CommentSection> {
-  late bool isLiked = widget.isLiked;
+  final GlobalKey _menuKey = GlobalKey();
+  OverlayEntry? _overlayEntry;
+
+  void _showMenu() {
+    final renderBox = _menuKey.currentContext!.findRenderObject() as RenderBox;
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
+    _overlayEntry = OverlayEntry(
+      builder:
+          (context) => Stack(
+            children: [
+              GestureDetector(
+                onTap: _hideMenu,
+                behavior: HitTestBehavior.opaque,
+                child: Container(color: Colors.black45),
+              ),
+              Positioned(
+                left: offset.dx + size.width - 150,
+                top: offset.dy + size.height,
+                width: 150,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Tombol Edit Komentar
+                    Material(
+                      elevation: 4,
+                      borderRadius: BorderRadius.circular(4),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.accentTransparent,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: ListTile(
+                          leading: Icon(
+                            AppIcons.edit,
+                            size: 20,
+                            color: AppColors.accent,
+                          ),
+                          title: Text(
+                            "Edit Komentar",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.accent,
+                            ),
+                          ),
+                          onTap: _hideMenu,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Tombol Hapus Komentar
+                    if (widget.showMenu)
+                      // const SizedBox(height: 8),
+                      Material(
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(4),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.errorTranparent,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: ListTile(
+                            leading: Icon(
+                              AppIcons.deleteFill,
+                              size: 20,
+                              color: AppColors.error,
+                            ),
+                            title: Text(
+                              "Hapus Komentar",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.error,
+                              ),
+                            ),
+                            onTap: _confirmDelete,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  Future<void> _confirmDelete() async {
+    _hideMenu();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Konfirmasi Hapus"),
+            content: const Text(
+              "Apakah Anda yakin ingin menghapus komentar ini?",
+            ),
+            actions: [
+              TextButton(
+                child: const Text("Batal"),
+                onPressed: () => Navigator.pop(context, false),
+              ),
+              TextButton(
+                child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+                onPressed: () => Navigator.pop(context, true),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed == true) {
+      context.read<CommentBloc>().add(
+        DeleteComments(commentId: widget.comment.id),
+      );
+    }
+  }
+
+  void _hideMenu() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -340,11 +450,21 @@ class _CommentSectionState extends State<_CommentSection> {
                   color: AppColors.primaryTransparent, // abu-abu muda
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  AppIcons.userFill,
-                  color: AppColors.primary,
-                  size: 20, // opsional, atur agar pas di lingkaran
-                ),
+                child:
+                    widget.comment.user.avatar != null
+                        ? ClipOval(
+                          child: Image.network(
+                            storageUrl + widget.comment.user.avatar!,
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                        : Icon(
+                          AppIcons.userFill,
+                          color: AppColors.primary,
+                          size: 20, // opsional, atur agar pas di lingkaran
+                        ),
               ),
               SizedBox(width: 8),
               // Nama pengguna dan isi komentar
@@ -356,7 +476,7 @@ class _CommentSectionState extends State<_CommentSection> {
                       children: [
                         // Nama pengguna
                         Text(
-                          widget.username,
+                          widget.comment.user.name,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 14,
@@ -366,7 +486,7 @@ class _CommentSectionState extends State<_CommentSection> {
                         SizedBox(width: 8),
                         // Tanggal posting
                         Text(
-                          widget.postedAt,
+                          timeago.format(widget.comment.createdAt),
                           style: const TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 14,
@@ -377,67 +497,40 @@ class _CommentSectionState extends State<_CommentSection> {
                     ),
                     SizedBox(height: 4),
                     // Isi komentar
-                    Text(widget.content, textAlign: TextAlign.justify),
+                    Text(widget.comment.content, textAlign: TextAlign.justify),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        // Tombol untuk like, comment, dan info
-        Padding(
-          padding: const EdgeInsets.fromLTRB(44, 0, 4, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  // Tombol like
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          isLiked ? AppIcons.favoriteFill : AppIcons.favorite,
-                          color: Colors.red,
-                          size: 24,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            isLiked = !isLiked;
-                          });
-                        },
-                      ),
-                      Text(
-                        widget.likeCount.toString(),
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                  SizedBox(width: 16),
-                  // Tombol komentar
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        AppIcons.comment,
-                        size: 24,
-                        color: AppColors.textBlack,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        widget.commentCount.toString(),
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              // Tombol untuk melaporkan komentar
-              // ReportButton(category: "comment", refersId: ,),
-            ],
+        // Tombol untuk menu
+        if (widget.showMenu)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(44, 0, 4, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  key: _menuKey,
+                  icon: Icon(AppIcons.menu, size: 20),
+                  onPressed: _showMenu,
+                ),
+              ],
+            ),
           ),
-        ),
+        // Tombol untuk like, comment, dan report
+        if (widget.showReport)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(44, 0, 4, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Tombol untuk melaporkan komentar
+                ReportButton(category: "comment", refersId: widget.comment.id),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -491,4 +584,51 @@ class _CommentInputBar extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildEmptyComments(BuildContext context) {
+  return Card(
+    margin: EdgeInsets.symmetric(vertical: 2),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 2,
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.forum_outlined,
+            size: 64,
+            color: AppColors.primary.withOpacity(0.2),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Belum Ada Diskusi",
+            style: TextStyle(
+              fontSize: 18,
+              color: AppColors.textBlack,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              "Jadilah yang pertama berkomentar dan mulai diskusi menarik",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textGrey,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
