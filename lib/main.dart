@@ -66,9 +66,7 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) {
-            final bloc = AuthenticationBloc(
-              controller: AuthenticationController(),
-            );
+            final bloc = AuthenticationBloc(controller: AuthenticationController());
             Future.delayed(const Duration(milliseconds: 500), () {
               if (bloc.state is AuthenticationInitial) {
                 bloc.add(CheckAuthStatus());
@@ -77,31 +75,13 @@ class MainApp extends StatelessWidget {
             return bloc;
           },
         ),
-        BlocProvider(
-          create: (context) => BabyBloc(controller: BabyController()),
-        ),
-        BlocProvider(
-          create:
-              (context) =>
-                  BabyFoodRecommendationBloc(controller: BabyController()),
-        ),
-        BlocProvider(
-          create: (context) => CommentBloc(controller: CommentController()),
-        ),
-        BlocProvider(
-          create: (context) => FavoriteBloc(controller: FavoriteController()),
-        ),
-        BlocProvider(
-          create: (context) => FoodBloc(controller: FoodController()),
-        ),
-        BlocProvider(
-          create:
-              (context) =>
-                  FoodCategoryBloc(controller: FoodSuggestionController()),
-        ),
-        BlocProvider(
-          create: (context) => FoodCookingBloc(controller: FoodController()),
-        ),
+        BlocProvider(create: (context) => BabyBloc(controller: BabyController())),
+        BlocProvider(create: (context) => BabyFoodRecommendationBloc(controller: BabyController())),
+        BlocProvider(create: (context) => CommentBloc(controller: CommentController())),
+        BlocProvider(create: (context) => FavoriteBloc(controller: FavoriteController())),
+        BlocProvider(create: (context) => FoodBloc(controller: FoodController())),
+        BlocProvider(create: (context) => FoodCategoryBloc(controller: FoodSuggestionController())),
+        BlocProvider(create: (context) => FoodCookingBloc(controller: FoodController())),
         BlocProvider(
           create:
               (context) => FoodDetailBloc(
@@ -109,40 +89,19 @@ class MainApp extends StatelessWidget {
                 favoriteController: FavoriteController(),
               ),
         ),
+        BlocProvider(create: (context) => FoodRecordBloc(controller: FoodRecordController())),
         BlocProvider(
-          create:
-              (context) => FoodRecordBloc(controller: FoodRecordController()),
+          create: (context) => FoodSuggestionBloc(controller: FoodSuggestionController()),
         ),
-        BlocProvider(
-          create:
-              (context) =>
-                  FoodSuggestionBloc(controller: FoodSuggestionController()),
-        ),
-        BlocProvider(
-          create: (context) => LikeBloc(controller: LikeController()),
-        ),
+        BlocProvider(create: (context) => LikeBloc(controller: LikeController())),
+        BlocProvider(create: (context) => NotificationBloc(controller: NotificationController())),
+        BlocProvider(create: (context) => NutritionistBloc(controller: NutritionistController())),
+        BlocProvider(create: (context) => ReportBloc(controller: ReportController())),
+        BlocProvider(create: (context) => ScheduleBloc(controller: ScheduleController())),
         BlocProvider(
           create:
               (context) =>
-                  NotificationBloc(controller: NotificationController()),
-        ),
-        BlocProvider(
-          create:
-              (context) =>
-                  NutritionistBloc(controller: NutritionistController()),
-        ),
-        BlocProvider(
-          create: (context) => ReportBloc(controller: ReportController()),
-        ),
-        BlocProvider(
-          create: (context) => ScheduleBloc(controller: ScheduleController()),
-        ),
-        BlocProvider(
-          create:
-              (context) => ThreadBloc(
-                controller: ThreadController(),
-                likeController: LikeController(),
-              ),
+                  ThreadBloc(controller: ThreadController(), likeController: LikeController()),
         ),
       ],
       child: MaterialApp(
@@ -157,10 +116,7 @@ class MainApp extends StatelessWidget {
         theme: ThemeData(
           fontFamily: 'Poppins',
           primaryColor: AppColors.primary,
-          colorScheme: ColorScheme.light(
-            primary: AppColors.primary,
-            secondary: AppColors.accent,
-          ),
+          colorScheme: ColorScheme.light(primary: AppColors.primary, secondary: AppColors.accent),
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
@@ -225,9 +181,7 @@ class MainPageState extends State<MainPage> {
       backgroundColor: AppColors.background,
       body:
           _page == 1 && _pageParams.containsKey('showUserSuggestions')
-              ? FoodListScreen(
-                showUserSuggestions: _pageParams['showUserSuggestions'],
-              )
+              ? FoodListScreen(showUserSuggestions: _pageParams['showUserSuggestions'])
               : _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: AppColors.background,
@@ -236,27 +190,11 @@ class MainPageState extends State<MainPage> {
         animationDuration: const Duration(milliseconds: 300),
         index: _page,
         items: [
-          Icon(
-            Symbols.home_rounded,
-            color: Colors.white,
-            size: _page == 0 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.restaurant_menu,
-            color: Colors.white,
-            size: _page == 1 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.calendar_month,
-            color: Colors.white,
-            size: _page == 2 ? 35 : 25,
-          ),
+          Icon(Symbols.home_rounded, color: Colors.white, size: _page == 0 ? 35 : 25),
+          Icon(Symbols.restaurant_menu, color: Colors.white, size: _page == 1 ? 35 : 25),
+          Icon(Symbols.calendar_month, color: Colors.white, size: _page == 2 ? 35 : 25),
           Icon(Symbols.forum, color: Colors.white, size: _page == 3 ? 35 : 25),
-          Icon(
-            Symbols.settings,
-            color: Colors.white,
-            size: _page == 4 ? 35 : 25,
-          ),
+          Icon(Symbols.settings, color: Colors.white, size: _page == 4 ? 35 : 25),
         ],
         onTap: (index) {
           setState(() {

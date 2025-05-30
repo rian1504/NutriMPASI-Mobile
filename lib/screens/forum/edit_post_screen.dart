@@ -46,11 +46,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(
-        title: "Edit Postingan",
-        showExitButton: true,
-        category: '',
-      ),
+      appBar: AppBarForum(title: "Edit Postingan", showExitButton: true, category: ''),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
           if (state is ThreadUpdated) {
@@ -58,17 +54,14 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
             // _showDialogReportSuccess(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Berhasil mengubah thread"),
-                backgroundColor: Colors.green,
-              ),
+              SnackBar(content: Text("Berhasil mengubah thread"), backgroundColor: Colors.green),
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
           } else if (state is ThreadError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
           }
         },
         builder: (context, state) {
@@ -81,9 +74,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                    ),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(
@@ -158,6 +149,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                 // left: 0,
                 // right: 0,
                 child: MediumButton(
+                  text: 'Simpan Perubahan',
                   onPressed:
                       state is ThreadLoading
                           ? null
@@ -168,22 +160,18 @@ class _EditPostScreenState extends State<EditPostScreen> {
                               final content = _contentController.text.trim();
 
                               context.read<ThreadBloc>().add(
-                                UpdateThreads(
-                                  threadId: threadId,
-                                  title: title,
-                                  content: content,
-                                ),
+                                UpdateThreads(threadId: threadId, title: title, content: content),
                               );
 
                               _titleController.clear();
                               _contentController.clear();
                             }
                           },
-                  text:
+                  loadingIndicator:
                       state is ThreadLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
-                            'Unggah',
+                            'Simpan Perubahan',
                             style: TextStyle(
                               color: AppColors.textWhite,
                               fontSize: 16,

@@ -123,11 +123,10 @@ class OnboardingPage extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.fromLTRB(24, 32, 24, 60),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20),
                   // Judul utama
                   Text(
                     title,
@@ -160,10 +159,9 @@ class OnboardingPage extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
-                  const Spacer(),
-                  // Tombol lanjut dengan indikator progres
+                  const Spacer(), // Ini penting untuk mengisi ruang kosong vertikal
                   Stack(
-                    alignment: Alignment.center,
+                    alignment: Alignment.center, // Memusatkan anak-anak Stack
                     children: [
                       SizedBox(
                         width: 56,
@@ -190,6 +188,7 @@ class OnboardingPage extends StatelessWidget {
                                 curve: Curves.easeInOut,
                               );
                             } else {
+                              // Ini adalah contoh navigasi ke halaman login
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -242,7 +241,7 @@ class OnboardingPage extends StatelessWidget {
         // Tombol lewati - hanya tampil pada halaman pertama dan kedua
         if (currentPage < totalPages - 1)
           Positioned(
-            top: 40,
+            top: MediaQuery.of(context).padding.top + 8,
             right: 16,
             child: SmallButton(
               text: "Lewati",

@@ -332,12 +332,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       ),
                     ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.logout),
-                    onPressed: () {
-                      context.read<AuthenticationBloc>().add(LogoutRequested());
-                    },
-                  ),
+                  // IconButton(
+                  //   icon: const Icon(Icons.logout),
+                  //   onPressed: () {
+                  //     context.read<AuthenticationBloc>().add(LogoutRequested());
+                  //   },
+                  // ),
                   // Tombol notifikasi
                   IconButton(
                     icon: Image.asset(

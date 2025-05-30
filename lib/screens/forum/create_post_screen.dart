@@ -149,6 +149,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 // left: 0,
                 // right: 0,
                 child: MediumButton(
+                  text: 'Unggah Postingan',
                   onPressed:
                       state is ThreadLoading
                           ? null
@@ -165,7 +166,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               _contentController.clear();
                             }
                           },
-                  text:
+                  loadingIndicator:
                       state is ThreadLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
