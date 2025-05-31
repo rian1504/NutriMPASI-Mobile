@@ -43,7 +43,7 @@ class _PostScreenState extends State<PostScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Post", showBackButton: true, category: 'forum'),
+      appBar: AppBarForum(title: "Postingan", showBackButton: true, category: 'forum'),
       body: Container(
         decoration: BoxDecoration(color: AppColors.primary),
         child: Container(

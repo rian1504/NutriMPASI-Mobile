@@ -15,11 +15,7 @@ class ReportButton extends StatefulWidget {
   final String category;
   final int refersId;
 
-  const ReportButton({
-    super.key,
-    required this.category,
-    required this.refersId,
-  });
+  const ReportButton({super.key, required this.category, required this.refersId});
 
   // Method untuk mengubah tampilan category
   String get displayCategory {
@@ -49,6 +45,7 @@ class _ReportButtonState extends State<ReportButton> {
       icon: Icon(AppIcons.report, size: 24),
       onPressed: () {
         showDialog(
+          barrierColor: Colors.black87,
           context: context,
           builder: (BuildContext context) {
             return BlocConsumer<ReportBloc, ReportState>(
@@ -57,20 +54,15 @@ class _ReportButtonState extends State<ReportButton> {
                   _showDialogReportSuccess(context);
                 } else if (state is ReportError) {
                   Navigator.of(context, rootNavigator: true).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.error),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
                 }
               },
               builder: (context, state) {
                 return AlertDialog(
                   contentPadding: const EdgeInsets.all(24),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   title: Text(
                     'Anda yakin ingin melaporkan ${widget.displayCategory} ini?',
                     textAlign: TextAlign.center,
@@ -86,19 +78,13 @@ class _ReportButtonState extends State<ReportButton> {
                       onChanged: (value) {
                         reportReason = value;
                       },
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textBlack,
-                      ),
+                      style: TextStyle(fontSize: 14, color: AppColors.textBlack),
                       minLines: 3,
                       maxLines: 5,
                       decoration: InputDecoration(
                         hintText:
                             'Masukkan alasan Anda melaporkan ${widget.displayCategory} ini...',
-                        hintStyle: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textGrey,
-                        ),
+                        hintStyle: TextStyle(fontSize: 14, color: AppColors.textGrey),
                         border: InputBorder.none,
                       ),
                       validator: (value) {
@@ -120,25 +106,20 @@ class _ReportButtonState extends State<ReportButton> {
                           style: ElevatedButton.styleFrom(
                             foregroundColor: AppColors.textBlack,
                             backgroundColor: AppColors.greyLight,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             fixedSize: const Size(120, 40),
                           ),
                           onPressed:
                               state is ReportLoading
                                   ? null
-                                  : () =>
-                                      Navigator.pop(context), // tutup dialog
+                                  : () => Navigator.pop(context), // tutup dialog
                           child: Text('Batal'),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             foregroundColor: AppColors.textWhite,
                             backgroundColor: AppColors.accent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             fixedSize: const Size(120, 40),
                           ),
                           onPressed:

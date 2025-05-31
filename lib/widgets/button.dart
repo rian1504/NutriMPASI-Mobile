@@ -153,15 +153,52 @@ class MediumButton extends StatelessWidget {
                 ],
               )
               // : text,
-      : Text(
-        // Jika tidak ada ikon, tampilkan hanya teks
-        text,
-        style: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: fontSize ?? 16,
-          fontWeight: fontWeight ?? FontWeight.w700,
-          color: textColor ?? Colors.white,
-        ),
+              : Text(
+                // Jika tidak ada ikon, tampilkan hanya teks
+                text,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: fontSize ?? 16,
+                  fontWeight: fontWeight ?? FontWeight.w700,
+                  color: textColor ?? Colors.white,
+                ),
+              ),
+    );
+  }
+}
+
+class LeadingActionButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final IconData icon;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final double elevation;
+  final double? top;
+  final double? left;
+
+  const LeadingActionButton({
+    Key? key,
+    required this.onPressed,
+    required this.icon,
+    this.backgroundColor = Colors.white,
+    this.foregroundColor = Colors.black,
+    this.elevation = 3,
+    this.top,
+    this.left,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: top ?? MediaQuery.of(context).padding.top + 4,
+      left: left ?? 4,
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
+        elevation: elevation,
+        onPressed: onPressed,
+        child: Icon(icon),
       ),
     );
   }

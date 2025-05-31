@@ -85,9 +85,14 @@ class _ForumScreenState extends State<ForumScreen> {
                   }
 
                   return TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
-                      ForumTab(threads: threads, isMyPosts: false, currentUserId: loggedInUser!.id),
-                      ForumTab(threads: threads, isMyPosts: true, currentUserId: loggedInUser.id),
+                      _ForumTab(
+                        threads: threads,
+                        isMyPosts: false,
+                        currentUserId: loggedInUser!.id,
+                      ),
+                      _ForumTab(threads: threads, isMyPosts: true, currentUserId: loggedInUser.id),
                     ],
                   );
                 },
@@ -100,12 +105,12 @@ class _ForumScreenState extends State<ForumScreen> {
   }
 }
 
-class ForumTab extends StatelessWidget {
+class _ForumTab extends StatelessWidget {
   final List<Thread>? threads;
   final bool isMyPosts;
   final int currentUserId;
 
-  const ForumTab({
+  const _ForumTab({
     super.key,
     required this.threads,
     required this.isMyPosts,
@@ -157,7 +162,7 @@ class ForumTab extends StatelessWidget {
                 _EmptyStateWidget(isMyPosts: isMyPosts)
               else
                 ...filteredThreads.map(
-                  (thread) => ForumCard(
+                  (thread) => _ForumCard(
                     thread: thread,
                     showMenu: isMyPosts,
                     showReport: !isMyPosts && !(thread.userId == currentUserId),
@@ -203,15 +208,15 @@ class _EmptyStateWidget extends StatelessWidget {
 }
 
 // ==============================
-// WIDGET: ForumCard
+// WIDGET: _ForumCard
 // ==============================
-class ForumCard extends StatefulWidget {
+class _ForumCard extends StatefulWidget {
   final Thread thread;
   final bool showMenu;
   final bool showReport;
   final int? currentUserId;
 
-  const ForumCard({
+  const _ForumCard({
     super.key,
     required this.thread,
     this.showMenu = false,
@@ -220,10 +225,10 @@ class ForumCard extends StatefulWidget {
   });
 
   @override
-  State<ForumCard> createState() => _ForumCardState();
+  State<_ForumCard> createState() => _ForumCardState();
 }
 
-class _ForumCardState extends State<ForumCard> {
+class _ForumCardState extends State<_ForumCard> {
   late bool isLiked;
   late int likeCount;
   final GlobalKey _menuKey = GlobalKey();
@@ -332,7 +337,7 @@ class _ForumCardState extends State<ForumCard> {
       context: context,
       barrierColor: Colors.black87,
       barrierDismissible: true,
-      barrierLabel: 'ForumCardOptions',
+      barrierLabel: '_ForumCardOptions',
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (dialogContext, animation, secondaryAnimation) {
         return Align(
@@ -344,14 +349,14 @@ class _ForumCardState extends State<ForumCard> {
               mainAxisSize: MainAxisSize.min, // Agar Column sekecil mungkin
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // === Bagian ForumCard (Gaya Sama, Tapi Non-Interaktif) ===
+                // === Bagian _ForumCard (Gaya Sama, Tapi Non-Interaktif) ===
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.92,
                   child: IgnorePointer(
-                    // Kunci utama: Ini membuat ForumCard tidak interaktif
+                    // Kunci utama: Ini membuat _ForumCard tidak interaktif
                     ignoring: true, // Selalu mengabaikan semua event pointer
-                    child: ForumCard(
-                      // <<< Menggunakan instance ForumCard yang sama
+                    child: _ForumCard(
+                      // <<< Menggunakan instance _ForumCard yang sama
                       key: ValueKey(
                         '${widget.thread.id}_dialog_preview',
                       ), // Beri key unik jika perlu

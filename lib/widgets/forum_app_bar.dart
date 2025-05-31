@@ -10,6 +10,7 @@ import 'package:nutrimpasi/blocs/like/like_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/widgets/button.dart';
 
 class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   final bool showTabs;
@@ -28,8 +29,7 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(showTabs ? kToolbarHeight + 100 : kToolbarHeight + 44);
+  Size get preferredSize => Size.fromHeight(showTabs ? kToolbarHeight + 100 : kToolbarHeight + 62);
 
   @override
   Widget build(BuildContext context) {
@@ -43,49 +43,40 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
             width: double.infinity,
             color: AppColors.primary,
             child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // const SizedBox(height: 16),
                 if (showTabs == false)
                   Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top + 16.0,
-                    ),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10.0),
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 if (showTabs == true)
                   // Judul
                   Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top + 16.0,
-                    ),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 // TabBar jika diaktifkan
                 if (showTabs)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                     child: Container(
                       height: 36,
                       decoration: BoxDecoration(
@@ -103,10 +94,7 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                         indicatorPadding: const EdgeInsets.all(6),
                         labelColor: Colors.white,
                         unselectedLabelColor: AppColors.primary,
-                        tabs: const [
-                          Tab(text: 'Semua'),
-                          Tab(text: 'Postingan Saya'),
-                        ],
+                        tabs: const [Tab(text: 'Semua'), Tab(text: 'Postingan Saya')],
                       ),
                     ),
                   ),
@@ -116,44 +104,37 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
         ),
         // Tombol back seperti floating action button
         if (showBackButton)
-          Positioned(
-            top: 32,
-            left: 16,
-            child: FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              elevation: 3,
-              onPressed: () {
-                Navigator.pop(context);
+          LeadingActionButton(
+            onPressed: () {
+              Navigator.pop(context);
 
-                switch (category) {
-                  case 'forum':
-                    context.read<ThreadBloc>().add(FetchThreads());
-                    break;
-                  case 'like':
-                    context.read<LikeBloc>().add(FetchLikes());
-                    break;
-                  default:
-                    '';
-                }
-              },
-              child: Icon(AppIcons.back),
-            ),
+              switch (category) {
+                case 'forum':
+                  context.read<ThreadBloc>().add(FetchThreads());
+                  break;
+                case 'like':
+                  context.read<LikeBloc>().add(FetchLikes());
+                  break;
+                default:
+                  '';
+              }
+            },
+            icon: AppIcons.back,
           ),
         if (showExitButton)
-          Positioned(
-            top: 32,
-            left: 16,
-            child: FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              elevation: 3,
-              onPressed: () => Navigator.pop(context),
-              child: Icon(AppIcons.exit),
-            ),
-          ),
+          LeadingActionButton(onPressed: () => Navigator.pop(context), icon: AppIcons.exit),
+        // Positioned(
+        //   top: MediaQuery.of(context).padding.top + 16,
+        //   left: 16,
+        //   child: FloatingActionButton(
+        //     mini: true,
+        //     backgroundColor: Colors.white,
+        //     foregroundColor: Colors.black,
+        //     elevation: 3,
+        //     onPressed: () => Navigator.pop(context),
+        //     child: Icon(AppIcons.exit),
+        //   ),
+        // ),
       ],
     );
   }
