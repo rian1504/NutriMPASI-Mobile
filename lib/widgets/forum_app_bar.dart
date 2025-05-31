@@ -123,18 +123,6 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
           ),
         if (showExitButton)
           LeadingActionButton(onPressed: () => Navigator.pop(context), icon: AppIcons.exit),
-        // Positioned(
-        //   top: MediaQuery.of(context).padding.top + 16,
-        //   left: 16,
-        //   child: FloatingActionButton(
-        //     mini: true,
-        //     backgroundColor: Colors.white,
-        //     foregroundColor: Colors.black,
-        //     elevation: 3,
-        //     onPressed: () => Navigator.pop(context),
-        //     child: Icon(AppIcons.exit),
-        //   ),
-        // ),
       ],
     );
   }

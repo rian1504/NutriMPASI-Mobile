@@ -56,7 +56,7 @@ class _ForumScreenState extends State<ForumScreen> {
               borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(top: 16),
+              padding: const EdgeInsets.only(top: 6),
               child: BlocConsumer<ThreadBloc, ThreadState>(
                 listener: (context, state) {
                   if (state is ThreadDeleted) {
