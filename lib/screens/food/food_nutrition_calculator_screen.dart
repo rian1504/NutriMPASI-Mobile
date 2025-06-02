@@ -10,7 +10,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/models/food_suggestion.dart';
 import 'package:nutrimpasi/screens/food/food_recipe_success_screen.dart';
-import 'package:nutrimpasi/widgets/button.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodNutritionCalculatorScreen extends StatefulWidget {
   final List<String> ingredients;

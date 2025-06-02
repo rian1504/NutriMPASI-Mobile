@@ -5,7 +5,7 @@ import 'package:nutrimpasi/blocs/notification/notification_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/models/notification.dart' as model;
-import 'package:nutrimpasi/widgets/button.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});

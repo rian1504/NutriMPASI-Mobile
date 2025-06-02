@@ -9,8 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
-import 'package:nutrimpasi/widgets/message_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
+
+
+// Widget untuk menampilkan tombol info dengan opsi laporan lama
 // class ReportButton extends StatefulWidget {
 //   final String category;
 //   final int refersId;
@@ -181,6 +184,8 @@ import 'package:nutrimpasi/widgets/message_dialog.dart';
 //   }
 // }
 
+
+// Widget untuk menampilkan tombol info dengan opsi laporan baru
 class ReportButton extends StatefulWidget {
   final String category;
   final int refersId;

@@ -12,10 +12,10 @@ import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/comment.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:nutrimpasi/widgets/forum_report_button.dart' show ReportButton;
+import 'package:nutrimpasi/widgets/custom_dialog.dart' show ReportButton;
 
 // Widget untuk menampilkan app bar forum diskusi
-import '../../widgets/forum_app_bar.dart' show AppBarForum;
+import '../../widgets/custom_app_bar.dart' show AppBarForum;
 
 class PostScreen extends StatefulWidget {
   final int threadId;

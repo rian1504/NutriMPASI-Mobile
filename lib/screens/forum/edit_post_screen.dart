@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/thread.dart';
-import 'package:nutrimpasi/widgets/button.dart';
-import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
+import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 
 class EditPostScreen extends StatefulWidget {
   final Thread thread;

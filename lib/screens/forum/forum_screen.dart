@@ -16,9 +16,9 @@ import 'package:nutrimpasi/screens/forum/create_post_screen.dart';
 import 'package:nutrimpasi/screens/forum/edit_post_screen.dart';
 import 'package:nutrimpasi/screens/forum/post_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
-import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
-import 'package:nutrimpasi/widgets/forum_report_button.dart';
-import 'package:nutrimpasi/widgets/message_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
+import 'package:nutrimpasi/widgets/custom_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ForumScreen extends StatefulWidget {
@@ -132,6 +132,7 @@ class _ForumTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              // filter
               SizedBox(
                 width: 1 / 1.8 * MediaQuery.of(context).size.width,
                 child: Card(
