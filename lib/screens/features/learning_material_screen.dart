@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class LearningMaterialScreen extends StatelessWidget {
   const LearningMaterialScreen({super.key});
@@ -10,56 +10,45 @@ class LearningMaterialScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.champagne,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Material(
-            elevation: 3,
-            shadowColor: Colors.black54,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              // Gambar Materi Pembelajaran
+              Image.asset(
+                'assets/images/background/materi_pembelajaran.png',
+                width: double.infinity,
+                fit: BoxFit.fitWidth,
               ),
-              child: IconButton(
-                icon: const Icon(
-                  Symbols.arrow_back_ios_new_rounded,
-                  color: AppColors.textBlack,
-                  size: 24,
+              // Row dengan tombol kembali dan judul
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
                 ),
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.pop(context),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Tombol Kembali
+                    LeadingActionButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: AppIcons.back,
+                    ),
+                    // Judul Materi Pembelajaran
+                    const Text(
+                      'Materi Pembelajaran',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
+                      ),
+                    ),
+                    const SizedBox(width: 48),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
-        ),
-        title: const Text(
-          'Materi Pembelajaran',
-          style: TextStyle(
-            color: AppColors.textBlack,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: AppColors.primary,
-          statusBarIconBrightness: Brightness.light,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Gambar Materi Pembelajaran
-            Image.asset(
-              'assets/images/background/materi_pembelajaran.png',
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
-            ),
-          ],
         ),
       ),
     );
