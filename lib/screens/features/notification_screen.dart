@@ -22,7 +22,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
   String? _selectedCategory;
 
   // Daftar semua kategori
-  final List<String> _categories = ['Semua', 'comment', 'thread', 'report', 'schedule'];
+  final List<String> _categories = [
+    'Semua',
+    'comment',
+    'thread',
+    'report',
+    'schedule',
+  ];
 
   // Map untuk konversi kategori ke display name
   final Map<String, String> _categoryDisplayNames = {
@@ -46,7 +52,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
     if (_selectedCategory == 'Semua' || _selectedCategory == null) {
       return _notifications;
     }
-    return _notifications.where((n) => n.category == _selectedCategory).toList();
+    return _notifications
+        .where((n) => n.category == _selectedCategory)
+        .toList();
   }
 
   // Hitung notifikasi yang belum dibaca
@@ -73,7 +81,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(
-                    top: AppBar().preferredSize.height + MediaQuery.of(context).padding.top,
+                    top:
+                        AppBar().preferredSize.height +
+                        MediaQuery.of(context).padding.top,
                   ),
                   child: const Center(child: CircularProgressIndicator()),
                 ),
@@ -100,7 +110,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           const SizedBox(width: 8),
                           // Badge penghitung notifikasi
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.primary,
                               borderRadius: BorderRadius.circular(12),
@@ -120,14 +133,22 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     centerTitle: true,
                   ),
                 ),
-                LeadingActionButton(onPressed: () => Navigator.pop(context), icon: AppIcons.back),
+                LeadingActionButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: AppIcons.back,
+                ),
               ],
             ),
           );
         } else if (state is NotificationLoaded) {
           _notifications = state.notifications;
         } else if (state is NotificationError) {
-          return Center(child: Text('Error: ${state.error}', style: TextStyle(color: Colors.red)));
+          return Center(
+            child: Text(
+              'Error: ${state.error}',
+              style: TextStyle(color: Colors.red),
+            ),
+          );
         }
 
         return Scaffold(
@@ -139,11 +160,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   // Bar filter kategori
                   Padding(
                     padding: EdgeInsets.only(
-                      top: AppBar().preferredSize.height + MediaQuery.of(context).padding.top,
+                      top:
+                          AppBar().preferredSize.height +
+                          MediaQuery.of(context).padding.top,
                     ),
                     child: Container(
                       color: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: Row(
                         children: [
                           // Dropdown untuk kategori
@@ -151,8 +177,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 value: _selectedCategory,
-                                icon: const Icon(Symbols.arrow_drop_down, color: Colors.white),
-                                style: TextStyle(color: Colors.black, fontSize: 14),
+                                icon: const Icon(
+                                  Symbols.arrow_drop_down,
+                                  color: Colors.white,
+                                ),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
                                 isExpanded: true,
                                 onChanged: (String? newValue) {
                                   setState(() {
@@ -160,7 +192,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   });
                                 },
                                 items:
-                                    _categories.map<DropdownMenuItem<String>>((String value) {
+                                    _categories.map<DropdownMenuItem<String>>((
+                                      String value,
+                                    ) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: Text(
@@ -186,7 +220,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               'Tandai Semua Telah Dibaca',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontWeight: unreadCount > 0 ? FontWeight.bold : FontWeight.normal,
+                                fontWeight:
+                                    unreadCount > 0
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
                               ),
                             ),
                           ),
@@ -203,11 +240,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Symbols.notifications_off, size: 64, color: Colors.grey),
+                                  Icon(
+                                    Symbols.notifications_off,
+                                    size: 64,
+                                    color: Colors.grey,
+                                  ),
                                   const SizedBox(height: 16),
                                   Text(
                                     'Tidak ada notifikasi',
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -215,14 +259,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             : ListView.builder(
                               itemCount: filteredNotifications.length,
                               itemBuilder: (context, index) {
-                                final notification = filteredNotifications[index];
+                                final notification =
+                                    filteredNotifications[index];
                                 return InkWell(
                                   onTap: () {
                                     setState(() {
                                       notification.isRead = true;
                                     });
                                     context.read<NotificationBloc>().add(
-                                      ReadNotification(notificationId: notification.id),
+                                      ReadNotification(
+                                        notificationId: notification.id,
+                                      ),
                                     );
                                     // TODO: Implementasi aksi ketika notifikasi ditekan
                                   },
@@ -233,12 +280,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                               ? AppColors.background
                                               : AppColors.bisque,
                                       border: Border(
-                                        bottom: BorderSide(color: Colors.grey.shade200),
+                                        bottom: BorderSide(
+                                          color: Colors.grey.shade200,
+                                        ),
                                       ),
                                     ),
                                     padding: const EdgeInsets.all(16),
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         // Ikon notifikasi
                                         Container(
@@ -249,10 +299,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 notification.isRead
                                                     ? Colors.grey.shade200
                                                     : AppColors.buff,
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
                                           ),
                                           child: Icon(
-                                            _getNotificationIcon(notification.category),
+                                            _getNotificationIcon(
+                                              notification.category,
+                                            ),
                                             color:
                                                 notification.isRead
                                                     ? Colors.grey
@@ -263,7 +317,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         // Konten notifikasi
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 notification.title,
@@ -318,7 +373,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         const SizedBox(width: 8),
                         // Badge penghitung notifikasi
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(12),
@@ -338,7 +396,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   centerTitle: true,
                 ),
               ),
-              LeadingActionButton(onPressed: () => Navigator.pop(context), icon: AppIcons.back),
+              LeadingActionButton(
+                onPressed: () => Navigator.pop(context),
+                icon: AppIcons.back,
+              ),
             ],
           ),
         );

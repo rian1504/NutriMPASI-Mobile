@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/blocs/food_category/food_category_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
@@ -15,7 +14,8 @@ class FoodAddSuggestionScreen extends StatefulWidget {
   const FoodAddSuggestionScreen({super.key});
 
   @override
-  State<FoodAddSuggestionScreen> createState() => _FoodAddSuggestionScreenState();
+  State<FoodAddSuggestionScreen> createState() =>
+      _FoodAddSuggestionScreenState();
 }
 
 class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
@@ -158,7 +158,11 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                             color: AppColors.buff,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.camera_alt, size: 30, color: AppColors.primary),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 30,
+                            color: AppColors.primary,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         const Text(
@@ -455,7 +459,9 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
         },
         builder: (context, state) {
           if (state is FoodCategoryLoading) {
-            return const Center(child: CircularProgressIndicator(color: Colors.white));
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
           }
 
           return Stack(
@@ -504,8 +510,14 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               // Garis penghubung
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 15, left: 10),
-                                  child: Container(height: 4, color: AppColors.accent),
+                                  padding: const EdgeInsets.only(
+                                    bottom: 15,
+                                    left: 10,
+                                  ),
+                                  child: Container(
+                                    height: 4,
+                                    color: AppColors.accent,
+                                  ),
                                 ),
                               ),
 
@@ -515,8 +527,14 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                               // Garis penghubung
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 15, right: 10),
-                                  child: Container(height: 4, color: AppColors.componentGrey),
+                                  padding: const EdgeInsets.only(
+                                    bottom: 15,
+                                    right: 10,
+                                  ),
+                                  child: Container(
+                                    height: 4,
+                                    color: AppColors.componentGrey,
+                                  ),
                                 ),
                               ),
 
@@ -655,11 +673,19 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                         width: double.infinity,
                                                         height: 200,
                                                         decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(8),
-                                                          border: Border.all(color: Colors.grey),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
+                                                          border: Border.all(
+                                                            color: Colors.grey,
+                                                          ),
                                                         ),
                                                         child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(8),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
                                                           child: Image.file(
                                                             _imageFile!,
                                                             fit: BoxFit.cover,
@@ -674,15 +700,26 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                             setState(() {
                                                               _imageFile = null;
                                                               _imagePath = null;
-                                                              _showPhotoError = true;
+                                                              _showPhotoError =
+                                                                  true;
                                                             });
                                                           },
                                                           child: Container(
-                                                            padding: const EdgeInsets.all(4),
-                                                            decoration: BoxDecoration(
-                                                              color: Colors.white.withAlpha(175),
-                                                              shape: BoxShape.circle,
-                                                            ),
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  4,
+                                                                ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withAlpha(
+                                                                        175,
+                                                                      ),
+                                                                  shape:
+                                                                      BoxShape
+                                                                          .circle,
+                                                                ),
                                                             child: const Icon(
                                                               Icons.close,
                                                               size: 20,
@@ -695,14 +732,16 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                   ),
                                                   if (_showImageSizeError)
                                                     Padding(
-                                                      padding: const EdgeInsets.only(
-                                                        top: 6.0,
-                                                        left: 12.0,
-                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            top: 6.0,
+                                                            left: 12.0,
+                                                          ),
                                                       child: Text(
                                                         'Ukuran gambar maksimal 1MB',
                                                         style: TextStyle(
-                                                          color: Colors.red[700],
+                                                          color:
+                                                              Colors.red[700],
                                                           fontSize: 12,
                                                           fontFamily: 'Poppins',
                                                         ),
@@ -710,33 +749,49 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                     ),
                                                   const SizedBox(height: 8),
                                                   InkWell(
-                                                    onTap: _showImageSourceOptions,
+                                                    onTap:
+                                                        _showImageSourceOptions,
                                                     child: Container(
                                                       width: double.infinity,
-                                                      padding: const EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            vertical: 8,
+                                                          ),
                                                       decoration: BoxDecoration(
                                                         color: AppColors.buff,
-                                                        borderRadius: BorderRadius.circular(8),
-                                                        border: Border.all(color: Colors.grey),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                        border: Border.all(
+                                                          color: Colors.grey,
+                                                        ),
                                                       ),
                                                       child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: const [
                                                           Icon(
                                                             Icons.edit,
-                                                            color: AppColors.textBlack,
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
                                                             size: 18,
                                                           ),
                                                           SizedBox(width: 8),
                                                           Text(
                                                             'Ganti Foto',
                                                             style: TextStyle(
-                                                              fontFamily: 'Poppins',
+                                                              fontFamily:
+                                                                  'Poppins',
                                                               fontSize: 13,
-                                                              fontWeight: FontWeight.w500,
-                                                              color: AppColors.textBlack,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color:
+                                                                  AppColors
+                                                                      .textBlack,
                                                             ),
                                                           ),
                                                         ],
@@ -746,7 +801,8 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                 ],
                                               )
                                               : Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   InkWell(
                                                     onTap: () {
@@ -759,36 +815,53 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                     child: Container(
                                                       width: double.infinity,
                                                       height: 60,
-                                                      padding: const EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            vertical: 8,
+                                                          ),
                                                       decoration: BoxDecoration(
                                                         color: AppColors.buff,
-                                                        borderRadius: BorderRadius.circular(8),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
                                                         border: Border.all(
                                                           color:
                                                               _showPhotoError
                                                                   ? Colors.red
                                                                   : Colors.grey,
-                                                          width: _showPhotoError ? 1.5 : 1,
+                                                          width:
+                                                              _showPhotoError
+                                                                  ? 1.5
+                                                                  : 1,
                                                         ),
                                                       ),
                                                       child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: const [
                                                           Icon(
-                                                            Icons.upload_outlined,
-                                                            color: AppColors.textBlack,
+                                                            Icons
+                                                                .upload_outlined,
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
                                                             size: 18,
                                                           ),
                                                           SizedBox(width: 8),
                                                           Text(
                                                             'Tambahkan Foto',
                                                             style: TextStyle(
-                                                              fontFamily: 'Poppins',
+                                                              fontFamily:
+                                                                  'Poppins',
                                                               fontSize: 13,
-                                                              fontWeight: FontWeight.w500,
-                                                              color: AppColors.textBlack,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color:
+                                                                  AppColors
+                                                                      .textBlack,
                                                             ),
                                                           ),
                                                         ],
@@ -797,14 +870,16 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                   ),
                                                   if (_showPhotoError)
                                                     Padding(
-                                                      padding: const EdgeInsets.only(
-                                                        top: 6.0,
-                                                        left: 12.0,
-                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            top: 6.0,
+                                                            left: 12.0,
+                                                          ),
                                                       child: Text(
                                                         'Foto masakan tidak boleh kosong',
                                                         style: TextStyle(
-                                                          color: Colors.red[700],
+                                                          color:
+                                                              Colors.red[700],
                                                           fontSize: 12,
                                                           fontFamily: 'Poppins',
                                                         ),
@@ -850,7 +925,9 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                       hint: const Text('Pilih kategori'),
                                       items:
                                           _categories.map((category) {
-                                            return DropdownMenuItem<FoodCategory>(
+                                            return DropdownMenuItem<
+                                              FoodCategory
+                                            >(
                                               value: category,
                                               child: Text(category.name),
                                             );
@@ -1047,13 +1124,17 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                     // Field bahan dinamis
                                     ListView.builder(
                                       shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       itemCount: _ingredientControllers.length,
                                       itemBuilder: (context, index) {
                                         return Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0),
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8.0,
+                                          ),
                                           child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
                                               // Nomor indeks
                                               Container(
@@ -1061,13 +1142,15 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                 height: 40,
                                                 decoration: BoxDecoration(
                                                   color: AppColors.primary,
-                                                  borderRadius: BorderRadius.circular(12),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
                                                 ),
                                                 child: Center(
                                                   child: Text(
                                                     '${index + 1}',
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -1078,23 +1161,35 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                               Expanded(
                                                 child: TextFormField(
                                                   key: _ingredientKeys[index],
-                                                  controller: _ingredientControllers[index],
-                                                  decoration: _getInputDecoration(
-                                                    hintText: 'Bahan ${index + 1}',
-                                                  ),
+                                                  controller:
+                                                      _ingredientControllers[index],
+                                                  decoration:
+                                                      _getInputDecoration(
+                                                        hintText:
+                                                            'Bahan ${index + 1}',
+                                                      ),
                                                   validator:
                                                       (value) =>
-                                                          validateIngredientsLength(value, index),
+                                                          validateIngredientsLength(
+                                                            value,
+                                                            index,
+                                                          ),
                                                 ),
                                               ),
                                               // Tombol hapus
-                                              if (_ingredientControllers.length > 1)
+                                              if (_ingredientControllers
+                                                      .length >
+                                                  1)
                                                 IconButton(
                                                   icon: Icon(
                                                     Icons.remove_circle_outline,
                                                     color: AppColors.red,
                                                   ),
-                                                  onPressed: () => _removeIngredientField(index),
+                                                  onPressed:
+                                                      () =>
+                                                          _removeIngredientField(
+                                                            index,
+                                                          ),
                                                 ),
                                             ],
                                           ),
@@ -1107,7 +1202,9 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                       alignment: Alignment.centerRight,
                                       child: TextButton.icon(
                                         onPressed: _addIngredientField,
-                                        icon: const Icon(Icons.add_circle_outline),
+                                        icon: const Icon(
+                                          Icons.add_circle_outline,
+                                        ),
                                         label: const Text('Tambah Bahan'),
                                         style: TextButton.styleFrom(
                                           foregroundColor: AppColors.primary,
@@ -1164,13 +1261,17 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                     // Field langkah dinamis
                                     ListView.builder(
                                       shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       itemCount: _stepControllers.length,
                                       itemBuilder: (context, index) {
                                         return Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0),
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8.0,
+                                          ),
                                           child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
                                               // Nomor indeks
                                               Container(
@@ -1178,13 +1279,15 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                 height: 40,
                                                 decoration: BoxDecoration(
                                                   color: AppColors.primary,
-                                                  borderRadius: BorderRadius.circular(12),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
                                                 ),
                                                 child: Center(
                                                   child: Text(
                                                     '${index + 1}',
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -1195,12 +1298,18 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                               Expanded(
                                                 child: TextFormField(
                                                   key: _stepKeys[index],
-                                                  controller: _stepControllers[index],
+                                                  controller:
+                                                      _stepControllers[index],
                                                   decoration: _getInputDecoration(
-                                                    hintText: 'Langkah ${index + 1}',
+                                                    hintText:
+                                                        'Langkah ${index + 1}',
                                                   ),
                                                   validator:
-                                                      (value) => validateStepsLength(value, index),
+                                                      (value) =>
+                                                          validateStepsLength(
+                                                            value,
+                                                            index,
+                                                          ),
                                                 ),
                                               ),
                                               // Tombol hapus
@@ -1210,7 +1319,10 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                     Icons.remove_circle_outline,
                                                     color: AppColors.red,
                                                   ),
-                                                  onPressed: () => _removeStepField(index),
+                                                  onPressed:
+                                                      () => _removeStepField(
+                                                        index,
+                                                      ),
                                                 ),
                                             ],
                                           ),
@@ -1223,7 +1335,9 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                       alignment: Alignment.centerRight,
                                       child: TextButton.icon(
                                         onPressed: _addStepField,
-                                        icon: const Icon(Icons.add_circle_outline),
+                                        icon: const Icon(
+                                          Icons.add_circle_outline,
+                                        ),
                                         label: const Text('Tambah Langkah'),
                                         style: TextButton.styleFrom(
                                           foregroundColor: AppColors.primary,
@@ -1261,14 +1375,17 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                             onTap: () {
                                               // Reset semua error state terlebih dahulu
                                               setState(() {
-                                                _showPhotoError = _imageFile == null;
+                                                _showPhotoError =
+                                                    _imageFile == null;
                                                 _showImageSizeError = false;
                                               });
 
                                               // Validasi ukuran gambar jika ada
                                               if (_imageFile != null) {
-                                                final fileSize = _imageFile!.lengthSync();
-                                                final fileSizeInMB = fileSize / (1024 * 1024);
+                                                final fileSize =
+                                                    _imageFile!.lengthSync();
+                                                final fileSizeInMB =
+                                                    fileSize / (1024 * 1024);
                                                 if (fileSizeInMB > 1) {
                                                   setState(() {
                                                     _showImageSizeError = true;
@@ -1277,16 +1394,19 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                               }
 
                                               // Validasi form saat tombol next ditekan
-                                              bool formValid = _formKey.currentState!.validate();
+                                              bool formValid =
+                                                  _formKey.currentState!
+                                                      .validate();
 
                                               // Scroll to first error after validation
                                               if (!formValid ||
                                                   _showPhotoError ||
                                                   _showImageSizeError) {
                                                 // Schedule scroll after validation has fully processed and UI updated
-                                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                  _scrollToFirstError();
-                                                });
+                                                WidgetsBinding.instance
+                                                    .addPostFrameCallback((_) {
+                                                      _scrollToFirstError();
+                                                    });
                                                 return; // Stop processing if there are errors
                                               }
 
@@ -1302,55 +1422,87 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
 
                                                 List<String> ingredients =
                                                     _ingredientControllers
-                                                        .map((controller) => controller.text)
+                                                        .map(
+                                                          (controller) =>
+                                                              controller.text,
+                                                        )
                                                         .toList();
 
                                                 // menambahkan field buah ke bahan untuk perhitungan gizi
-                                                if (_fruitsController.text.isNotEmpty) {
-                                                  ingredients.add(_fruitsController.text);
+                                                if (_fruitsController
+                                                    .text
+                                                    .isNotEmpty) {
+                                                  ingredients.add(
+                                                    _fruitsController.text,
+                                                  );
                                                 }
 
                                                 // Menyimpan data makanan
                                                 final storedFood = FoodSuggestion(
-                                                  foodCategoryId: _selectedCategory?.id,
-                                                  name: _recipeNameController.text,
+                                                  foodCategoryId:
+                                                      _selectedCategory?.id,
+                                                  name:
+                                                      _recipeNameController
+                                                          .text,
                                                   image: _imagePath ?? '',
                                                   age: _selectedAgeGroup ?? '',
-                                                  energy: 0, // Akan diupdate di calculator
-                                                  protein: 0, // Akan diupdate di calculator
-                                                  fat: 0, // Akan diupdate di calculator
+                                                  energy:
+                                                      0, // Akan diupdate di calculator
+                                                  protein:
+                                                      0, // Akan diupdate di calculator
+                                                  fat:
+                                                      0, // Akan diupdate di calculator
                                                   portion:
-                                                      int.tryParse(_servingsController.text) ?? 0,
+                                                      int.tryParse(
+                                                        _servingsController
+                                                            .text,
+                                                      ) ??
+                                                      0,
                                                   recipe:
                                                       _ingredientControllers
                                                           .map((c) => c.text)
                                                           .toList(),
                                                   fruit:
-                                                      _fruitsController.text.isNotEmpty
-                                                          ? _fruitsController.text.split(', ')
+                                                      _fruitsController
+                                                              .text
+                                                              .isNotEmpty
+                                                          ? _fruitsController
+                                                              .text
+                                                              .split(', ')
                                                           : null,
                                                   step:
-                                                      _stepControllers.map((c) => c.text).toList(),
-                                                  description: _descriptionController.text,
+                                                      _stepControllers
+                                                          .map((c) => c.text)
+                                                          .toList(),
+                                                  description:
+                                                      _descriptionController
+                                                          .text,
                                                 );
 
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder:
-                                                        (context) => FoodNutritionCalculatorScreen(
-                                                          ingredients: ingredients,
-                                                          food: storedFood,
-                                                          image: _imageFile,
-                                                        ),
+                                                        (context) =>
+                                                            FoodNutritionCalculatorScreen(
+                                                              ingredients:
+                                                                  ingredients,
+                                                              food: storedFood,
+                                                              image: _imageFile,
+                                                            ),
                                                   ),
                                                 );
-                                              } else if (_photoFieldKey.currentContext != null &&
+                                              } else if (_photoFieldKey
+                                                          .currentContext !=
+                                                      null &&
                                                   _showPhotoError) {
                                                 // Scroll ke field foto jika terjadi error foto
                                                 Scrollable.ensureVisible(
-                                                  _photoFieldKey.currentContext!,
-                                                  duration: const Duration(milliseconds: 300),
+                                                  _photoFieldKey
+                                                      .currentContext!,
+                                                  duration: const Duration(
+                                                    milliseconds: 300,
+                                                  ),
                                                   alignment: 0.2,
                                                 );
                                               }
@@ -1385,7 +1537,10 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
               ),
 
               // Tombol kembali
-              LeadingActionButton(onPressed: () => Navigator.pop(context), icon: AppIcons.back),
+              LeadingActionButton(
+                onPressed: () => Navigator.pop(context),
+                icon: AppIcons.back,
+              ),
               // Positioned(
               //   top: 35,
               //   left: 15,

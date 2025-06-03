@@ -128,7 +128,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: IconButton(
                       icon: Icon(AppIcons.favoriteFill, color: AppColors.textWhite, size: 24),
                       onPressed: () {
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
                       },
                     ),
                   ),
