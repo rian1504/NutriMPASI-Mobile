@@ -1541,26 +1541,6 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                 onPressed: () => Navigator.pop(context),
                 icon: AppIcons.back,
               ),
-              // Positioned(
-              //   top: 35,
-              //   left: 15,
-              //   child: Container(
-              //     decoration: BoxDecoration(
-              //       color: Colors.white,
-              //       borderRadius: BorderRadius.circular(16),
-              //       border: Border.all(color: AppColors.componentGrey!),
-              //     ),
-              //     child: IconButton(
-              //       icon: const Icon(
-              //         Symbols.arrow_back_ios_new_rounded,
-              //         color: AppColors.textBlack,
-              //         size: 24,
-              //       ),
-              //       padding: EdgeInsets.zero,
-              //       onPressed: () => Navigator.pop(context),
-              //     ),
-              //   ),
-              // ),
             ],
           );
         },

@@ -595,10 +595,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                   ),
                 ),
                 backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white, // Warna teks dan ikon di AppBar
-                // leading: null, // Penting: Hapus leading default jika Anda ingin menempatkan tombol back sendiri di luar AppBar
-                automaticallyImplyLeading:
-                    false, // Penting: Untuk memastikan leading default tidak muncul
+                foregroundColor: Colors.white,
+                automaticallyImplyLeading: false,
               ),
             ),
             LeadingActionButton(

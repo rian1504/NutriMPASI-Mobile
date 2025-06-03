@@ -412,14 +412,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
 IconData _getNotificationIcon(String category) {
   switch (category.toLowerCase()) {
     case 'report':
-      return Icons.report; // atau Icons.warning
+      return Icons.report;
     case 'thread':
-      return Icons.forum; // atau Icons.chat
+      return Icons.forum;
     case 'comment':
       return Icons.comment;
     case 'schedule':
-      return Icons.calendar_today; // atau Icons.schedule
+      return Icons.calendar_today;
     default:
-      return Icons.notifications; // Ikon default jika kategori tidak dikenali
+      return Icons.notifications;
   }
 }

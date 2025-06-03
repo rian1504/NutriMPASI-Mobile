@@ -159,9 +159,9 @@ class OnboardingPage extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
-                  const Spacer(), // Ini penting untuk mengisi ruang kosong vertikal
+                  const Spacer(),
                   Stack(
-                    alignment: Alignment.center, // Memusatkan anak-anak Stack
+                    alignment: Alignment.center,
                     children: [
                       SizedBox(
                         width: 56,
@@ -190,7 +190,6 @@ class OnboardingPage extends StatelessWidget {
                                 curve: Curves.easeInOut,
                               );
                             } else {
-                              // Ini adalah contoh navigasi ke halaman login
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
