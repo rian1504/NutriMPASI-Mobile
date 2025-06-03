@@ -14,7 +14,9 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class CookingHistoryScreen extends StatefulWidget {
-  const CookingHistoryScreen({super.key});
+  final String? babyId;
+
+  const CookingHistoryScreen({this.babyId, super.key});
 
   @override
   State<CookingHistoryScreen> createState() => _CookingHistoryScreenState();
@@ -112,7 +114,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       // Jika data sudah ter-load, perbarui status loading
       setState(() {
         _babies = babyState.babies;
-        _selectedBaby = _babies.first.id.toString();
+        // Gunakan babyId dari parameter jika tersedia
+        _selectedBaby = widget.babyId ?? _babies.first.id.toString();
       });
     }
 
@@ -481,7 +484,15 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
             if (state is BabyLoaded) {
               setState(() {
                 _babies = state.babies;
-                _selectedBaby = _babies.first.id.toString();
+                // Gunakan babyId dari parameter jika tersedia dan belum diset
+                if (_selectedBaby.isEmpty && widget.babyId != null) {
+                  _selectedBaby = widget.babyId!;
+                } else if (_babies.isNotEmpty) {
+                  _selectedBaby =
+                      _selectedBaby.isEmpty
+                          ? _babies.first.id.toString()
+                          : _selectedBaby;
+                }
               });
             }
           },
