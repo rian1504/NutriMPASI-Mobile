@@ -19,6 +19,7 @@ import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTr
 import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 import 'package:nutrimpasi/widgets/custom_dialog.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_scroll.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ForumScreen extends StatefulWidget {
@@ -85,7 +86,7 @@ class _ForumScreenState extends State<ForumScreen> {
                   }
 
                   return TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: SlowPageScrollPhysics(),
                     children: [
                       _ForumTab(
                         threads: threads,
