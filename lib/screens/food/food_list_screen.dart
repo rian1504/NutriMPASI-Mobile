@@ -42,6 +42,14 @@ class _FoodListScreenState extends State<FoodListScreen>
   // Daftar saran pencarian
   List<String> _searchSuggestions = [];
 
+  // Opsi pengurutan makanan
+  String _sortOption = 'Masakan Terpopuler';
+  final List<String> _sortOptions = [
+    'Masakan Terpopuler',
+    'Masakan Terbaru',
+    'Masakan Terlama',
+  ];
+
   // Animasi untuk transisi AppBar
   late AnimationController _animationController;
   late Animation<double> _appBarAnimation;
@@ -317,7 +325,26 @@ class _FoodListScreenState extends State<FoodListScreen>
           }).toList();
     }
 
+    // Terapkan pengurutan
+    filteredItems = _sortFoodItems(filteredItems);
+
     return filteredItems;
+  }
+
+  // Mengurutkan makanan berdasarkan opsi yang dipilih
+  List<Food> _sortFoodItems(List<Food> items) {
+    //TODO: Backend get data untuk sorting
+    switch (_sortOption) {
+      case 'Masakan Terpopuler':
+        return items
+          ..sort((a, b) => b.favoritesCount.compareTo(a.favoritesCount));
+      case 'Masakan Terbaru':
+      // return items..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      case 'Masakan Terlama':
+      // return items..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      default:
+        return items;
+    }
   }
 
   @override
@@ -679,14 +706,11 @@ class _FoodListScreenState extends State<FoodListScreen>
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(
-                  0.2,
-                ), // Warna bayangan (hitam, 20% opasitas)
-                blurRadius: 2, // Tingkat keburaman
-                offset: const Offset(0, 2), // Posisi bayangan (4 unit ke bawah)
+                color: Colors.black.withAlpha(50),
+                blurRadius: 2,
+                offset: const Offset(0, 2),
               ),
             ],
-            // border: Border.all(color: AppColors.componentGrey!),
           ),
           child: TextField(
             controller: textEditingController,
@@ -1355,6 +1379,66 @@ class _FoodListScreenState extends State<FoodListScreen>
                       ),
 
                       const SizedBox(height: 16),
+
+                      // Dropdown untuk pengurutan
+                      if (!_showUserSuggestionsOnly)
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withAlpha(25),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: _sortOption,
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: AppColors.textBlack,
+                                ),
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textBlack,
+                                ),
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      _sortOption = newValue;
+                                      _displayedItemCount = 5;
+                                    });
+                                  }
+                                },
+                                items:
+                                    _sortOptions.map<DropdownMenuItem<String>>((
+                                      String value,
+                                    ) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0,
+                                          ),
+                                          child: Text(value),
+                                        ),
+                                      );
+                                    }).toList(),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      // Add space only if dropdown is shown
+                      if (!_showUserSuggestionsOnly) const SizedBox(height: 12),
 
                       // Info pencarian aktif
                       if (_activeSearchQuery.isNotEmpty)
