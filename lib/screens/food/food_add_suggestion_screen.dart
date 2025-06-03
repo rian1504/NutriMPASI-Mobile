@@ -1373,14 +1373,18 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                         child: Center(
                                           child: GestureDetector(
                                             onTap: () {
-                                              // Reset semua error state terlebih dahulu
+                                              // Tutup keyboard
+                                              FocusScope.of(context).unfocus();
+
+                                              // Reset error states
                                               setState(() {
                                                 _showPhotoError =
                                                     _imageFile == null;
                                                 _showImageSizeError = false;
                                               });
 
-                                              // Validasi ukuran gambar jika ada
+                                              // Validasi ukuran gambar
+                                              bool hasImageSizeError = false;
                                               if (_imageFile != null) {
                                                 final fileSize =
                                                     _imageFile!.lengthSync();
@@ -1390,122 +1394,119 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                   setState(() {
                                                     _showImageSizeError = true;
                                                   });
+                                                  hasImageSizeError = true;
                                                 }
                                               }
 
-                                              // Validasi form saat tombol next ditekan
+                                              // Validasi form tanpa mereset form
                                               bool formValid =
-                                                  _formKey.currentState!
-                                                      .validate();
+                                                  _formKey.currentState
+                                                      ?.validate() ??
+                                                  false;
 
-                                              // Scroll to first error after validation
+                                              // Validasi tambahan untuk memastikan semua field terisi dengan benar
+                                              if (_recipeNameController
+                                                          .text
+                                                          .length <
+                                                      4 ||
+                                                  _descriptionController
+                                                          .text
+                                                          .length <
+                                                      5 ||
+                                                  _selectedCategory == null ||
+                                                  _selectedAgeGroup == null ||
+                                                  _servingsController
+                                                      .text
+                                                      .isEmpty ||
+                                                  _ingredientControllers.any(
+                                                    (controller) =>
+                                                        controller.text.isEmpty,
+                                                  ) ||
+                                                  _stepControllers.any(
+                                                    (controller) =>
+                                                        controller.text.isEmpty,
+                                                  )) {
+                                                formValid = false;
+                                              }
+
+                                              // Menangani error foto dan validasi
                                               if (!formValid ||
                                                   _showPhotoError ||
-                                                  _showImageSizeError) {
-                                                // Schedule scroll after validation has fully processed and UI updated
+                                                  hasImageSizeError) {
+                                                // Refresh UI untuk menampilkan error
+                                                setState(() {});
+
                                                 WidgetsBinding.instance
                                                     .addPostFrameCallback((_) {
                                                       _scrollToFirstError();
                                                     });
-                                                return; // Stop processing if there are errors
+                                                return;
                                               }
 
-                                              // Hanya lanjutkan jika semua validasi lolos
-                                              if (formValid &&
-                                                  _imageFile != null &&
-                                                  !_showImageSizeError) {
-                                                // Reset state error
-                                                setState(() {
-                                                  _showPhotoError = false;
-                                                  _showImageSizeError = false;
-                                                });
+                                              // Semua validasi berhasil, lanjutkan ke kalkulator nutrisi
+                                              List<String> ingredients =
+                                                  _ingredientControllers
+                                                      .map(
+                                                        (controller) =>
+                                                            controller.text,
+                                                      )
+                                                      .toList();
 
-                                                List<String> ingredients =
+                                              if (_fruitsController
+                                                  .text
+                                                  .isNotEmpty) {
+                                                ingredients.add(
+                                                  _fruitsController.text,
+                                                );
+                                              }
+
+                                              final storedFood = FoodSuggestion(
+                                                foodCategoryId:
+                                                    _selectedCategory?.id,
+                                                name:
+                                                    _recipeNameController.text,
+                                                image: _imagePath ?? '',
+                                                age: _selectedAgeGroup ?? '',
+                                                energy: 0,
+                                                protein: 0,
+                                                fat: 0,
+                                                portion:
+                                                    int.tryParse(
+                                                      _servingsController.text,
+                                                    ) ??
+                                                    0,
+                                                recipe:
                                                     _ingredientControllers
-                                                        .map(
-                                                          (controller) =>
-                                                              controller.text,
-                                                        )
-                                                        .toList();
+                                                        .map((c) => c.text)
+                                                        .toList(),
+                                                fruit:
+                                                    _fruitsController
+                                                            .text
+                                                            .isNotEmpty
+                                                        ? _fruitsController.text
+                                                            .split(', ')
+                                                        : null,
+                                                step:
+                                                    _stepControllers
+                                                        .map((c) => c.text)
+                                                        .toList(),
+                                                description:
+                                                    _descriptionController.text,
+                                              );
 
-                                                // menambahkan field buah ke bahan untuk perhitungan gizi
-                                                if (_fruitsController
-                                                    .text
-                                                    .isNotEmpty) {
-                                                  ingredients.add(
-                                                    _fruitsController.text,
-                                                  );
-                                                }
-
-                                                // Menyimpan data makanan
-                                                final storedFood = FoodSuggestion(
-                                                  foodCategoryId:
-                                                      _selectedCategory?.id,
-                                                  name:
-                                                      _recipeNameController
-                                                          .text,
-                                                  image: _imagePath ?? '',
-                                                  age: _selectedAgeGroup ?? '',
-                                                  energy:
-                                                      0, // Akan diupdate di calculator
-                                                  protein:
-                                                      0, // Akan diupdate di calculator
-                                                  fat:
-                                                      0, // Akan diupdate di calculator
-                                                  portion:
-                                                      int.tryParse(
-                                                        _servingsController
-                                                            .text,
-                                                      ) ??
-                                                      0,
-                                                  recipe:
-                                                      _ingredientControllers
-                                                          .map((c) => c.text)
-                                                          .toList(),
-                                                  fruit:
-                                                      _fruitsController
-                                                              .text
-                                                              .isNotEmpty
-                                                          ? _fruitsController
-                                                              .text
-                                                              .split(', ')
-                                                          : null,
-                                                  step:
-                                                      _stepControllers
-                                                          .map((c) => c.text)
-                                                          .toList(),
-                                                  description:
-                                                      _descriptionController
-                                                          .text,
-                                                );
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (context) =>
-                                                            FoodNutritionCalculatorScreen(
-                                                              ingredients:
-                                                                  ingredients,
-                                                              food: storedFood,
-                                                              image: _imageFile,
-                                                            ),
-                                                  ),
-                                                );
-                                              } else if (_photoFieldKey
-                                                          .currentContext !=
-                                                      null &&
-                                                  _showPhotoError) {
-                                                // Scroll ke field foto jika terjadi error foto
-                                                Scrollable.ensureVisible(
-                                                  _photoFieldKey
-                                                      .currentContext!,
-                                                  duration: const Duration(
-                                                    milliseconds: 300,
-                                                  ),
-                                                  alignment: 0.2,
-                                                );
-                                              }
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) =>
+                                                          FoodNutritionCalculatorScreen(
+                                                            ingredients:
+                                                                ingredients,
+                                                            food: storedFood,
+                                                            image: _imageFile,
+                                                          ),
+                                                ),
+                                              );
                                             },
                                             child: Container(
                                               width: 50,
