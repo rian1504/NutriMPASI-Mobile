@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/comment/comment_bloc.dart';
+import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
 import 'package:nutrimpasi/constants/url.dart';
@@ -152,6 +153,24 @@ class _PostSection extends StatefulWidget {
 }
 
 class _PostSectionState extends State<_PostSection> {
+  late bool isLiked;
+  late int likeCount;
+
+  @override
+  void initState() {
+    super.initState();
+    isLiked = widget.thread.isLike;
+    likeCount = widget.thread.likesCount;
+  }
+
+  void _toggleLike() {
+    setState(() {
+      isLiked = !isLiked;
+      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+    });
+    context.read<ThreadBloc>().add(ToggleLike(threadId: widget.thread.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -261,16 +280,19 @@ class _PostSectionState extends State<_PostSection> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(
-                                  widget.thread.isLike
-                                      ? AppIcons.favoriteFill
-                                      : AppIcons.favorite,
-                                  color: Colors.red,
-                                  size: 24,
+                                IconButton(
+                                  icon: Icon(
+                                    isLiked
+                                        ? AppIcons.favoriteFill
+                                        : AppIcons.favorite,
+                                    color: Colors.red,
+                                    size: 24,
+                                  ),
+                                  onPressed: _toggleLike,
                                 ),
                                 SizedBox(width: 4),
                                 Text(
-                                  widget.thread.likesCount.toString(),
+                                  likeCount.toString(),
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ],
