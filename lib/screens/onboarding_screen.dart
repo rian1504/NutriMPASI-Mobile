@@ -123,31 +123,38 @@ class OnboardingPage extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 32, 24, 60),
+              padding: EdgeInsets.fromLTRB(24, 32, 24, MediaQuery.of(context).padding.bottom),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  // Judul utama
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.accent,
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // Judul utama
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.accent,
+                          height: 1.2,
+                        ),
+                      ),
+                      // Subjudul
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                          height: 1.2,
+                        ),
+                      ),
+                    ],
                   ),
-                  // Subjudul
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   // Teks deskripsi
                   Text(
                     description,
@@ -159,7 +166,6 @@ class OnboardingPage extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
-                  const Spacer(), // Ini penting untuk mengisi ruang kosong vertikal
                   Stack(
                     alignment: Alignment.center, // Memusatkan anak-anak Stack
                     children: [
@@ -218,7 +224,7 @@ class OnboardingPage extends StatelessWidget {
         // Tombol kembali
         if (currentPage > 0)
           Positioned(
-            top: 40,
+            top: MediaQuery.of(context).padding.top + 16,
             left: 16,
             child: ElevatedButton(
               onPressed: () {
@@ -241,7 +247,7 @@ class OnboardingPage extends StatelessWidget {
         // Tombol lewati - hanya tampil pada halaman pertama dan kedua
         if (currentPage < totalPages - 1)
           Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
+            top: MediaQuery.of(context).padding.top + 16,
             right: 16,
             child: SmallButton(
               text: "Lewati",
