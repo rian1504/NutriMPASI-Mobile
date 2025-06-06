@@ -21,6 +21,7 @@ import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
 import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
+import 'package:nutrimpasi/constants/deep_link.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/comment_controller.dart';
@@ -46,6 +47,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   // Make main async
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +65,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Initialize deep linking when app starts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DeepLinkHandler.initDeepLinking();
+    });
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -118,6 +126,7 @@ class MainApp extends StatelessWidget {
           primaryColor: AppColors.primary,
           colorScheme: ColorScheme.light(primary: AppColors.primary, secondary: AppColors.accent),
         ),
+        navigatorKey: navigatorKey,
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state is LoginSuccess) {
@@ -133,6 +142,28 @@ class MainApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/register': (context) => RegisterScreen(),
           '/home': (context) => MainPage(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name?.startsWith('/password-reset') ?? false) {
+            // Let DeepLinkHandler handle this via the navigatorKey
+            debugPrint(
+              'Ignoring /password-reset in onGenerateRoute; handled by DeepLinkHandler.',
+            );
+            return null;
+          }
+          // // Handle deep links when app is already running
+          // if (settings.name?.startsWith('/password-reset') ?? false) {
+          //   final uri = Uri.parse(settings.name!);
+          //   final token = uri.pathSegments[1];
+          //   final email = uri.queryParameters['email'] ?? '';
+
+          //   return MaterialPageRoute(
+          //     builder:
+          //         (context) => ResetPasswordScreen(token: token, email: email),
+          //   );
+          // }
+          // Handle other routes
+          return null;
         },
       ),
     );

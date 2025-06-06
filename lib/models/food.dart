@@ -21,6 +21,7 @@ class Food {
   double? fat;
   int? portion;
   String description;
+  DateTime? createdAt;
   int favoritesCount;
   bool isFavorite;
   FoodCategory? foodCategory;
@@ -39,6 +40,7 @@ class Food {
     this.fat,
     this.portion,
     required this.description,
+    this.createdAt,
     required this.favoritesCount,
     required this.isFavorite,
     this.foodCategory,
@@ -58,6 +60,8 @@ class Food {
     fat: (json["fat"] as num?)?.toDouble(),
     portion: json["portion"] as int?,
     description: json["description"] as String,
+    createdAt:
+        json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     favoritesCount: json["favorites_count"] as int,
     isFavorite: json["is_favorite"] as bool,
     foodCategory:
@@ -80,6 +84,7 @@ class Food {
     "fat": fat,
     "portion": portion,
     "description": description,
+    "created_at": createdAt?.toIso8601String(),
     "favorites_count": favoritesCount,
     "is_favorite": isFavorite,
     "food_category": foodCategory?.toJson(),
@@ -99,6 +104,7 @@ class Food {
     double? fat,
     int? portion,
     String? description,
+    DateTime? createdAt,
     int? favoritesCount,
     bool? isFavorite,
     FoodCategory? foodCategory,
@@ -117,6 +123,7 @@ class Food {
       fat: fat ?? this.fat,
       portion: portion ?? this.portion,
       description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
       favoritesCount: favoritesCount ?? this.favoritesCount,
       isFavorite: isFavorite ?? this.isFavorite,
       foodCategory: foodCategory ?? this.foodCategory,

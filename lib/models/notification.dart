@@ -12,7 +12,8 @@ String notificationToJson(Notification data) => json.encode(data.toJson());
 class Notification {
   int id;
   String category;
-  int? refersId;
+  int? threadId;
+  int? commentId;
   String title;
   String? content;
   bool isRead;
@@ -21,7 +22,8 @@ class Notification {
   Notification({
     required this.id,
     required this.category,
-    this.refersId,
+    this.threadId,
+    this.commentId,
     required this.title,
     this.content,
     required this.isRead,
@@ -31,7 +33,8 @@ class Notification {
   factory Notification.fromJson(Map<String, dynamic> json) => Notification(
     id: json["id"],
     category: json["category"],
-    refersId: json["refers_id"],
+    threadId: json["thread_id"],
+    commentId: json["comment_id"],
     title: json["title"],
     content: json["content"],
     isRead: json["is_read"] == 1,
@@ -41,7 +44,8 @@ class Notification {
   Map<String, dynamic> toJson() => {
     "id": id,
     "category": category,
-    "refers_id": refersId,
+    "thread_id": threadId,
+    "comment_id": commentId,
     "title": title,
     "content": content,
     "is_read": isRead ? 1 : 0,

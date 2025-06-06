@@ -7,7 +7,14 @@ import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final String token;
+  final String email;
+
+  const ResetPasswordScreen({
+    super.key,
+    required this.token,
+    required this.email,
+  });
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -35,9 +42,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   void _resetPassword(BuildContext context) {
-    // context.read<AuthenticationBloc>().add(
-    //   ForgotPasswordRequested(email: _emailController.text),
-    // );
+    context.read<AuthenticationBloc>().add(
+      ResetPasswordRequested(
+        token: widget.token,
+        email: widget.email,
+        password: _passwordController.text,
+        passwordConfirmation: _confirmPasswordController.text,
+      ),
+    );
   }
 
   @override
@@ -45,7 +57,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     final size = MediaQuery.of(context).size;
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        if (state is ForgotPasswordSuccess) {
+        if (state is ResetPasswordSuccess) {
           // Tampilkan snackbar sukses dan arahkan ke halaman utama
           ScaffoldMessenger.of(
             context,
@@ -54,7 +66,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           // Tunggu sebentar lalu navigasi ke home
           Future.delayed(const Duration(milliseconds: 500), () {
             if (context.mounted) {
-              Navigator.pushReplacementNamed(context, '/home');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
             }
           });
         } else if (state is AuthenticationError) {
