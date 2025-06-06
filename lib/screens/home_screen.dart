@@ -357,12 +357,6 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.logout),
-                    onPressed: () {
-                      context.read<AuthenticationBloc>().add(LogoutRequested());
-                    },
-                  ),
                   // Tombol notifikasi
                   IconButton(
                     icon: Image.asset(
@@ -976,7 +970,7 @@ class _HomeScreenState extends State<HomeScreen>
             Icon(
               Icons.no_food,
               size: 70,
-              color: AppColors.primary.withAlpha(175),
+              color: AppColors.primaryLowTransparent,
             ),
             const SizedBox(height: 16),
             const Text(

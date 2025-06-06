@@ -7,15 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/comment/comment_bloc.dart';
+import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/comment.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:nutrimpasi/widgets/forum_report_button.dart' show ReportButton;
+import 'package:nutrimpasi/widgets/custom_dialog.dart' show ReportButton;
 
 // Widget untuk menampilkan app bar forum diskusi
-import '../../widgets/forum_app_bar.dart' show AppBarForum;
+import '../../widgets/custom_app_bar.dart' show AppBarForum;
 
 class PostScreen extends StatefulWidget {
   final int threadId;
@@ -43,11 +44,7 @@ class _PostScreenState extends State<PostScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(
-        title: "Post",
-        showBackButton: true,
-        category: 'forum',
-      ),
+      appBar: AppBarForum(title: "Postingan", showBackButton: true, category: 'forum'),
       body: Container(
         decoration: BoxDecoration(color: AppColors.primary),
         child: Container(
@@ -60,9 +57,7 @@ class _PostScreenState extends State<PostScreen> {
           child: BlocBuilder<CommentBloc, CommentState>(
             builder: (context, state) {
               if (state is CommentLoading) {
-                return Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                );
+                return Center(child: CircularProgressIndicator(color: AppColors.primary));
               }
 
               if (state is CommentLoaded) {
@@ -89,9 +84,7 @@ class _PostScreenState extends State<PostScreen> {
                         children: [
                           _PostSection(
                             thread: thread!,
-                            showReport:
-                                loggedInUser != null &&
-                                loggedInUser.id != thread!.user.id,
+                            showReport: loggedInUser != null && loggedInUser.id != thread!.user.id,
                           ),
                           // Komentar
                           if (thread!.comments.isEmpty)
@@ -152,6 +145,24 @@ class _PostSection extends StatefulWidget {
 }
 
 class _PostSectionState extends State<_PostSection> {
+  late bool isLiked;
+  late int likeCount;
+
+  @override
+  void initState() {
+    super.initState();
+    isLiked = widget.thread.isLike;
+    likeCount = widget.thread.likesCount;
+  }
+
+  void _toggleLike() {
+    setState(() {
+      isLiked = !isLiked;
+      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+    });
+    context.read<ThreadBloc>().add(ToggleLike(threadId: widget.thread.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -159,12 +170,7 @@ class _PostSectionState extends State<_PostSection> {
         // Postingan
         Card(
           margin: EdgeInsets.symmetric(vertical: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 2,
           child: Column(
             children: [
@@ -183,17 +189,14 @@ class _PostSectionState extends State<_PostSection> {
                                 width: 32,
                                 height: 32,
                                 decoration: BoxDecoration(
-                                  color:
-                                      AppColors
-                                          .primaryTransparent, // abu-abu muda
+                                  color: AppColors.primaryHighTransparent, // abu-abu muda
                                   shape: BoxShape.circle,
                                 ),
                                 child:
                                     widget.thread.user.avatar != null
                                         ? ClipOval(
                                           child: Image.network(
-                                            storageUrl +
-                                                widget.thread.user.avatar!,
+                                            storageUrl + widget.thread.user.avatar!,
                                             width: 32,
                                             height: 32,
                                             fit: BoxFit.cover,
@@ -202,8 +205,7 @@ class _PostSectionState extends State<_PostSection> {
                                         : Icon(
                                           AppIcons.userFill,
                                           color: AppColors.primary,
-                                          size:
-                                              20, // opsional, atur agar pas di lingkaran
+                                          size: 20, // opsional, atur agar pas di lingkaran
                                         ),
                               ),
                               SizedBox(width: 8),
@@ -236,14 +238,11 @@ class _PostSectionState extends State<_PostSection> {
                       children: [
                         Text(
                           widget.thread.title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 4),
                         Text(
                           widget.thread.content,
                           textAlign: TextAlign.justify,
@@ -261,16 +260,19 @@ class _PostSectionState extends State<_PostSection> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(
-                                  widget.thread.isLike
-                                      ? AppIcons.favoriteFill
-                                      : AppIcons.favorite,
-                                  color: Colors.red,
-                                  size: 24,
+                                IconButton(
+                                  icon: Icon(
+                                    isLiked
+                                        ? AppIcons.favoriteFill
+                                        : AppIcons.favorite,
+                                    color: Colors.red,
+                                    size: 24,
+                                  ),
+                                  onPressed: _toggleLike,
                                 ),
                                 SizedBox(width: 4),
                                 Text(
-                                  widget.thread.likesCount.toString(),
+                                  likeCount.toString(),
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ],
@@ -279,18 +281,16 @@ class _PostSectionState extends State<_PostSection> {
                         ),
                         if (widget.showReport)
                           // Tombol untuk melaporkan postingan
-                          ReportButton(
-                            category: "thread",
-                            refersId: widget.thread.id,
-                          ),
+                          ReportButton(category: "thread", refersId: widget.thread.id),
                       ],
                     ),
+                    SizedBox(height: 16),
                   ],
                 ),
               ),
               Container(
                 width: double.infinity,
-                color: AppColors.primaryTransparent,
+                color: AppColors.primaryHighTransparent,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Text(
@@ -312,11 +312,7 @@ class _CommentSection extends StatefulWidget {
   final bool showMenu;
   final bool showReport;
 
-  const _CommentSection({
-    required this.comment,
-    this.showMenu = false,
-    this.showReport = false,
-  });
+  const _CommentSection({required this.comment, this.showMenu = false, this.showReport = false});
   @override
   _CommentSectionState createState() => _CommentSectionState();
 }
@@ -352,21 +348,14 @@ class _CommentSectionState extends State<_CommentSection> {
                       borderRadius: BorderRadius.circular(4),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.accentTransparent,
+                          color: AppColors.accentHighTransparent,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: ListTile(
-                          leading: Icon(
-                            AppIcons.edit,
-                            size: 20,
-                            color: AppColors.accent,
-                          ),
+                          leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
                           title: Text(
                             "Edit Komentar",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.accent,
-                            ),
+                            style: TextStyle(fontSize: 16, color: AppColors.accent),
                           ),
                           onTap: _hideMenu,
                         ),
@@ -382,21 +371,14 @@ class _CommentSectionState extends State<_CommentSection> {
                         borderRadius: BorderRadius.circular(4),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.errorTranparent,
+                            color: AppColors.errorHighTranparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ListTile(
-                            leading: Icon(
-                              AppIcons.deleteFill,
-                              size: 20,
-                              color: AppColors.error,
-                            ),
+                            leading: Icon(AppIcons.deleteFill, size: 20, color: AppColors.error),
                             title: Text(
                               "Hapus Komentar",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.error,
-                              ),
+                              style: TextStyle(fontSize: 16, color: AppColors.error),
                             ),
                             onTap: _confirmDelete,
                           ),
@@ -419,9 +401,7 @@ class _CommentSectionState extends State<_CommentSection> {
       builder:
           (context) => AlertDialog(
             title: const Text("Konfirmasi Hapus"),
-            content: const Text(
-              "Apakah Anda yakin ingin menghapus komentar ini?",
-            ),
+            content: const Text("Apakah Anda yakin ingin menghapus komentar ini?"),
             actions: [
               TextButton(
                 child: const Text("Batal"),
@@ -436,9 +416,7 @@ class _CommentSectionState extends State<_CommentSection> {
     );
 
     if (confirmed == true) {
-      context.read<CommentBloc>().add(
-        DeleteComments(commentId: widget.comment.id),
-      );
+      context.read<CommentBloc>().add(DeleteComments(commentId: widget.comment.id));
     }
   }
 
@@ -460,7 +438,7 @@ class _CommentSectionState extends State<_CommentSection> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryTransparent, // abu-abu muda
+                  color: AppColors.primaryHighTransparent, // abu-abu muda
                   shape: BoxShape.circle,
                 ),
                 child:
@@ -574,24 +552,18 @@ class _CommentInputBarState extends State<_CommentInputBar> {
       listener: (context, state) {
         if (state is CommentStored) {
           // _showDialogReportSuccess(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Berhasil Komen"),
-              backgroundColor: Colors.green,
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Berhasil Komen"), backgroundColor: Colors.green));
         } else if (state is CommentDeleted) {
           // _showDialogReportSuccess(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Komentar dihapus"),
-              backgroundColor: Colors.red,
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Komentar dihapus"), backgroundColor: Colors.red));
         } else if (state is CommentError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error), backgroundColor: Colors.red),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
         }
       },
       builder: (context, state) {
@@ -613,10 +585,7 @@ class _CommentInputBarState extends State<_CommentInputBar> {
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
                       hintText: 'Tulis komentar...',
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: Colors.grey.shade300),
@@ -645,11 +614,7 @@ class _CommentInputBarState extends State<_CommentInputBar> {
                   icon:
                       state is CommentActionInProgress
                           ? CircularProgressIndicator(color: Colors.white)
-                          : const Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 18,
-                          ),
+                          : const Icon(Icons.send, color: Colors.white, size: 18),
                   onPressed:
                       state is CommentActionInProgress
                           ? null
@@ -688,19 +653,11 @@ Widget _buildEmptyComments(BuildContext context) {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.forum_outlined,
-            size: 64,
-            color: AppColors.primary.withOpacity(0.2),
-          ),
+          Icon(Icons.forum_outlined, size: 64, color: AppColors.primaryLowTransparent),
           const SizedBox(height: 16),
           Text(
             "Belum Ada Diskusi",
-            style: TextStyle(
-              fontSize: 18,
-              color: AppColors.textBlack,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 18, color: AppColors.textBlack, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Padding(
@@ -708,11 +665,7 @@ Widget _buildEmptyComments(BuildContext context) {
             child: Text(
               "Jadilah yang pertama berkomentar dan mulai diskusi menarik",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textGrey,
-                height: 1.5,
-              ),
+              style: TextStyle(fontSize: 14, color: AppColors.textGrey, height: 1.5),
             ),
           ),
         ],

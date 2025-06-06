@@ -235,8 +235,7 @@ class _FoodRecommendationScreenState extends State<FoodRecommendationScreen> {
                                                             4,
                                                           ),
                                                       decoration: BoxDecoration(
-                                                        color: AppColors
-                                                            .accent
+                                                        color: AppColors.accent
                                                             .withAlpha(25),
                                                         shape: BoxShape.circle,
                                                       ),

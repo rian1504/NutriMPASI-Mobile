@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/models/food_suggestion.dart';
 import 'package:nutrimpasi/screens/food/food_recipe_success_screen.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodNutritionCalculatorScreen extends StatefulWidget {
   final List<String> ingredients;
@@ -444,26 +445,9 @@ class _FoodNutritionCalculatorScreenState
             ),
 
             // Tombol kembali
-            Positioned(
-              top: 35,
-              left: 15,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.componentGrey!),
-                ),
-                child: IconButton(
-                  icon: const Icon(
-                    Symbols.arrow_back_ios_new_rounded,
-                    color: AppColors.textBlack,
-                    size: 24,
-                  ),
-                  padding: EdgeInsets.zero,
-                  onPressed:
-                      _isSubmitting ? null : () => Navigator.pop(context),
-                ),
-              ),
+            LeadingActionButton(
+              onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+              icon: AppIcons.back,
             ),
           ],
         ),

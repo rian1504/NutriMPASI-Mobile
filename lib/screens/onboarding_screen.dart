@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -122,11 +123,10 @@ class OnboardingPage extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.fromLTRB(24, 32, 24, 60),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20),
                   // Judul utama
                   Text(
                     title,
@@ -160,7 +160,6 @@ class OnboardingPage extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // Tombol lanjut dengan indikator progres
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -254,33 +253,16 @@ class OnboardingPage extends StatelessWidget {
         // Tombol lewati - hanya tampil pada halaman pertama dan kedua
         if (currentPage < totalPages - 1)
           Positioned(
-            top: 40,
+            top: MediaQuery.of(context).padding.top + 8,
             right: 16,
-            child: ElevatedButton(
+            child: SmallButton(
+              text: "Lewati",
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.accent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                padding: const EdgeInsets.all(8),
-                minimumSize: const Size(42, 42),
-                elevation: 1,
-              ),
-              child: const Text(
-                'Lewati',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
             ),
           ),
       ],

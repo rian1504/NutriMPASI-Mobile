@@ -4,15 +4,19 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/food_record/food_record_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/models/food_record.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class CookingHistoryScreen extends StatefulWidget {
-  const CookingHistoryScreen({super.key});
+  final String? babyId;
+
+  const CookingHistoryScreen({this.babyId, super.key});
 
   @override
   State<CookingHistoryScreen> createState() => _CookingHistoryScreenState();
@@ -110,7 +114,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       // Jika data sudah ter-load, perbarui status loading
       setState(() {
         _babies = babyState.babies;
-        _selectedBaby = _babies.first.id.toString();
+        // Gunakan babyId dari parameter jika tersedia
+        _selectedBaby = widget.babyId ?? _babies.first.id.toString();
       });
     }
 
@@ -479,7 +484,15 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
             if (state is BabyLoaded) {
               setState(() {
                 _babies = state.babies;
-                _selectedBaby = _babies.first.id.toString();
+                // Gunakan babyId dari parameter jika tersedia dan belum diset
+                if (_selectedBaby.isEmpty && widget.babyId != null) {
+                  _selectedBaby = widget.babyId!;
+                } else if (_babies.isNotEmpty) {
+                  _selectedBaby =
+                      _selectedBaby.isEmpty
+                          ? _babies.first.id.toString()
+                          : _selectedBaby;
+                }
               });
             }
           },
@@ -508,66 +521,100 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       ],
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          elevation: 0,
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Material(
-              elevation: 3,
-              shadowColor: Colors.black54,
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: IconButton(
-                  icon: const Icon(
-                    Symbols.arrow_back_ios_new_rounded,
-                    color: AppColors.textBlack,
-                    size: 24,
-                  ),
-                  padding: EdgeInsets.zero,
-                  onPressed: () => Navigator.pop(context),
-                ),
+        // appBar: AppBar(
+        //   backgroundColor: AppColors.primary,
+        //   elevation: 0,
+        //   leading: Padding(
+        //     padding: const EdgeInsets.all(8.0),
+        //     child: Material(
+        //       elevation: 3,
+        //       shadowColor: Colors.black54,
+        //       borderRadius: BorderRadius.circular(16),
+        //       child: Container(
+        //         decoration: BoxDecoration(
+        //           color: Colors.white,
+        //           borderRadius: BorderRadius.circular(16),
+        //         ),
+        //         child: IconButton(
+        //           icon: const Icon(
+        //             Symbols.arrow_back_ios_new_rounded,
+        //             color: AppColors.textBlack,
+        //             size: 24,
+        //           ),
+        //           padding: EdgeInsets.zero,
+        //           onPressed: () => Navigator.pop(context),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        //   title: const Text(
+        //     'Riwayat Memasak',
+        //     style: TextStyle(
+        //       fontFamily: 'Poppins',
+        //       color: Colors.white,
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        //   centerTitle: true,
+        // ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                top:
+                    AppBar().preferredSize.height +
+                    MediaQuery.of(context).padding.top,
+              ),
+              child: BlocBuilder<FoodRecordBloc, FoodRecordState>(
+                builder: (context, state) {
+                  if (state is FoodRecordLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state is FoodRecordError) {
+                    return Center(child: Text(state.error));
+                  }
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Bagian atas dengan ringkasan nutrisi
+                      _buildNutritionSummary(),
+
+                      // Widget untuk pemilihan bayi dan tanggal
+                      _buildSelectionFilters(),
+
+                      // Daftar riwayat makanan
+                      Expanded(child: _buildFoodHistoryList()),
+                    ],
+                  );
+                },
               ),
             ),
-          ),
-          title: const Text(
-            'Riwayat Memasak',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AppBar(
+                centerTitle: true,
+                title: Text(
+                  'Riwayat Memasak',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                automaticallyImplyLeading: false,
+              ),
             ),
-          ),
-          centerTitle: true,
-        ),
-        body: BlocBuilder<FoodRecordBloc, FoodRecordState>(
-          builder: (context, state) {
-            if (state is FoodRecordLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is FoodRecordError) {
-              return Center(child: Text(state.error));
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Bagian atas dengan ringkasan nutrisi
-                _buildNutritionSummary(),
-
-                // Widget untuk pemilihan bayi dan tanggal
-                _buildSelectionFilters(),
-
-                // Daftar riwayat makanan
-                Expanded(child: _buildFoodHistoryList()),
-              ],
-            );
-          },
+            LeadingActionButton(
+              onPressed: () => Navigator.pop(context),
+              icon: AppIcons.back,
+            ),
+          ],
         ),
       ),
     );

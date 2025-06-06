@@ -6,6 +6,7 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_add_screen.dart';
+import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 
 class BabyListScreen extends StatefulWidget {
   const BabyListScreen({super.key});
@@ -87,6 +88,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                 padding: EdgeInsets.zero,
                 onPressed: () {
                   Navigator.pop(context);
+                  context.read<BabyBloc>().add(FetchBabies());
                 },
               ),
             ),
@@ -451,7 +453,20 @@ class _BabyListScreenState extends State<BabyListScreen> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // TODO: Implementasi lihat riwayat bayi
+                        // Navigasi ke halaman riwayat memasak dengan bayi terpilih
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => CookingHistoryScreen(
+                                  babyId: baby.id.toString(),
+                                ),
+                          ),
+                        ).then((value) {
+                          if (mounted) {
+                            context.read<BabyBloc>().add(FetchBabies());
+                          }
+                        });
                       },
                       icon: const Icon(Symbols.history, size: 16),
                       label: const Text(

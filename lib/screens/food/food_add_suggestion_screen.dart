@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/blocs/food_category/food_category_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/models/food_suggestion.dart';
 import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodAddSuggestionScreen extends StatefulWidget {
   const FoodAddSuggestionScreen({super.key});
@@ -465,10 +467,8 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
           return Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 40,
-                  horizontal: 20,
-                ),
+                // padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                padding: EdgeInsets.fromLTRB(22, kToolbarHeight + 0, 22, 22),
                 child: Column(
                   children: [
                     // Judul dan indikator progres
@@ -574,102 +574,191 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.zero,
                             topRight: Radius.circular(30),
+                            bottomLeft: Radius.circular(20),
                           ),
                         ),
-                        child: Stack(
-                          children: [
-                            Form(
-                              key: _formKey,
-                              child: ListView(
-                                physics: const BouncingScrollPhysics(),
-                                padding: const EdgeInsets.all(20),
-                                children: [
-                                  // Input nama resep
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Masukkan Nama Resep',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Stack(
+                            children: [
+                              Form(
+                                key: _formKey,
+                                child: ListView(
+                                  physics: const BouncingScrollPhysics(),
+                                  padding: const EdgeInsets.all(20),
+                                  children: [
+                                    // Input nama resep
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Masukkan Nama Resep',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  TextFormField(
-                                    key: _recipeNameKey,
-                                    controller: _recipeNameController,
-                                    decoration: _getInputDecoration(),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Nama resep tidak boleh kosong';
-                                      }
-                                      if (value.length < 4) {
-                                        return 'Nama resep minimal 4 karakter';
-                                      }
-                                      if (value.length > 255) {
-                                        return 'Nama resep maksimal 255 karakter';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // Tombol unggah foto
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Unggah Foto Masakan',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                      ],
+                                    const SizedBox(height: 4),
+                                    TextFormField(
+                                      key: _recipeNameKey,
+                                      controller: _recipeNameController,
+                                      decoration: _getInputDecoration(),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Nama resep tidak boleh kosong';
+                                        }
+                                        if (value.length < 4) {
+                                          return 'Nama resep minimal 4 karakter';
+                                        }
+                                        if (value.length > 255) {
+                                          return 'Nama resep maksimal 255 karakter';
+                                        }
+                                        return null;
+                                      },
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
 
-                                  // UI untuk menampilkan gambar yang sudah dipilih dengan key untuk scroll
-                                  Container(
-                                    key: _photoFieldKey,
-                                    child:
-                                        _imageFile != null
-                                            ? Column(
-                                              children: [
-                                                Stack(
-                                                  children: [
-                                                    Container(
+                                    const SizedBox(height: 16),
+
+                                    // Tombol unggah foto
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Unggah Foto Masakan',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+
+                                    // UI untuk menampilkan gambar yang sudah dipilih dengan key untuk scroll
+                                    Container(
+                                      key: _photoFieldKey,
+                                      child:
+                                          _imageFile != null
+                                              ? Column(
+                                                children: [
+                                                  Stack(
+                                                    children: [
+                                                      Container(
+                                                        width: double.infinity,
+                                                        height: 200,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
+                                                          border: Border.all(
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
+                                                          child: Image.file(
+                                                            _imageFile!,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Positioned(
+                                                        top: 5,
+                                                        right: 5,
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              _imageFile = null;
+                                                              _imagePath = null;
+                                                              _showPhotoError =
+                                                                  true;
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  4,
+                                                                ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withAlpha(
+                                                                        175,
+                                                                      ),
+                                                                  shape:
+                                                                      BoxShape
+                                                                          .circle,
+                                                                ),
+                                                            child: const Icon(
+                                                              Icons.close,
+                                                              size: 20,
+                                                              color: Colors.red,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  if (_showImageSizeError)
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            top: 6.0,
+                                                            left: 12.0,
+                                                          ),
+                                                      child: Text(
+                                                        'Ukuran gambar maksimal 1MB',
+                                                        style: TextStyle(
+                                                          color:
+                                                              Colors.red[700],
+                                                          fontSize: 12,
+                                                          fontFamily: 'Poppins',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  const SizedBox(height: 8),
+                                                  InkWell(
+                                                    onTap:
+                                                        _showImageSourceOptions,
+                                                    child: Container(
                                                       width: double.infinity,
-                                                      height: 200,
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            vertical: 8,
+                                                          ),
                                                       decoration: BoxDecoration(
+                                                        color: AppColors.buff,
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                               8,
@@ -678,733 +767,683 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                           color: Colors.grey,
                                                         ),
                                                       ),
-                                                      child: ClipRRect(
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: const [
+                                                          Icon(
+                                                            Icons.edit,
+                                                            color:
+                                                                AppColors
+                                                                    .textBlack,
+                                                            size: 18,
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Text(
+                                                            'Ganti Foto',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Poppins',
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color:
+                                                                  AppColors
+                                                                      .textBlack,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                              : Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  InkWell(
+                                                    onTap: () {
+                                                      // Hapus state error ketika mencoba menambahkan foto
+                                                      setState(() {
+                                                        _showPhotoError = false;
+                                                      });
+                                                      _showImageSourceOptions();
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      height: 60,
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            vertical: 8,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors.buff,
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                               8,
                                                             ),
-                                                        child: Image.file(
-                                                          _imageFile!,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                      top: 5,
-                                                      right: 5,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            _imageFile = null;
-                                                            _imagePath = null;
-                                                            _showPhotoError =
-                                                                true;
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets.all(
-                                                                4,
-                                                              ),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withAlpha(
-                                                                      175,
-                                                                    ),
-                                                                shape:
-                                                                    BoxShape
-                                                                        .circle,
-                                                              ),
-                                                          child: const Icon(
-                                                            Icons.close,
-                                                            size: 20,
-                                                            color: Colors.red,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                if (_showImageSizeError)
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                          top: 6.0,
-                                                          left: 12.0,
-                                                        ),
-                                                    child: Text(
-                                                      'Ukuran gambar maksimal 1MB',
-                                                      style: TextStyle(
-                                                        color: Colors.red[700],
-                                                        fontSize: 12,
-                                                        fontFamily: 'Poppins',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                const SizedBox(height: 8),
-                                                InkWell(
-                                                  onTap:
-                                                      _showImageSourceOptions,
-                                                  child: Container(
-                                                    width: double.infinity,
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          vertical: 8,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.buff,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: const [
-                                                        Icon(
-                                                          Icons.edit,
+                                                        border: Border.all(
                                                           color:
-                                                              AppColors
-                                                                  .textBlack,
-                                                          size: 18,
+                                                              _showPhotoError
+                                                                  ? Colors.red
+                                                                  : Colors.grey,
+                                                          width:
+                                                              _showPhotoError
+                                                                  ? 1.5
+                                                                  : 1,
                                                         ),
-                                                        SizedBox(width: 8),
-                                                        Text(
-                                                          'Ganti Foto',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Poppins',
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: const [
+                                                          Icon(
+                                                            Icons
+                                                                .upload_outlined,
                                                             color:
                                                                 AppColors
                                                                     .textBlack,
+                                                            size: 18,
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                            : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                InkWell(
-                                                  onTap: () {
-                                                    // Hapus state error ketika mencoba menambahkan foto
-                                                    setState(() {
-                                                      _showPhotoError = false;
-                                                    });
-                                                    _showImageSourceOptions();
-                                                  },
-                                                  child: Container(
-                                                    width: double.infinity,
-                                                    height: 60,
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          vertical: 8,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.buff,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
+                                                          SizedBox(width: 8),
+                                                          Text(
+                                                            'Tambahkan Foto',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Poppins',
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color:
+                                                                  AppColors
+                                                                      .textBlack,
+                                                            ),
                                                           ),
-                                                      border: Border.all(
-                                                        color:
-                                                            _showPhotoError
-                                                                ? Colors.red
-                                                                : Colors.grey,
-                                                        width:
-                                                            _showPhotoError
-                                                                ? 1.5
-                                                                : 1,
+                                                        ],
                                                       ),
                                                     ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: const [
-                                                        Icon(
-                                                          Icons.upload_outlined,
+                                                  ),
+                                                  if (_showPhotoError)
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            top: 6.0,
+                                                            left: 12.0,
+                                                          ),
+                                                      child: Text(
+                                                        'Foto masakan tidak boleh kosong',
+                                                        style: TextStyle(
                                                           color:
-                                                              AppColors
-                                                                  .textBlack,
-                                                          size: 18,
+                                                              Colors.red[700],
+                                                          fontSize: 12,
+                                                          fontFamily: 'Poppins',
                                                         ),
-                                                        SizedBox(width: 8),
-                                                        Text(
-                                                          'Tambahkan Foto',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Poppins',
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color:
-                                                                AppColors
-                                                                    .textBlack,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                if (_showPhotoError)
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                          top: 6.0,
-                                                          left: 12.0,
-                                                        ),
-                                                    child: Text(
-                                                      'Foto masakan tidak boleh kosong',
-                                                      style: TextStyle(
-                                                        color: Colors.red[700],
-                                                        fontSize: 12,
-                                                        fontFamily: 'Poppins',
                                                       ),
                                                     ),
-                                                  ),
-                                              ],
+                                                ],
+                                              ),
+                                    ),
+
+                                    const SizedBox(height: 16),
+
+                                    // Dropdown kategori
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Pilih Kategori Masakan',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
                                             ),
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // Dropdown kategori
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Pilih Kategori Masakan',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  DropdownButtonFormField<FoodCategory>(
-                                    key: _categoryKey,
-                                    value: _selectedCategory,
-                                    decoration: _getInputDecoration(),
-                                    icon: const SizedBox.shrink(),
-                                    hint: const Text('Pilih kategori'),
-                                    items:
-                                        _categories.map((category) {
-                                          return DropdownMenuItem<FoodCategory>(
-                                            value: category,
-                                            child: Text(category.name),
-                                          );
-                                        }).toList(),
-                                    onChanged: (FoodCategory? value) {
-                                      setState(() {
-                                        _selectedCategory = value;
-                                      });
-                                    },
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Kategori harus dipilih';
-                                      }
-                                      return null;
-                                    },
-                                    isExpanded: true,
-                                    isDense: true,
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // Dropdown usia konsumsi
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Pilih Usia Konsumsi',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  DropdownButtonFormField<String>(
-                                    key: _ageKey,
-                                    value: _selectedAgeGroup,
-                                    decoration: _getInputDecoration(),
-                                    icon: const SizedBox.shrink(),
-                                    hint: const Text('Pilih usia'),
-                                    items:
-                                        _ageGroups.map((age) {
-                                          return DropdownMenuItem<String>(
-                                            value: age,
-                                            child: Text(age),
-                                          );
-                                        }).toList(),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectedAgeGroup = value;
-                                      });
-                                    },
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Usia konsumsi harus dipilih';
-                                      }
-                                      return null;
-                                    },
-                                    isExpanded: true,
-                                    isDense: true,
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // Input jumlah porsi
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Tentukan Porsi',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  TextFormField(
-                                    key: _portionKey,
-                                    controller: _servingsController,
-                                    decoration: _getInputDecoration(),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Jumlah porsi tidak boleh kosong';
-                                      }
-                                      try {
-                                        int.parse(value);
-                                      } catch (e) {
-                                        return 'Porsi harus berupa angka';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // Input deskripsi
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Masukkan Deskripsi Masakan',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  TextFormField(
-                                    key: _descriptionKey,
-                                    controller: _descriptionController,
-                                    maxLines: 2,
-                                    decoration: _getInputDecoration(),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Deskripsi tidak boleh kosong';
-                                      }
-                                      if (value.length < 5) {
-                                        return 'Deskripsi minimal 5 karakter';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // Input bahan masakan
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Masukkan Bahan Masakan',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  // Field bahan dinamis
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: _ingredientControllers.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 8.0,
-                                        ),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            // Nomor indeks
-                                            Container(
-                                              width: 40,
-                                              height: 40,
-                                              decoration: BoxDecoration(
-                                                color: AppColors.primary,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  '${index + 1}',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
                                             ),
-                                            const SizedBox(width: 8),
-                                            // Field input bahan
-                                            Expanded(
-                                              child: TextFormField(
-                                                key: _ingredientKeys[index],
-                                                controller:
-                                                    _ingredientControllers[index],
-                                                decoration: _getInputDecoration(
-                                                  hintText:
-                                                      'Bahan ${index + 1}',
-                                                ),
-                                                validator:
-                                                    (value) =>
-                                                        validateIngredientsLength(
-                                                          value,
-                                                          index,
-                                                        ),
-                                              ),
-                                            ),
-                                            // Tombol hapus
-                                            if (_ingredientControllers.length >
-                                                1)
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.remove_circle_outline,
-                                                  color: AppColors.red,
-                                                ),
-                                                onPressed:
-                                                    () =>
-                                                        _removeIngredientField(
-                                                          index,
-                                                        ),
-                                              ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-
-                                  // Tombol tambah bahan
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: TextButton.icon(
-                                      onPressed: _addIngredientField,
-                                      icon: const Icon(
-                                        Icons.add_circle_outline,
-                                      ),
-                                      label: const Text('Tambah Bahan'),
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: AppColors.primary,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // Input buah
-                                  const Text(
-                                    'Buah',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.textBlack,
+                                    const SizedBox(height: 4),
+                                    DropdownButtonFormField<FoodCategory>(
+                                      key: _categoryKey,
+                                      value: _selectedCategory,
+                                      decoration: _getInputDecoration(),
+                                      icon: const SizedBox.shrink(),
+                                      hint: const Text('Pilih kategori'),
+                                      items:
+                                          _categories.map((category) {
+                                            return DropdownMenuItem<
+                                              FoodCategory
+                                            >(
+                                              value: category,
+                                              child: Text(category.name),
+                                            );
+                                          }).toList(),
+                                      onChanged: (FoodCategory? value) {
+                                        setState(() {
+                                          _selectedCategory = value;
+                                        });
+                                      },
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Kategori harus dipilih';
+                                        }
+                                        return null;
+                                      },
+                                      isExpanded: true,
+                                      isDense: true,
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  TextFormField(
-                                    controller: _fruitsController,
-                                    decoration: _getInputDecoration(),
-                                  ),
 
-                                  const SizedBox(height: 16),
+                                    const SizedBox(height: 16),
 
-                                  // Input langkah penyajian
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Masukkan Langkah Penyajian',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBlack,
+                                    // Dropdown usia konsumsi
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Pilih Usia Konsumsi',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text: '*',
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Poppins',
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(height: 4),
+                                    DropdownButtonFormField<String>(
+                                      key: _ageKey,
+                                      value: _selectedAgeGroup,
+                                      decoration: _getInputDecoration(),
+                                      icon: const SizedBox.shrink(),
+                                      hint: const Text('Pilih usia'),
+                                      items:
+                                          _ageGroups.map((age) {
+                                            return DropdownMenuItem<String>(
+                                              value: age,
+                                              child: Text(age),
+                                            );
+                                          }).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedAgeGroup = value;
+                                        });
+                                      },
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Usia konsumsi harus dipilih';
+                                        }
+                                        return null;
+                                      },
+                                      isExpanded: true,
+                                      isDense: true,
+                                    ),
 
-                                  // Field langkah dinamis
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: _stepControllers.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 8.0,
-                                        ),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            // Nomor indeks
-                                            Container(
-                                              width: 40,
-                                              height: 40,
-                                              decoration: BoxDecoration(
-                                                color: AppColors.primary,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  '${index + 1}',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
+                                    const SizedBox(height: 16),
+
+                                    // Input jumlah porsi
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Tentukan Porsi',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    TextFormField(
+                                      key: _portionKey,
+                                      controller: _servingsController,
+                                      decoration: _getInputDecoration(),
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Jumlah porsi tidak boleh kosong';
+                                        }
+                                        try {
+                                          int.parse(value);
+                                        } catch (e) {
+                                          return 'Porsi harus berupa angka';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+
+                                    const SizedBox(height: 16),
+
+                                    // Input deskripsi
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Masukkan Deskripsi Masakan',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    TextFormField(
+                                      key: _descriptionKey,
+                                      controller: _descriptionController,
+                                      maxLines: 2,
+                                      decoration: _getInputDecoration(),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Deskripsi tidak boleh kosong';
+                                        }
+                                        if (value.length < 5) {
+                                          return 'Deskripsi minimal 5 karakter';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+
+                                    const SizedBox(height: 16),
+
+                                    // Input bahan masakan
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Masukkan Bahan Masakan',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // Field bahan dinamis
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: _ingredientControllers.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8.0,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              // Nomor indeks
+                                              Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    '${index + 1}',
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            // Field input langkah
-                                            Expanded(
-                                              child: TextFormField(
-                                                key: _stepKeys[index],
-                                                controller:
-                                                    _stepControllers[index],
-                                                decoration: _getInputDecoration(
-                                                  hintText:
-                                                      'Langkah ${index + 1}',
+                                              const SizedBox(width: 8),
+                                              // Field input bahan
+                                              Expanded(
+                                                child: TextFormField(
+                                                  key: _ingredientKeys[index],
+                                                  controller:
+                                                      _ingredientControllers[index],
+                                                  decoration:
+                                                      _getInputDecoration(
+                                                        hintText:
+                                                            'Bahan ${index + 1}',
+                                                      ),
+                                                  validator:
+                                                      (value) =>
+                                                          validateIngredientsLength(
+                                                            value,
+                                                            index,
+                                                          ),
                                                 ),
-                                                validator:
-                                                    (value) =>
-                                                        validateStepsLength(
-                                                          value,
-                                                          index,
-                                                        ),
                                               ),
-                                            ),
-                                            // Tombol hapus
-                                            if (_stepControllers.length > 1)
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.remove_circle_outline,
-                                                  color: AppColors.red,
+                                              // Tombol hapus
+                                              if (_ingredientControllers
+                                                      .length >
+                                                  1)
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.remove_circle_outline,
+                                                    color: AppColors.red,
+                                                  ),
+                                                  onPressed:
+                                                      () =>
+                                                          _removeIngredientField(
+                                                            index,
+                                                          ),
                                                 ),
-                                                onPressed:
-                                                    () =>
-                                                        _removeStepField(index),
-                                              ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
 
-                                  // Tombol tambah langkah
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: TextButton.icon(
-                                      onPressed: _addStepField,
-                                      icon: const Icon(
-                                        Icons.add_circle_outline,
-                                      ),
-                                      label: const Text('Tambah Langkah'),
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: AppColors.primary,
+                                    // Tombol tambah bahan
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton.icon(
+                                        onPressed: _addIngredientField,
+                                        icon: const Icon(
+                                          Icons.add_circle_outline,
+                                        ),
+                                        label: const Text('Tambah Bahan'),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: AppColors.primary,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 90),
-                                ],
+
+                                    const SizedBox(height: 16),
+
+                                    // Input buah
+                                    const Text(
+                                      'Buah',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textBlack,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    TextFormField(
+                                      controller: _fruitsController,
+                                      decoration: _getInputDecoration(),
+                                    ),
+
+                                    const SizedBox(height: 16),
+
+                                    // Input langkah penyajian
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Masukkan Langkah Penyajian',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBlack,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '*',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // Field langkah dinamis
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: _stepControllers.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8.0,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              // Nomor indeks
+                                              Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    '${index + 1}',
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              // Field input langkah
+                                              Expanded(
+                                                child: TextFormField(
+                                                  key: _stepKeys[index],
+                                                  controller:
+                                                      _stepControllers[index],
+                                                  decoration: _getInputDecoration(
+                                                    hintText:
+                                                        'Langkah ${index + 1}',
+                                                  ),
+                                                  validator:
+                                                      (value) =>
+                                                          validateStepsLength(
+                                                            value,
+                                                            index,
+                                                          ),
+                                                ),
+                                              ),
+                                              // Tombol hapus
+                                              if (_stepControllers.length > 1)
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.remove_circle_outline,
+                                                    color: AppColors.red,
+                                                  ),
+                                                  onPressed:
+                                                      () => _removeStepField(
+                                                        index,
+                                                      ),
+                                                ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+
+                                    // Tombol tambah langkah
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton.icon(
+                                        onPressed: _addStepField,
+                                        icon: const Icon(
+                                          Icons.add_circle_outline,
+                                        ),
+                                        label: const Text('Tambah Langkah'),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: AppColors.primary,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 90),
+                                  ],
+                                ),
                               ),
-                            ),
 
-                            // Tombol next
-                            Positioned(
-                              right: -20,
-                              bottom: -20,
-                              child: Material(
-                                color: Colors.transparent,
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.primary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Container(
-                                      width: 80,
-                                      height: 80,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            // Reset semua error state terlebih dahulu
-                                            setState(() {
-                                              _showPhotoError =
-                                                  _imageFile == null;
-                                              _showImageSizeError = false;
-                                            });
+                              // Tombol next
+                              Positioned(
+                                right: -20,
+                                bottom: -20,
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Container(
+                                    width: 110,
+                                    height: 110,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              // Tutup keyboard
+                                              FocusScope.of(context).unfocus();
 
-                                            // Validasi ukuran gambar jika ada
-                                            if (_imageFile != null) {
-                                              final fileSize =
-                                                  _imageFile!.lengthSync();
-                                              final fileSizeInMB =
-                                                  fileSize / (1024 * 1024);
-                                              if (fileSizeInMB > 1) {
-                                                setState(() {
-                                                  _showImageSizeError = true;
-                                                });
-                                              }
-                                            }
-
-                                            // Validasi form saat tombol next ditekan
-                                            bool formValid =
-                                                _formKey.currentState!
-                                                    .validate();
-
-                                            // Scroll to first error after validation
-                                            if (!formValid ||
-                                                _showPhotoError ||
-                                                _showImageSizeError) {
-                                              // Schedule scroll after validation has fully processed and UI updated
-                                              WidgetsBinding.instance
-                                                  .addPostFrameCallback((_) {
-                                                    _scrollToFirstError();
-                                                  });
-                                              return; // Stop processing if there are errors
-                                            }
-
-                                            // Hanya lanjutkan jika semua validasi lolos
-                                            if (formValid &&
-                                                _imageFile != null &&
-                                                !_showImageSizeError) {
-                                              // Reset state error
+                                              // Reset error states
                                               setState(() {
-                                                _showPhotoError = false;
+                                                _showPhotoError =
+                                                    _imageFile == null;
                                                 _showImageSizeError = false;
                                               });
 
+                                              // Validasi ukuran gambar
+                                              bool hasImageSizeError = false;
+                                              if (_imageFile != null) {
+                                                final fileSize =
+                                                    _imageFile!.lengthSync();
+                                                final fileSizeInMB =
+                                                    fileSize / (1024 * 1024);
+                                                if (fileSizeInMB > 1) {
+                                                  setState(() {
+                                                    _showImageSizeError = true;
+                                                  });
+                                                  hasImageSizeError = true;
+                                                }
+                                              }
+
+                                              // Validasi form tanpa mereset form
+                                              bool formValid =
+                                                  _formKey.currentState
+                                                      ?.validate() ??
+                                                  false;
+
+                                              // Validasi tambahan untuk memastikan semua field terisi dengan benar
+                                              if (_recipeNameController
+                                                          .text
+                                                          .length <
+                                                      4 ||
+                                                  _descriptionController
+                                                          .text
+                                                          .length <
+                                                      5 ||
+                                                  _selectedCategory == null ||
+                                                  _selectedAgeGroup == null ||
+                                                  _servingsController
+                                                      .text
+                                                      .isEmpty ||
+                                                  _ingredientControllers.any(
+                                                    (controller) =>
+                                                        controller.text.isEmpty,
+                                                  ) ||
+                                                  _stepControllers.any(
+                                                    (controller) =>
+                                                        controller.text.isEmpty,
+                                                  )) {
+                                                formValid = false;
+                                              }
+
+                                              // Menangani error foto dan validasi
+                                              if (!formValid ||
+                                                  _showPhotoError ||
+                                                  hasImageSizeError) {
+                                                // Refresh UI untuk menampilkan error
+                                                setState(() {});
+
+                                                WidgetsBinding.instance
+                                                    .addPostFrameCallback((_) {
+                                                      _scrollToFirstError();
+                                                    });
+                                                return;
+                                              }
+
+                                              // Semua validasi berhasil, lanjutkan ke kalkulator nutrisi
                                               List<String> ingredients =
                                                   _ingredientControllers
                                                       .map(
@@ -1413,7 +1452,6 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                       )
                                                       .toList();
 
-                                              // menambahkan field buah ke bahan untuk perhitungan gizi
                                               if (_fruitsController
                                                   .text
                                                   .isNotEmpty) {
@@ -1422,7 +1460,6 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                 );
                                               }
 
-                                              // Menyimpan data makanan
                                               final storedFood = FoodSuggestion(
                                                 foodCategoryId:
                                                     _selectedCategory?.id,
@@ -1430,12 +1467,9 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                     _recipeNameController.text,
                                                 image: _imagePath ?? '',
                                                 age: _selectedAgeGroup ?? '',
-                                                energy:
-                                                    0, // Akan diupdate di calculator
-                                                protein:
-                                                    0, // Akan diupdate di calculator
-                                                fat:
-                                                    0, // Akan diupdate di calculator
+                                                energy: 0,
+                                                protein: 0,
+                                                fat: 0,
                                                 portion:
                                                     int.tryParse(
                                                       _servingsController.text,
@@ -1473,31 +1507,19 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                           ),
                                                 ),
                                               );
-                                            } else if (_photoFieldKey
-                                                        .currentContext !=
-                                                    null &&
-                                                _showPhotoError) {
-                                              // Scroll ke field foto jika terjadi error foto
-                                              Scrollable.ensureVisible(
-                                                _photoFieldKey.currentContext!,
-                                                duration: const Duration(
-                                                  milliseconds: 300,
-                                                ),
-                                                alignment: 0.2,
-                                              );
-                                            }
-                                          },
-                                          child: Container(
-                                            width: 50,
-                                            height: 50,
-                                            decoration: const BoxDecoration(
-                                              color: AppColors.buff,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(
-                                              Symbols.arrow_forward_ios_rounded,
-                                              color: Colors.black,
-                                              size: 24,
+                                            },
+                                            child: Container(
+                                              width: 50,
+                                              height: 50,
+                                              decoration: const BoxDecoration(
+                                                color: AppColors.accent,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                AppIcons.arrowRight,
+                                                color: Colors.white,
+                                                size: 24,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -1506,8 +1528,8 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -1516,25 +1538,9 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
               ),
 
               // Tombol kembali
-              Positioned(
-                top: 35,
-                left: 15,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.componentGrey!),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Symbols.arrow_back_ios_new_rounded,
-                      color: AppColors.textBlack,
-                      size: 24,
-                    ),
-                    padding: EdgeInsets.zero,
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
+              LeadingActionButton(
+                onPressed: () => Navigator.pop(context),
+                icon: AppIcons.back,
               ),
             ],
           );

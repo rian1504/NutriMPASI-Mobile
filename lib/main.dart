@@ -21,6 +21,7 @@ import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
 import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
+import 'package:nutrimpasi/constants/deep_link.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/comment_controller.dart';
@@ -39,12 +40,14 @@ import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_list_screen.dart';
 import 'package:nutrimpasi/screens/forum/forum_screen.dart';
 import 'package:nutrimpasi/screens/home_screen.dart';
-import 'package:nutrimpasi/screens/setting/profile_screen.dart';
+import 'package:nutrimpasi/screens/setting/setting_screen.dart';
 import 'package:nutrimpasi/screens/features/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   // Make main async
@@ -62,6 +65,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Initialize deep linking when app starts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DeepLinkHandler.initDeepLinking();
+    });
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -162,6 +170,7 @@ class MainApp extends StatelessWidget {
             secondary: AppColors.accent,
           ),
         ),
+        navigatorKey: navigatorKey,
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state is LoginSuccess) {
@@ -178,6 +187,28 @@ class MainApp extends StatelessWidget {
           '/register': (context) => RegisterScreen(),
           '/home': (context) => MainPage(),
         },
+        onGenerateRoute: (settings) {
+          if (settings.name?.startsWith('/password-reset') ?? false) {
+            // Let DeepLinkHandler handle this via the navigatorKey
+            debugPrint(
+              'Ignoring /password-reset in onGenerateRoute; handled by DeepLinkHandler.',
+            );
+            return null;
+          }
+          // // Handle deep links when app is already running
+          // if (settings.name?.startsWith('/password-reset') ?? false) {
+          //   final uri = Uri.parse(settings.name!);
+          //   final token = uri.pathSegments[1];
+          //   final email = uri.queryParameters['email'] ?? '';
+
+          //   return MaterialPageRoute(
+          //     builder:
+          //         (context) => ResetPasswordScreen(token: token, email: email),
+          //   );
+          // }
+          // Handle other routes
+          return null;
+        },
       ),
     );
   }
@@ -185,8 +216,9 @@ class MainApp extends StatelessWidget {
 
 class MainPage extends StatefulWidget {
   final int initialPage;
+  final DateTime? targetDate;
 
-  const MainPage({super.key, this.initialPage = 0});
+  const MainPage({super.key, this.initialPage = 0, this.targetDate});
 
   @override
   State<MainPage> createState() => MainPageState();
@@ -200,6 +232,9 @@ class MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _page = widget.initialPage;
+    if (widget.targetDate != null) {
+      _pageParams = {'targetDate': widget.targetDate};
+    }
   }
 
   final List<Widget> _screens = [
@@ -228,6 +263,8 @@ class MainPageState extends State<MainPage> {
               ? FoodListScreen(
                 showUserSuggestions: _pageParams['showUserSuggestions'],
               )
+              : _page == 2 && _pageParams.containsKey('targetDate')
+              ? ScheduleScreen(targetDate: _pageParams['targetDate'])
               : _screens[_page],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: AppColors.background,

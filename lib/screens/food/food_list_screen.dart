@@ -8,6 +8,7 @@ import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
+import 'package:nutrimpasi/utils/navigation_animation.dart';
 
 class FoodListScreen extends StatefulWidget {
   final bool showUserSuggestions;
@@ -40,6 +41,14 @@ class _FoodListScreenState extends State<FoodListScreen>
   bool _isSearching = false;
   // Daftar saran pencarian
   List<String> _searchSuggestions = [];
+
+  // Opsi pengurutan makanan
+  String _sortOption = 'Masakan Terpopuler';
+  final List<String> _sortOptions = [
+    'Masakan Terpopuler',
+    'Masakan Terbaru',
+    'Masakan Terlama',
+  ];
 
   // Animasi untuk transisi AppBar
   late AnimationController _animationController;
@@ -316,7 +325,49 @@ class _FoodListScreenState extends State<FoodListScreen>
           }).toList();
     }
 
+    // Terapkan pengurutan
+    filteredItems = _sortFoodItems(filteredItems);
+
     return filteredItems;
+  }
+
+  // Mengurutkan makanan berdasarkan opsi yang dipilih
+  List<Food> _sortFoodItems(List<Food> items) {
+    // Untuk tab "Usulan Saya", selalu urutkan dari yang terbaru
+    if (_showUserSuggestionsOnly) {
+      return items..sort((a, b) {
+        if (a.createdAt == null && b.createdAt == null) return 0;
+        if (a.createdAt == null) return 1;
+        if (b.createdAt == null) return -1;
+
+        return b.createdAt!.compareTo(a.createdAt!);
+      });
+    }
+
+    // Untuk tab "Semua", urutkan berdasarkan pilihan pengguna
+    switch (_sortOption) {
+      case 'Masakan Terpopuler':
+        return items
+          ..sort((a, b) => b.favoritesCount.compareTo(a.favoritesCount));
+      case 'Masakan Terbaru':
+        return items..sort((a, b) {
+          if (a.createdAt == null && b.createdAt == null) return 0;
+          if (a.createdAt == null) return 1;
+          if (b.createdAt == null) return -1;
+
+          return b.createdAt!.compareTo(a.createdAt!);
+        });
+      case 'Masakan Terlama':
+        return items..sort((a, b) {
+          if (a.createdAt == null && b.createdAt == null) return 0;
+          if (a.createdAt == null) return 1;
+          if (b.createdAt == null) return -1;
+
+          return a.createdAt!.compareTo(b.createdAt!);
+        });
+      default:
+        return items;
+    }
   }
 
   @override
@@ -671,11 +722,18 @@ class _FoodListScreenState extends State<FoodListScreen>
         }
 
         return Container(
+          margin: EdgeInsets.all(1),
           height: 48,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.componentGrey!),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(50),
+                blurRadius: 2,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: TextField(
             controller: textEditingController,
@@ -1029,9 +1087,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                   height: 180,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: AppColors.componentGrey!,
-                                    ),
+                                    // border: Border.all(color: AppColors.componentGrey!),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withAlpha(10),
@@ -1078,9 +1134,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                   height: 180,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: AppColors.componentGrey!,
-                                    ),
+                                    // border: Border.all(color: AppColors.componentGrey!),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withAlpha(10),
@@ -1127,78 +1181,87 @@ class _FoodListScreenState extends State<FoodListScreen>
                                         bottom: 0,
                                         left: 0,
                                         right: 0,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(16),
-                                          margin: const EdgeInsets.all(2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withAlpha(225),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              // Informasi usulan
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    const Text(
-                                                      'Tambah Usulan',
-                                                      style: TextStyle(
-                                                        fontFamily: 'Poppins',
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color:
-                                                            AppColors.textBlack,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Text(
-                                                      'Tambahkan usulan resep dari kreasi kamu!',
-                                                      style: TextStyle(
-                                                        fontFamily: 'Poppins',
-                                                        fontSize: 12,
-                                                        color:
-                                                            AppColors.textGrey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              // Tombol tambah
-                                              Container(
-                                                width: 48,
-                                                height: 48,
-                                                decoration: const BoxDecoration(
-                                                  color: AppColors.primary,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: IconButton(
-                                                  padding: EdgeInsets.zero,
-                                                  icon: const Icon(
-                                                    Icons.add,
-                                                    color: Colors.white,
-                                                    size: 36,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            pushWithSlideTransition(
+                                              context,
+                                              FoodAddSuggestionScreen(),
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(16),
+                                            // margin: const EdgeInsets.all(2),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                    Radius.circular(12),
                                                   ),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                const FoodAddSuggestionScreen(),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                // Informasi usulan
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      const Text(
+                                                        'Tambah Usulan',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Poppins',
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color:
+                                                              AppColors
+                                                                  .textBlack,
+                                                        ),
                                                       ),
-                                                    );
-                                                  },
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        'Tambahkan usulan resep dari kreasi kamu!',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Poppins',
+                                                          fontSize: 12,
+                                                          color:
+                                                              AppColors
+                                                                  .textGrey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                                // Tombol tambah
+                                                Container(
+                                                  width: 48,
+                                                  height: 48,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                        color:
+                                                            AppColors.primary,
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    icon: const Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 36,
+                                                    ),
+                                                    onPressed: () {
+                                                      pushWithSlideTransition(
+                                                        context,
+                                                        FoodAddSuggestionScreen(),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -1340,6 +1403,66 @@ class _FoodListScreenState extends State<FoodListScreen>
 
                       const SizedBox(height: 16),
 
+                      // Dropdown untuk pengurutan
+                      if (!_showUserSuggestionsOnly)
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withAlpha(25),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: _sortOption,
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: AppColors.textBlack,
+                                ),
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textBlack,
+                                ),
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      _sortOption = newValue;
+                                      _displayedItemCount = 5;
+                                    });
+                                  }
+                                },
+                                items:
+                                    _sortOptions.map<DropdownMenuItem<String>>((
+                                      String value,
+                                    ) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0,
+                                          ),
+                                          child: Text(value),
+                                        ),
+                                      );
+                                    }).toList(),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      // Add space only if dropdown is shown
+                      if (!_showUserSuggestionsOnly) const SizedBox(height: 12),
+
                       // Info pencarian aktif
                       if (_activeSearchQuery.isNotEmpty)
                         Padding(
@@ -1431,7 +1554,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                     Icon(
                                       Icons.no_food,
                                       size: 70,
-                                      color: AppColors.primary.withAlpha(175),
+                                      color: AppColors.primaryLowTransparent,
                                     ),
                                     const SizedBox(height: 16),
                                     Text(
