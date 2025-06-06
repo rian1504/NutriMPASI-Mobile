@@ -17,13 +17,6 @@ import 'package:nutrimpasi/screens/forum/thread_screen.dart' show CommentSection
 import 'package:nutrimpasi/utils/report_dialog.dart'
     show showReportDialog; // Sesuaikan path jika berbeda
 
-OverlayEntry? _overlayEntry;
-
-void hideMenu() {
-  _overlayEntry?.remove();
-  _overlayEntry = null;
-}
-
 // --- FUNGSI HELPER UNTUK KONFIRMASI HAPUS THREAD ---
 Future<void> confirmDeleteThread({
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
