@@ -333,15 +333,26 @@ class _FoodListScreenState extends State<FoodListScreen>
 
   // Mengurutkan makanan berdasarkan opsi yang dipilih
   List<Food> _sortFoodItems(List<Food> items) {
-    //TODO: Backend get data untuk sorting
     switch (_sortOption) {
       case 'Masakan Terpopuler':
         return items
           ..sort((a, b) => b.favoritesCount.compareTo(a.favoritesCount));
       case 'Masakan Terbaru':
-      // return items..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        return items..sort((a, b) {
+          if (a.createdAt == null && b.createdAt == null) return 0;
+          if (a.createdAt == null) return 1;
+          if (b.createdAt == null) return -1;
+
+          return b.createdAt!.compareTo(a.createdAt!);
+        });
       case 'Masakan Terlama':
-      // return items..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        return items..sort((a, b) {
+          if (a.createdAt == null && b.createdAt == null) return 0;
+          if (a.createdAt == null) return 1;
+          if (b.createdAt == null) return -1;
+
+          return a.createdAt!.compareTo(b.createdAt!);
+        });
       default:
         return items;
     }
