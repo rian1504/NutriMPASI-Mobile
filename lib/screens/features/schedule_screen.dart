@@ -12,7 +12,9 @@ import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/main.dart';
 
 class ScheduleScreen extends StatefulWidget {
-  const ScheduleScreen({super.key});
+  final DateTime? targetDate;
+
+  const ScheduleScreen({super.key, this.targetDate});
 
   @override
   State<ScheduleScreen> createState() => _ScheduleScreenState();
@@ -20,12 +22,9 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   // Controller PageView untuk navigasi hari
-  final PageController _dayController = PageController(
-    initialPage: 2,
-    viewportFraction: 0.2,
-  );
+  late PageController _dayController;
   int _currentDay = 2;
-  DateTime _selectedDate = DateTime.now();
+  late DateTime _selectedDate;
 
   // Variabel untuk card yang sedang terbuka
   String? _openCardId;
@@ -56,6 +55,30 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Fungsi untuk menginisialisasi tanggal terpilih
+    if (widget.targetDate != null) {
+      _selectedDate = widget.targetDate!;
+
+      final today = DateTime.now();
+      final diff =
+          _selectedDate
+              .difference(DateTime(today.year, today.month, today.day))
+              .inDays;
+
+      if (diff >= -2 && diff <= 8) {
+        _currentDay = 2 + diff;
+      }
+    } else {
+      _selectedDate = DateTime.now();
+      _currentDay = 2;
+    }
+
+    _dayController = PageController(
+      initialPage: _currentDay,
+      viewportFraction: 0.2,
+    );
+
     context.read<ScheduleBloc>().add(FetchSchedules());
     Intl.defaultLocale = 'id';
   }
@@ -63,8 +86,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   // Data hari dan tanggal
   List<Map<String, dynamic>> get _days {
     final today = DateTime.now();
+    final baseDate = DateTime(today.year, today.month, today.day);
+
     return List.generate(11, (index) {
-      final date = today.add(Duration(days: index - 2));
+      final date = baseDate.add(Duration(days: index - 2));
       return {
         'day': DateFormat('E', 'id').format(date),
         'date': date.day,

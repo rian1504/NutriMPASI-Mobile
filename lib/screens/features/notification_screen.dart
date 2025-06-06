@@ -4,6 +4,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/notification/notification_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/notification.dart' as model;
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/screens/forum/post_screen.dart';
@@ -132,19 +133,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
         break;
       case 'thread':
       case 'comment':
-        if (notification.refersId != null && notification.refersId is int) {
+        if (notification.threadId != null && notification.threadId is int) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder:
                   (context) =>
-                      PostScreen(threadId: notification.refersId as int),
+                      PostScreen(threadId: notification.threadId as int),
             ),
           );
-        } else if (notification.refersId != null &&
-            notification.refersId is String) {
+        } else if (notification.threadId != null &&
+            notification.threadId is String) {
           try {
-            final threadId = int.parse(notification.refersId.toString());
+            final threadId = int.parse(notification.threadId.toString());
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -160,6 +161,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
             );
           }
         }
+        break;
+      case 'schedule':
+        final tomorrow = DateTime.now().add(const Duration(days: 1));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => MainPage(initialPage: 2, targetDate: tomorrow),
+          ),
+        );
         break;
       default:
         break;
