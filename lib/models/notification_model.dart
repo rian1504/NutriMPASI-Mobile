@@ -51,7 +51,7 @@ class NotificationModel {
       case NotificationType.comment:
         return 'Komentar';
       case NotificationType.like:
-        return 'Postingan';
+        return 'Thread';
       case NotificationType.announcement:
         return 'Ulasan';
     }

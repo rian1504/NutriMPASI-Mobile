@@ -14,10 +14,11 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/create_post_screen.dart';
 import 'package:nutrimpasi/screens/forum/edit_post_screen.dart';
-import 'package:nutrimpasi/screens/forum/post_screen.dart';
+import 'package:nutrimpasi/screens/forum/thread_screen.dart';
+import 'package:nutrimpasi/utils/menu_dialog.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
+import 'package:nutrimpasi/utils/report_dialog.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
-import 'package:nutrimpasi/widgets/custom_dialog.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 import 'package:nutrimpasi/widgets/custom_scroll.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -264,7 +265,7 @@ class _ForumTab extends StatelessWidget {
               //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //       children: [
               //         Text(
-              //           "Postingan Terpopuler",
+              //           "Thread Terpopuler",
               //           style: TextStyle(
               //             fontSize: 14,
               //             fontWeight: FontWeight.w600,
@@ -314,7 +315,7 @@ class _ForumTab extends StatelessWidget {
                 _EmptyStateWidget(isMyPosts: isMyPosts)
               else
                 ...filteredThreads.map(
-                  (thread) => _ForumCard(
+                  (thread) => ForumCard(
                     thread: thread,
                     showMenu: isMyPosts,
                     showReport: !isMyPosts && !(thread.userId == currentUserId),
@@ -348,9 +349,9 @@ class _EmptyStateWidget extends StatelessWidget {
     return EmptyMessage(
       iconName: AppIcons.forum,
       title: isMyPosts ? 'Anda belum membuat postingan' : 'Belum ada postingan',
-      // title: 'Belum Ada Postingan',
+      // title: 'Belum Ada Thread',
       subtitle: 'Tambahkan postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
-      buttonText: 'Tambah Postingan',
+      buttonText: 'Tambah Thread',
       onPressed:
           isMyPosts
               ? () => pushWithSlideTransition(context, const CreatePostScreen())
@@ -360,15 +361,15 @@ class _EmptyStateWidget extends StatelessWidget {
 }
 
 // ==============================
-// WIDGET: _ForumCard
+// WIDGET: ForumCard
 // ==============================
-class _ForumCard extends StatefulWidget {
+class ForumCard extends StatefulWidget {
   final Thread thread;
   final bool showMenu;
   final bool showReport;
   final int? currentUserId;
 
-  const _ForumCard({
+  const ForumCard({
     super.key,
     required this.thread,
     this.showMenu = false,
@@ -377,13 +378,13 @@ class _ForumCard extends StatefulWidget {
   });
 
   @override
-  State<_ForumCard> createState() => _ForumCardState();
+  State<ForumCard> createState() => ForumCardState();
 }
 
-class _ForumCardState extends State<_ForumCard> {
+class ForumCardState extends State<ForumCard> {
   late bool isLiked;
   late int likeCount;
-  final GlobalKey _menuKey = GlobalKey();
+  // final GlobalKey _menuKey = GlobalKey();
   OverlayEntry? _overlayEntry;
 
   @override
@@ -401,151 +402,7 @@ class _ForumCardState extends State<_ForumCard> {
     context.read<ThreadBloc>().add(ToggleLike(threadId: widget.thread.id));
   }
 
-  // >>> FUNGSI UNTUK MENAMPILKAN DIALOG PREVIEW DAN OPSI <<<
-  void _showForumCardPreviewAndOptionsDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierColor: Colors.black87,
-      barrierDismissible: true,
-      barrierLabel: '_ForumCardOptions',
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (dialogContext, animation, secondaryAnimation) {
-        return Align(
-          alignment: Alignment.center,
-          child: Material(
-            color: Colors.transparent, // Untuk transparansi latar belakang
-            child: Column(
-              // Menggunakan Column untuk menumpuk card dan opsi
-              mainAxisSize: MainAxisSize.min, // Agar Column sekecil mungkin
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // === Bagian _ForumCard (Gaya Sama, Tapi Non-Interaktif) ===
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.92,
-                  child: IgnorePointer(
-                    // Kunci utama: Ini membuat _ForumCard tidak interaktif
-                    ignoring: true, // Selalu mengabaikan semua event pointer
-                    child: _ForumCard(
-                      // <<< Menggunakan instance _ForumCard yang sama
-                      key: ValueKey(
-                        '${widget.thread.id}_dialog_preview',
-                      ), // Beri key unik jika perlu
-                      thread: widget.thread,
-                      showMenu: widget.showMenu, // Teruskan properti showMenu untuk tampilan
-                      showReport: widget.showReport, // Teruskan properti showReport untuk tampilan
-                      currentUserId: widget.currentUserId, // Teruskan currentUserId
-                    ),
-                  ),
-                ),
-                // === Bagian Opsi "Report", "Block Account" ===
-                const SizedBox(height: 8), // Jarak antara card dan opsi
-                Padding(
-                  padding: const EdgeInsets.only(right: 4.0),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * (1 / 2.5),
-
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Tombol Edit Postingan
-                        Material(
-                          elevation: 4,
-                          borderRadius: BorderRadius.circular(4),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.accentHighTransparent,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: ListTile(
-                              leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
-                              title: Text(
-                                "Edit Postingan",
-                                style: TextStyle(fontSize: 16, color: AppColors.accent),
-                              ),
-                              onTap: () {
-                                _hideMenu();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditPostScreen(thread: widget.thread),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-
-                        // Tombol Hapus Postingan
-                        if (widget.showMenu)
-                          // const SizedBox(height: 8)
-                          Material(
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(4),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.errorHighTranparent,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: ListTile(
-                                leading: Icon(
-                                  AppIcons.deleteFill,
-                                  size: 20,
-                                  color: AppColors.error,
-                                ),
-                                title: Text(
-                                  "Hapus Postingan",
-                                  style: TextStyle(fontSize: 16, color: AppColors.error),
-                                ),
-                                onTap: _confirmDelete,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
-          child: child,
-        );
-      },
-    );
-  }
-
-  Future<void> _confirmDelete() async {
-    _hideMenu();
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text("Konfirmasi Hapus"),
-            content: const Text("Apakah Anda yakin ingin menghapus postingan ini?"),
-            actions: [
-              TextButton(
-                child: const Text("Batal"),
-                onPressed: () => Navigator.pop(context, false),
-              ),
-              TextButton(
-                child: const Text("Hapus", style: TextStyle(color: Colors.red)),
-                onPressed: () => Navigator.pop(context, true),
-              ),
-            ],
-          ),
-    );
-
-    if (confirmed == true) {
-      context.read<ThreadBloc>().add(DeleteThreads(threadId: widget.thread.id));
-    }
-  }
-
-  void _hideMenu() {
+  void hideMenu() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
@@ -614,6 +471,8 @@ class _ForumCardState extends State<_ForumCard> {
                   Text(
                     widget.thread.title,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 4),
                   // Content
@@ -697,14 +556,36 @@ class _ForumCardState extends State<_ForumCard> {
                     ),
                   ),
                   if (widget.showMenu)
-                    IconButton(
-                      key: _menuKey,
-                      icon: Icon(AppIcons.menu, size: 20),
-                      // onPressed: _showMenu,
-                      onPressed: () => _showForumCardPreviewAndOptionsDialog(context),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      // child: ReportButton(category: "thread", refersId: widget.thread.id),
+                      child: GestureDetector(
+                        onTap:
+                            () => showThreadPreviewAndMenu(
+                              context: context,
+                              thread: widget.thread,
+                              threadId: widget.thread.id.toString(),
+                              showMenu: widget.showMenu,
+                              showReport: widget.showReport,
+                              currentUserId: widget.currentUserId ?? 0,
+                            ),
+                        child: Icon(AppIcons.menu, size: 20),
+                      ),
                     ),
                   if (widget.showReport)
-                    ReportButton(category: "thread", refersId: widget.thread.id),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      // child: ReportButton(category: "thread", refersId: widget.thread.id),
+                      child: GestureDetector(
+                        onTap:
+                            () => showReportDialog(
+                              context: context,
+                              category: "thread",
+                              refersId: widget.thread.id,
+                            ),
+                        child: Icon(AppIcons.report, size: 20),
+                      ),
+                    ),
                 ],
               ),
             ),

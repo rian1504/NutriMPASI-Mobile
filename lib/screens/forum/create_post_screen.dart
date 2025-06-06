@@ -37,7 +37,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Buat Postingan", showExitButton: true, category: ''),
+      appBar: AppBarForum(title: "Buat Thread", showExitButton: true, category: ''),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
           if (state is ThreadStored) {
@@ -83,7 +83,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   focusNode: _titleFocusNode,
                                   maxLines: 1,
                                   decoration: InputDecoration(
-                                    hintText: 'Judul Postingan',
+                                    hintText: 'Judul Thread',
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
@@ -135,7 +135,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 // left: 0,
                 // right: 0,
                 child: MediumButton(
-                  text: 'Unggah Postingan',
+                  text: 'Unggah Thread',
                   onPressed:
                       state is ThreadLoading
                           ? null

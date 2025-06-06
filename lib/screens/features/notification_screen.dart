@@ -28,7 +28,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   final Map<String, String> _categoryDisplayNames = {
     'Semua': 'Semua',
     'comment': 'Komentar',
-    'thread': 'Postingan',
+    'thread': 'Thread',
     'report': 'Laporan',
     'schedule': 'Jadwal',
   };

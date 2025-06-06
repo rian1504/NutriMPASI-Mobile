@@ -12,7 +12,6 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
-
 //Widget untuk membuat AppBarForum dengan rounded corner di bagian kanan bawah
 class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   final bool showTabs;
@@ -96,7 +95,7 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                         indicatorPadding: const EdgeInsets.all(6),
                         labelColor: Colors.white,
                         unselectedLabelColor: AppColors.primary,
-                        tabs: const [Tab(text: 'Semua'), Tab(text: 'Postingan Saya')],
+                        tabs: const [Tab(text: 'Semua'), Tab(text: 'Thread Saya')],
                       ),
                     ),
                   ),
@@ -151,9 +150,6 @@ class RightBottomRoundedClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-
-
-
 
 // Widget AppBarProfile dengan gambar profil yang menonjol di bawah AppBar
 class AppBarProfile extends StatelessWidget implements PreferredSizeWidget {
