@@ -6,6 +6,7 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/models/notification.dart' as model;
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/screens/forum/post_screen.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -68,6 +69,101 @@ class _NotificationScreenState extends State<NotificationScreen> {
       }
     });
     context.read<NotificationBloc>().add(ReadAllNotifications());
+  }
+
+  // Menampilkan modal detail laporan
+  void _showReportDetails(model.Notification notification) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            contentPadding: const EdgeInsets.all(20),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Detail Laporan Anda',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                Text('${notification.content}', textAlign: TextAlign.justify),
+                const SizedBox(height: 24),
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.greyDark,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      minimumSize: const Size(120, 40),
+                    ),
+                    child: const Text(
+                      'Tutup',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+
+  // Menangani tap pada notifikasi
+  void _handleNotificationTap(model.Notification notification) {
+    setState(() {
+      notification.isRead = true;
+    });
+
+    context.read<NotificationBloc>().add(
+      ReadNotification(notificationId: notification.id),
+    );
+
+    switch (notification.category) {
+      case 'report':
+        _showReportDetails(notification);
+        break;
+      case 'thread':
+      case 'comment':
+        if (notification.refersId != null && notification.refersId is int) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) =>
+                      PostScreen(threadId: notification.refersId as int),
+            ),
+          );
+        } else if (notification.refersId != null &&
+            notification.refersId is String) {
+          try {
+            final threadId = int.parse(notification.refersId.toString());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PostScreen(threadId: threadId),
+              ),
+            );
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Gagal membuka postingan. ID tidak valid."),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   @override
@@ -262,17 +358,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 final notification =
                                     filteredNotifications[index];
                                 return InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      notification.isRead = true;
-                                    });
-                                    context.read<NotificationBloc>().add(
-                                      ReadNotification(
-                                        notificationId: notification.id,
-                                      ),
-                                    );
-                                    // TODO: Implementasi aksi ketika notifikasi ditekan
-                                  },
+                                  onTap:
+                                      () =>
+                                          _handleNotificationTap(notification),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color:
@@ -382,7 +470,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            '${_notifications.length}',
+                            '$unreadCount',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
