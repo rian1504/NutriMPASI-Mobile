@@ -11,7 +11,7 @@ import 'package:nutrimpasi/models/food_record.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:nutrimpasi/widgets/button.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class CookingHistoryScreen extends StatefulWidget {
   const CookingHistoryScreen({super.key});

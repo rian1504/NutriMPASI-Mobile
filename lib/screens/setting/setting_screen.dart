@@ -289,7 +289,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               color: Colors.black,
                               size: 24, // opsional, atur agar pas di lingkaran
                             ),
-                            title: Text('Postingan yang Disukai'),
+                            title: Text('Thread yang Disukai'),
                             trailing: Icon(
                               AppIcons.arrowRight,
                               color: AppColors.greyDark,

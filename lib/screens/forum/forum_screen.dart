@@ -13,12 +13,13 @@ import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/create_post_screen.dart';
-import 'package:nutrimpasi/screens/forum/edit_post_screen.dart';
-import 'package:nutrimpasi/screens/forum/post_screen.dart';
+import 'package:nutrimpasi/screens/forum/thread_screen.dart';
+import 'package:nutrimpasi/utils/menu_dialog.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
-import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
-import 'package:nutrimpasi/widgets/forum_report_button.dart';
-import 'package:nutrimpasi/widgets/message_dialog.dart';
+import 'package:nutrimpasi/utils/report_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_scroll.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ForumScreen extends StatefulWidget {
@@ -85,7 +86,7 @@ class _ForumScreenState extends State<ForumScreen> {
                   }
 
                   return TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: SlowPageScrollPhysics(),
                     children: [
                       _ForumTab(
                         threads: threads,
@@ -110,12 +111,124 @@ class _ForumTab extends StatelessWidget {
   final bool isMyPosts;
   final int currentUserId;
 
-  const _ForumTab({
+  _ForumTab({
     super.key,
     required this.threads,
     required this.isMyPosts,
     required this.currentUserId,
   });
+
+  final GlobalKey _dropdownButtonKey = GlobalKey();
+
+  void _showDropdownOptions(BuildContext context, GlobalKey dropdownButtonKey) {
+    // Mendapatkan RenderBox dari GlobalKey untuk mendapatkan posisi tombol
+    final RenderBox renderBox = dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(Offset.zero); // Posisi global tombol
+    // final Size size = renderBox.size; // Ukuran tombol
+
+    // Opsi-opsi yang akan ditampilkan di dropdown
+    final List<String> options = ['Terpopuler', 'Terbaru', 'Terlama'];
+
+    showGeneralDialog(
+      context: context,
+      // KUNCI: Membuat barrier transparan agar kita bisa mengontrol overlay gelap sendiri.
+      barrierColor: Colors.transparent,
+      barrierDismissible: true,
+      barrierLabel: 'Filter Options',
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => Navigator.of(dialogContext).pop(),
+                behavior: HitTestBehavior.translucent,
+                child: Container(color: Colors.black38),
+              ),
+            ),
+
+            // --- Konten Utama Dialog (Tombol yang terlihat & Modal Dropdown) ---
+            Positioned(
+              left: offset.dx + 4,
+              top: offset.dy + 4,
+              width: 0.4 * MediaQuery.of(context).size.width - 8,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // --- "Duplikat" Tombol Filter (Non-Interaktif) ---
+                  IgnorePointer(
+                    ignoring: true,
+                    child: Card(
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      margin: EdgeInsets.zero, // Penting: hapus margin default Card
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Terpopuler",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.black,
+                              ),
+                            ),
+                            Icon(AppIcons.arrowDown, size: 20, color: AppColors.black),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // --- Jarak Antara Tombol dan Modal ---
+                  const SizedBox(height: 8),
+
+                  // --- Modal Dropdown Itu Sendiri ---
+                  ScaleTransition(
+                    scale: CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                    alignment: Alignment.topCenter,
+                    child: Material(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(8),
+                      elevation: 8,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children:
+                            options.map((option) {
+                              return ListTile(
+                                title: Text(
+                                  option,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                                onTap: () {
+                                  // TODO: Implementasi logika filter di sini (misal: panggil Bloc Thread)
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Filter: $option dipilih!')),
+                                  );
+                                  Navigator.of(
+                                    dialogContext,
+                                  ).pop(); // Tutup dialog setelah memilih opsi
+                                },
+                              );
+                            }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,40 +245,50 @@ class _ForumTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              // filter
               SizedBox(
-                width: 1 / 1.8 * MediaQuery.of(context).size.width,
-                child: Card(
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Postingan Terpopuler",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.black,
+                width: 0.4 * MediaQuery.of(context).size.width,
+                child: GestureDetector(
+                  key: _dropdownButtonKey,
+                  onTap: () {
+                    _showDropdownOptions(context, _dropdownButtonKey);
+                  },
+                  child: Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Terpopuler",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.black,
+                            ),
                           ),
-                        ),
-                        Icon(AppIcons.arrowDown, size: 20, color: AppColors.black),
-                      ],
+                          Icon(AppIcons.arrowDown, size: 20, color: AppColors.black),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
+
               if (filteredThreads == null)
                 const Center(child: CircularProgressIndicator())
               else if (filteredThreads.isEmpty)
                 _EmptyStateWidget(isMyPosts: isMyPosts)
               else
                 ...filteredThreads.map(
-                  (thread) => _ForumCard(
+                  (thread) => ForumCard(
                     thread: thread,
-                    showMenu: isMyPosts,
+                    // showMenu: isMyPosts,
+                    showMenu: thread.userId == currentUserId,
                     showReport: !isMyPosts && !(thread.userId == currentUserId),
+                    currentUserId: currentUserId,
                   ),
                 ),
             ],
@@ -196,9 +319,9 @@ class _EmptyStateWidget extends StatelessWidget {
     return EmptyMessage(
       iconName: AppIcons.forum,
       title: isMyPosts ? 'Anda belum membuat postingan' : 'Belum ada postingan',
-      // title: 'Belum Ada Postingan',
+      // title: 'Belum Ada Thread',
       subtitle: 'Tambahkan postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
-      buttonText: 'Tambah Postingan',
+      buttonText: 'Tambah Thread',
       onPressed:
           isMyPosts
               ? () => pushWithSlideTransition(context, const CreatePostScreen())
@@ -208,15 +331,15 @@ class _EmptyStateWidget extends StatelessWidget {
 }
 
 // ==============================
-// WIDGET: _ForumCard
+// WIDGET: ForumCard
 // ==============================
-class _ForumCard extends StatefulWidget {
+class ForumCard extends StatefulWidget {
   final Thread thread;
   final bool showMenu;
   final bool showReport;
   final int? currentUserId;
 
-  const _ForumCard({
+  const ForumCard({
     super.key,
     required this.thread,
     this.showMenu = false,
@@ -225,13 +348,13 @@ class _ForumCard extends StatefulWidget {
   });
 
   @override
-  State<_ForumCard> createState() => _ForumCardState();
+  State<ForumCard> createState() => ForumCardState();
 }
 
-class _ForumCardState extends State<_ForumCard> {
+class ForumCardState extends State<ForumCard> {
   late bool isLiked;
   late int likeCount;
-  final GlobalKey _menuKey = GlobalKey();
+  // final GlobalKey _menuKey = GlobalKey();
   OverlayEntry? _overlayEntry;
 
   @override
@@ -249,241 +372,44 @@ class _ForumCardState extends State<_ForumCard> {
     context.read<ThreadBloc>().add(ToggleLike(threadId: widget.thread.id));
   }
 
-  // void _showMenu() {
-  //   final renderBox = _menuKey.currentContext!.findRenderObject() as RenderBox;
-  //   final offset = renderBox.localToGlobal(Offset.zero);
-  //   final size = renderBox.size;
-
-  //   _overlayEntry = OverlayEntry(
-  //     builder:
-  //         (context) => Stack(
-  //           children: [
-  //             GestureDetector(
-  //               onTap: _hideMenu,
-  //               behavior: HitTestBehavior.opaque,
-  //               child: Container(color: Colors.black45),
-  //             ),
-
-  //             Positioned(
-  //               left: offset.dx + size.width - 150,
-  //               top: offset.dy + size.height + 14,
-  //               width: 150,
-  //               child: Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   // Tombol Edit Postingan
-  //                   Material(
-  //                     elevation: 4,
-  //                     borderRadius: BorderRadius.circular(4),
-  //                     child: Container(
-  //                       decoration: BoxDecoration(
-  //                         color: AppColors.accentHighTransparent,
-  //                         borderRadius: BorderRadius.circular(4),
-  //                       ),
-  //                       child: ListTile(
-  //                         leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
-  //                         title: Text(
-  //                           "Edit Postingan",
-  //                           style: TextStyle(fontSize: 16, color: AppColors.accent),
-  //                         ),
-  //                         onTap: () {
-  //                           _hideMenu();
-  //                           Navigator.push(
-  //                             context,
-  //                             MaterialPageRoute(
-  //                               builder: (context) => EditPostScreen(thread: widget.thread),
-  //                             ),
-  //                           );
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 8),
-
-  //                   // Tombol Hapus Postingan
-  //                   if (widget.showMenu)
-  //                     // const SizedBox(height: 8)
-  //                     Material(
-  //                       elevation: 4,
-  //                       borderRadius: BorderRadius.circular(4),
-  //                       child: Container(
-  //                         decoration: BoxDecoration(
-  //                           color: AppColors.errorHighTranparent,
-  //                           borderRadius: BorderRadius.circular(4),
-  //                         ),
-  //                         child: ListTile(
-  //                           leading: Icon(AppIcons.deleteFill, size: 20, color: AppColors.error),
-  //                           title: Text(
-  //                             "Hapus Postingan",
-  //                             style: TextStyle(fontSize: 16, color: AppColors.error),
-  //                           ),
-  //                           onTap: _confirmDelete,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //   );
-
-  //   Overlay.of(context).insert(_overlayEntry!);
-  // }
-
-  // >>> FUNGSI UNTUK MENAMPILKAN DIALOG PREVIEW DAN OPSI <<<
-  void _showForumCardPreviewAndOptionsDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierColor: Colors.black87,
-      barrierDismissible: true,
-      barrierLabel: '_ForumCardOptions',
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (dialogContext, animation, secondaryAnimation) {
-        return Align(
-          alignment: Alignment.center,
-          child: Material(
-            color: Colors.transparent, // Untuk transparansi latar belakang
-            child: Column(
-              // Menggunakan Column untuk menumpuk card dan opsi
-              mainAxisSize: MainAxisSize.min, // Agar Column sekecil mungkin
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // === Bagian _ForumCard (Gaya Sama, Tapi Non-Interaktif) ===
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.92,
-                  child: IgnorePointer(
-                    // Kunci utama: Ini membuat _ForumCard tidak interaktif
-                    ignoring: true, // Selalu mengabaikan semua event pointer
-                    child: _ForumCard(
-                      // <<< Menggunakan instance _ForumCard yang sama
-                      key: ValueKey(
-                        '${widget.thread.id}_dialog_preview',
-                      ), // Beri key unik jika perlu
-                      thread: widget.thread,
-                      showMenu: widget.showMenu, // Teruskan properti showMenu untuk tampilan
-                      showReport: widget.showReport, // Teruskan properti showReport untuk tampilan
-                      currentUserId: widget.currentUserId, // Teruskan currentUserId
-                    ),
-                  ),
-                ),
-                // === Bagian Opsi "Report", "Block Account" ===
-                const SizedBox(height: 8), // Jarak antara card dan opsi
-                Padding(
-                  padding: const EdgeInsets.only(right: 4.0),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * (1 / 2.5),
-
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Tombol Edit Postingan
-                        Material(
-                          elevation: 4,
-                          borderRadius: BorderRadius.circular(4),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.accentHighTransparent,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: ListTile(
-                              leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
-                              title: Text(
-                                "Edit Postingan",
-                                style: TextStyle(fontSize: 16, color: AppColors.accent),
-                              ),
-                              onTap: () {
-                                _hideMenu();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditPostScreen(thread: widget.thread),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-
-                        // Tombol Hapus Postingan
-                        if (widget.showMenu)
-                          // const SizedBox(height: 8)
-                          Material(
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(4),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.errorHighTranparent,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: ListTile(
-                                leading: Icon(
-                                  AppIcons.deleteFill,
-                                  size: 20,
-                                  color: AppColors.error,
-                                ),
-                                title: Text(
-                                  "Hapus Postingan",
-                                  style: TextStyle(fontSize: 16, color: AppColors.error),
-                                ),
-                                onTap: _confirmDelete,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
-          child: child,
-        );
-      },
-    );
-  }
-
-  Future<void> _confirmDelete() async {
-    _hideMenu();
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text("Konfirmasi Hapus"),
-            content: const Text("Apakah Anda yakin ingin menghapus postingan ini?"),
-            actions: [
-              TextButton(
-                child: const Text("Batal"),
-                onPressed: () => Navigator.pop(context, false),
-              ),
-              TextButton(
-                child: const Text("Hapus", style: TextStyle(color: Colors.red)),
-                onPressed: () => Navigator.pop(context, true),
-              ),
-            ],
-          ),
-    );
-
-    if (confirmed == true) {
-      context.read<ThreadBloc>().add(DeleteThreads(threadId: widget.thread.id));
-    }
-  }
-
-  void _hideMenu() {
+  void hideMenu() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
 
   @override
   Widget build(BuildContext context) {
+    VoidCallback? longPressAction;
+
+    // Logika untuk menentukan aksi longPress
+    if (widget.showMenu) {
+      // Jika postingan ini milik user yang login
+      longPressAction = () {
+        showThreadPreviewAndMenu(
+          // Panggil dialog menu Edit/Delete
+          context: context,
+          thread: widget.thread,
+          threadId: widget.thread.id.toString(), // Pastikan String
+          showMenu: widget.showMenu, // True untuk mengaktifkan opsi Edit/Delete di dialog
+          showReport: widget.showReport, // False untuk Report di dialog
+          currentUserId: widget.currentUserId ?? 0,
+        );
+      };
+    } else if (widget.showReport) {
+      // Jika postingan ini milik orang lain (dan bisa direport)
+      longPressAction = () {
+        showReportDialog(
+          // Panggil dialog Report
+          context: context,
+          category: "thread",
+          refersId: int.parse(widget.thread.id.toString()),
+        );
+      };
+    }
+
     return GestureDetector(
       onTap: () => pushWithSlideTransition(context, PostScreen(threadId: widget.thread.id)),
+      onLongPress: longPressAction,
       child: Card(
         // margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -544,6 +470,8 @@ class _ForumCardState extends State<_ForumCard> {
                   Text(
                     widget.thread.title,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 4),
                   // Content
@@ -627,14 +555,36 @@ class _ForumCardState extends State<_ForumCard> {
                     ),
                   ),
                   if (widget.showMenu)
-                    IconButton(
-                      key: _menuKey,
-                      icon: Icon(AppIcons.menu, size: 20),
-                      // onPressed: _showMenu,
-                      onPressed: () => _showForumCardPreviewAndOptionsDialog(context),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      // child: ReportButton(category: "thread", refersId: widget.thread.id),
+                      child: GestureDetector(
+                        onTap:
+                            () => showThreadPreviewAndMenu(
+                              context: context,
+                              thread: widget.thread,
+                              threadId: widget.thread.id.toString(),
+                              showMenu: widget.showMenu,
+                              showReport: widget.showReport,
+                              currentUserId: widget.currentUserId ?? 0,
+                            ),
+                        child: Icon(AppIcons.menu, size: 20),
+                      ),
                     ),
                   if (widget.showReport)
-                    ReportButton(category: "thread", refersId: widget.thread.id),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      // child: ReportButton(category: "thread", refersId: widget.thread.id),
+                      child: GestureDetector(
+                        onTap:
+                            () => showReportDialog(
+                              context: context,
+                              category: "thread",
+                              refersId: widget.thread.id,
+                            ),
+                        child: Icon(AppIcons.report, size: 20),
+                      ),
+                    ),
                 ],
               ),
             ),

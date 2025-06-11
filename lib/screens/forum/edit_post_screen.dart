@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/thread.dart';
-import 'package:nutrimpasi/widgets/button.dart';
-import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
+import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 
 class EditPostScreen extends StatefulWidget {
   final Thread thread;
@@ -46,7 +46,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Edit Postingan", showExitButton: true, category: ''),
+      appBar: AppBarForum(title: "Edit Thread", showExitButton: true, category: ''),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
           if (state is ThreadUpdated) {
@@ -97,7 +97,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                                   focusNode: _titleFocusNode,
                                   maxLines: 1,
                                   decoration: InputDecoration(
-                                    hintText: 'Judul Postingan',
+                                    hintText: 'Judul Thread',
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
@@ -117,7 +117,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                                 TextFormField(
                                   controller: _contentController,
                                   focusNode: _contentFocusNode,
-                                  maxLines: 15,
+                                  maxLines: 30,
                                   decoration: InputDecoration(
                                     hintText:
                                         'Tanyakan sesuatu atau bagikan pengalamanmu di sini...',
@@ -145,7 +145,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
               // Tombol tetap di bawah
               Positioned(
-                bottom: 65,
+                bottom: 40,
                 // left: 0,
                 // right: 0,
                 child: MediumButton(

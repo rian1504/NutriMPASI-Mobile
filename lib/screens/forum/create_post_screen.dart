@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/widgets/button.dart';
-import 'package:nutrimpasi/widgets/forum_app_bar.dart' show AppBarForum;
+import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -37,11 +37,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(
-        title: "Buat Postingan",
-        showExitButton: true,
-        category: '',
-      ),
+      appBar: AppBarForum(title: "Buat Thread", showExitButton: true, category: ''),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
           if (state is ThreadStored) {
@@ -49,17 +45,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
             // _showDialogReportSuccess(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Berhasil menambah thread"),
-                backgroundColor: Colors.green,
-              ),
+              SnackBar(content: Text("Berhasil menambah thread"), backgroundColor: Colors.green),
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
           } else if (state is ThreadError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
           }
         },
         builder: (context, state) {
@@ -72,17 +65,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                    ),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      16,
-                      16,
-                      16,
-                      60,
-                    ), // beri ruang bawah untuk tombol
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
                     child: Center(
                       child: Card(
                         child: SingleChildScrollView(
@@ -97,7 +83,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   focusNode: _titleFocusNode,
                                   maxLines: 1,
                                   decoration: InputDecoration(
-                                    hintText: 'Judul Postingan',
+                                    hintText: 'Judul Thread',
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
@@ -117,7 +103,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                 TextFormField(
                                   controller: _contentController,
                                   focusNode: _contentFocusNode,
-                                  maxLines: 15,
+                                  maxLines: 30,
                                   decoration: InputDecoration(
                                     hintText:
                                         'Tanyakan sesuatu atau bagikan pengalamanmu di sini...',
@@ -145,11 +131,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
               // Tombol tetap di bawah
               Positioned(
-                bottom: 65,
+                bottom: 40,
                 // left: 0,
                 // right: 0,
                 child: MediumButton(
-                  text: 'Unggah Postingan',
+                  text: 'Unggah Thread',
                   onPressed:
                       state is ThreadLoading
                           ? null

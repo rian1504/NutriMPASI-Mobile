@@ -9,7 +9,7 @@ import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-import 'package:nutrimpasi/widgets/button.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodAddSuggestionScreen extends StatefulWidget {
   const FoodAddSuggestionScreen({super.key});
