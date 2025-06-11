@@ -10,6 +10,10 @@ import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart'; 
+import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
+import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
+
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -26,7 +30,9 @@ class _SettingScreenState extends State<SettingScreen> {
         // Tangani state LogoutSuccess
         if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
             // Reset BabyBloc (jika memang terkait dengan logout)
             context.read<BabyBloc>().add(ResetBaby());
             // Navigasi ke halaman login (ganti dengan rute login yang sesuai)
@@ -36,12 +42,16 @@ class _SettingScreenState extends State<SettingScreen> {
         // Tangani state AuthenticationError (opsional, tergantung kebutuhan)
         else if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           });
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background, // Ganti dengan warna latar belakang yang diinginkan
+        backgroundColor:
+            AppColors
+                .background, // Ganti dengan warna latar belakang yang diinginkan
 
         body: SingleChildScrollView(
           child: Column(
@@ -89,7 +99,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                   placeholderBuilder:
                                       (BuildContext context) => Container(
                                         padding: const EdgeInsets.all(20),
-                                        child: const CircularProgressIndicator(),
+                                        child:
+                                            const CircularProgressIndicator(),
                                       ),
                                 ),
                               ),
@@ -101,10 +112,17 @@ class _SettingScreenState extends State<SettingScreen> {
                                 padding: EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  border: Border.all(color: AppColors.textWhite, width: 2),
+                                  border: Border.all(
+                                    color: AppColors.textWhite,
+                                    width: 2,
+                                  ),
                                   shape: BoxShape.circle,
                                 ),
-                                child: Icon(AppIcons.editFill, color: Colors.black, size: 20),
+                                child: Icon(
+                                  AppIcons.editFill,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
                               ),
                             ),
                           ],
@@ -126,7 +144,11 @@ class _SettingScreenState extends State<SettingScreen> {
                     top: 36,
                     right: 8,
                     child: IconButton(
-                      icon: Icon(AppIcons.favoriteFill, color: AppColors.textWhite, size: 24),
+                      icon: Icon(
+                        AppIcons.favoriteFill,
+                        color: AppColors.textWhite,
+                        size: 24,
+                      ),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -135,13 +157,15 @@ class _SettingScreenState extends State<SettingScreen> {
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: -140,
+                    bottom: 0,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: Card(
                         shape: RoundedRectangleBorder(
                           // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                          borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                          borderRadius: BorderRadius.circular(
+                            12.0,
+                          ), // Atur radius sudut
                         ),
                         color: AppColors.textWhite,
                         elevation: 1,
@@ -151,7 +175,8 @@ class _SettingScreenState extends State<SettingScreen> {
                               leading: Icon(
                                 AppIcons.userFill,
                                 color: Colors.black,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size:
+                                    24, // opsional, atur agar pas di lingkaran
                               ),
                               title: Text('Profil Saya'),
                               trailing: Icon(
@@ -159,13 +184,24 @@ class _SettingScreenState extends State<SettingScreen> {
                                 color: AppColors.greyDark,
                                 size: 20,
                               ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            const ProfileSettingScreen(),
+                                  ),
+                                );
+                              },
                               // subtitle: Text('Deskripsi singkat untuk item ini.'),
                             ),
                             ListTile(
                               leading: Icon(
                                 AppIcons.lockFill,
                                 color: Colors.black,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size:
+                                    24, // opsional, atur agar pas di lingkaran
                               ),
                               title: Text('Kelola Kata Sandi'),
                               trailing: Icon(
@@ -173,13 +209,24 @@ class _SettingScreenState extends State<SettingScreen> {
                                 color: AppColors.greyDark,
                                 size: 20,
                               ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            const PasswordSettingScreen(),
+                                  ),
+                                );
+                              },
                               // subtitle: Text('Deskripsi singkat untuk item ini.'),
                             ),
                             ListTile(
                               leading: Icon(
                                 AppIcons.baby,
                                 color: Colors.black,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size:
+                                    24, // opsional, atur agar pas di lingkaran
                               ),
                               title: Text('Kelola Profil Bayi'),
                               trailing: Icon(
@@ -187,6 +234,16 @@ class _SettingScreenState extends State<SettingScreen> {
                                 color: AppColors.greyDark,
                                 size: 20,
                               ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            const BabyEditScreen(),
+                                  ),
+                                );
+                              },
                               // subtitle: Text('Deskripsi singkat untuk item ini.'),
                             ),
                           ],
@@ -204,7 +261,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     Card(
                       shape: RoundedRectangleBorder(
                         // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                        borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                        borderRadius: BorderRadius.circular(
+                          12.0,
+                        ), // Atur radius sudut
                       ),
                       color: AppColors.textWhite,
                       elevation: 1,
@@ -244,7 +303,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     Card(
                       shape: RoundedRectangleBorder(
                         // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                        borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                        borderRadius: BorderRadius.circular(
+                          12.0,
+                        ), // Atur radius sudut
                       ),
                       color: AppColors.textWhite,
                       elevation: 1,
@@ -285,7 +346,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     Card(
                       shape: RoundedRectangleBorder(
                         // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                        borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                        borderRadius: BorderRadius.circular(
+                          12.0,
+                        ), // Atur radius sudut
                       ),
                       color: AppColors.textWhite,
                       elevation: 1,
@@ -296,14 +359,24 @@ class _SettingScreenState extends State<SettingScreen> {
                               leading: Icon(
                                 AppIcons.logout,
                                 color: AppColors.error,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size:
+                                    24, // opsional, atur agar pas di lingkaran
                               ),
-                              title: Text('Keluar', style: TextStyle(color: AppColors.error)),
-                              trailing: Icon(AppIcons.arrowRight, color: AppColors.error, size: 20),
+                              title: Text(
+                                'Keluar',
+                                style: TextStyle(color: AppColors.error),
+                              ),
+                              trailing: Icon(
+                                AppIcons.arrowRight,
+                                color: AppColors.error,
+                                size: 20,
+                              ),
                               // subtitle: Text('Deskripsi singkat untuk item ini.'),
                             ),
                             onTap: () {
-                              context.read<AuthenticationBloc>().add(LogoutRequested());
+                              context.read<AuthenticationBloc>().add(
+                                LogoutRequested(),
+                              );
                             },
                           ),
                         ],
