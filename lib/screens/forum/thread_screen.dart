@@ -20,16 +20,16 @@ import 'package:nutrimpasi/widgets/custom_dialog.dart' show ReportButton;
 // Widget untuk menampilkan app bar forum diskusi
 import '../../widgets/custom_app_bar.dart' show AppBarForum;
 
-class PostScreen extends StatefulWidget {
+class ThreadScreen extends StatefulWidget {
   final int threadId;
 
-  const PostScreen({super.key, required this.threadId});
+  const ThreadScreen({super.key, required this.threadId});
 
   @override
-  State<PostScreen> createState() => _PostScreenState();
+  State<ThreadScreen> createState() => _ThreadScreenState();
 }
 
-class _PostScreenState extends State<PostScreen> {
+class _ThreadScreenState extends State<ThreadScreen> {
   ThreadDetail? thread;
 
   @override

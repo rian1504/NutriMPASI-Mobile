@@ -11,7 +11,7 @@ import 'package:nutrimpasi/constants/colors.dart'; // Impor AppColors
 import 'package:nutrimpasi/constants/icons.dart'; // Impor AppIcons
 import 'package:nutrimpasi/models/comment.dart'; // Impor Comment (dan User)
 import 'package:nutrimpasi/models/thread.dart';
-import 'package:nutrimpasi/screens/forum/edit_post_screen.dart' show EditPostScreen;
+import 'package:nutrimpasi/screens/forum/edit_thread_screen.dart' show EditThreadScreen;
 import 'package:nutrimpasi/screens/forum/forum_screen.dart' show ForumCard;
 import 'package:nutrimpasi/screens/forum/thread_screen.dart' show CommentSection;
 import 'package:nutrimpasi/utils/report_dialog.dart'
@@ -20,7 +20,7 @@ import 'package:nutrimpasi/utils/report_dialog.dart'
 // --- FUNGSI HELPER UNTUK KONFIRMASI HAPUS THREAD ---
 Future<void> confirmDeleteThread({
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
-  required String threadId, // threadId harus int, sesuai PostScreen
+  required String threadId, // threadId harus int, sesuai ThreadScreen
 }) async {
   final confirmed = await showDialog<bool>(
     context: context,
@@ -120,7 +120,7 @@ void showThreadPreviewAndMenu({
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EditPostScreen(thread: thread),
+                                  builder: (context) => EditThreadScreen(thread: thread),
                                 ),
                               );
                             },
@@ -175,7 +175,7 @@ void showThreadPreviewAndMenu({
 Future<void> confirmDeleteComment({
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
   required int commentId,
-  required String threadId, // threadId harus int, sesuai PostScreen
+  required String threadId, // threadId harus int, sesuai ThreadScreen
 }) async {
   final confirmed = await showDialog<bool>(
     context: context,
@@ -454,7 +454,7 @@ void showCommentPreviewAndMenu({
   //                               Navigator.push(
   //                                 context,
   //                                 MaterialPageRoute(
-  //                                   builder: (context) => EditPostScreen(thread: widget.thread),
+  //                                   builder: (context) => EditThreadScreen(thread: widget.thread),
   //                                 ),
   //                               );
   //                             },

@@ -12,7 +12,7 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/thread.dart';
-import 'package:nutrimpasi/screens/forum/create_post_screen.dart';
+import 'package:nutrimpasi/screens/forum/create_thread_screen.dart';
 import 'package:nutrimpasi/screens/forum/thread_screen.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
@@ -300,7 +300,7 @@ class _ForumTab extends StatelessWidget {
             right: 16,
             child: FloatingActionButton(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-              onPressed: () => pushWithSlideTransition(context, const CreatePostScreen()),
+              onPressed: () => pushWithSlideTransition(context, const CreateThreadScreen()),
               child: const Icon(Icons.add),
             ),
           ),
@@ -324,7 +324,7 @@ class _EmptyStateWidget extends StatelessWidget {
       buttonText: 'Tambah Thread',
       onPressed:
           isMyPosts
-              ? () => pushWithSlideTransition(context, const CreatePostScreen())
+              ? () => pushWithSlideTransition(context, const CreateThreadScreen())
               : null, // Jika isMyPosts false, set onPressed ke null
     );
   }
@@ -408,7 +408,7 @@ class ForumCardState extends State<ForumCard> {
     }
 
     return GestureDetector(
-      onTap: () => pushWithSlideTransition(context, PostScreen(threadId: widget.thread.id)),
+      onTap: () => pushWithSlideTransition(context, ThreadScreen(threadId: widget.thread.id)),
       onLongPress: longPressAction,
       child: Card(
         // margin: const EdgeInsets.symmetric(vertical: 8),
@@ -548,7 +548,7 @@ class ForumCardState extends State<ForumCard> {
                           onPressed:
                               () => pushWithSlideTransition(
                                 context,
-                                PostScreen(threadId: widget.thread.id),
+                                ThreadScreen(threadId: widget.thread.id),
                               ),
                         ),
                       ],

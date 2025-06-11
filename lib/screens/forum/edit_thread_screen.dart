@@ -7,20 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 
-class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({super.key});
+class EditThreadScreen extends StatefulWidget {
+  final Thread thread;
+  const EditThreadScreen({super.key, required this.thread});
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  State<EditThreadScreen> createState() => _EditThreadScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
+class _EditThreadScreenState extends State<EditThreadScreen> {
   final formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
+  late TextEditingController _titleController = TextEditingController();
+  late TextEditingController _contentController = TextEditingController();
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
 
@@ -34,18 +36,25 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.thread.title);
+    _contentController = TextEditingController(text: widget.thread.content);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Buat Thread", showExitButton: true, category: ''),
+      appBar: AppBarForum(title: "Edit Thread", showExitButton: true, category: ''),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
-          if (state is ThreadStored) {
+          if (state is ThreadUpdated) {
             Navigator.of(context).pop();
 
             // _showDialogReportSuccess(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Berhasil menambah thread"), backgroundColor: Colors.green),
+              SnackBar(content: Text("Berhasil mengubah thread"), backgroundColor: Colors.green),
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
@@ -68,7 +77,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
+                    padding: const EdgeInsets.fromLTRB(
+                      16,
+                      16,
+                      16,
+                      60,
+                    ), // beri ruang bawah untuk tombol
                     child: Center(
                       child: Card(
                         child: SingleChildScrollView(
@@ -135,17 +149,18 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 // left: 0,
                 // right: 0,
                 child: MediumButton(
-                  text: 'Unggah Thread',
+                  text: 'Simpan Perubahan',
                   onPressed:
                       state is ThreadLoading
                           ? null
                           : () {
                             if (formKey.currentState!.validate()) {
+                              final threadId = widget.thread.id;
                               final title = _titleController.text.trim();
                               final content = _contentController.text.trim();
 
                               context.read<ThreadBloc>().add(
-                                StoreThreads(title: title, content: content),
+                                UpdateThreads(threadId: threadId, title: title, content: content),
                               );
 
                               _titleController.clear();
@@ -156,7 +171,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       state is ThreadLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
-                            'Unggah',
+                            'Simpan Perubahan',
                             style: TextStyle(
                               color: AppColors.textWhite,
                               fontSize: 16,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SlowPageScrollPhysics extends PageScrollPhysics {
-  const SlowPageScrollPhysics({ScrollPhysics? parent}) : super(parent: parent);
+  const SlowPageScrollPhysics({super.parent});
 
   // Override properti ini untuk mengurangi sensitivitas
   @override
