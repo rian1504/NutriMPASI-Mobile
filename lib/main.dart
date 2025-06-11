@@ -195,18 +195,6 @@ class MainApp extends StatelessWidget {
             );
             return null;
           }
-          // // Handle deep links when app is already running
-          // if (settings.name?.startsWith('/password-reset') ?? false) {
-          //   final uri = Uri.parse(settings.name!);
-          //   final token = uri.pathSegments[1];
-          //   final email = uri.queryParameters['email'] ?? '';
-
-          //   return MaterialPageRoute(
-          //     builder:
-          //         (context) => ResetPasswordScreen(token: token, email: email),
-          //   );
-          // }
-          // Handle other routes
           return null;
         },
       ),
@@ -256,51 +244,81 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body:
-          _page == 1 && _pageParams.containsKey('showUserSuggestions')
-              ? FoodListScreen(
-                showUserSuggestions: _pageParams['showUserSuggestions'],
-              )
-              : _page == 2 && _pageParams.containsKey('targetDate')
-              ? ScheduleScreen(targetDate: _pageParams['targetDate'])
-              : _screens[_page],
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.background,
-        color: AppColors.primary,
-        height: MediaQuery.of(context).size.height * 0.070,
-        animationDuration: const Duration(milliseconds: 300),
-        index: _page,
-        items: [
-          Icon(
-            Symbols.home_rounded,
-            color: Colors.white,
-            size: _page == 0 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.restaurant_menu,
-            color: Colors.white,
-            size: _page == 1 ? 35 : 25,
-          ),
-          Icon(
-            Symbols.calendar_month,
-            color: Colors.white,
-            size: _page == 2 ? 35 : 25,
-          ),
-          Icon(Symbols.forum, color: Colors.white, size: _page == 3 ? 35 : 25),
-          Icon(
-            Symbols.settings,
-            color: Colors.white,
-            size: _page == 4 ? 35 : 25,
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            _page = index;
-            _pageParams = {};
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is AuthenticationError) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Tampilkan pesan error
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
+
+            // Navigasi ke login
+            Navigator.pushReplacementNamed(context, '/login');
           });
-        },
+        } else if (state is LogoutSuccess) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Tampilkan pesan logout sukses
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+            // Reset Baby
+            context.read<BabyBloc>().add(ResetBaby());
+            // Navigasi ke login
+            Navigator.pushReplacementNamed(context, '/login');
+          });
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body:
+            _page == 1 && _pageParams.containsKey('showUserSuggestions')
+                ? FoodListScreen(
+                  showUserSuggestions: _pageParams['showUserSuggestions'],
+                )
+                : _page == 2 && _pageParams.containsKey('targetDate')
+                ? ScheduleScreen(targetDate: _pageParams['targetDate'])
+                : _screens[_page],
+        bottomNavigationBar: CurvedNavigationBar(
+          backgroundColor: AppColors.background,
+          color: AppColors.primary,
+          height: MediaQuery.of(context).size.height * 0.070,
+          animationDuration: const Duration(milliseconds: 300),
+          index: _page,
+          items: [
+            Icon(
+              Symbols.home_rounded,
+              color: Colors.white,
+              size: _page == 0 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.restaurant_menu,
+              color: Colors.white,
+              size: _page == 1 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.calendar_month,
+              color: Colors.white,
+              size: _page == 2 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.forum,
+              color: Colors.white,
+              size: _page == 3 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.settings,
+              color: Colors.white,
+              size: _page == 4 ? 35 : 25,
+            ),
+          ],
+          onTap: (index) {
+            setState(() {
+              _page = index;
+              _pageParams = {};
+            });
+          },
+        ),
       ),
     );
   }

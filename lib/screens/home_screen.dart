@@ -227,31 +227,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(backgroundColor: AppColors.bisque, toolbarHeight: 1),
-      body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if (state is AuthenticationError) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              // Tampilkan pesan error
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.error)));
-
-              // Navigasi ke login
-              Navigator.pushReplacementNamed(context, '/login');
-            });
-          } else if (state is LogoutSuccess) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              // Tampilkan pesan logout sukses
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
-              // Reset Baby
-              context.read<BabyBloc>().add(ResetBaby());
-              // Navigasi ke login
-              Navigator.pushReplacementNamed(context, '/login');
-            });
-          }
-        },
+      body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, authState) {
           if (authState is AuthenticationLoading) {
             return const Center(child: CircularProgressIndicator());
