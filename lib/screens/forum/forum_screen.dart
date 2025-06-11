@@ -15,7 +15,8 @@ import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/create_thread_screen.dart';
 import 'package:nutrimpasi/screens/forum/thread_screen.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart';
-import 'package:nutrimpasi/utils/navigation_animation.dart' show pushWithSlideTransition;
+import 'package:nutrimpasi/utils/navigation_animation.dart'
+    show pushWithSlideTransition;
 import 'package:nutrimpasi/utils/report_dialog.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
@@ -48,7 +49,11 @@ class _ForumScreenState extends State<ForumScreen> {
       length: 2,
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBarForum(title: "Forum Diskusi", showTabs: true, category: ''),
+        appBar: AppBarForum(
+          title: "Forum Diskusi",
+          showTabs: true,
+          category: '',
+        ),
         body: Container(
           decoration: BoxDecoration(color: AppColors.primary),
           child: Container(
@@ -72,13 +77,20 @@ class _ForumScreenState extends State<ForumScreen> {
                     context.read<ThreadBloc>().add(FetchThreads());
                   } else if (state is ThreadError) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+                      SnackBar(
+                        content: Text(state.error),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 },
                 builder: (context, state) {
                   if (state is ThreadLoading) {
-                    return Center(child: CircularProgressIndicator(color: AppColors.primary));
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    );
                   }
 
                   if (state is ThreadLoaded) {
@@ -93,7 +105,11 @@ class _ForumScreenState extends State<ForumScreen> {
                         isMyPosts: false,
                         currentUserId: loggedInUser!.id,
                       ),
-                      _ForumTab(threads: threads, isMyPosts: true, currentUserId: loggedInUser.id),
+                      _ForumTab(
+                        threads: threads,
+                        isMyPosts: true,
+                        currentUserId: loggedInUser.id,
+                      ),
                     ],
                   );
                 },
@@ -112,7 +128,6 @@ class _ForumTab extends StatelessWidget {
   final int currentUserId;
 
   _ForumTab({
-    super.key,
     required this.threads,
     required this.isMyPosts,
     required this.currentUserId,
@@ -122,8 +137,11 @@ class _ForumTab extends StatelessWidget {
 
   void _showDropdownOptions(BuildContext context, GlobalKey dropdownButtonKey) {
     // Mendapatkan RenderBox dari GlobalKey untuk mendapatkan posisi tombol
-    final RenderBox renderBox = dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
-    final Offset offset = renderBox.localToGlobal(Offset.zero); // Posisi global tombol
+    final RenderBox renderBox =
+        dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(
+      Offset.zero,
+    ); // Posisi global tombol
     // final Size size = renderBox.size; // Ukuran tombol
 
     // Opsi-opsi yang akan ditampilkan di dropdown
@@ -161,8 +179,11 @@ class _ForumTab extends StatelessWidget {
                     ignoring: true,
                     child: Card(
                       elevation: 1,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      margin: EdgeInsets.zero, // Penting: hapus margin default Card
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      margin:
+                          EdgeInsets.zero, // Penting: hapus margin default Card
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                         child: Row(
@@ -176,7 +197,11 @@ class _ForumTab extends StatelessWidget {
                                 color: AppColors.black,
                               ),
                             ),
-                            Icon(AppIcons.arrowDown, size: 20, color: AppColors.black),
+                            Icon(
+                              AppIcons.arrowDown,
+                              size: 20,
+                              color: AppColors.black,
+                            ),
                           ],
                         ),
                       ),
@@ -188,7 +213,10 @@ class _ForumTab extends StatelessWidget {
 
                   // --- Modal Dropdown Itu Sendiri ---
                   ScaleTransition(
-                    scale: CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                    scale: CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    ),
                     alignment: Alignment.topCenter,
                     child: Material(
                       color: AppColors.background,
@@ -210,7 +238,9 @@ class _ForumTab extends StatelessWidget {
                                 onTap: () {
                                   // TODO: Implementasi logika filter di sini (misal: panggil Bloc Thread)
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Filter: $option dipilih!')),
+                                    SnackBar(
+                                      content: Text('Filter: $option dipilih!'),
+                                    ),
                                   );
                                   Navigator.of(
                                     dialogContext,
@@ -255,7 +285,9 @@ class _ForumTab extends StatelessWidget {
                   },
                   child: Card(
                     elevation: 1,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: Row(
@@ -269,7 +301,11 @@ class _ForumTab extends StatelessWidget {
                               color: AppColors.black,
                             ),
                           ),
-                          Icon(AppIcons.arrowDown, size: 20, color: AppColors.black),
+                          Icon(
+                            AppIcons.arrowDown,
+                            size: 20,
+                            color: AppColors.black,
+                          ),
                         ],
                       ),
                     ),
@@ -299,8 +335,14 @@ class _ForumTab extends StatelessWidget {
             bottom: 48,
             right: 16,
             child: FloatingActionButton(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-              onPressed: () => pushWithSlideTransition(context, const CreateThreadScreen()),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+              ),
+              onPressed:
+                  () => pushWithSlideTransition(
+                    context,
+                    const CreateThreadScreen(),
+                  ),
               child: const Icon(Icons.add),
             ),
           ),
@@ -320,11 +362,13 @@ class _EmptyStateWidget extends StatelessWidget {
       iconName: AppIcons.forum,
       title: isMyPosts ? 'Anda belum membuat postingan' : 'Belum ada postingan',
       // title: 'Belum Ada Thread',
-      subtitle: 'Tambahkan postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
+      subtitle:
+          'Tambahkan postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
       buttonText: 'Tambah Thread',
       onPressed:
           isMyPosts
-              ? () => pushWithSlideTransition(context, const CreateThreadScreen())
+              ? () =>
+                  pushWithSlideTransition(context, const CreateThreadScreen())
               : null, // Jika isMyPosts false, set onPressed ke null
     );
   }
@@ -390,7 +434,9 @@ class ForumCardState extends State<ForumCard> {
           context: context,
           thread: widget.thread,
           threadId: widget.thread.id.toString(), // Pastikan String
-          showMenu: widget.showMenu, // True untuk mengaktifkan opsi Edit/Delete di dialog
+          showMenu:
+              widget
+                  .showMenu, // True untuk mengaktifkan opsi Edit/Delete di dialog
           showReport: widget.showReport, // False untuk Report di dialog
           currentUserId: widget.currentUserId ?? 0,
         );
@@ -408,10 +454,13 @@ class ForumCardState extends State<ForumCard> {
     }
 
     return GestureDetector(
-      onTap: () => pushWithSlideTransition(context, ThreadScreen(threadId: widget.thread.id)),
+      onTap:
+          () => pushWithSlideTransition(
+            context,
+            ThreadScreen(threadId: widget.thread.id),
+          ),
       onLongPress: longPressAction,
       child: Card(
-        // margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -439,13 +488,18 @@ class ForumCardState extends State<ForumCard> {
                                   widget.thread.user.avatar != null
                                       ? ClipOval(
                                         child: Image.network(
-                                          storageUrl + widget.thread.user.avatar!,
+                                          storageUrl +
+                                              widget.thread.user.avatar!,
                                           width: 32,
                                           height: 32,
                                           fit: BoxFit.cover,
                                         ),
                                       )
-                                      : Icon(AppIcons.userFill, color: AppColors.primary, size: 20),
+                                      : Icon(
+                                        AppIcons.userFill,
+                                        color: AppColors.primary,
+                                        size: 20,
+                                      ),
                             ),
                             SizedBox(width: 8),
                             Text(
@@ -461,7 +515,10 @@ class ForumCardState extends State<ForumCard> {
                       ),
                       Text(
                         timeago.format(widget.thread.createdAt),
-                        style: TextStyle(color: AppColors.greyDark, fontSize: 12),
+                        style: TextStyle(
+                          color: AppColors.greyDark,
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
@@ -469,7 +526,10 @@ class ForumCardState extends State<ForumCard> {
                   // Title
                   Text(
                     widget.thread.title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
@@ -499,7 +559,8 @@ class ForumCardState extends State<ForumCard> {
                             IconButton(
                               icon: Row(
                                 mainAxisSize:
-                                    MainAxisSize.min, // Agar Row hanya mengambil ruang minimal
+                                    MainAxisSize
+                                        .min, // Agar Row hanya mengambil ruang minimal
                                 children: [
                                   Icon(
                                     isLiked
@@ -508,10 +569,13 @@ class ForumCardState extends State<ForumCard> {
                                     color:
                                         isLiked
                                             ? Colors.red
-                                            : AppColors.black, // Warna ikon berubah jika liked
+                                            : AppColors
+                                                .black, // Warna ikon berubah jika liked
                                     size: 24,
                                   ),
-                                  const SizedBox(width: 4), // Jarak antara ikon dan teks
+                                  const SizedBox(
+                                    width: 4,
+                                  ), // Jarak antara ikon dan teks
                                   Text(
                                     likeCount.toString(),
                                     style: TextStyle(
@@ -519,7 +583,8 @@ class ForumCardState extends State<ForumCard> {
                                       color:
                                           isLiked
                                               ? Colors.red
-                                              : AppColors.black, // Warna teks juga berubah
+                                              : AppColors
+                                                  .black, // Warna teks juga berubah
                                     ),
                                   ),
                                 ],
@@ -532,10 +597,17 @@ class ForumCardState extends State<ForumCard> {
                         IconButton(
                           icon: Row(
                             mainAxisSize:
-                                MainAxisSize.min, // Penting agar Row tidak memakan ruang lebih
+                                MainAxisSize
+                                    .min, // Penting agar Row tidak memakan ruang lebih
                             children: [
-                              Icon(AppIcons.comment, size: 24, color: AppColors.black),
-                              const SizedBox(width: 4), // Sedikit jarak antara ikon dan teks
+                              Icon(
+                                AppIcons.comment,
+                                size: 24,
+                                color: AppColors.black,
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ), // Sedikit jarak antara ikon dan teks
                               Text(
                                 widget.thread.commentsCount.toString(),
                                 style: const TextStyle(

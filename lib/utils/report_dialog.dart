@@ -32,20 +32,24 @@ void _showReportSuccessDialog({
 }
 
 // --- FUNGSI UTAMA UNTUK MENAMPILKAN DIALOG LAPORAN ---
-Future<void> showReportDialog({ // Menggunakan Future<void> karena showGeneralDialog
+Future<void> showReportDialog({
+  // Menggunakan Future<void> karena showGeneralDialog
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
   required String category,
   required int refersId,
 }) async {
-  String _reportReason = ''; // Variabel lokal untuk input, tidak ada _formKey yang diakses dari luar
+  String _reportReason =
+      ''; // Variabel lokal untuk input, tidak ada _formKey yang diakses dari luar
   final _formKey = GlobalKey<FormState>(); // Key lokal untuk form
 
-  await showGeneralDialog( // Gunakan await agar bisa menangani pop dialog dengan benar
+  await showGeneralDialog(
+    // Gunakan await agar bisa menangani pop dialog dengan benar
     context: context,
-    transitionBuilder: (dialogContext, animation, _, child) => ScaleTransition(
-      scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
-      child: child,
-    ),
+    transitionBuilder:
+        (dialogContext, animation, _, child) => ScaleTransition(
+          scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+          child: child,
+        ),
     barrierDismissible: true,
     barrierLabel: 'Tutup',
     barrierColor: Colors.black87,
@@ -53,27 +57,44 @@ Future<void> showReportDialog({ // Menggunakan Future<void> karena showGeneralDi
     pageBuilder: (dialogContext, _, __) {
       // Menggunakan Builder untuk mendapatkan BuildContext yang tepat untuk BlocConsumer
       return Builder(
-        builder: (innerContext) { // innerContext untuk BlocConsumer
+        builder: (innerContext) {
+          // innerContext untuk BlocConsumer
           return BlocConsumer<ReportBloc, ReportState>(
-            listener: (blocConsumerContext, state) { // Menggunakan blocConsumerContext untuk listener
+            listener: (blocConsumerContext, state) {
+              // Menggunakan blocConsumerContext untuk listener
               if (state is ReportSuccess) {
-                Navigator.of(blocConsumerContext, rootNavigator: true).pop(); // Tutup dialog laporan ini
+                Navigator.of(
+                  blocConsumerContext,
+                  rootNavigator: true,
+                ).pop(); // Tutup dialog laporan ini
                 _showReportSuccessDialog(
                   context: context, // Gunakan context asli dari pemanggil
-                  displayCategory: _getDisplayCategory(category), // Ambil displayCategory dari fungsi helper
+                  displayCategory: _getDisplayCategory(
+                    category,
+                  ), // Ambil displayCategory dari fungsi helper
                 );
               } else if (state is ReportError) {
-                Navigator.of(blocConsumerContext, rootNavigator: true).pop(); // Tutup dialog laporan ini
-                ScaffoldMessenger.of(context).showSnackBar( // Gunakan context asli dari pemanggil
-                  SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+                Navigator.of(
+                  blocConsumerContext,
+                  rootNavigator: true,
+                ).pop(); // Tutup dialog laporan ini
+                ScaffoldMessenger.of(context).showSnackBar(
+                  // Gunakan context asli dari pemanggil
+                  SnackBar(
+                    content: Text(state.error),
+                    backgroundColor: Colors.red,
+                  ),
                 );
               }
             },
-            builder: (blocConsumerContext, state) { // blocConsumerContext untuk builder
+            builder: (blocConsumerContext, state) {
+              // blocConsumerContext untuk builder
               final bool isLoading = state is ReportLoading;
               return AlertDialog(
                 contentPadding: const EdgeInsets.all(24),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 title: Text(
                   'Anda yakin ingin melaporkan ${_getDisplayCategory(category)} ini?',
                   textAlign: TextAlign.center,
@@ -87,14 +108,22 @@ Future<void> showReportDialog({ // Menggunakan Future<void> karena showGeneralDi
                   key: _formKey,
                   child: TextFormField(
                     onChanged: (value) {
-                      _reportReason = value; // Update _reportReason lokal dialog
+                      _reportReason =
+                          value; // Update _reportReason lokal dialog
                     },
-                    style: const TextStyle(fontSize: 14, color: AppColors.textBlack),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textBlack,
+                    ),
                     minLines: 3,
                     maxLines: 5,
                     decoration: InputDecoration(
-                      hintText: 'Masukkan alasan Anda melaporkan ${_getDisplayCategory(category)} ini...',
-                      hintStyle: const TextStyle(fontSize: 14, color: AppColors.textGrey),
+                      hintText:
+                          'Masukkan alasan Anda melaporkan ${_getDisplayCategory(category)} ini...',
+                      hintStyle: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textGrey,
+                      ),
                       border: InputBorder.none,
                     ),
                     validator: (value) {
@@ -116,42 +145,54 @@ Future<void> showReportDialog({ // Menggunakan Future<void> karena showGeneralDi
                         style: ElevatedButton.styleFrom(
                           foregroundColor: AppColors.textBlack,
                           backgroundColor: AppColors.greyLight,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           fixedSize: const Size(120, 40),
                         ),
-                        onPressed: isLoading ? null : () => Navigator.of(blocConsumerContext).pop(), // Tutup dialog saat batal
+                        onPressed:
+                            isLoading
+                                ? null
+                                : () =>
+                                    Navigator.of(
+                                      blocConsumerContext,
+                                    ).pop(), // Tutup dialog saat batal
                         child: const Text('Batal'),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: AppColors.textWhite,
                           backgroundColor: AppColors.accent,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           fixedSize: const Size(120, 40),
                         ),
-                        onPressed: isLoading
-                            ? null
-                            : () {
-                                if (_formKey.currentState!.validate()) {
-                                  context.read<ReportBloc>().add(
-                                        Report(
-                                          category: category,
-                                          refersId: refersId,
-                                          content: _reportReason,
-                                        ),
-                                      );
-                                }
-                              },
-                        child: isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Text('Kirim'),
+                        onPressed:
+                            isLoading
+                                ? null
+                                : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    context.read<ReportBloc>().add(
+                                      Report(
+                                        category: category,
+                                        refersId: refersId,
+                                        content: _reportReason,
+                                      ),
+                                    );
+                                  }
+                                },
+                        child:
+                            isLoading
+                                ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : const Text('Kirim'),
                       ),
                     ],
                   ),
@@ -168,10 +209,14 @@ Future<void> showReportDialog({ // Menggunakan Future<void> karena showGeneralDi
 // --- FUNGSI HELPER UNTUK MENGAMBIL DISPLAY CATEGORY ---
 String _getDisplayCategory(String category) {
   switch (category) {
-    case 'thread': return 'postingan';
-    case 'comment': return 'komentar';
-    case 'food': return 'makanan';
-    default: return "konten";
+    case 'thread':
+      return 'postingan';
+    case 'comment':
+      return 'komentar';
+    case 'food':
+      return 'makanan';
+    default:
+      return "konten";
   }
 }
 

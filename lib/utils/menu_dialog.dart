@@ -6,14 +6,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/comment/comment_bloc.dart'; // Impor CommentBloc, DeleteComment
-import 'package:nutrimpasi/blocs/thread/thread_bloc.dart' show DeleteThreads, ThreadBloc;
+import 'package:nutrimpasi/blocs/thread/thread_bloc.dart'
+    show DeleteThreads, ThreadBloc;
 import 'package:nutrimpasi/constants/colors.dart'; // Impor AppColors
 import 'package:nutrimpasi/constants/icons.dart'; // Impor AppIcons
 import 'package:nutrimpasi/models/comment.dart'; // Impor Comment (dan User)
 import 'package:nutrimpasi/models/thread.dart';
-import 'package:nutrimpasi/screens/forum/edit_thread_screen.dart' show EditThreadScreen;
+import 'package:nutrimpasi/screens/forum/edit_thread_screen.dart'
+    show EditThreadScreen;
 import 'package:nutrimpasi/screens/forum/forum_screen.dart' show ForumCard;
-import 'package:nutrimpasi/screens/forum/thread_screen.dart' show CommentSection;
+import 'package:nutrimpasi/screens/forum/thread_screen.dart'
+    show CommentSection;
 import 'package:nutrimpasi/utils/report_dialog.dart'
     show showReportDialog; // Sesuaikan path jika berbeda
 
@@ -29,7 +32,10 @@ Future<void> confirmDeleteThread({
           title: const Text("Konfirmasi Hapus"),
           content: const Text("Apakah Anda yakin ingin menghapus thread ini?"),
           actions: [
-            TextButton(child: const Text("Batal"), onPressed: () => Navigator.pop(ctx, false)),
+            TextButton(
+              child: const Text("Batal"),
+              onPressed: () => Navigator.pop(ctx, false),
+            ),
             TextButton(
               child: const Text("Hapus", style: TextStyle(color: Colors.red)),
               onPressed: () => Navigator.pop(ctx, true),
@@ -41,10 +47,12 @@ Future<void> confirmDeleteThread({
   if (confirmed == true) {
     if (context.mounted) {
       // context.read<ThreadBloc>().add(DeleteThreads(threadId: threadId));
-      context.read<ThreadBloc>().add(DeleteThreads(threadId: int.parse(threadId)));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Komentar berhasil dihapus!'), backgroundColor: Colors.green),
+      context.read<ThreadBloc>().add(
+        DeleteThreads(threadId: int.parse(threadId)),
       );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('Komentar berhasil dihapus!'), backgroundColor: Colors.green),
+      // );
     }
   }
 }
@@ -82,16 +90,20 @@ void showThreadPreviewAndMenu({
                   ignoring: true, // Selalu mengabaikan semua event pointer
                   child: ForumCard(
                     // <<< Menggunakan instance ForumCard yang sama
-                    key: ValueKey('${threadId}_dialog_preview'), // Beri key unik jika perlu
+                    key: ValueKey(
+                      '${threadId}_dialog_preview',
+                    ), // Beri key unik jika perlu
                     thread: thread,
-                    showMenu: showMenu, // Teruskan properti showMenu untuk tampilan
-                    showReport: showReport, // Teruskan properti showReport untuk tampilan
+                    showMenu:
+                        showMenu, // Teruskan properti showMenu untuk tampilan
+                    showReport:
+                        showReport, // Teruskan properti showReport untuk tampilan
                     currentUserId: currentUserId, // Teruskan currentUserId
                   ),
                 ),
               ),
               // === Bagian Opsi "Report", "Block Account" ===
-              const SizedBox(height: 8), // Jarak antara card dan opsi
+              const SizedBox(height: 4), // Jarak antara card dan opsi
               Padding(
                 padding: const EdgeInsets.only(right: 4.0),
                 child: SizedBox(
@@ -110,24 +122,33 @@ void showThreadPreviewAndMenu({
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ListTile(
-                            leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
+                            leading: Icon(
+                              AppIcons.edit,
+                              size: 20,
+                              color: AppColors.accent,
+                            ),
                             title: Text(
                               "Edit Thread",
-                              style: TextStyle(fontSize: 16, color: AppColors.accent),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.accent,
+                              ),
                             ),
                             onTap: () {
                               Navigator.pop(dialogContext);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EditThreadScreen(thread: thread),
+                                  builder:
+                                      (context) =>
+                                          EditThreadScreen(thread: thread),
                                 ),
                               );
                             },
                           ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
 
                       // Tombol Hapus Thread
                       if (showMenu)
@@ -141,14 +162,24 @@ void showThreadPreviewAndMenu({
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: ListTile(
-                              leading: Icon(AppIcons.deleteFill, size: 20, color: AppColors.error),
+                              leading: Icon(
+                                AppIcons.deleteFill,
+                                size: 20,
+                                color: AppColors.error,
+                              ),
                               title: Text(
                                 "Hapus Thread",
-                                style: TextStyle(fontSize: 16, color: AppColors.error),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.error,
+                                ),
                               ),
                               onTap: () {
                                 Navigator.pop(context);
-                                confirmDeleteThread(context: context, threadId: threadId);
+                                confirmDeleteThread(
+                                  context: context,
+                                  threadId: threadId,
+                                );
                               },
                             ),
                           ),
@@ -182,9 +213,14 @@ Future<void> confirmDeleteComment({
     builder:
         (ctx) => AlertDialog(
           title: const Text("Konfirmasi Hapus"),
-          content: const Text("Apakah Anda yakin ingin menghapus komentar ini?"),
+          content: const Text(
+            "Apakah Anda yakin ingin menghapus komentar ini?",
+          ),
           actions: [
-            TextButton(child: const Text("Batal"), onPressed: () => Navigator.pop(ctx, false)),
+            TextButton(
+              child: const Text("Batal"),
+              onPressed: () => Navigator.pop(ctx, false),
+            ),
             TextButton(
               child: const Text("Hapus", style: TextStyle(color: Colors.red)),
               onPressed: () => Navigator.pop(ctx, true),
@@ -196,9 +232,6 @@ Future<void> confirmDeleteComment({
   if (confirmed == true) {
     if (context.mounted) {
       context.read<CommentBloc>().add(DeleteComments(commentId: commentId));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Komentar berhasil dihapus!'), backgroundColor: Colors.green),
-      );
     }
   }
 }
@@ -231,11 +264,15 @@ void showCommentPreviewAndMenu({
               children: [
                 // === Bagian Preview Komentar (Non-Interaktif) ===
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9, // Lebar sekitar 90%
+                  width:
+                      MediaQuery.of(context).size.width *
+                      0.9, // Lebar sekitar 90%
                   child: IgnorePointer(
                     ignoring: true,
                     child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       margin: EdgeInsets.zero,
                       elevation: 4,
                       child: CommentSection(
@@ -251,119 +288,87 @@ void showCommentPreviewAndMenu({
                   ),
                 ),
                 // === Bagian Opsi "Report", "Block Account", dll. ===
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
+
                 Padding(
                   padding: const EdgeInsets.only(right: 4.0),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * (1 / 2.5),
-                    child: Material(
-                      elevation: 4,
-                      borderRadius: BorderRadius.circular(4),
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (showMenu)
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  leading: Icon(AppIcons.edit, size: 20, color: AppColors.accent),
-                                  title: const Text(
-                                    "Edit Komentar",
-                                    style: TextStyle(fontSize: 16, color: AppColors.accent),
-                                  ),
-                                  onTap: () {
-                                    Navigator.pop(dialogContext);
-                                    // Navigator.push(
-                                    //   context, // Menggunakan context dari pemanggil
-                                    //   MaterialPageRoute(
-                                    //     builder: (ctx) => EditCommentScreen(comment: comment, threadId: threadId),
-                                    //   ),
-                                    // );
-                                  },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (showMenu)
+                          // Tombol Edit Thread
+                          Material(
+                            elevation: 4,
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.white,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.accentHighTransparent,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: ListTile(
+                                leading: Icon(
+                                  AppIcons.edit,
+                                  size: 20,
+                                  color: AppColors.accent,
                                 ),
-                                const Divider(height: 1, color: Colors.black87),
-                                ListTile(
-                                  leading: Icon(
-                                    AppIcons.deleteFill,
-                                    size: 20,
-                                    color: AppColors.error,
+                                title: const Text(
+                                  "Edit Komentar",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.accent,
                                   ),
-                                  title: const Text(
-                                    "Hapus Komentar",
-                                    style: TextStyle(fontSize: 16, color: AppColors.error),
-                                  ),
-                                  onTap: () {
-                                    Navigator.pop(dialogContext);
-                                    confirmDeleteComment(
-                                      // Panggil fungsi modular
-                                      context: context,
-                                      commentId: comment.id,
-                                      threadId: threadId,
-                                    );
-                                  },
                                 ),
-                              ],
+                                onTap: () {
+                                  Navigator.pop(dialogContext);
+                                  // Navigator.push(
+                                  //   context, // Menggunakan context dari pemanggil
+                                  //   MaterialPageRoute(
+                                  //     builder: (ctx) => EditCommentScreen(comment: comment, threadId: threadId),
+                                  //   ),
+                                  // );
+                                },
+                              ),
                             ),
-                          if (showReport)
-                            ListTile(
-                              leading: const Icon(Icons.report, color: Colors.red),
+                          ),
+                        SizedBox(height: 2),
+                        Material(
+                          elevation: 4,
+                          borderRadius: BorderRadius.circular(4),
+                          color: AppColors.white,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.errorHighTranparent,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                AppIcons.deleteFill,
+                                size: 20,
+                                color: AppColors.error,
+                              ),
                               title: const Text(
-                                'Report',
-                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                "Hapus Komentar",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.error,
+                                ),
                               ),
                               onTap: () {
                                 Navigator.pop(dialogContext);
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(dialogContext);
-                                    showReportDialog(
-                                      context: context,
-                                      category: "comment",
-                                      refersId: comment.id,
-                                    );
-                                  },
-                                  child: Icon(AppIcons.report, size: 20),
-                                );
-                                // Panggil showReportDialog dari ReportButton secara statik/global
-                                // ReportButton(
-                                //   category: "comment",
-                                //   refersId: comment.id,
-                                // ); // Ini adalah cara sementara, lihat catatan di bawah
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Melaporkan komentar ${comment.id}')),
+                                confirmDeleteComment(
+                                  // Panggil fungsi modular
+                                  context: context,
+                                  commentId: comment.id,
+                                  threadId: threadId,
                                 );
                               },
                             ),
-                          // ListTile(
-                          //   leading: const Icon(Icons.block, color: Colors.red),
-                          //   title: const Text(
-                          //     'Block account',
-                          //     style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                          //   ),
-                          //   onTap: () {
-                          //     Navigator.pop(dialogContext);
-                          //     ScaffoldMessenger.of(context).showSnackBar(
-                          //       SnackBar(content: Text('Memblokir user ${comment.user.name}')),
-                          //     );
-                          //   },
-                          // ),
-                          // ListTile(
-                          //   leading: const Icon(Icons.share, color: Colors.white),
-                          //   title: const Text(
-                          //     'Share',
-                          //     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          //   ),
-                          //   onTap: () {
-                          //     Navigator.pop(dialogContext);
-                          //     ScaffoldMessenger.of(context).showSnackBar(
-                          //       SnackBar(content: Text('Berbagi komentar ${comment.id}')),
-                          //     );
-                          //   },
-                          // ),
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
