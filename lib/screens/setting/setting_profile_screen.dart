@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/constants/icons.dart';
 
 class ProfileSettingScreen extends StatefulWidget {
   const ProfileSettingScreen({super.key});
@@ -11,8 +10,12 @@ class ProfileSettingScreen extends StatefulWidget {
 
 class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController(text: 'John Doe');
-  final TextEditingController _emailController = TextEditingController(text: 'john.doe@example.com');
+  final TextEditingController _nameController = TextEditingController(
+    text: 'John Doe',
+  );
+  final TextEditingController _emailController = TextEditingController(
+    text: 'john.doe@example.com',
+  );
 
   @override
   void dispose() {
@@ -24,18 +27,13 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   void _saveProfile() {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Profil berhasil diperbarui!'),
-          duration: Duration(seconds: 2),
-        ),
+        const SnackBar(content: Text('Profil berhasil diperbarui!')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -62,101 +60,188 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
+      body: Stack(
+        children: [
+          // Background
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 125,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(50),
+                      offset: const Offset(0, 4),
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 100),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Stack(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 30),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(15),
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildTextFieldWithIcon(
+                                    controller: _nameController,
+                                    icon: Icons.portrait_outlined,
+                                    labelText: 'Ganti nama akun',
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty)
+                                        return 'Nama tidak boleh kosong';
+                                      if (value.length < 4)
+                                        return 'Nama minimal 4 karakter';
+                                      if (value.length > 255)
+                                        return 'Nama maksimal 255 karakter';
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 16),
+                                  _buildTextFieldWithIcon(
+                                    controller: _emailController,
+                                    icon: Icons.email_outlined,
+                                    labelText: 'Ubah alamat email',
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty)
+                                        return 'Email tidak boleh kosong';
+                                      if (!RegExp(
+                                        r'^[^@]+@[^@]+\.[^@]+',
+                                      ).hasMatch(value)) {
+                                        return 'Masukkan email yang valid';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 50),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.accent,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 60,
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              onPressed: _saveProfile,
+                              child: const Text(
+                                'Simpan',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Foto Profil + Kamera
+          Positioned(
+            top: 25,
+            left: MediaQuery.of(context).size.width / 2 - 75,
+            child: Stack(
+              alignment: Alignment.center,
               children: [
                 Container(
-                  width: double.infinity,
-                  height: 125,
+                  width: 150,
+                  height: 150,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
+                    color: Colors.white,
+                    shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withAlpha(50),
-                        offset: const Offset(0, 4),
-                        blurRadius: 8,
-                        spreadRadius: 2,
+                        color: Colors.black.withAlpha(25),
+                        blurRadius: 6,
+                        spreadRadius: 1,
                       ),
                     ],
                   ),
+                  child: const Icon(
+                    Icons.person,
+                    size: 100,
+                    color: AppColors.accent,
+                  ),
                 ),
                 Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primary,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(10),
-                            offset: const Offset(0, 8),
-                            blurRadius: 0,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(25),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              const Center(
-                                child: Icon(
-                                  Icons.person,
-                                  size: 100,
-                                  color: AppColors.accent,
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 10,
-                                right: 10,
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      print('Tombol kamera ditekan!');
-                                    },
-                                    icon: const Icon(
-                                      Icons.camera_alt_rounded,
-                                      size: 18,
-                                      color: Colors.grey,
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                  right: -5,
+                  top: 55,
+                  child: Material(
+                    color: Colors.transparent,
+                    shape: const CircleBorder(),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: () {
+                        print('Kamera ditekan!');
+                      },
+                      splashColor: Colors.grey.withOpacity(0.3),
+                      highlightColor: Colors.grey.withOpacity(0.1),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt_rounded,
+                          size: 20,
+                          color: Colors.grey,
                         ),
                       ),
                     ),
@@ -164,103 +249,8 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 100),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Stack(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 30),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(15),
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildTextFieldWithIcon(
-                              controller: _nameController,
-                              icon: Icons.portrait_outlined,
-                              labelText: 'Ganti nama akun',
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Nama tidak boleh kosong';
-                                }
-                                if (value.length < 4) {
-                                  return 'Nama minimal 4 karakter';
-                                }
-                                if (value.length > 255) {
-                                  return 'Nama maksimal 255 karakter';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            _buildTextFieldWithIcon(
-                              controller: _emailController,
-                              icon: Icons.email_outlined,
-                              labelText: 'Ubah alamat email',
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Email tidak boleh kosong';
-                                }
-                                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                                  return 'Masukkan email yang valid';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 30),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 60,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        onPressed: _saveProfile,
-                        child: const Text(
-                          'Simpan',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -278,10 +268,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: Colors.black),
         labelText: labelText,
-        labelStyle: const TextStyle(
-          color: Colors.grey,
-          fontSize: 14,
-        ),
+        labelStyle: const TextStyle(color: Colors.grey, fontSize: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: AppColors.componentGrey ?? Colors.grey),
