@@ -132,34 +132,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
         _showReportDetails(notification);
         break;
       case 'thread':
-      case 'comment':
-        if (notification.threadId != null && notification.threadId is int) {
+        if (notification.threadId != null) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder:
-                  (context) =>
-                      ThreadScreen(threadId: notification.threadId as int),
+                  (context) => ThreadScreen(threadId: notification.threadId!),
             ),
           );
-        } else if (notification.threadId != null &&
-            notification.threadId is String) {
-          try {
-            final threadId = int.parse(notification.threadId.toString());
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ThreadScreen(threadId: threadId),
-              ),
-            );
-          } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Gagal membuka postingan. ID tidak valid."),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
+        }
+        break;
+      case 'comment':
+        if (notification.threadId != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => ThreadScreen(
+                    threadId: notification.threadId!,
+                    highlightCommentId: notification.commentId,
+                  ),
+            ),
+          );
         }
         break;
       case 'schedule':
