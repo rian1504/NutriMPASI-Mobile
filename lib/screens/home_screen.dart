@@ -1000,90 +1000,112 @@ class _HomeScreenState extends State<HomeScreen>
 
   // Kartu rekomendasi terkunci
   Widget _buildLockedRecommendation() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
+    return SizedBox(
+      height: 180,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: GestureDetector(
+          onTap:
+              babies.isNotEmpty
+                  ? () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                BabyEditScreen(baby: babies[_currentBabyIndex]),
+                      ),
+                    );
+                  }
+                  : null,
+          child: Stack(
             children: [
-              // Gambar makanan terkunci
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: Image.asset(
-                        "assets/images/component/rekomendasi_terkunci.png",
-                        fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) => Container(
-                              color: Colors.grey[300],
-                              child: const Icon(
-                                Icons.image_not_supported,
-                                size: 40,
-                              ),
-                            ),
+              // Gambar latar belakang
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  "assets/images/component/rekomendasi_terkunci.png",
+                  width: double.infinity,
+                  height: 180,
+                  fit: BoxFit.cover,
+                  errorBuilder:
+                      (context, error, stackTrace) => Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image_not_supported, size: 40),
                       ),
-                    ),
-                  ),
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withAlpha(125),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Center(
-                      child: Icon(Symbols.lock, color: Colors.white, size: 24),
-                    ),
-                  ),
-                ],
+                ),
               ),
-              const SizedBox(width: 16),
-              // Teks informasi
-              Expanded(
+
+              // Overlay gelap
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withAlpha(150),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+
+              // Icon gembok
+              Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(Symbols.lock, color: Colors.white, size: 40),
+                    const SizedBox(height: 12),
                     const Text(
-                      'Buka fitur ini dengan melengkapi\nprofil bayi kamu!',
+                      'Fitur ini terkunci',
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    // Tombol untuk melengkapi profil
-                    if (babies.isNotEmpty)
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => BabyEditScreen(
-                                    baby: babies[_currentBabyIndex],
-                                  ),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                  ],
+                ),
+              ),
+
+              // Gradient overlay
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 70,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.circular(16),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.transparent, Colors.black.withAlpha(200)],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Teks informasi
+              Positioned(
+                left: 12,
+                right: 12,
+                bottom: 12,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Lengkapi profil bayi untuk melihat rekomendasi',
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                        ),
-                        child: const Text('Lengkapi Profil'),
+                        ],
                       ),
+                    ),
                   ],
                 ),
               ),
