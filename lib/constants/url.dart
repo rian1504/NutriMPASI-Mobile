@@ -3,17 +3,16 @@
 // php artisan serve --host=0.0.0.0 --port=8000
 // ambil ipv4 untuk baseUrl
 
-// universal
-// String baseUrl = 'https://nutrimpasi.site/';
-// String baseUrl = 'http://10.170.1.191:8000/';
-// String baseUrl = 'http://172.16.69.252:8000/';
-String baseUrl = 'http://192.168.1.11:8000/';
+// universal menggunakan API dari server
+String baseUrl = 'https://nutrimpasi.site/';
 
-// jika menggunakan emulator android (AVD)
+// jika menggunakan API lokal dan device emulator android (AVD)
 // String baseUrl = 'http://10.0.2.2:8000/';
 
-// jika menggunakan android device (USB Debugging)
+// jika menggunakan API lokal dan device android (USB Debugging)
+// bisa diketahui dengan menjalankan perintah 'ipconfig' di terminal
 // String baseUrl = 'http://192.168.x.x:8000/';
+
 String apiUrl = '${baseUrl}api/';
 String storageUrl = '${baseUrl}storage/';
 var headers = {'Accept': 'application/json'};

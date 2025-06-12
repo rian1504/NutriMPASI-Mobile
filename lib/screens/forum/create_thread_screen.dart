@@ -10,14 +10,14 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 
-class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({super.key});
+class CreateThreadScreen extends StatefulWidget {
+  const CreateThreadScreen({super.key});
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  State<CreateThreadScreen> createState() => _CreateThreadScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
+class _CreateThreadScreenState extends State<CreateThreadScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
@@ -37,7 +37,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Buat Postingan", showExitButton: true, category: ''),
+      appBar: AppBarForum(
+        title: "Buat Thread",
+        showExitButton: true,
+        category: '',
+      ),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
           if (state is ThreadStored) {
@@ -45,14 +49,17 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
             // _showDialogReportSuccess(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Berhasil menambah thread"), backgroundColor: Colors.green),
+              SnackBar(
+                content: Text("Berhasil menambah thread"),
+                backgroundColor: Colors.green,
+              ),
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
           } else if (state is ThreadError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            );
           }
         },
         builder: (context, state) {
@@ -65,7 +72,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                    ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
@@ -83,7 +92,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   focusNode: _titleFocusNode,
                                   maxLines: 1,
                                   decoration: InputDecoration(
-                                    hintText: 'Judul Postingan',
+                                    hintText: 'Judul Thread',
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
@@ -135,7 +144,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 // left: 0,
                 // right: 0,
                 child: MediumButton(
-                  text: 'Unggah Postingan',
+                  text: 'Unggah Thread',
                   onPressed:
                       state is ThreadLoading
                           ? null

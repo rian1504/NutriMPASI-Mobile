@@ -8,6 +8,7 @@ import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 
 class FoodListScreen extends StatefulWidget {
@@ -971,7 +972,14 @@ class _FoodListScreenState extends State<FoodListScreen>
                               onPressed:
                                   _appBarAnimation.value < 0.5
                                       ? () {
-                                        // TODO: Navigasi ke halaman favorit
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    const FavoriteRecipeScreen(),
+                                          ),
+                                        );
                                       }
                                       : null,
                               style: ElevatedButton.styleFrom(
@@ -1245,19 +1253,10 @@ class _FoodListScreenState extends State<FoodListScreen>
                                                             AppColors.primary,
                                                         shape: BoxShape.circle,
                                                       ),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.zero,
-                                                    icon: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 36,
-                                                    ),
-                                                    onPressed: () {
-                                                      pushWithSlideTransition(
-                                                        context,
-                                                        FoodAddSuggestionScreen(),
-                                                      );
-                                                    },
+                                                  child: const Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                    size: 36,
                                                   ),
                                                 ),
                                               ],
