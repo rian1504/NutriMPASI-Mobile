@@ -10,6 +10,7 @@ import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/screens/features/notification_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
@@ -146,7 +147,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: -140,
+                    bottom: 0,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: Card(
@@ -312,6 +313,15 @@ class _SettingScreenState extends State<SettingScreen> {
                               color: AppColors.greyDark,
                               size: 20,
                             ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => const NotificationScreen(),
+                                ),
+                              );
+                            },
                           ),
                           ListTile(
                             leading: Icon(
