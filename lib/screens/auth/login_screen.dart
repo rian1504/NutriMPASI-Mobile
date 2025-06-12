@@ -28,7 +28,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login(BuildContext context) {
     context.read<AuthenticationBloc>().add(
-      LoginRequested(email: _emailController.text, password: _passwordController.text),
+      LoginRequested(
+        email: _emailController.text,
+        password: _passwordController.text,
+      ),
     );
   }
 
@@ -42,9 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             // Tampilkan snackbar sukses dan arahkan ke halaman utama
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message ?? 'Login berhasil')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message ?? 'Login berhasil')),
+            );
 
             // Tunggu sebentar lalu navigasi ke home
             Future.delayed(const Duration(milliseconds: 500), () {
@@ -53,7 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
               }
             });
           } else if (state is AuthenticationError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
         child: SingleChildScrollView(
@@ -67,17 +72,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   left: 0,
                   right: 0,
                   height: size.height * 1,
-                  child: Image.asset('assets/images/background/auth.png', fit: BoxFit.cover),
+                  child: Image.asset(
+                    'assets/images/background/auth.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 // Panel utama
                 Positioned(
                   top: size.height * 0.5,
                   left: 24,
                   right: 24,
-                  // bottom: MediaQuery.of(context).padding.bottom,
                   child: Card(
                     elevation: 8,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Padding(
                       padding: EdgeInsets.only(
                         left: 24.0,
@@ -85,7 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         top: 24.0,
                         bottom:
                             MediaQuery.of(context).viewInsets.bottom > 0
-                                ? 24.0 + MediaQuery.of(context).viewInsets.bottom * 0.5
+                                ? 24.0 +
+                                    MediaQuery.of(context).viewInsets.bottom *
+                                        0.5
                                 : 24.0,
                       ),
                       child: Column(
@@ -97,7 +108,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               Expanded(
                                 child: TextButton(
                                   onPressed: () {},
-                                  style: TextButton.styleFrom(foregroundColor: AppColors.textBlack),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppColors.textBlack,
+                                  ),
                                   child: Column(
                                     children: [
                                       const Text(
@@ -108,7 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                           fontWeight: FontWeight.w900,
                                         ),
                                       ),
-                                      Container(width: 70, height: 2, color: AppColors.textBlack),
+                                      Container(
+                                        width: 70,
+                                        height: 2,
+                                        color: AppColors.textBlack,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -119,11 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => const RegisterScreen(),
+                                        builder:
+                                            (context) => const RegisterScreen(),
                                       ),
                                     );
                                   },
-                                  style: TextButton.styleFrom(foregroundColor: AppColors.textGrey),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppColors.textGrey,
+                                  ),
                                   child: const Text(
                                     'Daftar',
                                     style: TextStyle(
@@ -141,7 +161,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           Form(
                             key: _formKey,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                                horizontal: 16,
+                              ),
                               child: Column(
                                 children: [
                                   TextFormField(
@@ -211,7 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         onPressed: () {
                                           setState(() {
-                                            _obscurePassword = !_obscurePassword;
+                                            _obscurePassword =
+                                                !_obscurePassword;
                                           });
                                         },
                                       ),
@@ -232,7 +256,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => const ForgetPasswordScreen(),
+                                            builder:
+                                                (context) =>
+                                                    const ForgetPasswordScreen(),
                                           ),
                                         );
                                       },
@@ -250,23 +276,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                   SizedBox(
                                     width: double.infinity,
                                     height: 50,
-                                    child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                                    child: BlocBuilder<
+                                      AuthenticationBloc,
+                                      AuthenticationState
+                                    >(
                                       builder: (context, state) {
-                                        final isLoading = state is AuthenticationLoading;
+                                        final isLoading =
+                                            state is AuthenticationLoading;
 
                                         return ElevatedButton(
                                           onPressed:
                                               isLoading
                                                   ? null
                                                   : () {
-                                                    if (_formKey.currentState!.validate()) {
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
                                                       _login(context);
                                                     }
                                                   },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: AppColors.accent,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(30),
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                             ),
                                           ),
                                           child:
@@ -279,7 +311,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     style: TextStyle(
                                                       fontFamily: 'Poppins',
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       color: Colors.white,
                                                     ),
                                                   ),

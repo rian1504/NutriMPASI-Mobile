@@ -7,7 +7,7 @@ import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/notification.dart' as model;
 import 'package:nutrimpasi/widgets/custom_button.dart';
-import 'package:nutrimpasi/screens/forum/post_screen.dart';
+import 'package:nutrimpasi/screens/forum/thread_screen.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -139,7 +139,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             MaterialPageRoute(
               builder:
                   (context) =>
-                      PostScreen(threadId: notification.threadId as int),
+                      ThreadScreen(threadId: notification.threadId as int),
             ),
           );
         } else if (notification.threadId != null &&
@@ -149,7 +149,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PostScreen(threadId: threadId),
+                builder: (context) => ThreadScreen(threadId: threadId),
               ),
             );
           } catch (e) {

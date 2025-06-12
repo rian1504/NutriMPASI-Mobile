@@ -30,15 +30,17 @@ class _SettingScreenState extends State<SettingScreen> {
       listener: (context, state) {
         if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
             context.read<BabyBloc>().add(ResetBaby());
             Navigator.pushReplacementNamed(context, '/login');
           });
         } else if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           });
         }
       },
@@ -84,10 +86,12 @@ class _SettingScreenState extends State<SettingScreen> {
                                   width: 140,
                                   height: 140,
                                   fit: BoxFit.cover,
-                                  placeholderBuilder: (context) => Container(
-                                    padding: const EdgeInsets.all(20),
-                                    child: const CircularProgressIndicator(),
-                                  ),
+                                  placeholderBuilder:
+                                      (context) => Container(
+                                        padding: const EdgeInsets.all(20),
+                                        child:
+                                            const CircularProgressIndicator(),
+                                      ),
                                 ),
                               ),
                             ),
@@ -142,7 +146,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: 0,
+                    bottom: -140,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: Card(
@@ -154,40 +158,69 @@ class _SettingScreenState extends State<SettingScreen> {
                         child: Column(
                           children: [
                             ListTile(
-                              leading: Icon(AppIcons.userFill, color: Colors.black, size: 24),
+                              leading: Icon(
+                                AppIcons.userFill,
+                                color: Colors.black,
+                                size: 24,
+                              ),
                               title: Text('Profil Saya'),
-                              trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                              trailing: Icon(
+                                AppIcons.arrowRight,
+                                color: AppColors.greyDark,
+                                size: 20,
+                              ),
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const ProfileSettingScreen(),
+                                    builder:
+                                        (context) =>
+                                            const ProfileSettingScreen(),
                                   ),
                                 );
                               },
                             ),
                             ListTile(
-                              leading: Icon(AppIcons.lockFill, color: Colors.black, size: 24),
+                              leading: Icon(
+                                AppIcons.lockFill,
+                                color: Colors.black,
+                                size: 24,
+                              ),
                               title: Text('Kelola Kata Sandi'),
-                              trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                              trailing: Icon(
+                                AppIcons.arrowRight,
+                                color: AppColors.greyDark,
+                                size: 20,
+                              ),
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const PasswordSettingScreen(),
+                                    builder:
+                                        (context) =>
+                                            const PasswordSettingScreen(),
                                   ),
                                 );
                               },
                             ),
                             ListTile(
-                              leading: Icon(AppIcons.baby, color: Colors.black, size: 24),
+                              leading: Icon(
+                                AppIcons.baby,
+                                color: Colors.black,
+                                size: 24,
+                              ),
                               title: Text('Kelola Profil Bayi'),
-                              trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                              trailing: Icon(
+                                AppIcons.arrowRight,
+                                color: AppColors.greyDark,
+                                size: 20,
+                              ),
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const BabyEditScreen(),
+                                    builder:
+                                        (context) => const BabyEditScreen(),
                                   ),
                                 );
                               },
@@ -213,27 +246,45 @@ class _SettingScreenState extends State<SettingScreen> {
                       child: Column(
                         children: [
                           ListTile(
-                            leading: Icon(AppIcons.favoriteFill, color: Colors.black, size: 24),
+                            leading: Icon(
+                              AppIcons.favoriteFill,
+                              color: Colors.black,
+                              size: 24,
+                            ),
                             title: Text('Resep Favorit'),
-                            trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                            trailing: Icon(
+                              AppIcons.arrowRight,
+                              color: AppColors.greyDark,
+                              size: 20,
+                            ),
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FavoriteRecipeScreen(),
+                                  builder:
+                                      (context) => const FavoriteRecipeScreen(),
                                 ),
                               );
                             },
                           ),
                           ListTile(
-                            leading: Icon(AppIcons.forum, color: Colors.black, size: 24),
+                            leading: Icon(
+                              AppIcons.forum,
+                              color: Colors.black,
+                              size: 24,
+                            ),
                             title: Text('Thread yang Disukai'),
-                            trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                            trailing: Icon(
+                              AppIcons.arrowRight,
+                              color: AppColors.greyDark,
+                              size: 20,
+                            ),
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const HistoryLikeScreen(),
+                                  builder:
+                                      (context) => const HistoryLikeScreen(),
                                 ),
                               );
                             },
@@ -250,14 +301,30 @@ class _SettingScreenState extends State<SettingScreen> {
                       child: Column(
                         children: [
                           ListTile(
-                            leading: Icon(AppIcons.notificationFill, color: Colors.black, size: 24),
+                            leading: Icon(
+                              AppIcons.notificationFill,
+                              color: Colors.black,
+                              size: 24,
+                            ),
                             title: Text('Notifikasi'),
-                            trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                            trailing: Icon(
+                              AppIcons.arrowRight,
+                              color: AppColors.greyDark,
+                              size: 20,
+                            ),
                           ),
                           ListTile(
-                            leading: Icon(AppIcons.commentFill, color: Colors.black, size: 24),
+                            leading: Icon(
+                              AppIcons.commentFill,
+                              color: Colors.black,
+                              size: 24,
+                            ),
                             title: Text('Bahasa'),
-                            trailing: Icon(AppIcons.arrowRight, color: AppColors.greyDark, size: 20),
+                            trailing: Icon(
+                              AppIcons.arrowRight,
+                              color: AppColors.greyDark,
+                              size: 20,
+                            ),
                           ),
                         ],
                       ),
@@ -272,12 +339,25 @@ class _SettingScreenState extends State<SettingScreen> {
                         children: [
                           GestureDetector(
                             child: ListTile(
-                              leading: Icon(AppIcons.logout, color: AppColors.error, size: 24),
-                              title: Text('Keluar', style: TextStyle(color: AppColors.error)),
-                              trailing: Icon(AppIcons.arrowRight, color: AppColors.error, size: 20),
+                              leading: Icon(
+                                AppIcons.logout,
+                                color: AppColors.error,
+                                size: 24,
+                              ),
+                              title: Text(
+                                'Keluar',
+                                style: TextStyle(color: AppColors.error),
+                              ),
+                              trailing: Icon(
+                                AppIcons.arrowRight,
+                                color: AppColors.error,
+                                size: 20,
+                              ),
                             ),
                             onTap: () {
-                              context.read<AuthenticationBloc>().add(LogoutRequested());
+                              context.read<AuthenticationBloc>().add(
+                                LogoutRequested(),
+                              );
                             },
                           ),
                         ],

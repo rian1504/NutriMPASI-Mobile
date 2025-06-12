@@ -37,7 +37,11 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Buat Thread", showExitButton: true, category: ''),
+      appBar: AppBarForum(
+        title: "Buat Thread",
+        showExitButton: true,
+        category: '',
+      ),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
           if (state is ThreadStored) {
@@ -45,14 +49,17 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
 
             // _showDialogReportSuccess(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Berhasil menambah thread"), backgroundColor: Colors.green),
+              SnackBar(
+                content: Text("Berhasil menambah thread"),
+                backgroundColor: Colors.green,
+              ),
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
           } else if (state is ThreadError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            );
           }
         },
         builder: (context, state) {
@@ -65,7 +72,9 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                    ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),

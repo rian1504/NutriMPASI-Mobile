@@ -8,7 +8,8 @@ class FavoriteRecipeScreen extends StatelessWidget {
     {
       "image": "assets/images/card/makanan_favorit.png",
       "title": "Bubur Sup Daging Kacang Merah",
-      "description": "Bubur merah dengan kacang yang kaya zat besi dan protein.",
+      "description":
+          "Bubur merah dengan kacang yang kaya zat besi dan protein.",
     },
     {
       "image": "assets/images/card/makanan_favorit.png",
@@ -18,7 +19,8 @@ class FavoriteRecipeScreen extends StatelessWidget {
     {
       "image": "assets/images/card/makanan_favorit.png",
       "title": "Beef Potato Puree",
-      "description": "Daging sapi empuk dengan kentang tumbuk lembut, cocok untuk bayi.",
+      "description":
+          "Daging sapi empuk dengan kentang tumbuk lembut, cocok untuk bayi.",
     },
     {
       "image": "assets/images/card/makanan_favorit.png",
@@ -160,17 +162,22 @@ class FavoriteRecipeScreen extends StatelessWidget {
                                     recipe['image']!,
                                     height: 100,
                                     fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        const Icon(Icons.broken_image, size: 70),
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Icon(
+                                              Icons.broken_image,
+                                              size: 70,
+                                            ),
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: FractionallySizedBox(
-                                  widthFactor: 0.82, 
+                                  widthFactor: 0.82,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         recipe['title']!,

@@ -157,28 +157,30 @@ class HistoryLikeScreen extends StatelessWidget {
                           padding: EdgeInsets.only(left: 40),
                           child: Text(
                             '2 jam yang lalu',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                         ),
                         const SizedBox(height: 12),
                         const Text(
                           'Ini adalah contoh isi thread yang disukai. Konten ini menjelaskan pengalaman ibu dalam memberikan MPASI pertama kepada bayinya.',
                           textAlign: TextAlign.justify,
-                          style: TextStyle(
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
+                          style: TextStyle(fontSize: 14, height: 1.5),
                         ),
                         const SizedBox(height: 12),
                         const Divider(),
                         Row(
                           children: [
-                            Icon(AppIcons.favoriteFill, color: Colors.red, size: 20),
+                            Icon(
+                              AppIcons.favoriteFill,
+                              color: Colors.red,
+                              size: 20,
+                            ),
                             const SizedBox(width: 8),
-                            Icon(AppIcons.commentFill, color: Colors.grey, size: 20),
+                            Icon(
+                              AppIcons.commentFill,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
                             const Spacer(),
                             Icon(AppIcons.report, color: Colors.grey, size: 20),
                           ],
