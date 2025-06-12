@@ -5,11 +5,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/screens/features/notification_screen.dart';
+import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart';
+import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
+import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
+import 'package:nutrimpasi/screens/setting/history_likes_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -23,26 +29,24 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        // Tangani state LogoutSuccess
         if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-            // Reset BabyBloc (jika memang terkait dengan logout)
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
             context.read<BabyBloc>().add(ResetBaby());
-            // Navigasi ke halaman login (ganti dengan rute login yang sesuai)
             Navigator.pushReplacementNamed(context, '/login');
           });
-        }
-        // Tangani state AuthenticationError (opsional, tergantung kebutuhan)
-        else if (state is AuthenticationError) {
+        } else if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           });
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background, // Ganti dengan warna latar belakang yang diinginkan
-
+        backgroundColor: AppColors.background,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -52,12 +56,11 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     height: MediaQuery.of(context).size.height * 1 / 3,
                     width: double.infinity,
-                    // color: AppColors.primary,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(
                           'assets/images/banner/setting_wallpaper.png',
-                        ), // Ganti dengan gambar latar belakang yang sesuai
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -67,7 +70,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         Text(
                           "Pengaturan",
                           style: const TextStyle(
-                            color: AppColors.textWhite, // Warna teks judul
+                            color: AppColors.textWhite,
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
                           ),
@@ -76,20 +79,19 @@ class _SettingScreenState extends State<SettingScreen> {
                         Stack(
                           children: [
                             CircleAvatar(
-                              radius: 60, // Ukuran avatar
+                              radius: 60,
                               backgroundColor: Colors.grey.shade200,
                               child: ClipOval(
                                 child: SvgPicture.network(
-                                  // <<< Ganti Image.network() dengan SvgPicture.network()
-                                  'https://api.dicebear.com/8.x/lorelei/svg?seed=JaneDoe', // Ganti dengan URL gambar SVG yang sesuai
-                                  width: 140, // Lebar gambar (radius * 2)
-                                  height: 140, // Tinggi gambar (radius * 2)
-                                  fit: BoxFit.cover, // Cara gambar di-fit
-                                  // placeholderBuilder untuk SVG network
+                                  'https://api.dicebear.com/8.x/lorelei/svg?seed=JaneDoe',
+                                  width: 140,
+                                  height: 140,
+                                  fit: BoxFit.cover,
                                   placeholderBuilder:
-                                      (BuildContext context) => Container(
+                                      (context) => Container(
                                         padding: const EdgeInsets.all(20),
-                                        child: const CircularProgressIndicator(),
+                                        child:
+                                            const CircularProgressIndicator(),
                                       ),
                                 ),
                               ),
@@ -101,10 +103,17 @@ class _SettingScreenState extends State<SettingScreen> {
                                 padding: EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  border: Border.all(color: AppColors.textWhite, width: 2),
+                                  border: Border.all(
+                                    color: AppColors.textWhite,
+                                    width: 2,
+                                  ),
                                   shape: BoxShape.circle,
                                 ),
-                                child: Icon(AppIcons.editFill, color: Colors.black, size: 20),
+                                child: Icon(
+                                  AppIcons.editFill,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
                               ),
                             ),
                           ],
@@ -114,7 +123,6 @@ class _SettingScreenState extends State<SettingScreen> {
                           'Pipit Lolita',
                           style: TextStyle(
                             color: AppColors.textWhite,
-                            // color: Colors.black,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -126,7 +134,11 @@ class _SettingScreenState extends State<SettingScreen> {
                     top: 36,
                     right: 8,
                     child: IconButton(
-                      icon: Icon(AppIcons.favoriteFill, color: AppColors.textWhite, size: 24),
+                      icon: Icon(
+                        AppIcons.favoriteFill,
+                        color: AppColors.textWhite,
+                        size: 24,
+                      ),
                       onPressed: () {
                         // Navigator.pop(context);
                       },
@@ -135,13 +147,12 @@ class _SettingScreenState extends State<SettingScreen> {
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: -140,
+                    bottom: 0,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: Card(
                         shape: RoundedRectangleBorder(
-                          // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                          borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
                         color: AppColors.textWhite,
                         elevation: 1,
@@ -151,7 +162,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               leading: Icon(
                                 AppIcons.userFill,
                                 color: Colors.black,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size: 24,
                               ),
                               title: Text('Profil Saya'),
                               trailing: Icon(
@@ -159,13 +170,22 @@ class _SettingScreenState extends State<SettingScreen> {
                                 color: AppColors.greyDark,
                                 size: 20,
                               ),
-                              // subtitle: Text('Deskripsi singkat untuk item ini.'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            const ProfileSettingScreen(),
+                                  ),
+                                );
+                              },
                             ),
                             ListTile(
                               leading: Icon(
                                 AppIcons.lockFill,
                                 color: Colors.black,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size: 24,
                               ),
                               title: Text('Kelola Kata Sandi'),
                               trailing: Icon(
@@ -173,13 +193,22 @@ class _SettingScreenState extends State<SettingScreen> {
                                 color: AppColors.greyDark,
                                 size: 20,
                               ),
-                              // subtitle: Text('Deskripsi singkat untuk item ini.'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            const PasswordSettingScreen(),
+                                  ),
+                                );
+                              },
                             ),
                             ListTile(
                               leading: Icon(
                                 AppIcons.baby,
                                 color: Colors.black,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size: 24,
                               ),
                               title: Text('Kelola Profil Bayi'),
                               trailing: Icon(
@@ -187,7 +216,15 @@ class _SettingScreenState extends State<SettingScreen> {
                                 color: AppColors.greyDark,
                                 size: 20,
                               ),
-                              // subtitle: Text('Deskripsi singkat untuk item ini.'),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => const BabyEditScreen(),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -195,7 +232,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                   ),
                 ],
-              ), // Padding untuk status bar
+              ),
               SizedBox(height: MediaQuery.of(context).padding.top + 90),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -203,8 +240,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   children: [
                     Card(
                       shape: RoundedRectangleBorder(
-                        // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                        borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                       color: AppColors.textWhite,
                       elevation: 1,
@@ -214,7 +250,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             leading: Icon(
                               AppIcons.favoriteFill,
                               color: Colors.black,
-                              size: 24, // opsional, atur agar pas di lingkaran
+                              size: 24,
                             ),
                             title: Text('Resep Favorit'),
                             trailing: Icon(
@@ -222,29 +258,44 @@ class _SettingScreenState extends State<SettingScreen> {
                               color: AppColors.greyDark,
                               size: 20,
                             ),
-                            // subtitle: Text('Deskripsi singkat untuk item ini.'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => const FavoriteRecipeScreen(),
+                                ),
+                              );
+                            },
                           ),
                           ListTile(
                             leading: Icon(
                               AppIcons.forum,
                               color: Colors.black,
-                              size: 24, // opsional, atur agar pas di lingkaran
+                              size: 24,
                             ),
-                            title: Text('Postingan yang Disukai'),
+                            title: Text('Thread yang Disukai'),
                             trailing: Icon(
                               AppIcons.arrowRight,
                               color: AppColors.greyDark,
                               size: 20,
                             ),
-                            // subtitle: Text('Deskripsi singkat untuk item ini.'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => const HistoryLikeScreen(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
                     Card(
                       shape: RoundedRectangleBorder(
-                        // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                        borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                       color: AppColors.textWhite,
                       elevation: 1,
@@ -254,7 +305,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             leading: Icon(
                               AppIcons.notificationFill,
                               color: Colors.black,
-                              size: 24, // opsional, atur agar pas di lingkaran
+                              size: 24,
                             ),
                             title: Text('Notifikasi'),
                             trailing: Icon(
@@ -262,13 +313,21 @@ class _SettingScreenState extends State<SettingScreen> {
                               color: AppColors.greyDark,
                               size: 20,
                             ),
-                            // subtitle: Text('Deskripsi singkat untuk item ini.'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => const NotificationScreen(),
+                                ),
+                              );
+                            },
                           ),
                           ListTile(
                             leading: Icon(
                               AppIcons.commentFill,
                               color: Colors.black,
-                              size: 24, // opsional, atur agar pas di lingkaran
+                              size: 24,
                             ),
                             title: Text('Bahasa'),
                             trailing: Icon(
@@ -276,16 +335,13 @@ class _SettingScreenState extends State<SettingScreen> {
                               color: AppColors.greyDark,
                               size: 20,
                             ),
-                            // subtitle: Text('Deskripsi singkat untuk item ini.'),
                           ),
                         ],
                       ),
                     ),
-
                     Card(
                       shape: RoundedRectangleBorder(
-                        // borderRadius: BorderRadius.circular(24.0), // Atur radius sudut
-                        borderRadius: BorderRadius.circular(12.0), // Atur radius sudut
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                       color: AppColors.textWhite,
                       elevation: 1,
@@ -296,14 +352,22 @@ class _SettingScreenState extends State<SettingScreen> {
                               leading: Icon(
                                 AppIcons.logout,
                                 color: AppColors.error,
-                                size: 24, // opsional, atur agar pas di lingkaran
+                                size: 24,
                               ),
-                              title: Text('Keluar', style: TextStyle(color: AppColors.error)),
-                              trailing: Icon(AppIcons.arrowRight, color: AppColors.error, size: 20),
-                              // subtitle: Text('Deskripsi singkat untuk item ini.'),
+                              title: Text(
+                                'Keluar',
+                                style: TextStyle(color: AppColors.error),
+                              ),
+                              trailing: Icon(
+                                AppIcons.arrowRight,
+                                color: AppColors.error,
+                                size: 20,
+                              ),
                             ),
                             onTap: () {
-                              context.read<AuthenticationBloc>().add(LogoutRequested());
+                              context.read<AuthenticationBloc>().add(
+                                LogoutRequested(),
+                              );
                             },
                           ),
                         ],
