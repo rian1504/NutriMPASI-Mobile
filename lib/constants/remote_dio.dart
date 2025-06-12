@@ -1,4 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
+import 'package:nutrimpasi/main.dart';
 import 'url.dart';
 import 'secure_storage.dart';
 
@@ -24,10 +28,41 @@ class RemoteDio {
           }
           return handler.next(options);
         },
-        onError: (e, handler) {
+        onError: (e, handler) async {
+          // Token expired, logout user
           if (e.response?.statusCode == 401) {
-            // Token expired, logout user
-            // context.read<AuthenticationBloc>().add(LogoutRequested());
+            // 1. Prevent infinite loop
+            if (e.requestOptions.path == ApiEndpoints.logout) {
+              return handler.next(e);
+            }
+
+            // 2. Clear token from storage
+            await SecureStorage.clearAll();
+
+            // 3. Show notification only if not already logging out
+            if (navigatorKey.currentContext != null &&
+                !(e.requestOptions.extra['isLoggingOut'] ?? false)) {
+              ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    e.response?.data['message'] ??
+                        'Session expired, please login again',
+                  ),
+                  duration: const Duration(seconds: 3),
+                ),
+              );
+
+              // 4. Mark request as logging out to prevent recursion
+              e.requestOptions.extra['isLoggingOut'] = true;
+
+              // 5. Dispatch logout event
+              navigatorKey.currentContext!.read<AuthenticationBloc>().add(
+                LogoutRequested(),
+              );
+            }
+
+            // 6. Reject the original request
+            return handler.reject(e);
           }
           return handler.next(e);
         },
