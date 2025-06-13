@@ -122,30 +122,82 @@ class _ForumScreenState extends State<ForumScreen> {
   }
 }
 
-class _ForumTab extends StatelessWidget {
+class _ForumTab extends StatefulWidget {
   final List<Thread>? threads;
   final bool isMyPosts;
   final int currentUserId;
 
-  _ForumTab({
+  const _ForumTab({
     required this.threads,
     required this.isMyPosts,
     required this.currentUserId,
   });
 
+  @override
+  State<_ForumTab> createState() => _ForumTabState();
+}
+
+class _ForumTabState extends State<_ForumTab> {
+  // Variabel state untuk opsi pengurutan di dalam tab ini
+  String _sortOption = 'Terpopuler'; // Default untuk tab "Semua"
+  final List<String> _sortOptions = ['Terpopuler', 'Terbaru', 'Terlama'];
+
+  // Kunci global untuk mendapatkan posisi tombol filter
   final GlobalKey _dropdownButtonKey = GlobalKey();
 
+  @override
+  void initState() {
+    super.initState();
+    // Untuk tab "Usulan Saya", set default sort menjadi "Terbaru"
+    if (widget.isMyPosts) {
+      _sortOption = 'Terbaru';
+    }
+  }
+
+  // Fungsi untuk mengurutkan thread berdasarkan opsi yang dipilih
+  List<Thread> _sortThreads(List<Thread> items) {
+    // Ambil daftar thread yang sudah difilter oleh widget.isMyPosts
+    final List<Thread> filteredItems =
+        items.where((thread) {
+          return !widget.isMyPosts || thread.userId == widget.currentUserId;
+        }).toList();
+
+    // Untuk tab "Usulan Saya", selalu urutkan dari yang terbaru
+    if (widget.isMyPosts) {
+      return filteredItems..sort((a, b) {
+        return b.createdAt.compareTo(a.createdAt); // Descending (Terbaru)
+      });
+    }
+
+    // Untuk tab "Semua", urutkan berdasarkan pilihan pengguna (_sortOption)
+    switch (_sortOption) {
+      case 'Terpopuler':
+        // Asumsi ada properti `likesCount` pada Thread model
+        return filteredItems
+          ..sort((a, b) => b.likesCount.compareTo(a.likesCount)); // Descending
+      case 'Terbaru':
+        return filteredItems..sort((a, b) {
+          return b.createdAt.compareTo(a.createdAt); // Descending
+        });
+      case 'Terlama':
+        return filteredItems..sort((a, b) {
+          return a.createdAt.compareTo(b.createdAt); // Ascending
+        });
+      default:
+        return filteredItems; // Should not happen if _sortOption is always valid
+    }
+  }
+
   void _showDropdownOptions(BuildContext context, GlobalKey dropdownButtonKey) {
+    // Hanya tampilkan dialog jika ini bukan tab "Usulan Saya"
+    if (widget.isMyPosts) return;
+
     // Mendapatkan RenderBox dari GlobalKey untuk mendapatkan posisi tombol
     final RenderBox renderBox =
         dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(
       Offset.zero,
     ); // Posisi global tombol
-    // final Size size = renderBox.size; // Ukuran tombol
-
-    // Opsi-opsi yang akan ditampilkan di dropdown
-    final List<String> options = ['Terpopuler', 'Terbaru', 'Terlama'];
 
     showGeneralDialog(
       context: context,
@@ -170,27 +222,112 @@ class _ForumTab extends StatelessWidget {
               left: offset.dx + 4,
               top: offset.dy + 4,
               width: 0.4 * MediaQuery.of(context).size.width - 8,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // --- "Duplikat" Tombol Filter (Non-Interaktif) ---
-                  IgnorePointer(
-                    ignoring: true,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                ),
+                alignment: Alignment.topCenter,
+                child: Material(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(8),
+                  elevation: 8,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                        _sortOptions.map((option) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                _sortOption = option;
+                              });
+
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 16.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    option,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          _sortOption == option
+                                              ? AppColors.primary
+                                              : AppColors
+                                                  .black, // Warna teks berdasarkan pilihan
+                                    ),
+                                  ),
+                                  if (_sortOption ==
+                                      option) // Tampilkan ikon cek
+                                    const Icon(
+                                      Icons.check,
+                                      size: 20,
+                                      color: AppColors.primary,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var filteredThreads =
+        widget.threads?.where((thread) {
+          return !widget.isMyPosts || thread.userId == widget.currentUserId;
+        }).toList();
+
+    // Terapkan sorting
+    filteredThreads =
+        filteredThreads != null ? _sortThreads(filteredThreads) : null;
+
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          // padding: const EdgeInsets.fromLTRB(18, 0, 18, 100),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (!widget.isMyPosts)
+                // filter
+                SizedBox(
+                  width: 0.4 * MediaQuery.of(context).size.width,
+                  child: GestureDetector(
+                    key: _dropdownButtonKey,
+                    onTap: () {
+                      _showDropdownOptions(context, _dropdownButtonKey);
+                    },
                     child: Card(
                       elevation: 1,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      margin:
-                          EdgeInsets.zero, // Penting: hapus margin default Card
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Terpopuler",
+                            Text(
+                              _sortOption,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -207,130 +344,28 @@ class _ForumTab extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  // --- Jarak Antara Tombol dan Modal ---
-                  const SizedBox(height: 8),
-
-                  // --- Modal Dropdown Itu Sendiri ---
-                  ScaleTransition(
-                    scale: CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeOutCubic,
-                    ),
-                    alignment: Alignment.topCenter,
-                    child: Material(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(8),
-                      elevation: 8,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children:
-                            options.map((option) {
-                              return ListTile(
-                                title: Text(
-                                  option,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.black,
-                                  ),
-                                ),
-                                onTap: () {
-                                  // TODO: Implementasi logika filter di sini (misal: panggil Bloc Thread)
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Filter: $option dipilih!'),
-                                    ),
-                                  );
-                                  Navigator.of(
-                                    dialogContext,
-                                  ).pop(); // Tutup dialog setelah memilih opsi
-                                },
-                              );
-                            }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final filteredThreads =
-        threads?.where((thread) {
-          return !isMyPosts || thread.userId == currentUserId;
-        }).toList();
-
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          // padding: const EdgeInsets.fromLTRB(18, 0, 18, 100),
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // filter
-              SizedBox(
-                width: 0.4 * MediaQuery.of(context).size.width,
-                child: GestureDetector(
-                  key: _dropdownButtonKey,
-                  onTap: () {
-                    _showDropdownOptions(context, _dropdownButtonKey);
-                  },
-                  child: Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Terpopuler",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.black,
-                            ),
-                          ),
-                          Icon(
-                            AppIcons.arrowDown,
-                            size: 20,
-                            color: AppColors.black,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
-              ),
 
               if (filteredThreads == null)
                 const Center(child: CircularProgressIndicator())
               else if (filteredThreads.isEmpty)
-                _EmptyStateWidget(isMyPosts: isMyPosts)
+                _EmptyStateWidget(isMyPosts: widget.isMyPosts)
               else
                 ...filteredThreads.map(
                   (thread) => ForumCard(
                     thread: thread,
                     // showMenu: isMyPosts,
-                    showMenu: thread.userId == currentUserId,
-                    showReport: !isMyPosts && !(thread.userId == currentUserId),
-                    currentUserId: currentUserId,
+                    showMenu: thread.userId == widget.currentUserId,
+                    showReport:
+                        !widget.isMyPosts &&
+                        !(thread.userId == widget.currentUserId),
+                    currentUserId: widget.currentUserId,
                   ),
                 ),
             ],
           ),
         ),
-        if (isMyPosts)
+        if (widget.isMyPosts)
           Positioned(
             bottom: 48,
             right: 16,
@@ -404,15 +439,9 @@ class ForumCardState extends State<ForumCard> {
   @override
   void initState() {
     super.initState();
-    isLiked = widget.thread.isLike;
-    likeCount = widget.thread.likesCount;
   }
 
   void _toggleLike() {
-    setState(() {
-      isLiked = !isLiked;
-      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-    });
     context.read<ThreadBloc>().add(ToggleLike(threadId: widget.thread.id));
   }
 
@@ -423,6 +452,8 @@ class ForumCardState extends State<ForumCard> {
 
   @override
   Widget build(BuildContext context) {
+    final bool currentIsLiked = widget.thread.isLike;
+    final int currentLikeCount = widget.thread.likesCount;
     VoidCallback? longPressAction;
 
     // Logika untuk menentukan aksi longPress
@@ -563,11 +594,11 @@ class ForumCardState extends State<ForumCard> {
                                         .min, // Agar Row hanya mengambil ruang minimal
                                 children: [
                                   Icon(
-                                    isLiked
+                                    currentIsLiked
                                         ? AppIcons.favoriteFill
                                         : AppIcons.favorite, // Ikon berubah
                                     color:
-                                        isLiked
+                                        currentIsLiked
                                             ? Colors.red
                                             : AppColors
                                                 .black, // Warna ikon berubah jika liked
@@ -577,11 +608,11 @@ class ForumCardState extends State<ForumCard> {
                                     width: 4,
                                   ), // Jarak antara ikon dan teks
                                   Text(
-                                    likeCount.toString(),
+                                    currentLikeCount.toString(),
                                     style: TextStyle(
                                       fontSize: 14,
                                       color:
-                                          isLiked
+                                          currentIsLiked
                                               ? Colors.red
                                               : AppColors
                                                   .black, // Warna teks juga berubah

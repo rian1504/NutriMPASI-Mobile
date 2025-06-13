@@ -94,7 +94,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBarForum(
-        title: "Thread",
+        title: "Detail Postingan",
         showBackButton: true,
         category: 'forum',
       ),
