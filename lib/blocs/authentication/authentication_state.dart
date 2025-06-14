@@ -48,6 +48,8 @@ final class ProfileUpdated extends AuthenticationState {
   ProfileUpdated({required this.user});
 }
 
+final class PasswordUpdated extends AuthenticationState {}
+
 class ProfileError extends AuthenticationState {
   final String error;
 

@@ -60,4 +60,18 @@ class UpdateProfile extends AuthenticationEvent {
   });
 }
 
+class UpdatePassword extends AuthenticationEvent {
+  final int userId;
+  final String oldPassword;
+  final String newPassword;
+  final String newPasswordConfirmation;
+
+  UpdatePassword({
+    required this.userId,
+    required this.oldPassword,
+    required this.newPassword,
+    required this.newPasswordConfirmation,
+  });
+}
+
 class CheckAuthStatus extends AuthenticationEvent {}

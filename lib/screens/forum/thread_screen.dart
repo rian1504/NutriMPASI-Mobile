@@ -89,12 +89,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
   Widget build(BuildContext context) {
     // Dapatkan data user dari authentication bloc
     final authState = context.watch<AuthenticationBloc>().state;
-    final loggedInUser =
-        authState is LoginSuccess
-            ? authState.user
-            : authState is ProfileUpdated
-            ? authState.user
-            : null;
+    final loggedInUser = authState is LoginSuccess ? authState.user : null;
 
     return Scaffold(
       backgroundColor: AppColors.background,

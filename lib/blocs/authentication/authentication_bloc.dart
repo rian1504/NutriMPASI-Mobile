@@ -21,6 +21,7 @@ class AuthenticationBloc
     on<ForgotPasswordRequested>(_onForgotPassword);
     on<ResetPasswordRequested>(_onResetPassword);
     on<UpdateProfile>(_onUpdateProfile);
+    on<UpdatePassword>(_onUpdatePassword);
     on<CheckAuthStatus>(_onCheckStatus);
   }
 
@@ -124,8 +125,8 @@ class AuthenticationBloc
     UpdateProfile event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(AuthenticationLoading());
     final currentState = state;
+    emit(AuthenticationLoading());
     try {
       final updatedUser = await controller.updateProfile(
         userId: event.userId,
@@ -138,6 +139,7 @@ class AuthenticationBloc
 
       // Pertahankan token dari state sebelumnya jika ada
       if (currentState is LoginSuccess) {
+        emit(ProfileUpdated(user: updatedUser));
         emit(
           LoginSuccess(
             user: updatedUser,
@@ -147,9 +149,44 @@ class AuthenticationBloc
         );
       } else {
         emit(ProfileUpdated(user: updatedUser));
+        emit(currentState);
       }
     } catch (e) {
       emit(ProfileError('Update Profile gagal: ${e.toString()}'));
+      emit(currentState);
+    }
+  }
+
+  Future<void> _onUpdatePassword(
+    UpdatePassword event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    final currentState = state;
+    emit(AuthenticationLoading());
+    try {
+      await controller.updatePassword(
+        userId: event.userId,
+        oldPassword: event.oldPassword,
+        newPassword: event.newPassword,
+        newPasswordConfirmation: event.newPasswordConfirmation,
+      );
+
+      if (currentState is LoginSuccess) {
+        final userData = await SecureStorage.getUserData();
+
+        final User user = User.fromJson(userData!);
+        // First, emit PasswordUpdated for the flushbar
+        emit(PasswordUpdated());
+        // Then, restore LoginSuccess state with user
+        emit(LoginSuccess(user: user, token: currentState.token));
+      } else {
+        // If the state was not LoginSuccess or ProfileUpdated, just emit PasswordUpdated
+        emit(PasswordUpdated());
+        emit(currentState);
+      }
+    } catch (e) {
+      emit(ProfileError('Update Password gagal: ${e.toString()}'));
+      emit(currentState);
     }
   }
 

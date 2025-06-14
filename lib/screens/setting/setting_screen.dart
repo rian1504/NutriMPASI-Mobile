@@ -9,10 +9,10 @@ import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/features/notification_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
-import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/screens/setting/history_likes_screen.dart';
 
@@ -28,12 +28,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     // Dapatkan data user dari authentication bloc
     final authState = context.watch<AuthenticationBloc>().state;
-    final loggedInUser =
-        authState is LoginSuccess
-            ? authState.user
-            : authState is ProfileUpdated
-            ? authState.user
-            : null;
+    final loggedInUser = authState is LoginSuccess ? authState.user : null;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -213,7 +208,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const BabyEditScreen(),
+                                  builder: (context) => const BabyListScreen(),
                                 ),
                               );
                             },
