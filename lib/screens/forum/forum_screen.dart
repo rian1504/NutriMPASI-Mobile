@@ -43,7 +43,12 @@ class _ForumScreenState extends State<ForumScreen> {
   Widget build(BuildContext context) {
     // Dapatkan data user dari authentication bloc
     final authState = context.watch<AuthenticationBloc>().state;
-    final loggedInUser = authState is LoginSuccess ? authState.user : null;
+    final loggedInUser =
+        authState is LoginSuccess
+            ? authState.user
+            : authState is ProfileUpdated
+            ? authState.user
+            : null;
 
     return DefaultTabController(
       length: 2,

@@ -18,7 +18,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/comment.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart'
-    show showCommentPreviewAndMenu, showThreadPreviewAndMenu;
+    show showCommentPreviewAndMenu; //showThreadPreviewAndMenu;
 import 'package:nutrimpasi/utils/report_dialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -89,7 +89,12 @@ class _ThreadScreenState extends State<ThreadScreen> {
   Widget build(BuildContext context) {
     // Dapatkan data user dari authentication bloc
     final authState = context.watch<AuthenticationBloc>().state;
-    final loggedInUser = authState is LoginSuccess ? authState.user : null;
+    final loggedInUser =
+        authState is LoginSuccess
+            ? authState.user
+            : authState is ProfileUpdated
+            ? authState.user
+            : null;
 
     return Scaffold(
       backgroundColor: AppColors.background,

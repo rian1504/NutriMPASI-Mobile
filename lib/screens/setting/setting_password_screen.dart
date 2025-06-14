@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 
 class PasswordSettingScreen extends StatefulWidget {

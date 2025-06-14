@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/constants/secure_storage.dart';
@@ -18,6 +20,7 @@ class AuthenticationBloc
     on<LogoutRequested>(_onLogout);
     on<ForgotPasswordRequested>(_onForgotPassword);
     on<ResetPasswordRequested>(_onResetPassword);
+    on<UpdateProfile>(_onUpdateProfile);
     on<CheckAuthStatus>(_onCheckStatus);
   }
 
@@ -35,6 +38,9 @@ class AuthenticationBloc
       final User user = result['user'];
       final String token = result['token'];
       final String message = result['message'];
+
+      await SecureStorage.saveToken(token);
+      await SecureStorage.saveUserData(user.toJson());
 
       emit(LoginSuccess(user: user, token: token, message: message));
     } catch (e) {
@@ -71,6 +77,8 @@ class AuthenticationBloc
     emit(AuthenticationLoading());
     try {
       final result = await controller.logout();
+
+      await SecureStorage.clearAll();
 
       emit(LogoutSuccess(message: result));
       emit(AuthenticationUnauthenticated());
@@ -112,6 +120,39 @@ class AuthenticationBloc
     }
   }
 
+  Future<void> _onUpdateProfile(
+    UpdateProfile event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(AuthenticationLoading());
+    final currentState = state;
+    try {
+      final updatedUser = await controller.updateProfile(
+        userId: event.userId,
+        name: event.name,
+        email: event.email,
+        avatar: event.avatar,
+      );
+
+      await SecureStorage.saveUserData(updatedUser.toJson());
+
+      // Pertahankan token dari state sebelumnya jika ada
+      if (currentState is LoginSuccess) {
+        emit(
+          LoginSuccess(
+            user: updatedUser,
+            token: currentState.token,
+            message: 'Profile updated successfully',
+          ),
+        );
+      } else {
+        emit(ProfileUpdated(user: updatedUser));
+      }
+    } catch (e) {
+      emit(ProfileError('Update Profile gagal: ${e.toString()}'));
+    }
+  }
+
   Future<void> _onCheckStatus(
     CheckAuthStatus event,
     Emitter<AuthenticationState> emit,
@@ -119,14 +160,17 @@ class AuthenticationBloc
     emit(AuthenticationChecking());
 
     final token = await SecureStorage.getToken();
+    final userData = await SecureStorage.getUserData();
 
-    if (token == null) {
+    if (token == null || userData == null) {
+      await SecureStorage.clearAll();
       emit(AuthenticationUnauthenticated());
       return;
     }
 
+    final user = User.fromJson(userData);
+
     try {
-      final user = await controller.getUserProfile();
       emit(LoginSuccess(user: user, token: token));
     } catch (e) {
       await SecureStorage.clearAll();

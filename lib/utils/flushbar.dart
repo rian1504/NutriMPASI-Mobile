@@ -37,7 +37,6 @@ class AppFlushbar {
         iconData = Icons.warning_amber_outlined;
         break;
       case FlushbarType.info:
-      default:
         backgroundColor = Colors.blue.shade700;
         iconData = Icons.info_outline;
         break;

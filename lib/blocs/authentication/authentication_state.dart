@@ -42,6 +42,18 @@ class ResetPasswordSuccess extends AuthenticationState {
   ResetPasswordSuccess({required this.message});
 }
 
+final class ProfileUpdated extends AuthenticationState {
+  final User user;
+
+  ProfileUpdated({required this.user});
+}
+
+class ProfileError extends AuthenticationState {
+  final String error;
+
+  ProfileError(this.error);
+}
+
 class AuthenticationError extends AuthenticationState {
   final String error;
 

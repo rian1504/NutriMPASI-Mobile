@@ -5,10 +5,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/features/notification_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
@@ -26,6 +26,15 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
+    // Dapatkan data user dari authentication bloc
+    final authState = context.watch<AuthenticationBloc>().state;
+    final loggedInUser =
+        authState is LoginSuccess
+            ? authState.user
+            : authState is ProfileUpdated
+            ? authState.user
+            : null;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SingleChildScrollView(
@@ -63,17 +72,20 @@ class _SettingScreenState extends State<SettingScreen> {
                             radius: 60,
                             backgroundColor: Colors.grey.shade200,
                             child: ClipOval(
-                              child: SvgPicture.network(
-                                'https://api.dicebear.com/8.x/lorelei/svg?seed=JaneDoe',
-                                width: 140,
-                                height: 140,
-                                fit: BoxFit.cover,
-                                placeholderBuilder:
-                                    (context) => Container(
-                                      padding: const EdgeInsets.all(20),
-                                      child: const CircularProgressIndicator(),
-                                    ),
-                              ),
+                              child:
+                                  loggedInUser!.avatar != null
+                                      ? Image.network(
+                                        storageUrl + loggedInUser.avatar!,
+                                        width: 32,
+                                        height: 32,
+                                        fit: BoxFit.cover,
+                                      )
+                                      : Icon(
+                                        AppIcons.userFill,
+                                        color: AppColors.primary,
+                                        size:
+                                            20, // opsional, atur agar pas di lingkaran
+                                      ),
                             ),
                           ),
                           Positioned(
@@ -100,7 +112,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Pipit Lolita',
+                        loggedInUser.name,
                         style: TextStyle(
                           color: AppColors.textWhite,
                           fontSize: 20,
@@ -155,7 +167,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (context) => const ProfileSettingScreen(),
+                                      (context) => ProfileSettingScreen(
+                                        user: loggedInUser,
+                                      ),
                                 ),
                               );
                             },

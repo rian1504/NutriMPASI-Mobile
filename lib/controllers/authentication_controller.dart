@@ -55,20 +55,17 @@ class AuthenticationController {
       // kirim data ke API
       final response = await _dio.post(ApiEndpoints.login, data: data);
 
-      final token = response.data['token'];
-
-      // Simpan token ke secure storage
-      await SecureStorage.saveToken(token);
+      // simpan variabel
+      final result = response.data;
+      final user = result['user'];
+      final token = result['token'];
+      final message = result['message'];
 
       // debug response
-      debugPrint('Login response: ${response.data}');
+      debugPrint('Login response: $result');
 
       // return response
-      return {
-        'user': User.fromJson(response.data['user']),
-        'token': response.data['token'],
-        'message': response.data['message'],
-      };
+      return {'user': User.fromJson(user), 'token': token, 'message': message};
     } on DioException catch (e) {
       debugPrint('Login error: ${e.response?.data}');
       throw _handleError(e);
@@ -83,9 +80,6 @@ class AuthenticationController {
 
       // debug response
       debugPrint('Logout response: ${response.data}');
-
-      // Hapus session dari secure storage
-      await SecureStorage.clearAll();
 
       // return response
       return response.data['message'];
@@ -164,7 +158,7 @@ class AuthenticationController {
   }
 
   // update profile
-  Future<String> updateProfile({
+  Future<User> updateProfile({
     required int userId,
     required String name,
     required String email,
@@ -191,10 +185,11 @@ class AuthenticationController {
       debugPrint('Update Profile response: ${response.data}');
 
       // return response
-      return response.data['message'];
+      return User.fromJson(response.data['user']);
     } on DioException catch (e) {
       debugPrint('Update Profile error: ${e.response?.data}');
-      throw _handleError(e);
+      // throw _handleError(e);
+      throw _formatErrorMessage(e.response?.data);
     }
   }
 
@@ -237,4 +232,16 @@ class AuthenticationController {
     }
     return e.message ?? 'An unexpected error occurred';
   }
+}
+
+String _formatErrorMessage(dynamic errorData) {
+  if (errorData is Map<String, dynamic>) {
+    // Handle error berbentuk {message: "...", errors: {...}}
+    if (errorData['errors'] != null) {
+      final errors = errorData['errors'] as Map<String, dynamic>;
+      return errors.values.first?.first?.toString() ?? errorData['message'];
+    }
+    return errorData['message'].toString();
+  }
+  return 'An unexpected error occurred';
 }

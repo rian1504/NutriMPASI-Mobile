@@ -46,4 +46,18 @@ class ResetPasswordRequested extends AuthenticationEvent {
   });
 }
 
+class UpdateProfile extends AuthenticationEvent {
+  final int userId;
+  final String name;
+  final String email;
+  final File? avatar;
+
+  UpdateProfile({
+    required this.userId,
+    required this.name,
+    required this.email,
+    this.avatar,
+  });
+}
+
 class CheckAuthStatus extends AuthenticationEvent {}
