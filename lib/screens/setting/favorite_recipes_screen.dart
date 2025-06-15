@@ -1,38 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/favorite/favorite_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/models/favorite.dart';
+import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 
-class FavoriteRecipeScreen extends StatelessWidget {
+class FavoriteRecipeScreen extends StatefulWidget {
   const FavoriteRecipeScreen({super.key});
 
-  final List<Map<String, String>> favoriteRecipes = const [
-    {
-      "image": "assets/images/card/makanan_favorit.png",
-      "title": "Bubur Sup Daging Kacang Merah",
-      "description":
-          "Bubur merah dengan kacang yang kaya zat besi dan protein.",
-    },
-    {
-      "image": "assets/images/card/makanan_favorit.png",
-      "title": "Sup Krim Jamur",
-      "description": "Sup krim lembut dengan jamur gurih yang lezat.",
-    },
-    {
-      "image": "assets/images/card/makanan_favorit.png",
-      "title": "Beef Potato Puree",
-      "description":
-          "Daging sapi empuk dengan kentang tumbuk lembut, cocok untuk bayi.",
-    },
-    {
-      "image": "assets/images/card/makanan_favorit.png",
-      "title": "Baked Potato",
-      "description": "Kentang panggang yang lezat dan cocok untuk MPASI.",
-    },
-    {
-      "image": "assets/images/card/makanan_favorit.png",
-      "title": "Risotto Salmon",
-      "description": "Salmon dan nasi creamy yang kaya omega-3.",
-    },
-  ];
+  @override
+  State<FavoriteRecipeScreen> createState() => _FavoriteRecipeScreenState();
+}
+
+class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
+  List<Favorite> favorites = [];
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<FavoriteBloc>().add(FetchFavorites());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,87 +122,135 @@ class FavoriteRecipeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 100),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ListView.builder(
-                itemCount: favoriteRecipes.length,
-                itemBuilder: (context, index) {
-                  final recipe = favoriteRecipes[index];
-                  return Card(
-                    elevation: 3,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+          BlocBuilder<FavoriteBloc, FavoriteState>(
+            builder: (context, state) {
+              if (state is FavoriteLoading) {
+                return const Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  ),
+                );
+              }
+
+              if (state is FavoriteLoaded) {
+                favorites = state.favorites;
+              }
+
+              if (favorites.isEmpty) {
+                return const Expanded(
+                  child: Center(
+                    child: Text(
+                      'Belum ada makanan favorite!',
+                      style: TextStyle(fontSize: 16),
                     ),
-                    child: Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                );
+              }
+
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ListView.builder(
+                    itemCount: favorites.length,
+                    itemBuilder: (context, index) {
+                      final recipe = favorites[index].food;
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      FoodDetailScreen(foodId: recipe.id),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          elevation: 3,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Stack(
                             children: [
-                              Flexible(
-                                flex: 0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.asset(
-                                    recipe['image']!,
-                                    height: 100,
-                                    fit: BoxFit.contain,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            const Icon(
-                                              Icons.broken_image,
-                                              size: 70,
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      flex: 0,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          storageUrl + recipe.image,
+                                          height: 100,
+                                          fit: BoxFit.contain,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  const Icon(
+                                                    Icons.broken_image,
+                                                    size: 70,
+                                                  ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: FractionallySizedBox(
+                                        widthFactor: 0.82,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              recipe.name,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                              textAlign: TextAlign.justify,
                                             ),
-                                  ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              recipe.description,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                              textAlign: TextAlign.justify,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: FractionallySizedBox(
-                                  widthFactor: 0.82,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        recipe['title']!,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                        textAlign: TextAlign.justify,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        recipe['description']!,
-                                        style: const TextStyle(fontSize: 14),
-                                        textAlign: TextAlign.justify,
-                                      ),
-                                    ],
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.read<FavoriteBloc>().add(
+                                      ToggleFavorite(foodId: recipe.id),
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: Colors.redAccent,
+                                    size: 20,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Icon(
-                            Icons.favorite,
-                            color: Colors.redAccent,
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

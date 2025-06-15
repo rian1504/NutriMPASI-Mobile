@@ -471,7 +471,7 @@ class CommentSection extends StatefulWidget {
   });
 
   @override
-  _CommentSectionState createState() => _CommentSectionState();
+  State<CommentSection> createState() => _CommentSectionState();
 }
 
 class _CommentSectionState extends State<CommentSection> {

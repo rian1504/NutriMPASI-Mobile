@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
+import 'package:nutrimpasi/blocs/favorite/favorite_bloc.dart' as favorite_bloc;
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
 import 'package:nutrimpasi/blocs/report/report_bloc.dart';
@@ -114,6 +115,11 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         context.read<FoodBloc>().add(
                                           FetchFoods(),
                                         );
+                                        context
+                                            .read<favorite_bloc.FavoriteBloc>()
+                                            .add(
+                                              favorite_bloc.FetchFavorites(),
+                                            );
                                         Navigator.pop(context);
                                       },
                                     ),

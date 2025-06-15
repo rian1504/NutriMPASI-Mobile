@@ -5,6 +5,7 @@ import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 
 class FeatureListScreen extends StatelessWidget {
   const FeatureListScreen({super.key});
@@ -82,7 +83,12 @@ class FeatureListScreen extends StatelessWidget {
         'title': 'Makanan Favorit',
         'image': 'assets/images/card/makanan_favorit.png',
         'navigate': (BuildContext context) {
-          // TODO: Halaman Makanan Favorit
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FavoriteRecipeScreen(),
+            ),
+          );
         },
         'description': 'Kumpulan resep makanan favorit untuk bayi',
       },
