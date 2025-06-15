@@ -70,7 +70,7 @@ class _ForumScreenState extends State<ForumScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Berhasil menghapus thread"),
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.green,
                       ),
                     );
 
@@ -488,7 +488,7 @@ class ForumCardState extends State<ForumCard> {
       onTap:
           () => pushWithSlideTransition(
             context,
-            ThreadScreen(threadId: widget.thread.id),
+            ThreadScreen(threadId: widget.thread.id, screenCategory: 'forum'),
           ),
       onLongPress: longPressAction,
       child: Card(
@@ -651,7 +651,10 @@ class ForumCardState extends State<ForumCard> {
                           onPressed:
                               () => pushWithSlideTransition(
                                 context,
-                                ThreadScreen(threadId: widget.thread.id),
+                                ThreadScreen(
+                                  threadId: widget.thread.id,
+                                  screenCategory: 'forum',
+                                ),
                               ),
                         ),
                       ],

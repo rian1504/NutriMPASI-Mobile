@@ -27,6 +27,7 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
   Future<void> _onToggleLike(ToggleLike event, Emitter<LikeState> emit) async {
     if (state is! LikeLoaded) return;
     final currentState = state as LikeLoaded;
+    emit(LikeLoading());
 
     try {
       await controller.toggleLike(threadId: event.threadId);

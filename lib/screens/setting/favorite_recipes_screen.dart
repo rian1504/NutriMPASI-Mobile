@@ -122,6 +122,8 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
             ],
           ),
           const SizedBox(height: 100),
+
+          // Daftar makanan favorite
           BlocBuilder<FavoriteBloc, FavoriteState>(
             builder: (context, state) {
               if (state is FavoriteLoading) {

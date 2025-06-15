@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/like/like_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/thread.dart';
@@ -46,7 +47,11 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBarForum(title: "Edit Thread", showExitButton: true, category: ''),
+      appBar: AppBarForum(
+        title: "Edit Thread",
+        showExitButton: true,
+        category: '',
+      ),
       body: BlocConsumer<ThreadBloc, ThreadState>(
         listener: (context, state) {
           if (state is ThreadUpdated) {
@@ -54,14 +59,18 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
 
             // _showDialogReportSuccess(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Berhasil mengubah thread"), backgroundColor: Colors.green),
+              SnackBar(
+                content: Text("Berhasil mengubah thread"),
+                backgroundColor: Colors.green,
+              ),
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
+            context.read<LikeBloc>().add(FetchLikes());
           } else if (state is ThreadError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            );
           }
         },
         builder: (context, state) {
@@ -74,7 +83,9 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                    ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(
@@ -160,7 +171,11 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
                               final content = _contentController.text.trim();
 
                               context.read<ThreadBloc>().add(
-                                UpdateThreads(threadId: threadId, title: title, content: content),
+                                UpdateThreads(
+                                  threadId: threadId,
+                                  title: title,
+                                  content: content,
+                                ),
                               );
 
                               _titleController.clear();

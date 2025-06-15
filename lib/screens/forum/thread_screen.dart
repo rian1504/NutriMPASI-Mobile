@@ -28,11 +28,13 @@ import '../../widgets/custom_app_bar.dart' show AppBarForum;
 class ThreadScreen extends StatefulWidget {
   final int threadId;
   final int? highlightCommentId;
+  final String? screenCategory;
 
   const ThreadScreen({
     super.key,
     required this.threadId,
     this.highlightCommentId,
+    this.screenCategory,
   });
 
   @override
@@ -96,7 +98,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
       appBar: AppBarForum(
         title: "Detail Postingan",
         showBackButton: true,
-        category: 'forum',
+        category: widget.screenCategory!,
       ),
       body: Container(
         decoration: BoxDecoration(color: AppColors.primary),
