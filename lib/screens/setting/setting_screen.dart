@@ -16,6 +16,8 @@ import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/screens/setting/history_likes_screen.dart';
+import 'package:nutrimpasi/utils/navigation_animation.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -47,13 +49,17 @@ class _SettingScreenState extends State<SettingScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
+        body: Stack(
+          children: [
+            Stack(
+              // clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: MediaQuery.of(context).size.height * 1 / 3,
+                  child: Container(
                     height: MediaQuery.of(context).size.height * 1 / 3,
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -64,320 +70,345 @@ class _SettingScreenState extends State<SettingScreen> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Pengaturan",
-                          style: const TextStyle(
-                            color: AppColors.textWhite,
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 14),
-                        Stack(
-                          children: [
-                            CircleAvatar(
-                              radius: 60,
-                              backgroundColor: Colors.grey.shade200,
-                              child: ClipOval(
-                                child: SvgPicture.network(
-                                  'https://api.dicebear.com/8.x/lorelei/svg?seed=JaneDoe',
-                                  width: 140,
-                                  height: 140,
-                                  fit: BoxFit.cover,
-                                  placeholderBuilder:
-                                      (context) => Container(
-                                        padding: const EdgeInsets.all(20),
-                                        child:
-                                            const CircularProgressIndicator(),
-                                      ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        8,
+                        MediaQuery.of(context).padding.top,
+                        8,
+                        8,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset(
+                                'assets/images/logo/nutrimpasi.png',
+                                height: 56,
+                              ),
+                              Text(
+                                "Pengaturan",
+                                style: const TextStyle(
+                                  color: AppColors.textWhite,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              bottom: 4,
-                              right: 4,
-                              child: Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: AppColors.textWhite,
-                                    width: 2,
+                              CircleButton(
+                                onPressed: () {
+                                  pushWithSlideTransition(
+                                    context,
+                                    FavoriteRecipeScreen(),
+                                  );
+                                },
+                                icon: AppIcons.favoriteRegular,
+                              ),
+                            ],
+                          ),
+
+                          // SizedBox(height: 14),
+                          Stack(
+                            children: [
+                              // avatar
+                              CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.grey.shade200,
+                                child: ClipOval(
+                                  child: SvgPicture.network(
+                                    'https://api.dicebear.com/8.x/lorelei/svg?seed=JaneDoe',
+                                    width: 140,
+                                    height: 140,
+                                    fit: BoxFit.cover,
+                                    placeholderBuilder:
+                                        (context) => Container(
+                                          padding: const EdgeInsets.all(20),
+                                          child:
+                                              const CircularProgressIndicator(),
+                                        ),
                                   ),
-                                  shape: BoxShape.circle,
                                 ),
-                                child: Icon(
-                                  AppIcons.editFill,
+                              ),
+                              // tombol edit avatar
+                              Positioned(
+                                bottom: 4,
+                                right: 4,
+                                child: Container(
+                                  padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      color: AppColors.textWhite,
+                                      width: 2,
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    AppIcons.editFill,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          // username
+                          Text(
+                            'Pipit Lolita',
+                            style: TextStyle(
+                              color: AppColors.textWhite,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: MediaQuery.of(context).size.height * 2 / 3,
+                  child: Container(),
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 1 / 3 - 48,
+                  left: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          color: AppColors.textWhite,
+                          elevation: 1,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.userFill,
                                   color: Colors.black,
+                                  size: 24,
+                                ),
+                                title: Text('Profil Saya'),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.greyDark,
+                                  size: 20,
+                                ),
+                                onTap: () {
+                                  pushWithSlideTransition(
+                                    context,
+                                    ProfileSettingScreen(),
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.lockFill,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                                title: Text('Kelola Kata Sandi'),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.greyDark,
+                                  size: 20,
+                                ),
+                                onTap: () {
+                                  pushWithSlideTransition(
+                                    context,
+                                    PasswordSettingScreen(),
+                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder:
+                                  //         (context) =>
+                                  //             const PasswordSettingScreen(),
+                                  //   ),
+                                  // );
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.baby,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                                title: Text('Kelola Profil Bayi'),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.greyDark,
+                                  size: 20,
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => const BabyEditScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          color: AppColors.textWhite,
+                          elevation: 1,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.favoriteFill,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                                title: Text('Resep Favorit'),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.greyDark,
+                                  size: 20,
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              const FavoriteRecipeScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.forum,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                                title: Text('Thread yang Disukai'),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.greyDark,
+                                  size: 20,
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              const HistoryLikeScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          color: AppColors.textWhite,
+                          elevation: 1,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.notificationFill,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                                title: Text('Notifikasi'),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.greyDark,
+                                  size: 20,
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              const NotificationScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.commentFill,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                                title: Text('Bahasa'),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.greyDark,
                                   size: 20,
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Pipit Lolita',
-                          style: TextStyle(
-                            color: AppColors.textWhite,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          color: AppColors.textWhite,
+                          elevation: 1,
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                child: ListTile(
+                                  leading: Icon(
+                                    AppIcons.logout,
+                                    color: AppColors.error,
+                                    size: 24,
+                                  ),
+                                  title: Text(
+                                    'Keluar',
+                                    style: TextStyle(color: AppColors.error),
+                                  ),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.error,
+                                    size: 20,
+                                  ),
+                                ),
+                                onTap: () {
+                                  context.read<AuthenticationBloc>().add(
+                                    LogoutRequested(),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Positioned(
-                    top: 36,
-                    right: 8,
-                    child: IconButton(
-                      icon: Icon(
-                        AppIcons.favoriteFill,
-                        color: AppColors.textWhite,
-                        size: 24,
-                      ),
-                      onPressed: () {
-                        // Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        color: AppColors.textWhite,
-                        elevation: 1,
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: Icon(
-                                AppIcons.userFill,
-                                color: Colors.black,
-                                size: 24,
-                              ),
-                              title: Text('Profil Saya'),
-                              trailing: Icon(
-                                AppIcons.arrowRight,
-                                color: AppColors.greyDark,
-                                size: 20,
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            const ProfileSettingScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                AppIcons.lockFill,
-                                color: Colors.black,
-                                size: 24,
-                              ),
-                              title: Text('Kelola Kata Sandi'),
-                              trailing: Icon(
-                                AppIcons.arrowRight,
-                                color: AppColors.greyDark,
-                                size: 20,
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            const PasswordSettingScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                AppIcons.baby,
-                                color: Colors.black,
-                                size: 24,
-                              ),
-                              title: Text('Kelola Profil Bayi'),
-                              trailing: Icon(
-                                AppIcons.arrowRight,
-                                color: AppColors.greyDark,
-                                size: 20,
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => const BabyEditScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: MediaQuery.of(context).padding.top + 90),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      color: AppColors.textWhite,
-                      elevation: 1,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: Icon(
-                              AppIcons.favoriteFill,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            title: Text('Resep Favorit'),
-                            trailing: Icon(
-                              AppIcons.arrowRight,
-                              color: AppColors.greyDark,
-                              size: 20,
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => const FavoriteRecipeScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                          ListTile(
-                            leading: Icon(
-                              AppIcons.forum,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            title: Text('Thread yang Disukai'),
-                            trailing: Icon(
-                              AppIcons.arrowRight,
-                              color: AppColors.greyDark,
-                              size: 20,
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => const HistoryLikeScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      color: AppColors.textWhite,
-                      elevation: 1,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: Icon(
-                              AppIcons.notificationFill,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            title: Text('Notifikasi'),
-                            trailing: Icon(
-                              AppIcons.arrowRight,
-                              color: AppColors.greyDark,
-                              size: 20,
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => const NotificationScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                          ListTile(
-                            leading: Icon(
-                              AppIcons.commentFill,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                            title: Text('Bahasa'),
-                            trailing: Icon(
-                              AppIcons.arrowRight,
-                              color: AppColors.greyDark,
-                              size: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      color: AppColors.textWhite,
-                      elevation: 1,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            child: ListTile(
-                              leading: Icon(
-                                AppIcons.logout,
-                                color: AppColors.error,
-                                size: 24,
-                              ),
-                              title: Text(
-                                'Keluar',
-                                style: TextStyle(color: AppColors.error),
-                              ),
-                              trailing: Icon(
-                                AppIcons.arrowRight,
-                                color: AppColors.error,
-                                size: 20,
-                              ),
-                            ),
-                            onTap: () {
-                              context.read<AuthenticationBloc>().add(
-                                LogoutRequested(),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );

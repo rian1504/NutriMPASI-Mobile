@@ -1,11 +1,9 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/screens/auth/forget_password_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/utils/flushbar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -47,15 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             // Tampilkan snackbar sukses dan arahkan ke halaman utama
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(content: Text(state.message ?? 'Login berhasil')),
-            // );
-
-            AppFlushbar.show(
-              context,
-              title: "Berhasil!",
-              message: state.message ?? 'Login berhasil',
-              position: FlushbarPosition.BOTTOM,
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message ?? 'Login berhasil')),
             );
 
             // Tunggu sebentar lalu navigasi ke home
@@ -66,9 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
             });
           } else if (state is AuthenticationError) {
             ScaffoldMessenger.of(
-              
               context,
-            
             ).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
@@ -84,11 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   right: 0,
                   height: size.height * 1,
                   child: Image.asset(
-                    
                     'assets/images/background/auth.png',
-                   
                     fit: BoxFit.cover,
-                  
                   ),
                 ),
                 // Panel utama
