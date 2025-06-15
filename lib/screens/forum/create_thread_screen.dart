@@ -156,9 +156,6 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
                               context.read<ThreadBloc>().add(
                                 StoreThreads(title: title, content: content),
                               );
-
-                              _titleController.clear();
-                              _contentController.clear();
                             }
                           },
                   loadingIndicator:

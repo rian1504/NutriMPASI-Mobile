@@ -1,6 +1,11 @@
+// ignore_for_file: unused_field
+
+import 'dart:io';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
@@ -39,15 +44,190 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
 
   void _saveProfile() {
     if (_formKey.currentState!.validate()) {
+      // Validasi ukuran gambar jika ada gambar baru
+      if (_imageFile != null) {
+        final fileSize = _imageFile!.lengthSync();
+        final fileSizeInMB = fileSize / (1024 * 1024);
+        if (fileSizeInMB > 1) {
+          setState(() {
+            _showImageSizeError = true;
+          });
+          return;
+        }
+      }
+
       context.read<AuthenticationBloc>().add(
         UpdateProfile(
           userId: widget.user!.id,
           name: _nameController.text,
           email: _emailController.text,
-          // avatar: _imagePath ?? widget.user!.avatar,
+          avatar: _imageFile,
         ),
       );
     }
+  }
+
+  String? _imagePath;
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  // Tambah state untuk melacak error validasi foto
+  bool _showPhotoError = false;
+  bool _showImageSizeError = false;
+
+  // Menambahkan global key untuk navigasi otomatis ke error
+  final GlobalKey _photoFieldKey = GlobalKey();
+
+  // Method untuk memilih foto dari gallery
+  Future<void> _getImageFromGallery() async {
+    try {
+      final XFile? selectedImage = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50,
+      );
+      if (selectedImage != null) {
+        setState(() {
+          _imageFile = File(selectedImage.path);
+          _imagePath = selectedImage.path;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mengakses galeri. Coba periksa izin aplikasi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // Method untuk mengambil foto dari kamera
+  Future<void> _getImageFromCamera() async {
+    try {
+      final XFile? takenImage = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 50,
+      );
+      if (takenImage != null) {
+        setState(() {
+          _imageFile = File(takenImage.path);
+          _imagePath = takenImage.path;
+          _showPhotoError = false;
+          _showImageSizeError = false;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mengakses kamera. Coba periksa izin aplikasi.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // Method untuk menampilkan bottom sheet pilihan foto
+  void _showImageSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Pilih Sumber Foto',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textBlack,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Tombol opsi kamera
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _getImageFromCamera();
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: AppColors.buff,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 30,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Kamera',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Tombol opsi galeri
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _getImageFromGallery();
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: AppColors.buff,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.photo_library,
+                            size: 30,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Galeri',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -247,80 +427,96 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
               Positioned(
                 top: 25,
                 left: MediaQuery.of(context).size.width / 2 - 75,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(25),
-                            blurRadius: 6,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        size: 100,
-                        color: AppColors.accent,
-                      ),
-                    ),
-                    Positioned(
-                      right: -5,
-                      top: 55,
-                      child: Material(
-                        color: Colors.transparent,
-                        shape: const CircleBorder(),
-                        clipBehavior: Clip.antiAlias,
-                        child: InkWell(
-                          onTap: () {
-                            print('Kamera ditekan!');
-                          },
-                          splashColor: Colors.grey.withOpacity(0.3),
-                          highlightColor: Colors.grey.withOpacity(0.1),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  spreadRadius: 1,
-                                ),
-                              ],
-                            ),
-                            child:
-                                widget.user!.avatar != null
-                                    ? Image.network(
-                                      storageUrl + widget.user!.avatar!,
-                                      width: 32,
-                                      height: 32,
-                                      fit: BoxFit.cover,
-                                    )
-                                    : const Icon(
-                                      Icons.camera_alt_rounded,
-                                      size: 20,
-                                      color: Colors.grey,
-                                    ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: _buildProfilePictureWithCamera(),
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  // Fungsi untuk membangun widget foto profil dengan kamera
+  Widget _buildProfilePictureWithCamera() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Container utama untuk foto profil
+        Container(
+          width: 150,
+          height: 150,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(25),
+                blurRadius: 6,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child:
+              _imageFile != null
+                  ? ClipOval(
+                    child: Image.file(
+                      _imageFile!,
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                  : widget.user!.avatar != null
+                  ? ClipOval(
+                    child: Image.network(
+                      storageUrl + widget.user!.avatar!,
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                  : const Icon(
+                    Icons.person,
+                    size: 100,
+                    color: AppColors.accent,
+                  ),
+        ),
+
+        // Tombol kamera
+        Positioned(right: -5, top: 55, child: _buildCameraButton()),
+      ],
+    );
+  }
+
+  // Fungsi untuk membangun tombol kamera
+  Widget _buildCameraButton() {
+    return Material(
+      color: Colors.transparent,
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          _showImageSourceOptions();
+        },
+        splashColor: Colors.grey.withOpacity(0.3),
+        highlightColor: Colors.grey.withOpacity(0.1),
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(color: Colors.black26, blurRadius: 4, spreadRadius: 1),
+            ],
+          ),
+          child: const Icon(
+            Icons.camera_alt_rounded,
+            size: 20,
+            color: Colors.grey,
+          ),
+        ),
+      ),
     );
   }
 

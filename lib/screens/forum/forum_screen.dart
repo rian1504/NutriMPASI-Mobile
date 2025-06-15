@@ -470,6 +470,7 @@ class ForumCardState extends State<ForumCard> {
                   .showMenu, // True untuk mengaktifkan opsi Edit/Delete di dialog
           showReport: widget.showReport, // False untuk Report di dialog
           currentUserId: widget.currentUserId ?? 0,
+          isFromDetailPage: false,
         );
       };
     } else if (widget.showReport) {
@@ -673,6 +674,7 @@ class ForumCardState extends State<ForumCard> {
                               showMenu: widget.showMenu,
                               showReport: widget.showReport,
                               currentUserId: widget.currentUserId ?? 0,
+                              isFromDetailPage: false,
                             ),
                         child: Icon(AppIcons.menu, size: 20),
                       ),

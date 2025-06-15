@@ -11,7 +11,6 @@ import 'package:nutrimpasi/blocs/thread/thread_bloc.dart'
 import 'package:nutrimpasi/constants/colors.dart'; // Impor AppColors
 import 'package:nutrimpasi/constants/icons.dart'; // Impor AppIcons
 import 'package:nutrimpasi/models/comment.dart'; // Impor Comment (dan User)
-// import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/edit_thread_screen.dart'
     show EditThreadScreen;
 import 'package:nutrimpasi/screens/forum/forum_screen.dart' show ForumCard;
@@ -24,6 +23,7 @@ import 'package:nutrimpasi/screens/forum/thread_screen.dart'
 Future<void> confirmDeleteThread({
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
   required String threadId, // threadId harus int, sesuai ThreadScreen
+  required bool isFromDetailPage,
 }) async {
   final confirmed = await showDialog<bool>(
     context: context,
@@ -38,7 +38,12 @@ Future<void> confirmDeleteThread({
             ),
             TextButton(
               child: const Text("Hapus", style: TextStyle(color: Colors.red)),
-              onPressed: () => Navigator.pop(ctx, true),
+              onPressed: () {
+                Navigator.pop(ctx, true);
+                if (isFromDetailPage) {
+                  Navigator.pop(ctx, true);
+                }
+              },
             ),
           ],
         ),
@@ -65,6 +70,7 @@ void showThreadPreviewAndMenu({
   required bool showMenu,
   required bool showReport,
   required int currentUserId,
+  required bool isFromDetailPage,
 }) {
   showGeneralDialog(
     context: context,
@@ -179,6 +185,7 @@ void showThreadPreviewAndMenu({
                                 confirmDeleteThread(
                                   context: context,
                                   threadId: threadId,
+                                  isFromDetailPage: isFromDetailPage,
                                 );
                               },
                             ),
