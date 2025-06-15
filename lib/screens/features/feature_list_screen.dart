@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/main.dart';
+import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 
 class FeatureListScreen extends StatelessWidget {
   const FeatureListScreen({super.key});
+
+  // Fungsi untuk navigasi ke halaman daftar makanan
+  void _navigateToFoodList(
+    BuildContext context, {
+    bool showUserSuggestions = false,
+  }) {
+    final MainPageState? mainPage =
+        context.findAncestorStateOfType<MainPageState>();
+
+    Navigator.pop(context);
+
+    if (mainPage != null) {
+      mainPage.changePage(
+        1,
+        additionalParams: {'showUserSuggestions': showUserSuggestions},
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +35,12 @@ class FeatureListScreen extends StatelessWidget {
         'title': 'Materi Pembelajaran',
         'image': 'assets/images/card/materi_pembelajaran.png',
         'navigate': (BuildContext context) {
-          // TODO: Halaman Materi Pembelajaran
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LearningMaterialScreen(),
+            ),
+          );
         },
         'description': 'Pelajari berbagai informasi seputar nutrisi untuk bayi',
       },
@@ -49,7 +74,7 @@ class FeatureListScreen extends StatelessWidget {
         'title': 'Usulan Makanan',
         'image': 'assets/images/card/usulan_makanan.png',
         'navigate': (BuildContext context) {
-          // TODO: Halaman Usulan Makanan
+          _navigateToFoodList(context, showUserSuggestions: true);
         },
         'description': 'Daftar resep makanan yang telah Anda buat',
       },

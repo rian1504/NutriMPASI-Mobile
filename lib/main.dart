@@ -21,6 +21,7 @@ import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
 import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
+import 'package:nutrimpasi/constants/deep_link.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/comment_controller.dart';
@@ -46,6 +47,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   // Make main async
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,11 +65,18 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Initialize deep linking when app starts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DeepLinkHandler.initDeepLinking();
+    });
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) {
-            final bloc = AuthenticationBloc(controller: AuthenticationController());
+            final bloc = AuthenticationBloc(
+              controller: AuthenticationController(),
+            );
             Future.delayed(const Duration(milliseconds: 500), () {
               if (bloc.state is AuthenticationInitial) {
                 bloc.add(CheckAuthStatus());
@@ -75,13 +85,31 @@ class MainApp extends StatelessWidget {
             return bloc;
           },
         ),
-        BlocProvider(create: (context) => BabyBloc(controller: BabyController())),
-        BlocProvider(create: (context) => BabyFoodRecommendationBloc(controller: BabyController())),
-        BlocProvider(create: (context) => CommentBloc(controller: CommentController())),
-        BlocProvider(create: (context) => FavoriteBloc(controller: FavoriteController())),
-        BlocProvider(create: (context) => FoodBloc(controller: FoodController())),
-        BlocProvider(create: (context) => FoodCategoryBloc(controller: FoodSuggestionController())),
-        BlocProvider(create: (context) => FoodCookingBloc(controller: FoodController())),
+        BlocProvider(
+          create: (context) => BabyBloc(controller: BabyController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  BabyFoodRecommendationBloc(controller: BabyController()),
+        ),
+        BlocProvider(
+          create: (context) => CommentBloc(controller: CommentController()),
+        ),
+        BlocProvider(
+          create: (context) => FavoriteBloc(controller: FavoriteController()),
+        ),
+        BlocProvider(
+          create: (context) => FoodBloc(controller: FoodController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  FoodCategoryBloc(controller: FoodSuggestionController()),
+        ),
+        BlocProvider(
+          create: (context) => FoodCookingBloc(controller: FoodController()),
+        ),
         BlocProvider(
           create:
               (context) => FoodDetailBloc(
@@ -89,19 +117,40 @@ class MainApp extends StatelessWidget {
                 favoriteController: FavoriteController(),
               ),
         ),
-        BlocProvider(create: (context) => FoodRecordBloc(controller: FoodRecordController())),
         BlocProvider(
-          create: (context) => FoodSuggestionBloc(controller: FoodSuggestionController()),
+          create:
+              (context) => FoodRecordBloc(controller: FoodRecordController()),
         ),
-        BlocProvider(create: (context) => LikeBloc(controller: LikeController())),
-        BlocProvider(create: (context) => NotificationBloc(controller: NotificationController())),
-        BlocProvider(create: (context) => NutritionistBloc(controller: NutritionistController())),
-        BlocProvider(create: (context) => ReportBloc(controller: ReportController())),
-        BlocProvider(create: (context) => ScheduleBloc(controller: ScheduleController())),
         BlocProvider(
           create:
               (context) =>
-                  ThreadBloc(controller: ThreadController(), likeController: LikeController()),
+                  FoodSuggestionBloc(controller: FoodSuggestionController()),
+        ),
+        BlocProvider(
+          create: (context) => LikeBloc(controller: LikeController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  NotificationBloc(controller: NotificationController()),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  NutritionistBloc(controller: NutritionistController()),
+        ),
+        BlocProvider(
+          create: (context) => ReportBloc(controller: ReportController()),
+        ),
+        BlocProvider(
+          create: (context) => ScheduleBloc(controller: ScheduleController()),
+        ),
+        BlocProvider(
+          create:
+              (context) => ThreadBloc(
+                controller: ThreadController(),
+                likeController: LikeController(),
+              ),
         ),
       ],
       child: MaterialApp(
@@ -116,8 +165,12 @@ class MainApp extends StatelessWidget {
         theme: ThemeData(
           fontFamily: 'Poppins',
           primaryColor: AppColors.primary,
-          colorScheme: ColorScheme.light(primary: AppColors.primary, secondary: AppColors.accent),
+          colorScheme: ColorScheme.light(
+            primary: AppColors.primary,
+            secondary: AppColors.accent,
+          ),
         ),
+        navigatorKey: navigatorKey,
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state is LoginSuccess) {
@@ -134,6 +187,16 @@ class MainApp extends StatelessWidget {
           '/register': (context) => RegisterScreen(),
           '/home': (context) => MainPage(),
         },
+        onGenerateRoute: (settings) {
+          if (settings.name?.startsWith('/password-reset') ?? false) {
+            // Let DeepLinkHandler handle this via the navigatorKey
+            debugPrint(
+              'Ignoring /password-reset in onGenerateRoute; handled by DeepLinkHandler.',
+            );
+            return null;
+          }
+          return null;
+        },
       ),
     );
   }
@@ -141,8 +204,9 @@ class MainApp extends StatelessWidget {
 
 class MainPage extends StatefulWidget {
   final int initialPage;
+  final DateTime? targetDate;
 
-  const MainPage({super.key, this.initialPage = 0});
+  const MainPage({super.key, this.initialPage = 0, this.targetDate});
 
   @override
   State<MainPage> createState() => MainPageState();
@@ -156,6 +220,9 @@ class MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _page = widget.initialPage;
+    if (widget.targetDate != null) {
+      _pageParams = {'targetDate': widget.targetDate};
+    }
   }
 
   final List<Widget> _screens = [
@@ -177,31 +244,81 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body:
-          _page == 1 && _pageParams.containsKey('showUserSuggestions')
-              ? FoodListScreen(showUserSuggestions: _pageParams['showUserSuggestions'])
-              : _screens[_page],
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.background,
-        color: AppColors.primary,
-        height: MediaQuery.of(context).size.height * 0.070,
-        animationDuration: const Duration(milliseconds: 300),
-        index: _page,
-        items: [
-          Icon(Symbols.home_rounded, color: Colors.white, size: _page == 0 ? 35 : 25),
-          Icon(Symbols.restaurant_menu, color: Colors.white, size: _page == 1 ? 35 : 25),
-          Icon(Symbols.calendar_month, color: Colors.white, size: _page == 2 ? 35 : 25),
-          Icon(Symbols.forum, color: Colors.white, size: _page == 3 ? 35 : 25),
-          Icon(Symbols.settings, color: Colors.white, size: _page == 4 ? 35 : 25),
-        ],
-        onTap: (index) {
-          setState(() {
-            _page = index;
-            _pageParams = {};
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is AuthenticationError) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Tampilkan pesan error
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
+
+            // Navigasi ke login
+            Navigator.pushReplacementNamed(context, '/login');
           });
-        },
+        } else if (state is LogoutSuccess) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Tampilkan pesan logout sukses
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+            // Reset Baby
+            context.read<BabyBloc>().add(ResetBaby());
+            // Navigasi ke login
+            Navigator.pushReplacementNamed(context, '/login');
+          });
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body:
+            _page == 1 && _pageParams.containsKey('showUserSuggestions')
+                ? FoodListScreen(
+                  showUserSuggestions: _pageParams['showUserSuggestions'],
+                )
+                : _page == 2 && _pageParams.containsKey('targetDate')
+                ? ScheduleScreen(targetDate: _pageParams['targetDate'])
+                : _screens[_page],
+        bottomNavigationBar: CurvedNavigationBar(
+          backgroundColor: AppColors.background,
+          color: AppColors.primary,
+          height: MediaQuery.of(context).size.height * 0.070,
+          animationDuration: const Duration(milliseconds: 300),
+          index: _page,
+          items: [
+            Icon(
+              Symbols.home_rounded,
+              color: Colors.white,
+              size: _page == 0 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.restaurant_menu,
+              color: Colors.white,
+              size: _page == 1 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.calendar_month,
+              color: Colors.white,
+              size: _page == 2 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.forum,
+              color: Colors.white,
+              size: _page == 3 ? 35 : 25,
+            ),
+            Icon(
+              Symbols.settings,
+              color: Colors.white,
+              size: _page == 4 ? 35 : 25,
+            ),
+          ],
+          onTap: (index) {
+            setState(() {
+              _page = index;
+              _pageParams = {};
+            });
+          },
+        ),
       ),
     );
   }

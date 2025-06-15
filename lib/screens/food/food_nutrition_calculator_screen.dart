@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -27,12 +26,15 @@ class FoodNutritionCalculatorScreen extends StatefulWidget {
   });
 
   @override
-  State<FoodNutritionCalculatorScreen> createState() => _FoodNutritionCalculatorScreenState();
+  State<FoodNutritionCalculatorScreen> createState() =>
+      _FoodNutritionCalculatorScreenState();
 }
 
-class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorScreen> {
+class _FoodNutritionCalculatorScreenState
+    extends State<FoodNutritionCalculatorScreen> {
   // API key dari .env file untuk akses Gemini AI
-  final String _geminiApiKey = dotenv.env['GEMINI_API_KEY'] ?? 'YOUR_DEFAULT_API_KEY';
+  final String _geminiApiKey =
+      dotenv.env['GEMINI_API_KEY'] ?? 'YOUR_DEFAULT_API_KEY';
 
   // State untuk menyimpan nilai nutrisi
   double _energyValue = 0;
@@ -63,7 +65,9 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
   Future<void> _calculateNutrition() async {
     try {
       // Mencoba mendapatkan nilai nutrisi melalui Gemini AI API
-      final nutritionValues = await _getNutritionValuesFromGemini(widget.ingredients);
+      final nutritionValues = await _getNutritionValuesFromGemini(
+        widget.ingredients,
+      );
 
       if (mounted) {
         setState(() {
@@ -80,7 +84,9 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
   }
 
   // Fungsi untuk mendapatkan nilai gizi dari bahan makanan menggunakan Gemini AI
-  Future<Map<String, double>> _getNutritionValuesFromGemini(List<String> ingredients) async {
+  Future<Map<String, double>> _getNutritionValuesFromGemini(
+    List<String> ingredients,
+  ) async {
     if (_geminiApiKey == 'YOUR_DEFAULT_API_KEY' || _geminiApiKey.isEmpty) {
       throw Exception('API Key not configured.');
     }
@@ -115,7 +121,8 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
       }
 
       // Ekstraksi data JSON dari respons menggunakan regex
-      final String jsonPattern = r'```(?:json)?\s*(\{[\s\S]*?\})\s*```|(\{[\s\S]*?\})';
+      final String jsonPattern =
+          r'```(?:json)?\s*(\{[\s\S]*?\})\s*```|(\{[\s\S]*?\})';
       RegExp jsonRegex = RegExp(jsonPattern);
       var matches = jsonRegex.allMatches(responseText);
 
@@ -137,7 +144,9 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
       if (!nutritionData.containsKey('energy') ||
           !nutritionData.containsKey('protein') ||
           !nutritionData.containsKey('fat')) {
-        throw Exception('Kunci nutrisi yang diperlukan tidak ada dalam respons');
+        throw Exception(
+          'Kunci nutrisi yang diperlukan tidak ada dalam respons',
+        );
       }
 
       // Konversi nilai-nilai ke double dan kembalikan sebagai Map
@@ -218,7 +227,10 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => FoodRecipeSuccessScreen(isEditing: widget.food.id != null),
+              builder:
+                  (context) => FoodRecipeSuccessScreen(
+                    isEditing: widget.food.id != null,
+                  ),
             ),
           );
         } else if (state is FoodSuggestionError) {
@@ -272,8 +284,14 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                         // Garis penghubung
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 15, left: 10),
-                            child: Container(height: 4, color: AppColors.accent),
+                            padding: const EdgeInsets.only(
+                              bottom: 15,
+                              left: 10,
+                            ),
+                            child: Container(
+                              height: 4,
+                              color: AppColors.accent,
+                            ),
                           ),
                         ),
 
@@ -282,8 +300,14 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                         // Garis penghubung
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 15, right: 10),
-                            child: Container(height: 4, color: AppColors.componentGrey),
+                            padding: const EdgeInsets.only(
+                              bottom: 15,
+                              right: 10,
+                            ),
+                            child: Container(
+                              height: 4,
+                              color: AppColors.componentGrey,
+                            ),
                           ),
                         ),
 
@@ -305,9 +329,16 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                         // Menampilkan pesan jika tidak ada bahan, atau daftar bahan jika ada
                         children:
                             widget.ingredients.isEmpty
-                                ? [_buildIngredientItem('Tidak ada bahan yang diinput')]
+                                ? [
+                                  _buildIngredientItem(
+                                    'Tidak ada bahan yang diinput',
+                                  ),
+                                ]
                                 : widget.ingredients
-                                    .map((ingredient) => _buildIngredientItem(ingredient))
+                                    .map(
+                                      (ingredient) =>
+                                          _buildIngredientItem(ingredient),
+                                    )
                                     .toList(),
                       ),
                     ),
@@ -355,7 +386,9 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                         ? const Center(
                           child: Column(
                             children: [
-                              CircularProgressIndicator(color: AppColors.accent),
+                              CircularProgressIndicator(
+                                color: AppColors.accent,
+                              ),
                               SizedBox(height: 8),
                               Text(
                                 'Menghitung nilai nutrisi...',
@@ -375,7 +408,11 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             // Card untuk energi (kalori)
-                            _buildNutritionCard('Energi', _energyValue.toStringAsFixed(1), 'kkal'),
+                            _buildNutritionCard(
+                              'Energi',
+                              _energyValue.toStringAsFixed(1),
+                              'kkal',
+                            ),
                             // Pembatas vertikal antar card
                             Container(
                               height: 40,
@@ -383,7 +420,11 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                               color: AppColors.textBlack.withAlpha(75),
                             ),
                             // Card untuk protein
-                            _buildNutritionCard('Protein', _proteinValue.toStringAsFixed(1), 'g'),
+                            _buildNutritionCard(
+                              'Protein',
+                              _proteinValue.toStringAsFixed(1),
+                              'g',
+                            ),
                             // Pembatas vertikal antar card
                             Container(
                               height: 40,
@@ -391,7 +432,11 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                               color: AppColors.textBlack.withAlpha(75),
                             ),
                             // Card untuk lemak
-                            _buildNutritionCard('Lemak', _fatValue.toStringAsFixed(1), 'g'),
+                            _buildNutritionCard(
+                              'Lemak',
+                              _fatValue.toStringAsFixed(1),
+                              'g',
+                            ),
                           ],
                         ),
                   ],
@@ -404,27 +449,6 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
               onPressed: _isSubmitting ? null : () => Navigator.pop(context),
               icon: AppIcons.back,
             ),
-            // Positioned(
-            //   top: 35,
-            //   left: 15,
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //       color: Colors.white,
-            //       borderRadius: BorderRadius.circular(16),
-            //       border: Border.all(color: AppColors.componentGrey!),
-            //     ),
-            //     child: IconButton(
-            //       icon: const Icon(
-            //         Symbols.arrow_back_ios_new_rounded,
-            //         color: AppColors.textBlack,
-            //         size: 24,
-            //       ),
-            //       padding: EdgeInsets.zero,
-            //       onPressed:
-            //           _isSubmitting ? null : () => Navigator.pop(context),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
         // Bottom navigation bar dengan tombol simpan
@@ -437,7 +461,9 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.accent,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             child:
@@ -448,7 +474,10 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
                         SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
                         ),
                         SizedBox(width: 12),
                         Text(
@@ -481,7 +510,11 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
       padding: const EdgeInsets.only(bottom: 4.0),
       child: Text(
         '- $text',
-        style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.textBlack),
+        style: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 14,
+          color: AppColors.textBlack,
+        ),
       ),
     );
   }
@@ -546,7 +579,10 @@ class _FoodNutritionCalculatorScreenState extends State<FoodNutritionCalculatorS
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
         padding: const EdgeInsets.symmetric(vertical: 4),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Column(
           children: [
             // Label nutrisi (misalnya "Energi")

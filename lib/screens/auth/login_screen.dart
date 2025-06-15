@@ -66,7 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
             });
           } else if (state is AuthenticationError) {
             ScaffoldMessenger.of(
+              
               context,
+            
             ).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
@@ -82,8 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   right: 0,
                   height: size.height * 1,
                   child: Image.asset(
+                    
                     'assets/images/background/auth.png',
+                   
                     fit: BoxFit.cover,
+                  
                   ),
                 ),
                 // Panel utama
@@ -91,7 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   top: size.height * 0.5,
                   left: 24,
                   right: 24,
-                  // bottom: MediaQuery.of(context).padding.bottom,
                   child: Card(
                     elevation: 8,
                     shape: RoundedRectangleBorder(

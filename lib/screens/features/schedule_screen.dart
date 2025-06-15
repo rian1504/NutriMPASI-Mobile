@@ -12,7 +12,9 @@ import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/main.dart';
 
 class ScheduleScreen extends StatefulWidget {
-  const ScheduleScreen({super.key});
+  final DateTime? targetDate;
+
+  const ScheduleScreen({super.key, this.targetDate});
 
   @override
   State<ScheduleScreen> createState() => _ScheduleScreenState();
@@ -20,9 +22,9 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   // Controller PageView untuk navigasi hari
-  final PageController _dayController = PageController(initialPage: 2, viewportFraction: 0.2);
+  late PageController _dayController;
   int _currentDay = 2;
-  DateTime _selectedDate = DateTime.now();
+  late DateTime _selectedDate;
 
   // Variabel untuk card yang sedang terbuka
   String? _openCardId;
@@ -40,7 +42,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   // Helper method untuk memeriksa apakah dua tanggal adalah hari yang sama
   bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   // Helper method untuk mendapatkan formatted date string
@@ -51,6 +55,30 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Fungsi untuk menginisialisasi tanggal terpilih
+    if (widget.targetDate != null) {
+      _selectedDate = widget.targetDate!;
+
+      final today = DateTime.now();
+      final diff =
+          _selectedDate
+              .difference(DateTime(today.year, today.month, today.day))
+              .inDays;
+
+      if (diff >= -2 && diff <= 8) {
+        _currentDay = 2 + diff;
+      }
+    } else {
+      _selectedDate = DateTime.now();
+      _currentDay = 2;
+    }
+
+    _dayController = PageController(
+      initialPage: _currentDay,
+      viewportFraction: 0.2,
+    );
+
     context.read<ScheduleBloc>().add(FetchSchedules());
     Intl.defaultLocale = 'id';
   }
@@ -58,8 +86,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   // Data hari dan tanggal
   List<Map<String, dynamic>> get _days {
     final today = DateTime.now();
+    final baseDate = DateTime(today.year, today.month, today.day);
+
     return List.generate(11, (index) {
-      final date = today.add(Duration(days: index - 2));
+      final date = baseDate.add(Duration(days: index - 2));
       return {
         'day': DateFormat('E', 'id').format(date),
         'date': date.day,
@@ -90,7 +120,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
 
     // Fungsi untuk navigasi ke FoodListScreen
-    final MainPageState? mainPage = context.findAncestorStateOfType<MainPageState>();
+    final MainPageState? mainPage =
+        context.findAncestorStateOfType<MainPageState>();
     if (mainPage != null) {
       mainPage.changePage(1);
     }
@@ -115,7 +146,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         leading: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
         title: const Text(
           'Jadwal Memasak',
-          style: TextStyle(color: AppColors.textBlack, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppColors.textBlack,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
         actions: [
@@ -123,7 +157,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CookingHistoryScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const CookingHistoryScreen(),
+                ),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -132,7 +168,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               padding: const EdgeInsets.all(8.0),
               elevation: 2,
             ),
-            child: const Icon(Symbols.history, color: AppColors.primary, size: 20),
+            child: const Icon(
+              Symbols.history,
+              color: AppColors.primary,
+              size: 20,
+            ),
           ),
         ],
       ),
@@ -177,7 +217,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     }
                   },
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color:
                           _currentDay == index
@@ -260,14 +303,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Symbols.add),
                         const SizedBox(width: 4),
-                        const Text('Tambah Jadwal Masak', style: TextStyle(fontSize: 12)),
+                        const Text(
+                          'Tambah Jadwal Masak',
+                          style: TextStyle(fontSize: 12),
+                        ),
                       ],
                     ),
                   ),
@@ -303,7 +351,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             listener: (context, state) {
               if (state is ScheduleUpdated) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Jadwal berhasil diubah'), backgroundColor: Colors.green),
+                  SnackBar(
+                    content: Text('Jadwal berhasil diubah'),
+                    backgroundColor: Colors.green,
+                  ),
                 );
 
                 setState(() {
@@ -312,7 +363,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 });
               } else if (state is ScheduleDeleted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Jadwal berhasil dihapus'), backgroundColor: Colors.green),
+                  SnackBar(
+                    content: Text('Jadwal berhasil dihapus'),
+                    backgroundColor: Colors.green,
+                  ),
                 );
 
                 setState(() {
@@ -322,14 +376,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               } else if (state is ScheduleError) {
                 // Tampilkan snackbar jika terjadi error
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error), backgroundColor: AppColors.red),
+                  SnackBar(
+                    content: Text(state.error),
+                    backgroundColor: AppColors.red,
+                  ),
                 );
               }
             },
             builder: (context, state) {
               if (state is ScheduleLoading) {
                 return const Center(
-                  child: Column(children: [SizedBox(height: 100), CircularProgressIndicator()]),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 100),
+                      CircularProgressIndicator(),
+                    ],
+                  ),
                 );
               }
 
@@ -381,11 +443,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(height: 50),
-                        Icon(Symbols.fastfood, size: 60, color: AppColors.textGrey),
+                        Icon(
+                          Symbols.fastfood,
+                          size: 60,
+                          color: AppColors.textGrey,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Belum ada jadwal memasak',
-                          style: TextStyle(fontSize: 16, color: AppColors.textGrey),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textGrey,
+                          ),
                         ),
                       ],
                     ),
@@ -431,7 +500,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                   children: [
                                     // Tombol edit
                                     Container(
-                                      decoration: BoxDecoration(color: AppColors.red),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.red,
+                                      ),
                                       child: Container(
                                         width: 80,
                                         decoration: BoxDecoration(
@@ -442,11 +513,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                           ),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.only(left: 20.0),
+                                          padding: const EdgeInsets.only(
+                                            left: 20.0,
+                                          ),
                                           child: InkWell(
                                             onTap: () {
                                               // Ambil data bayi
-                                              final babyState = context.read<BabyBloc>().state;
+                                              final babyState =
+                                                  context
+                                                      .read<BabyBloc>()
+                                                      .state;
 
                                               if (babyState is BabyLoaded) {
                                                 final babies = babyState.babies;
@@ -454,45 +530,76 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                 // Tampilkan Dialog untuk edit jadwal
                                                 showDialog(
                                                   context: context,
-                                                  builder: (BuildContext context) {
+                                                  builder: (
+                                                    BuildContext context,
+                                                  ) {
                                                     // Map untuk checkbox bayi (gunakan ID bayi sebagai key)
-                                                    Map<int, bool> selectedBabies = {
-                                                      for (var baby in babies) baby.id: false,
+                                                    Map<int, bool>
+                                                    selectedBabies = {
+                                                      for (var baby in babies)
+                                                        baby.id: false,
                                                     };
 
-                                                    DateTime? selectedDate = item.date;
+                                                    DateTime? selectedDate =
+                                                        item.date;
 
                                                     // Reset semua bayi ke false terlebih dahulu
-                                                    selectedBabies = selectedBabies.map(
-                                                      (key, value) => MapEntry(key, false),
-                                                    );
+                                                    selectedBabies =
+                                                        selectedBabies.map(
+                                                          (key, value) =>
+                                                              MapEntry(
+                                                                key,
+                                                                false,
+                                                              ),
+                                                        );
 
                                                     // Set true untuk bayi yang terdaftar di schedule
-                                                    for (var baby in item.babies) {
-                                                      if (selectedBabies.containsKey(baby.id)) {
-                                                        selectedBabies[baby.id] = true;
+                                                    for (var baby
+                                                        in item.babies) {
+                                                      if (selectedBabies
+                                                          .containsKey(
+                                                            baby.id,
+                                                          )) {
+                                                        selectedBabies[baby
+                                                                .id] =
+                                                            true;
                                                       }
                                                     }
 
                                                     return StatefulBuilder(
-                                                      builder: (context, setState) {
+                                                      builder: (
+                                                        context,
+                                                        setState,
+                                                      ) {
                                                         return Dialog(
                                                           shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(16),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  16,
+                                                                ),
                                                           ),
                                                           child: Container(
-                                                            padding: const EdgeInsets.all(16),
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  16,
+                                                                ),
                                                             child: Column(
-                                                              mainAxisSize: MainAxisSize.min,
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
                                                               crossAxisAlignment:
-                                                                  CrossAxisAlignment.start,
+                                                                  CrossAxisAlignment
+                                                                      .start,
                                                               children: [
                                                                 Row(
                                                                   mainAxisAlignment:
-                                                                      MainAxisAlignment.end,
+                                                                      MainAxisAlignment
+                                                                          .end,
                                                                   children: [
                                                                     Material(
-                                                                      color: Colors.transparent,
+                                                                      color:
+                                                                          Colors
+                                                                              .transparent,
                                                                       child: InkWell(
                                                                         onTap:
                                                                             () => Navigator.pop(
@@ -501,24 +608,27 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                         customBorder:
                                                                             const CircleBorder(),
                                                                         child: Container(
-                                                                          width: 24,
-                                                                          height: 24,
+                                                                          width:
+                                                                              24,
+                                                                          height:
+                                                                              24,
                                                                           decoration: BoxDecoration(
-                                                                            shape: BoxShape.circle,
-                                                                            color: Colors.white,
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                            color:
+                                                                                Colors.white,
                                                                             border: Border.all(
                                                                               color:
-                                                                                  AppColors
-                                                                                      .textBlack,
+                                                                                  AppColors.textBlack,
                                                                             ),
                                                                           ),
                                                                           child: const Center(
                                                                             child: Icon(
                                                                               Icons.close,
                                                                               color:
-                                                                                  AppColors
-                                                                                      .textBlack,
-                                                                              size: 18,
+                                                                                  AppColors.textBlack,
+                                                                              size:
+                                                                                  18,
                                                                             ),
                                                                           ),
                                                                         ),
@@ -530,26 +640,40 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                   child: Text(
                                                                     'Atur Ulang Jadwal Memasak',
                                                                     style: TextStyle(
-                                                                      fontFamily: 'Poppins',
-                                                                      fontSize: 20,
-                                                                      fontWeight: FontWeight.w600,
-                                                                      color: AppColors.textBlack,
+                                                                      fontFamily:
+                                                                          'Poppins',
+                                                                      fontSize:
+                                                                          20,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      color:
+                                                                          AppColors
+                                                                              .textBlack,
                                                                     ),
                                                                   ),
                                                                 ),
 
-                                                                const SizedBox(height: 16),
+                                                                const SizedBox(
+                                                                  height: 16,
+                                                                ),
 
                                                                 // Pilihan bayi
                                                                 const Text(
                                                                   'Pilih Profil Bayi',
                                                                   style: TextStyle(
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: 14,
-                                                                    color: AppColors.textGrey,
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontSize:
+                                                                        14,
+                                                                    color:
+                                                                        AppColors
+                                                                            .textGrey,
                                                                   ),
                                                                 ),
-                                                                const SizedBox(height: 8),
+                                                                const SizedBox(
+                                                                  height: 8,
+                                                                ),
                                                                 StatefulBuilder(
                                                                   builder: (
                                                                     context,
@@ -557,35 +681,38 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                   ) {
                                                                     return Column(
                                                                       crossAxisAlignment:
-                                                                          CrossAxisAlignment.start,
+                                                                          CrossAxisAlignment
+                                                                              .start,
                                                                       children:
-                                                                          babies.map((baby) {
+                                                                          babies.map((
+                                                                            baby,
+                                                                          ) {
                                                                             return Row(
                                                                               children: [
                                                                                 Checkbox(
                                                                                   value:
-                                                                                      selectedBabies[baby
-                                                                                          .id] ??
+                                                                                      selectedBabies[baby.id] ??
                                                                                       false,
                                                                                   onChanged: (
                                                                                     value,
                                                                                   ) {
-                                                                                    setState(() {
-                                                                                      selectedBabies[baby
-                                                                                              .id] =
-                                                                                          value!;
-                                                                                    });
+                                                                                    setState(
+                                                                                      () {
+                                                                                        selectedBabies[baby.id] =
+                                                                                            value!;
+                                                                                      },
+                                                                                    );
                                                                                   },
                                                                                   activeColor:
-                                                                                      AppColors
-                                                                                          .primary,
+                                                                                      AppColors.primary,
                                                                                 ),
                                                                                 Text(
                                                                                   baby.name,
                                                                                   style: TextStyle(
                                                                                     fontFamily:
                                                                                         'Poppins',
-                                                                                    fontSize: 14,
+                                                                                    fontSize:
+                                                                                        14,
                                                                                   ),
                                                                                 ),
                                                                               ],
@@ -594,56 +721,74 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                     );
                                                                   },
                                                                 ),
-                                                                const SizedBox(height: 16),
+                                                                const SizedBox(
+                                                                  height: 16,
+                                                                ),
 
                                                                 // Pilihan tanggal
                                                                 const Text(
                                                                   'Pilih Penjadwalan',
                                                                   style: TextStyle(
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: 14,
-                                                                    color: AppColors.textGrey,
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontSize:
+                                                                        14,
+                                                                    color:
+                                                                        AppColors
+                                                                            .textGrey,
                                                                   ),
                                                                 ),
-                                                                const SizedBox(height: 8),
+                                                                const SizedBox(
+                                                                  height: 8,
+                                                                ),
                                                                 InkWell(
                                                                   onTap: () async {
                                                                     final DateTime?
                                                                     picked = await showDatePicker(
-                                                                      context: context,
+                                                                      context:
+                                                                          context,
                                                                       initialDate:
                                                                           selectedDate ??
                                                                           DateTime.now(),
-                                                                      firstDate: DateTime.now(),
+                                                                      firstDate:
+                                                                          DateTime.now(),
                                                                       lastDate: DateTime.now().add(
-                                                                        const Duration(days: 6),
+                                                                        const Duration(
+                                                                          days:
+                                                                              6,
+                                                                        ),
                                                                       ),
                                                                       // Format tanggal Indonesia
-                                                                      locale: const Locale(
-                                                                        'id',
-                                                                        'ID',
-                                                                      ),
+                                                                      locale:
+                                                                          const Locale(
+                                                                            'id',
+                                                                            'ID',
+                                                                          ),
                                                                     );
-                                                                    if (picked != null) {
+                                                                    if (picked !=
+                                                                        null) {
                                                                       setState(() {
-                                                                        selectedDate = picked;
+                                                                        selectedDate =
+                                                                            picked;
                                                                       });
                                                                     }
                                                                   },
                                                                   child: Container(
-                                                                    padding:
-                                                                        const EdgeInsets.symmetric(
-                                                                          horizontal: 12,
-                                                                          vertical: 8,
-                                                                        ),
+                                                                    padding: const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          12,
+                                                                      vertical:
+                                                                          8,
+                                                                    ),
                                                                     decoration: BoxDecoration(
                                                                       border: Border.all(
                                                                         color:
-                                                                            AppColors
-                                                                                .componentGrey!,
+                                                                            AppColors.componentGrey!,
                                                                       ),
                                                                       borderRadius:
-                                                                          BorderRadius.circular(8),
+                                                                          BorderRadius.circular(
+                                                                            8,
+                                                                          ),
                                                                     ),
                                                                     child: Row(
                                                                       mainAxisAlignment:
@@ -651,7 +796,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                               .spaceBetween,
                                                                       children: [
                                                                         Text(
-                                                                          selectedDate != null
+                                                                          selectedDate !=
+                                                                                  null
                                                                               ? DateFormat(
                                                                                 'EEEE, d MMMM y',
                                                                                 'id_ID',
@@ -660,26 +806,35 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                               )
                                                                               : 'Pilih Tanggal',
                                                                           style: const TextStyle(
-                                                                            fontFamily: 'Poppins',
-                                                                            fontSize: 14,
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                14,
                                                                             color:
                                                                                 AppColors.textGrey,
                                                                           ),
                                                                         ),
                                                                         const Icon(
-                                                                          Symbols.calendar_month,
-                                                                          size: 20,
-                                                                          color: AppColors.textGrey,
+                                                                          Symbols
+                                                                              .calendar_month,
+                                                                          size:
+                                                                              20,
+                                                                          color:
+                                                                              AppColors.textGrey,
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                const SizedBox(height: 24),
+                                                                const SizedBox(
+                                                                  height: 24,
+                                                                ),
 
                                                                 // Tombol simpan jadwal
                                                                 SizedBox(
-                                                                  width: double.infinity,
+                                                                  width:
+                                                                      double
+                                                                          .infinity,
                                                                   child: ElevatedButton(
                                                                     onPressed: () {
                                                                       if (!mounted) {
@@ -688,19 +843,24 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                                                                       // Dapatkan list id bayi yang dipilih
                                                                       final selectedBabyIds =
-                                                                          selectedBabies.entries
+                                                                          selectedBabies
+                                                                              .entries
                                                                               .where(
-                                                                                (entry) =>
+                                                                                (
+                                                                                  entry,
+                                                                                ) =>
                                                                                     entry.value,
                                                                               )
                                                                               .map(
-                                                                                (entry) =>
-                                                                                    entry.key
-                                                                                        .toString(),
+                                                                                (
+                                                                                  entry,
+                                                                                ) =>
+                                                                                    entry.key.toString(),
                                                                               )
                                                                               .toList();
 
-                                                                      if (selectedBabyIds.isEmpty) {
+                                                                      if (selectedBabyIds
+                                                                          .isEmpty) {
                                                                         ScaffoldMessenger.of(
                                                                           context,
                                                                         ).showSnackBar(
@@ -713,7 +873,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                         return;
                                                                       }
 
-                                                                      if (selectedDate == null) {
+                                                                      if (selectedDate ==
+                                                                          null) {
                                                                         ScaffoldMessenger.of(
                                                                           context,
                                                                         ).showSnackBar(
@@ -728,39 +889,51 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                                                                       // update schedule
                                                                       context
-                                                                          .read<ScheduleBloc>()
+                                                                          .read<
+                                                                            ScheduleBloc
+                                                                          >()
                                                                           .add(
                                                                             UpdateSchedules(
-                                                                              scheduleId: item.id,
+                                                                              scheduleId:
+                                                                                  item.id,
                                                                               babyId:
                                                                                   selectedBabyIds,
-                                                                              date: selectedDate!,
+                                                                              date:
+                                                                                  selectedDate!,
                                                                             ),
                                                                           );
 
-                                                                      Navigator.pop(context);
+                                                                      Navigator.pop(
+                                                                        context,
+                                                                      );
                                                                     },
                                                                     style: ElevatedButton.styleFrom(
                                                                       backgroundColor:
-                                                                          AppColors.accent,
-                                                                      foregroundColor: Colors.white,
+                                                                          AppColors
+                                                                              .accent,
+                                                                      foregroundColor:
+                                                                          Colors
+                                                                              .white,
                                                                       shape: RoundedRectangleBorder(
                                                                         borderRadius:
                                                                             BorderRadius.circular(
                                                                               8,
                                                                             ),
                                                                       ),
-                                                                      padding:
-                                                                          const EdgeInsets.symmetric(
-                                                                            vertical: 12,
-                                                                          ),
+                                                                      padding: const EdgeInsets.symmetric(
+                                                                        vertical:
+                                                                            12,
+                                                                      ),
                                                                     ),
                                                                     child: const Text(
                                                                       'Simpan',
                                                                       style: TextStyle(
-                                                                        fontFamily: 'Poppins',
-                                                                        fontSize: 14,
-                                                                        fontWeight: FontWeight.w600,
+                                                                        fontFamily:
+                                                                            'Poppins',
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
                                                                       ),
                                                                     ),
                                                                   ),
@@ -774,15 +947,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                   },
                                                 );
                                               } else {
-                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
                                                   const SnackBar(
-                                                    content: Text('Gagal memuat data bayi'),
+                                                    content: Text(
+                                                      'Gagal memuat data bayi',
+                                                    ),
                                                   ),
                                                 );
                                               }
                                             },
                                             child: const Center(
-                                              child: Icon(Symbols.edit, color: Colors.white),
+                                              child: Icon(
+                                                Symbols.edit,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -807,54 +987,80 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                             builder: (BuildContext context) {
                                               return Dialog(
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(15),
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
                                                 ),
                                                 child: Container(
-                                                  padding: const EdgeInsets.all(20),
+                                                  padding: const EdgeInsets.all(
+                                                    20,
+                                                  ),
                                                   child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: [
                                                       Text(
                                                         'Anda yakin ingin menghapus Jadwal Memasak "${food!.name}" ini?',
-                                                        textAlign: TextAlign.center,
+                                                        textAlign:
+                                                            TextAlign.center,
                                                         style: const TextStyle(
-                                                          fontWeight: FontWeight.w500,
+                                                          fontWeight:
+                                                              FontWeight.w500,
                                                           fontSize: 16,
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 24),
+                                                      const SizedBox(
+                                                        height: 24,
+                                                      ),
                                                       Row(
                                                         mainAxisAlignment:
-                                                            MainAxisAlignment.spaceBetween,
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
                                                           // Tombol Batal
                                                           Expanded(
                                                             child: ElevatedButton(
                                                               style: ElevatedButton.styleFrom(
                                                                 backgroundColor:
-                                                                    AppColors.componentBlack,
-                                                                foregroundColor: Colors.white,
+                                                                    AppColors
+                                                                        .componentBlack,
+                                                                foregroundColor:
+                                                                    Colors
+                                                                        .white,
                                                                 shape: RoundedRectangleBorder(
                                                                   borderRadius:
-                                                                      BorderRadius.circular(10),
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
                                                                 ),
                                                               ),
                                                               onPressed: () {
-                                                                Navigator.of(context).pop();
+                                                                Navigator.of(
+                                                                  context,
+                                                                ).pop();
                                                               },
-                                                              child: const Text('Batal'),
+                                                              child: const Text(
+                                                                'Batal',
+                                                              ),
                                                             ),
                                                           ),
-                                                          const SizedBox(width: 10),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
                                                           // Tombol Hapus
                                                           Expanded(
                                                             child: ElevatedButton(
                                                               style: ElevatedButton.styleFrom(
-                                                                backgroundColor: AppColors.red,
-                                                                foregroundColor: Colors.white,
+                                                                backgroundColor:
+                                                                    AppColors
+                                                                        .red,
+                                                                foregroundColor:
+                                                                    Colors
+                                                                        .white,
                                                                 shape: RoundedRectangleBorder(
                                                                   borderRadius:
-                                                                      BorderRadius.circular(10),
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
                                                                 ),
                                                               ),
                                                               onPressed: () {
@@ -862,15 +1068,24 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                   return;
                                                                 }
 
-                                                                context.read<ScheduleBloc>().add(
-                                                                  DeleteSchedules(
-                                                                    scheduleId: item.id,
-                                                                  ),
-                                                                );
+                                                                context
+                                                                    .read<
+                                                                      ScheduleBloc
+                                                                    >()
+                                                                    .add(
+                                                                      DeleteSchedules(
+                                                                        scheduleId:
+                                                                            item.id,
+                                                                      ),
+                                                                    );
 
-                                                                Navigator.pop(context);
+                                                                Navigator.pop(
+                                                                  context,
+                                                                );
                                                               },
-                                                              child: const Text('Hapus'),
+                                                              child: const Text(
+                                                                'Hapus',
+                                                              ),
                                                             ),
                                                           ),
                                                         ],
@@ -883,7 +1098,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                           );
                                         },
                                         child: const Center(
-                                          child: Icon(Symbols.delete, color: Colors.white),
+                                          child: Icon(
+                                            Symbols.delete,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -894,7 +1112,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               // Card jadwal
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
-                                transform: Matrix4.translationValues(isOpen ? -120 : 0, 0, 0),
+                                transform: Matrix4.translationValues(
+                                  isOpen ? -120 : 0,
+                                  0,
+                                  0,
+                                ),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -923,7 +1145,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       // Info makanan
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               food.name,
@@ -943,13 +1166,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                   children:
                                                       babies.map((baby) {
                                                         return Padding(
-                                                          padding: const EdgeInsets.only(right: 5),
+                                                          padding:
+                                                              const EdgeInsets.only(
+                                                                right: 5,
+                                                              ),
                                                           child: Text(
                                                             baby.name,
                                                             style: TextStyle(
-                                                              fontFamily: 'Poppins',
+                                                              fontFamily:
+                                                                  'Poppins',
                                                               fontSize: 12,
-                                                              color: AppColors.textGrey,
+                                                              color:
+                                                                  AppColors
+                                                                      .textGrey,
                                                             ),
                                                           ),
                                                         );
@@ -962,7 +1191,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       ),
                                       // Tombol masak
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding: const EdgeInsets.only(
+                                          right: 8.0,
+                                        ),
                                         child: Column(
                                           children: [
                                             Text(
@@ -980,23 +1211,35 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                 // Mengubah list baby ke list id baby
                                                 List<String> babyId =
                                                     babies
-                                                        .map((baby) => baby.id.toString())
+                                                        .map(
+                                                          (baby) =>
+                                                              baby.id
+                                                                  .toString(),
+                                                        )
                                                         .toList();
 
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder:
-                                                        (context) => CookingGuideScreen(
-                                                          foodId: food.id.toString(),
+                                                        (
+                                                          context,
+                                                        ) => CookingGuideScreen(
+                                                          foodId:
+                                                              food.id
+                                                                  .toString(),
                                                           babyId: babyId,
-                                                          scheduleId: item.id.toString(),
+                                                          scheduleId:
+                                                              item.id
+                                                                  .toString(),
                                                         ),
                                                   ),
                                                 );
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.all(10),
+                                                padding: const EdgeInsets.all(
+                                                  10,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: AppColors.accent,
                                                   shape: BoxShape.circle,

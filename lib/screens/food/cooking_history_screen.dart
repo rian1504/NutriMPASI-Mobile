@@ -14,7 +14,9 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class CookingHistoryScreen extends StatefulWidget {
-  const CookingHistoryScreen({super.key});
+  final String? babyId;
+
+  const CookingHistoryScreen({this.babyId, super.key});
 
   @override
   State<CookingHistoryScreen> createState() => _CookingHistoryScreenState();
@@ -75,41 +77,34 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     );
 
     // Nilai awal default untuk animasi
-    _progressAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+    _progressAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     // Inisialisasi animasi untuk semua nilai nutrisi
-    _calorieCountAnimation = IntTween(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _calorieCountAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _lastMonthCalorieAnimation = IntTween(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _lastMonthCalorieAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _differenceAnimation = IntTween(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _differenceAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _energyAnimation = IntTween(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _energyAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _proteinAnimation = IntTween(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _proteinAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _fatAnimation = IntTween(
-      begin: 0,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _fatAnimation = IntTween(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     // Muat data
     final babyState = context.read<BabyBloc>().state;
@@ -119,7 +114,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       // Jika data sudah ter-load, perbarui status loading
       setState(() {
         _babies = babyState.babies;
-        _selectedBaby = _babies.first.id.toString();
+        // Gunakan babyId dari parameter jika tersedia
+        _selectedBaby = widget.babyId ?? _babies.first.id.toString();
       });
     }
 
@@ -164,7 +160,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       _groupedData = {'Hari ini': todayItems};
     } else if (_selectedTimePeriod == 'Minggu ini') {
       // Tentukan tanggal awal minggu ini (Senin)
-      final DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+      final DateTime startOfWeek = now.subtract(
+        Duration(days: now.weekday - 1),
+      );
 
       // Kelompokkan berdasarkan hari dalam seminggu
       final Map<String, String> dayNames = {
@@ -209,22 +207,28 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
         // Skip jika minggu ini sudah melewati bulan
         if (startDate.isAfter(lastDayOfMonth)) continue;
 
-        final adjustedEndDate = endDate.isAfter(lastDayOfMonth) ? lastDayOfMonth : endDate;
+        final adjustedEndDate =
+            endDate.isAfter(lastDayOfMonth) ? lastDayOfMonth : endDate;
 
         final weekItems =
             itemsWithDate
                 .where(
                   (food) =>
-                      food.date.isAfter(startDate.subtract(const Duration(days: 1))) &&
-                      food.date.isBefore(adjustedEndDate.add(const Duration(days: 1))),
+                      food.date.isAfter(
+                        startDate.subtract(const Duration(days: 1)),
+                      ) &&
+                      food.date.isBefore(
+                        adjustedEndDate.add(const Duration(days: 1)),
+                      ),
                 )
                 .toList();
 
         final startDateStr = DateFormat('d', 'id_ID').format(startDate);
-        final endDateStr = DateFormat(
-          'd MMM',
-          'id_ID',
-        ).format(adjustedEndDate.isBefore(lastDayOfMonth) ? adjustedEndDate : lastDayOfMonth);
+        final endDateStr = DateFormat('d MMM', 'id_ID').format(
+          adjustedEndDate.isBefore(lastDayOfMonth)
+              ? adjustedEndDate
+              : lastDayOfMonth,
+        );
 
         if (weekItems.isNotEmpty ||
             week == 1 ||
@@ -245,7 +249,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
             itemsWithDate
                 .where(
                   (food) =>
-                      food.date.isAfter(firstDay.subtract(const Duration(days: 1))) &&
+                      food.date.isAfter(
+                        firstDay.subtract(const Duration(days: 1)),
+                      ) &&
                       food.date.isBefore(lastDay.add(const Duration(days: 1))),
                 )
                 .toList();
@@ -266,7 +272,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       final sortedYears = years.toList()..sort((a, b) => b.compareTo(a));
 
       for (var year in sortedYears) {
-        final yearItems = itemsWithDate.where((food) => food.date.year == year).toList();
+        final yearItems =
+            itemsWithDate.where((food) => food.date.year == year).toList();
         _groupedData['$year'] = yearItems;
       }
     }
@@ -281,7 +288,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
 
     // Atur nilai target akhir non-zero untuk animasi
     final double targetValue =
-        (_nutritionData['currentMonthKcal'] ?? 0) / (_nutritionData['recommendedCalories'] ?? 6000);
+        (_nutritionData['currentMonthKcal'] ?? 0) /
+        (_nutritionData['recommendedCalories'] ?? 6000);
 
     final int targetCalories = _nutritionData['currentMonthKcal'] ?? 0;
     final int targetLastMonthCalories = _nutritionData['lastMonthKcal'] ?? 0;
@@ -294,37 +302,39 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: targetValue > 1.0 ? 1.0 : targetValue,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _calorieCountAnimation = IntTween(
-      begin: 0,
-      end: targetCalories,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _calorieCountAnimation = IntTween(begin: 0, end: targetCalories).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     _lastMonthCalorieAnimation = IntTween(
       begin: 0,
       end: targetLastMonthCalories,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     _differenceAnimation = IntTween(
       begin: 0,
       end: targetDifference.abs(),
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _energyAnimation = IntTween(
-      begin: 0,
-      end: targetEnergy,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _energyAnimation = IntTween(begin: 0, end: targetEnergy).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _proteinAnimation = IntTween(
-      begin: 0,
-      end: targetProtein,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _proteinAnimation = IntTween(begin: 0, end: targetProtein).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
-    _fatAnimation = IntTween(
-      begin: 0,
-      end: targetFat,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _fatAnimation = IntTween(begin: 0, end: targetFat).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     // Selalu reset animation controller terlebih dahulu
     _animationController.reset();
@@ -382,7 +392,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     // Hitung umur dalam bulan
     final now = DateTime.now();
     final birthDate = selectedBabyObject.dob!;
-    int ageInMonths = (now.year - birthDate.year) * 12 + now.month - birthDate.month;
+    int ageInMonths =
+        (now.year - birthDate.year) * 12 + now.month - birthDate.month;
     if (now.day < birthDate.day) {
       ageInMonths--;
     }
@@ -426,7 +437,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     bool hasLastMonthData = false;
 
     for (var food in foods) {
-      if (food.date.isAfter(firstDayOfLastMonth.subtract(const Duration(days: 1))) &&
+      if (food.date.isAfter(
+            firstDayOfLastMonth.subtract(const Duration(days: 1)),
+          ) &&
           food.date.isBefore(firstDayOfCurrentMonth)) {
         lastMonthTotal += food.energy + (food.protein * 4) + (food.fat * 9);
         hasLastMonthData = true;
@@ -447,8 +460,12 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     double fat = 0;
 
     for (var food in foods) {
-      if (food.date.isAfter(firstDayOfCurrentMonth.subtract(const Duration(days: 1))) &&
-          food.date.isBefore(lastDayOfCurrentMonth.add(const Duration(days: 1)))) {
+      if (food.date.isAfter(
+            firstDayOfCurrentMonth.subtract(const Duration(days: 1)),
+          ) &&
+          food.date.isBefore(
+            lastDayOfCurrentMonth.add(const Duration(days: 1)),
+          )) {
         energy += food.energy;
         protein += food.protein;
         fat += food.fat;
@@ -467,7 +484,15 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
             if (state is BabyLoaded) {
               setState(() {
                 _babies = state.babies;
-                _selectedBaby = _babies.first.id.toString();
+                // Gunakan babyId dari parameter jika tersedia dan belum diset
+                if (_selectedBaby.isEmpty && widget.babyId != null) {
+                  _selectedBaby = widget.babyId!;
+                } else if (_babies.isNotEmpty) {
+                  _selectedBaby =
+                      _selectedBaby.isEmpty
+                          ? _babies.first.id.toString()
+                          : _selectedBaby;
+                }
               });
             }
           },
@@ -478,14 +503,18 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
               setState(() {
                 _historyItems =
                     state.foodRecords
-                        .where((food) => food.babyId.toString() == _selectedBaby)
+                        .where(
+                          (food) => food.babyId.toString() == _selectedBaby,
+                        )
                         .toList();
 
                 _shouldAnimateNutrition = true;
                 _groupFoodByTimePeriod();
               });
             } else if (state is FoodRecordError) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
             }
           },
         ),
@@ -532,7 +561,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
           children: [
             Padding(
               padding: EdgeInsets.only(
-                top: AppBar().preferredSize.height + MediaQuery.of(context).padding.top,
+                top:
+                    AppBar().preferredSize.height +
+                    MediaQuery.of(context).padding.top,
               ),
               child: BlocBuilder<FoodRecordBloc, FoodRecordState>(
                 builder: (context, state) {
@@ -575,13 +606,14 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                   ),
                 ),
                 backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white, // Warna teks dan ikon di AppBar
-                // leading: null, // Penting: Hapus leading default jika Anda ingin menempatkan tombol back sendiri di luar AppBar
-                automaticallyImplyLeading:
-                    false, // Penting: Untuk memastikan leading default tidak muncul
+                foregroundColor: Colors.white,
+                automaticallyImplyLeading: false,
               ),
             ),
-            LeadingActionButton(onPressed: () => Navigator.pop(context), icon: AppIcons.back),
+            LeadingActionButton(
+              onPressed: () => Navigator.pop(context),
+              icon: AppIcons.back,
+            ),
           ],
         ),
       ),
@@ -597,7 +629,12 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
           clipper: PointedBottomClipper(),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.only(top: 20, bottom: 50, left: 20, right: 20),
+            padding: const EdgeInsets.only(
+              top: 20,
+              bottom: 50,
+              left: 20,
+              right: 20,
+            ),
             decoration: BoxDecoration(
               color: AppColors.primary,
               boxShadow: [
@@ -642,7 +679,13 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                 );
                               },
                             ),
-                            const Text('kkal', style: TextStyle(color: Colors.white, fontSize: 12)),
+                            const Text(
+                              'kkal',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -677,7 +720,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                   value: _progressAnimation.value,
                                   strokeWidth: 10,
                                   backgroundColor: Colors.white.withAlpha(50),
-                                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent),
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                        AppColors.accent,
+                                      ),
                                 ),
                               );
                             },
@@ -704,7 +750,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                 children: [
                                   const Text(
                                     'Total kkal Bulan ini',
-                                    style: TextStyle(color: Colors.white, fontSize: 12),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
                                   GestureDetector(
@@ -752,19 +801,29 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                             AnimatedBuilder(
                               animation: _animationController,
                               builder: (context, child) {
-                                final int diff = _nutritionData['difference'] ?? 0;
+                                final int diff =
+                                    _nutritionData['difference'] ?? 0;
                                 final prefix = diff >= 0 ? '+' : '-';
                                 return Text(
                                   '$prefix${_differenceAnimation.value}',
                                   style: TextStyle(
-                                    color: diff >= 0 ? AppColors.green : AppColors.red,
+                                    color:
+                                        diff >= 0
+                                            ? AppColors.green
+                                            : AppColors.red,
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 );
                               },
                             ),
-                            const Text('kkal', style: TextStyle(color: Colors.white, fontSize: 12)),
+                            const Text(
+                              'kkal',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -830,7 +889,12 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
   }
 
   // Widget untuk indikator nutrisi berbentuk pil vertikal
-  Widget _buildVerticalNutrientIndicator(String label, int value, String unit, Color color) {
+  Widget _buildVerticalNutrientIndicator(
+    String label,
+    int value,
+    String unit,
+    Color color,
+  ) {
     return Row(
       children: [
         // Container untuk indikator vertikal
@@ -863,7 +927,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                       width: 20,
                       height: 15,
                       decoration: BoxDecoration(
-                        color: color.withRed(150).withBlue(150).withGreen(150).withAlpha(150),
+                        color: color
+                            .withRed(150)
+                            .withBlue(150)
+                            .withGreen(150)
+                            .withAlpha(150),
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
@@ -939,7 +1007,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _selectedBaby,
-                icon: const Icon(Icons.arrow_drop_down, color: Colors.white, size: 20),
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.white,
+                  size: 20,
+                ),
                 iconSize: 20,
                 elevation: 16,
                 isDense: true,
@@ -958,7 +1030,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                       _shouldAnimateNutrition = true;
                       _historyItems =
                           currentState.foodRecords
-                              .where((food) => food.babyId.toString() == _selectedBaby)
+                              .where(
+                                (food) =>
+                                    food.babyId.toString() == _selectedBaby,
+                              )
                               .toList();
                       _groupFoodByTimePeriod();
                     });
@@ -1014,7 +1089,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
               child: Center(
                 child: Text(
                   _selectedTimePeriod,
-                  style: const TextStyle(color: AppColors.textBlack, fontSize: 14),
+                  style: const TextStyle(
+                    color: AppColors.textBlack,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ),
@@ -1112,7 +1190,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                       final itemWidth = (constraints.maxWidth - 12) / 2;
 
                       return SizedBox(
-                        width: (isOdd && isLastItem) ? constraints.maxWidth : itemWidth,
+                        width:
+                            (isOdd && isLastItem)
+                                ? constraints.maxWidth
+                                : itemWidth,
                         child: InkWell(
                           onTap: () {
                             setState(() {
@@ -1123,7 +1204,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                             Navigator.pop(context);
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
                               color:
                                   _selectedTimePeriod == period
@@ -1161,7 +1245,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
   // Widget untuk daftar riwayat makanan
   Widget _buildFoodHistoryList() {
     // Jika tidak ada data
-    if (_groupedData.isEmpty || (_groupedData.length == 1 && _groupedData.values.first.isEmpty)) {
+    if (_groupedData.isEmpty ||
+        (_groupedData.length == 1 && _groupedData.values.first.isEmpty)) {
       return const Center(
         child: Text(
           'Tidak ada riwayat memasak',
@@ -1231,7 +1316,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(color: Colors.black.withAlpha(30), blurRadius: 4, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withAlpha(30),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: ExpansionTile(
@@ -1276,7 +1365,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
           } else {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => FoodDetailScreen(foodId: food.foodId!)),
+              MaterialPageRoute(
+                builder: (context) => FoodDetailScreen(foodId: food.foodId!),
+              ),
             );
           }
         },
@@ -1335,7 +1426,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
 
                           // Informasi porsi
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.buff,
                               borderRadius: BorderRadius.circular(8),
@@ -1370,7 +1464,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                       Row(
                         children: [
                           // Energi
-                          _buildFoodNutrientInfo('Energi', '${food.energy}kkal'),
+                          _buildFoodNutrientInfo(
+                            'Energi',
+                            '${food.energy}kkal',
+                          ),
 
                           // Vertical divider
                           Container(
@@ -1472,7 +1569,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
               child: const Text('Tutup'),
             ),
           ],
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         );
       },
     );
@@ -1484,13 +1583,16 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     Color messageColor;
 
     if (percentage < 60) {
-      message = 'Asupan kalori masih kurang dari kebutuhan bulanan yang direkomendasikan.';
+      message =
+          'Asupan kalori masih kurang dari kebutuhan bulanan yang direkomendasikan.';
       messageColor = AppColors.red;
     } else if (percentage > 110) {
-      message = 'Asupan kalori melebihi kebutuhan bulanan yang direkomendasikan.';
+      message =
+          'Asupan kalori melebihi kebutuhan bulanan yang direkomendasikan.';
       messageColor = Colors.orange;
     } else {
-      message = 'Asupan kalori sudah sesuai dengan kebutuhan bulanan yang direkomendasikan.';
+      message =
+          'Asupan kalori sudah sesuai dengan kebutuhan bulanan yang direkomendasikan.';
       messageColor = AppColors.green;
     }
 
@@ -1502,7 +1604,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       ),
       child: Text(
         message,
-        style: TextStyle(fontSize: 12, color: messageColor, fontWeight: FontWeight.w500),
+        style: TextStyle(
+          fontSize: 12,
+          color: messageColor,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

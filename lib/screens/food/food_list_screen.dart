@@ -8,6 +8,7 @@ import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 
 class FoodListScreen extends StatefulWidget {
@@ -19,7 +20,8 @@ class FoodListScreen extends StatefulWidget {
   State<FoodListScreen> createState() => _FoodListScreenState();
 }
 
-class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProviderStateMixin {
+class _FoodListScreenState extends State<FoodListScreen>
+    with SingleTickerProviderStateMixin {
   // Controller untuk pencarian
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
@@ -40,6 +42,14 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
   bool _isSearching = false;
   // Daftar saran pencarian
   List<String> _searchSuggestions = [];
+
+  // Opsi pengurutan makanan
+  String _sortOption = 'Masakan Terpopuler';
+  final List<String> _sortOptions = [
+    'Masakan Terpopuler',
+    'Masakan Terbaru',
+    'Masakan Terlama',
+  ];
 
   // Animasi untuk transisi AppBar
   late AnimationController _animationController;
@@ -85,7 +95,10 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
     );
 
     // Animasi untuk transisi AppBar
-    _appBarAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
+    _appBarAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
 
     // if (foodState is! FoodLoaded) {
     //   context.read<FoodBloc>().add(FetchFoods());
@@ -127,7 +140,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
     // Filter berdasarkan input
     final query = _searchController.text.toLowerCase();
     final filteredSuggestions =
-        allFoodNames.where((name) => name.toLowerCase().contains(query)).toList();
+        allFoodNames
+            .where((name) => name.toLowerCase().contains(query))
+            .toList();
 
     // Batasi jumlah saran yang ditampilkan
     final limitedSuggestions = filteredSuggestions.take(5).toList();
@@ -168,7 +183,8 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
     }
 
     // Deteksi untuk lazy loading
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
         _displayedItemCount < _getFilteredFoodItems().length) {
       _loadMoreItems();
@@ -204,7 +220,8 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
     // Filter berdasarkan usulan pengguna
     List<Food> filteredItems = _foodItems;
     if (_showUserSuggestionsOnly && userId != null) {
-      filteredItems = filteredItems.where((item) => item.userId == userId).toList();
+      filteredItems =
+          filteredItems.where((item) => item.userId == userId).toList();
     }
 
     // Terapkan pencarian jika ada
@@ -221,7 +238,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
     }
 
     // Terapkan filter kategori
-    bool hasCategoryFilter = _foodCategoryFilters.values.any((isSelected) => isSelected);
+    bool hasCategoryFilter = _foodCategoryFilters.values.any(
+      (isSelected) => isSelected,
+    );
     if (hasCategoryFilter) {
       // Dapatkan ID dari kategori yang dipilih
       final Map<int, String> categoryIdToNameMap = {};
@@ -248,7 +267,8 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
       // Filter berdasarkan ID Kategori yang dipilih
       filteredItems =
           filteredItems.where((food) {
-            return food.foodCategoryId != null && selectedCategoryIds.contains(food.foodCategoryId);
+            return food.foodCategoryId != null &&
+                selectedCategoryIds.contains(food.foodCategoryId);
           }).toList();
     }
 
@@ -282,11 +302,14 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
     }
 
     // Terapkan filter sumber
-    bool hasSourceFilter = _recipeSourceFilters.values.any((isSelected) => isSelected);
+    bool hasSourceFilter = _recipeSourceFilters.values.any(
+      (isSelected) => isSelected,
+    );
     if (hasSourceFilter) {
       filteredItems =
           filteredItems.where((food) {
-            if (_recipeSourceFilters['KEMENKES']! && food.source == 'KEMENKES') {
+            if (_recipeSourceFilters['KEMENKES']! &&
+                food.source == 'KEMENKES') {
               return true;
             }
 
@@ -294,7 +317,8 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
               return true;
             }
 
-            if (_recipeSourceFilters['Rekomendasi Pengguna']! && food.source == null) {
+            if (_recipeSourceFilters['Rekomendasi Pengguna']! &&
+                food.source == null) {
               return true;
             }
 
@@ -302,7 +326,49 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
           }).toList();
     }
 
+    // Terapkan pengurutan
+    filteredItems = _sortFoodItems(filteredItems);
+
     return filteredItems;
+  }
+
+  // Mengurutkan makanan berdasarkan opsi yang dipilih
+  List<Food> _sortFoodItems(List<Food> items) {
+    // Untuk tab "Usulan Saya", selalu urutkan dari yang terbaru
+    if (_showUserSuggestionsOnly) {
+      return items..sort((a, b) {
+        if (a.createdAt == null && b.createdAt == null) return 0;
+        if (a.createdAt == null) return 1;
+        if (b.createdAt == null) return -1;
+
+        return b.createdAt!.compareTo(a.createdAt!);
+      });
+    }
+
+    // Untuk tab "Semua", urutkan berdasarkan pilihan pengguna
+    switch (_sortOption) {
+      case 'Masakan Terpopuler':
+        return items
+          ..sort((a, b) => b.favoritesCount.compareTo(a.favoritesCount));
+      case 'Masakan Terbaru':
+        return items..sort((a, b) {
+          if (a.createdAt == null && b.createdAt == null) return 0;
+          if (a.createdAt == null) return 1;
+          if (b.createdAt == null) return -1;
+
+          return b.createdAt!.compareTo(a.createdAt!);
+        });
+      case 'Masakan Terlama':
+        return items..sort((a, b) {
+          if (a.createdAt == null && b.createdAt == null) return 0;
+          if (a.createdAt == null) return 1;
+          if (b.createdAt == null) return -1;
+
+          return a.createdAt!.compareTo(b.createdAt!);
+        });
+      default:
+        return items;
+    }
   }
 
   @override
@@ -322,7 +388,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
         },
       );
       return;
@@ -392,10 +460,13 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                   tempFoodCategoryFilters.keys.map((category) {
                                     return FilterChip(
                                       label: Text(category),
-                                      selected: tempFoodCategoryFilters[category]!,
-                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      selected:
+                                          tempFoodCategoryFilters[category]!,
+                                      selectedColor: AppColors.primary
+                                          .withAlpha(50),
                                       checkmarkColor: AppColors.primary,
-                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      backgroundColor: AppColors.cream
+                                          .withAlpha(50),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                         side: BorderSide(
@@ -407,7 +478,8 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                       ),
                                       onSelected: (selected) {
                                         setState(() {
-                                          tempFoodCategoryFilters[category] = selected;
+                                          tempFoodCategoryFilters[category] =
+                                              selected;
                                         });
                                       },
                                     );
@@ -444,9 +516,11 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                     return FilterChip(
                                       label: Text(age),
                                       selected: tempFoodAgeFilters[age]!,
-                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      selectedColor: AppColors.primary
+                                          .withAlpha(50),
                                       checkmarkColor: AppColors.primary,
-                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      backgroundColor: AppColors.cream
+                                          .withAlpha(50),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                         side: BorderSide(
@@ -494,10 +568,13 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                   tempRecipeSourceFilters.keys.map((source) {
                                     return FilterChip(
                                       label: Text(source),
-                                      selected: tempRecipeSourceFilters[source]!,
-                                      selectedColor: AppColors.primary.withAlpha(50),
+                                      selected:
+                                          tempRecipeSourceFilters[source]!,
+                                      selectedColor: AppColors.primary
+                                          .withAlpha(50),
                                       checkmarkColor: AppColors.primary,
-                                      backgroundColor: AppColors.cream.withAlpha(50),
+                                      backgroundColor: AppColors.cream
+                                          .withAlpha(50),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                         side: BorderSide(
@@ -509,7 +586,8 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                       ),
                                       onSelected: (selected) {
                                         setState(() {
-                                          tempRecipeSourceFilters[source] = selected;
+                                          tempRecipeSourceFilters[source] =
+                                              selected;
                                         });
                                       },
                                     );
@@ -531,23 +609,35 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                         onPressed: () {
                           // Terapkan filter yang dipilih
                           this.setState(() {
-                            _foodCategoryFilters = Map.from(tempFoodCategoryFilters);
+                            _foodCategoryFilters = Map.from(
+                              tempFoodCategoryFilters,
+                            );
                             _foodAgeFilters = Map.from(tempFoodAgeFilters);
-                            _recipeSourceFilters = Map.from(tempRecipeSourceFilters);
+                            _recipeSourceFilters = Map.from(
+                              tempRecipeSourceFilters,
+                            );
 
                             // Mengatur ulang tampilan item yang ditampilkan
                             _displayedItemCount = 5;
 
                             // Tampilkan snackbar dengan jumlah filter yang diterapkan
                             int totalFilters =
-                                (_foodCategoryFilters.values.where((v) => v).length) +
-                                (_foodAgeFilters.values.where((v) => v).length) +
-                                (_recipeSourceFilters.values.where((v) => v).length);
+                                (_foodCategoryFilters.values
+                                    .where((v) => v)
+                                    .length) +
+                                (_foodAgeFilters.values
+                                    .where((v) => v)
+                                    .length) +
+                                (_recipeSourceFilters.values
+                                    .where((v) => v)
+                                    .length);
 
                             if (totalFilters > 0) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('$totalFilters filter diterapkan'),
+                                  content: Text(
+                                    '$totalFilters filter diterapkan',
+                                  ),
                                   duration: const Duration(seconds: 2),
                                 ),
                               );
@@ -559,7 +649,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                         child: const Text(
                           'Terapkan',
@@ -610,7 +702,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
         // Filter berdasarkan input
         return allFoodNames
             .where((option) {
-              return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+              return option.toLowerCase().contains(
+                textEditingValue.text.toLowerCase(),
+              );
             })
             .take(5);
       },
@@ -636,12 +730,11 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2), // Warna bayangan (hitam, 20% opasitas)
-                blurRadius: 2, // Tingkat keburaman
-                offset: const Offset(0, 2), // Posisi bayangan (4 unit ke bawah)
+                color: Colors.black.withAlpha(50),
+                blurRadius: 2,
+                offset: const Offset(0, 2),
               ),
             ],
-            // border: Border.all(color: AppColors.componentGrey!),
           ),
           child: TextField(
             controller: textEditingController,
@@ -679,7 +772,11 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                 },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Icon(Icons.search, color: AppColors.textBlack, size: 22),
+                  child: Icon(
+                    Icons.search,
+                    color: AppColors.textBlack,
+                    size: 22,
+                  ),
                 ),
               ),
               // Tombol filter pencarian
@@ -703,24 +800,37 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: const Icon(Icons.clear, size: 22, color: AppColors.textGrey),
+                        child: const Icon(
+                          Icons.clear,
+                          size: 22,
+                          color: AppColors.textGrey,
+                        ),
                       ),
                     ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 6.0,
+                    ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.all(6.0),
                         minimumSize: const Size(36, 36),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       onPressed: () {
                         focusNode.unfocus();
                         _showFilterBottomSheet(context);
                       },
-                      child: const Icon(Icons.tune, color: Colors.white, size: 22),
+                      child: const Icon(
+                        Icons.tune,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                   ),
                 ],
@@ -779,12 +889,19 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                         decoration: BoxDecoration(
                           border:
                               index < options.length - 1
-                                  ? Border(bottom: BorderSide(color: Colors.grey.withAlpha(25)))
+                                  ? Border(
+                                    bottom: BorderSide(
+                                      color: Colors.grey.withAlpha(25),
+                                    ),
+                                  )
                                   : null,
                         ),
                         child: Text(
                           option,
-                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 14),
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     );
@@ -815,14 +932,20 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
               return AppBar(
                 backgroundColor: AppColors.background,
                 elevation: 0,
-                leadingWidth: Tween<double>(begin: 56.0, end: 0.0).evaluate(_appBarAnimation),
+                leadingWidth: Tween<double>(
+                  begin: 56.0,
+                  end: 0.0,
+                ).evaluate(_appBarAnimation),
                 titleSpacing: Tween<double>(
                   begin: NavigationToolbar.kMiddleSpacing,
                   end: 0.0,
                 ).evaluate(_appBarAnimation),
                 leading: Opacity(
                   opacity: 1 - _appBarAnimation.value,
-                  child: Image.asset('assets/images/logo/nutrimpasi.png', height: 40),
+                  child: Image.asset(
+                    'assets/images/logo/nutrimpasi.png',
+                    height: 40,
+                  ),
                 ),
                 title:
                     _showSearchInAppBar
@@ -830,7 +953,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                           opacity: _appBarAnimation.value,
                           child: Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
                             alignment: Alignment.centerLeft,
                             child: _buildSearchBar(inAppBar: true),
                           ),
@@ -847,7 +972,14 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                               onPressed:
                                   _appBarAnimation.value < 0.5
                                       ? () {
-                                        // TODO: Navigasi ke halaman favorit
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    const FavoriteRecipeScreen(),
+                                          ),
+                                        );
                                       }
                                       : null,
                               style: ElevatedButton.styleFrom(
@@ -882,14 +1014,15 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                   // Pertahankan pilihan yang ada jika keys cocok, jika tidak default ke false
                   _foodCategoryFilters = {
                     for (var category in state.categories)
-                      category.name: _foodCategoryFilters[category.name] ?? false,
+                      category.name:
+                          _foodCategoryFilters[category.name] ?? false,
                   };
                 });
               }
             } else if (state is FoodError) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('Gagal memuat data: ${state.error}')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Gagal memuat data: ${state.error}')),
+              );
             }
           },
           child: Stack(
@@ -929,10 +1062,14 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                           height:
                               _showSearchInAppBar
                                   ? 0
-                                  : (_isSearching && _searchSuggestions.isNotEmpty
+                                  : (_isSearching &&
+                                          _searchSuggestions.isNotEmpty
                                       ? 48 + (_searchSuggestions.length * 44)
                                       : 48),
-                          child: _showSearchInAppBar ? const SizedBox() : _buildSearchBar(),
+                          child:
+                              _showSearchInAppBar
+                                  ? const SizedBox()
+                                  : _buildSearchBar(),
                         ),
                       ),
 
@@ -941,8 +1078,14 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                       // Banner berdasarkan toggle dengan animasi fade
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return FadeTransition(opacity: animation, child: child);
+                        transitionBuilder: (
+                          Widget child,
+                          Animation<double> animation,
+                        ) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
                         },
                         child:
                             !_showUserSuggestionsOnly
@@ -969,13 +1112,19 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                       width: double.infinity,
                                       height: 180,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
+                                      errorBuilder: (
+                                        context,
+                                        error,
+                                        stackTrace,
+                                      ) {
                                         return Container(
                                           width: double.infinity,
                                           height: 180,
                                           decoration: BoxDecoration(
                                             color: AppColors.componentGrey,
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                           child: const Icon(
                                             Icons.image,
@@ -1013,13 +1162,18 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                           width: double.infinity,
                                           height: 180,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
+                                          errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                          ) {
                                             return Container(
                                               width: double.infinity,
                                               height: 180,
                                               decoration: BoxDecoration(
                                                 color: AppColors.componentGrey,
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                               ),
                                               child: const Icon(
                                                 Icons.image,
@@ -1047,25 +1201,32 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                             // margin: const EdgeInsets.all(2),
                                             decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: const BorderRadius.all(
-                                                Radius.circular(12),
-                                              ),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                    Radius.circular(12),
+                                                  ),
                                             ),
                                             child: Row(
                                               children: [
                                                 // Informasi usulan
                                                 Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: [
                                                       const Text(
                                                         'Tambah Usulan',
                                                         style: TextStyle(
                                                           fontFamily: 'Poppins',
                                                           fontSize: 16,
-                                                          fontWeight: FontWeight.w700,
-                                                          color: AppColors.textBlack,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color:
+                                                              AppColors
+                                                                  .textBlack,
                                                         ),
                                                       ),
                                                       const SizedBox(height: 4),
@@ -1074,7 +1235,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                                         style: TextStyle(
                                                           fontFamily: 'Poppins',
                                                           fontSize: 12,
-                                                          color: AppColors.textGrey,
+                                                          color:
+                                                              AppColors
+                                                                  .textGrey,
                                                         ),
                                                       ),
                                                     ],
@@ -1084,23 +1247,16 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                                 Container(
                                                   width: 48,
                                                   height: 48,
-                                                  decoration: const BoxDecoration(
-                                                    color: AppColors.primary,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.zero,
-                                                    icon: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 36,
-                                                    ),
-                                                    onPressed: () {
-                                                      pushWithSlideTransition(
-                                                        context,
-                                                        FoodAddSuggestionScreen(),
-                                                      );
-                                                    },
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                        color:
+                                                            AppColors.primary,
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                  child: const Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                    size: 36,
                                                   ),
                                                 ),
                                               ],
@@ -1131,12 +1287,14 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                               curve: Curves.easeInOut,
                               left:
                                   _showUserSuggestionsOnly
-                                      ? MediaQuery.of(context).size.width / 2 - 24
+                                      ? MediaQuery.of(context).size.width / 2 -
+                                          24
                                       : 4,
                               right:
                                   _showUserSuggestionsOnly
                                       ? 4
-                                      : MediaQuery.of(context).size.width / 2 - 24,
+                                      : MediaQuery.of(context).size.width / 2 -
+                                          24,
                               top: 0,
                               bottom: 0,
                               child: Container(
@@ -1165,7 +1323,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                     duration: const Duration(milliseconds: 300),
                                     child: const Center(
                                       child: Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 8),
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 8,
+                                        ),
                                         child: Text('Semua'),
                                       ),
                                     ),
@@ -1186,7 +1346,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                     duration: const Duration(milliseconds: 300),
                                     child: const Center(
                                       child: Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 8),
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 8,
+                                        ),
                                         child: Text('Usulan Saya'),
                                       ),
                                     ),
@@ -1209,7 +1371,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                           _showUserSuggestionsOnly = false;
                                         });
                                       },
-                                      child: const SizedBox(height: double.infinity),
+                                      child: const SizedBox(
+                                        height: double.infinity,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -1224,7 +1388,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                           _showUserSuggestionsOnly = true;
                                         });
                                       },
-                                      child: const SizedBox(height: double.infinity),
+                                      child: const SizedBox(
+                                        height: double.infinity,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -1236,6 +1402,66 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
 
                       const SizedBox(height: 16),
 
+                      // Dropdown untuk pengurutan
+                      if (!_showUserSuggestionsOnly)
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withAlpha(25),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: _sortOption,
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: AppColors.textBlack,
+                                ),
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textBlack,
+                                ),
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      _sortOption = newValue;
+                                      _displayedItemCount = 5;
+                                    });
+                                  }
+                                },
+                                items:
+                                    _sortOptions.map<DropdownMenuItem<String>>((
+                                      String value,
+                                    ) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0,
+                                          ),
+                                          child: Text(value),
+                                        ),
+                                      );
+                                    }).toList(),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      // Add space only if dropdown is shown
+                      if (!_showUserSuggestionsOnly) const SizedBox(height: 12),
+
                       // Info pencarian aktif
                       if (_activeSearchQuery.isNotEmpty)
                         Padding(
@@ -1244,14 +1470,21 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                             children: [
                               Expanded(
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: AppColors.primary.withAlpha(25),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.search, size: 16, color: AppColors.primary),
+                                      const Icon(
+                                        Icons.search,
+                                        size: 16,
+                                        color: AppColors.primary,
+                                      ),
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Text(
@@ -1297,7 +1530,10 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                             // Tampilkan loading hanya pada muatan awal
                             return const Center(
                               child: Column(
-                                children: [SizedBox(height: 100), CircularProgressIndicator()],
+                                children: [
+                                  SizedBox(height: 100),
+                                  CircularProgressIndicator(),
+                                ],
                               ),
                             );
                           }
@@ -1308,7 +1544,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                           if (filteredItems.isEmpty && state is! FoodLoading) {
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 50.0,
+                                ),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -1347,7 +1585,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
 
                           return Column(
                             children: [
-                              ...filteredItems.take(_displayedItemCount).map((item) {
+                              ...filteredItems.take(_displayedItemCount).map((
+                                item,
+                              ) {
                                 if (_showUserSuggestionsOnly) {
                                   return GestureDetector(
                                     onTap: () {
@@ -1356,7 +1596,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                         MaterialPageRoute(
                                           builder:
                                               (context) =>
-                                                  FoodSuggestionDetailScreen(foodId: item.id),
+                                                  FoodSuggestionDetailScreen(
+                                                    foodId: item.id,
+                                                  ),
                                         ),
                                       );
                                     },
@@ -1371,7 +1613,10 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => FoodDetailScreen(foodId: item.id),
+                                          builder:
+                                              (context) => FoodDetailScreen(
+                                                foodId: item.id,
+                                              ),
                                         ),
                                       );
                                     },
@@ -1386,9 +1631,13 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                               // Indikator loading
                               if (_isLoadingMore)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   child: const Center(
-                                    child: CircularProgressIndicator(color: AppColors.primary),
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.primary,
+                                    ),
                                   ),
                                 ),
                             ],
@@ -1402,7 +1651,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
               ),
 
               // Overlay backdrop untuk saran ketika aktif
-              if (_isSearching && _searchSuggestions.isNotEmpty && !_showSearchInAppBar)
+              if (_isSearching &&
+                  _searchSuggestions.isNotEmpty &&
+                  !_showSearchInAppBar)
                 Positioned.fill(
                   child: GestureDetector(
                     onTap: () {
@@ -1410,7 +1661,9 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                     },
                     child: Container(
                       color: Colors.black.withAlpha(25),
-                      margin: EdgeInsets.only(top: 100 + (_searchSuggestions.length * 44)),
+                      margin: EdgeInsets.only(
+                        top: 100 + (_searchSuggestions.length * 44),
+                      ),
                     ),
                   ),
                 ),
@@ -1522,7 +1775,10 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                       const SizedBox(height: 32),
                       // Indikator favorit
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(8),
@@ -1534,11 +1790,23 @@ class _FoodListScreenState extends State<FoodListScreen> with SingleTickerProvid
                                 ? Stack(
                                   alignment: Alignment.center,
                                   children: const [
-                                    Icon(Icons.favorite, color: Colors.white, size: 12),
-                                    Icon(Icons.favorite, color: AppColors.buff, size: 12),
+                                    Icon(
+                                      Icons.favorite,
+                                      color: Colors.white,
+                                      size: 12,
+                                    ),
+                                    Icon(
+                                      Icons.favorite,
+                                      color: AppColors.buff,
+                                      size: 12,
+                                    ),
                                   ],
                                 )
-                                : const Icon(Icons.favorite_border, color: Colors.white, size: 12),
+                                : const Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
                             const SizedBox(width: 4),
                             Text(
                               item.favoritesCount.toString(),
