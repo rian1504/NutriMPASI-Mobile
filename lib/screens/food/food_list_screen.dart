@@ -44,12 +44,8 @@ class _FoodListScreenState extends State<FoodListScreen>
   List<String> _searchSuggestions = [];
 
   // Opsi pengurutan makanan
-  String _sortOption = 'Masakan Terpopuler';
-  final List<String> _sortOptions = [
-    'Masakan Terpopuler',
-    'Masakan Terbaru',
-    'Masakan Terlama',
-  ];
+  String _sortOption = 'Terpopuler';
+  final List<String> _sortOptions = ['Terpopuler', 'Terbaru', 'Terlama'];
 
   // Animasi untuk transisi AppBar
   late AnimationController _animationController;
@@ -347,10 +343,10 @@ class _FoodListScreenState extends State<FoodListScreen>
 
     // Untuk tab "Semua", urutkan berdasarkan pilihan pengguna
     switch (_sortOption) {
-      case 'Masakan Terpopuler':
+      case 'Terpopuler':
         return items
           ..sort((a, b) => b.favoritesCount.compareTo(a.favoritesCount));
-      case 'Masakan Terbaru':
+      case 'Terbaru':
         return items..sort((a, b) {
           if (a.createdAt == null && b.createdAt == null) return 0;
           if (a.createdAt == null) return 1;
@@ -358,7 +354,7 @@ class _FoodListScreenState extends State<FoodListScreen>
 
           return b.createdAt!.compareTo(a.createdAt!);
         });
-      case 'Masakan Terlama':
+      case 'Terlama':
         return items..sort((a, b) {
           if (a.createdAt == null && b.createdAt == null) return 0;
           if (a.createdAt == null) return 1;

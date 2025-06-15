@@ -18,7 +18,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/comment.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart'
-    show showCommentPreviewAndMenu, showThreadPreviewAndMenu;
+    show showCommentPreviewAndMenu; //showThreadPreviewAndMenu;
 import 'package:nutrimpasi/utils/report_dialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -28,11 +28,13 @@ import '../../widgets/custom_app_bar.dart' show AppBarForum;
 class ThreadScreen extends StatefulWidget {
   final int threadId;
   final int? highlightCommentId;
+  final String? screenCategory;
 
   const ThreadScreen({
     super.key,
     required this.threadId,
     this.highlightCommentId,
+    this.screenCategory,
   });
 
   @override
@@ -94,9 +96,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBarForum(
-        title: "Thread",
+        title: "Detail Postingan",
         showBackButton: true,
-        category: 'forum',
+        category: widget.screenCategory!,
       ),
       body: Container(
         decoration: BoxDecoration(color: AppColors.primary),
@@ -471,7 +473,7 @@ class CommentSection extends StatefulWidget {
   });
 
   @override
-  _CommentSectionState createState() => _CommentSectionState();
+  State<CommentSection> createState() => _CommentSectionState();
 }
 
 class _CommentSectionState extends State<CommentSection> {

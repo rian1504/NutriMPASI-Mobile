@@ -33,6 +33,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   ) async {
     if (state is! FavoriteLoaded) return;
     final currentState = state as FavoriteLoaded;
+    emit(FavoriteLoading());
 
     try {
       await controller.toggleFavorite(foodId: event.foodId);

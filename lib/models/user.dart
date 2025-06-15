@@ -18,7 +18,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    required this.avatar,
+    this.avatar,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(

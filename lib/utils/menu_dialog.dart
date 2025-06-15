@@ -11,14 +11,14 @@ import 'package:nutrimpasi/blocs/thread/thread_bloc.dart'
 import 'package:nutrimpasi/constants/colors.dart'; // Impor AppColors
 import 'package:nutrimpasi/constants/icons.dart'; // Impor AppIcons
 import 'package:nutrimpasi/models/comment.dart'; // Impor Comment (dan User)
-import 'package:nutrimpasi/models/thread.dart';
+// import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/edit_thread_screen.dart'
     show EditThreadScreen;
 import 'package:nutrimpasi/screens/forum/forum_screen.dart' show ForumCard;
 import 'package:nutrimpasi/screens/forum/thread_screen.dart'
     show CommentSection;
-import 'package:nutrimpasi/utils/report_dialog.dart'
-    show showReportDialog; // Sesuaikan path jika berbeda
+// import 'package:nutrimpasi/utils/report_dialog.dart'
+//    show showReportDialog; // Sesuaikan path jika berbeda
 
 // --- FUNGSI HELPER UNTUK KONFIRMASI HAPUS THREAD ---
 Future<void> confirmDeleteThread({
@@ -60,7 +60,7 @@ Future<void> confirmDeleteThread({
 // >>> FUNGSI UNTUK MENAMPILKAN DIALOG PREVIEW DAN OPSI <<<
 void showThreadPreviewAndMenu({
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
-  required Thread thread,
+  required dynamic thread,
   required String threadId, // threadId harus int
   required bool showMenu,
   required bool showReport,

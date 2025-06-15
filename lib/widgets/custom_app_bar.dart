@@ -30,7 +30,8 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(showTabs ? kToolbarHeight + 100 : kToolbarHeight + 62);
+  Size get preferredSize =>
+      Size.fromHeight(showTabs ? kToolbarHeight + 100 : kToolbarHeight + 62);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,9 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                 // const SizedBox(height: 16),
                 if (showTabs == false)
                   Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10.0),
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top + 10.0,
+                    ),
                     child: Text(
                       title,
                       style: const TextStyle(
@@ -62,7 +65,9 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                 if (showTabs == true)
                   // Judul
                   Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top,
+                    ),
 
                     child: Text(
                       title,
@@ -95,7 +100,10 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                         indicatorPadding: const EdgeInsets.all(6),
                         labelColor: Colors.white,
                         unselectedLabelColor: AppColors.primary,
-                        tabs: const [Tab(text: 'Semua'), Tab(text: 'Thread Saya')],
+                        tabs: const [
+                          Tab(text: 'Semua'),
+                          Tab(text: 'Postingan Saya'),
+                        ],
                       ),
                     ),
                   ),
@@ -123,7 +131,10 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
             icon: AppIcons.back,
           ),
         if (showExitButton)
-          LeadingActionButton(onPressed: () => Navigator.pop(context), icon: AppIcons.exit),
+          LeadingActionButton(
+            onPressed: () => Navigator.pop(context),
+            icon: AppIcons.exit,
+          ),
       ],
     );
   }
@@ -171,7 +182,8 @@ class AppBarProfile extends StatelessWidget implements PreferredSizeWidget {
   // 60.0 adalah tinggi tambahan untuk background AppBar di bawah toolbar.
   // 30.0 adalah setengah dari tinggi gambar profil (60.0 / 2) agar menonjol.
   @override
-  Size get preferredSize => Size.fromHeight(showIcon ? kToolbarHeight + 108 : kToolbarHeight + 44);
+  Size get preferredSize =>
+      Size.fromHeight(showIcon ? kToolbarHeight + 108 : kToolbarHeight + 44);
 
   @override
   Widget build(BuildContext context) {
@@ -180,14 +192,19 @@ class AppBarProfile extends StatelessWidget implements PreferredSizeWidget {
       children: [
         // Background utama AppBar dengan sudut melengkung di bagian bawah
         Container(
-          height: preferredSize.height, // Tinggi background tanpa bagian menonjol
+          height:
+              preferredSize.height, // Tinggi background tanpa bagian menonjol
           decoration:
               showIcon
                   ? BoxDecoration(
                     color: AppColors.primary, // Warna background AppBar
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20.0), // Sudut melengkung kiri bawah
-                      bottomRight: Radius.circular(20.0), // Sudut melengkung kanan bawah
+                      bottomLeft: Radius.circular(
+                        20.0,
+                      ), // Sudut melengkung kiri bawah
+                      bottomRight: Radius.circular(
+                        20.0,
+                      ), // Sudut melengkung kanan bawah
                     ),
                   )
                   : BoxDecoration(
@@ -196,7 +213,9 @@ class AppBarProfile extends StatelessWidget implements PreferredSizeWidget {
 
           child: Padding(
             // Padding untuk judul agar tidak terlalu dekat dengan status bar
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16.0),
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 16.0,
+            ),
             child: Align(
               alignment: Alignment.topCenter, // Judul di bagian atas tengah
               child: Text(
@@ -215,7 +234,8 @@ class AppBarProfile extends StatelessWidget implements PreferredSizeWidget {
         if (leadingWidget != null)
           Positioned(
             top:
-                MediaQuery.of(context).padding.top + 8.0, // Sesuaikan dengan padding atas perangkat
+                MediaQuery.of(context).padding.top +
+                8.0, // Sesuaikan dengan padding atas perangkat
             left: 16.0,
             child: leadingWidget!,
           ),
@@ -224,7 +244,8 @@ class AppBarProfile extends StatelessWidget implements PreferredSizeWidget {
         if (trailingWidget != null)
           Positioned(
             top:
-                MediaQuery.of(context).padding.top + 8.0, // Sesuaikan dengan padding atas perangkat
+                MediaQuery.of(context).padding.top +
+                8.0, // Sesuaikan dengan padding atas perangkat
             right: 16.0,
             child: trailingWidget!,
           ),
@@ -240,16 +261,20 @@ class AppBarProfile extends StatelessWidget implements PreferredSizeWidget {
             child: Center(
               child: Container(
                 width:
-                    MediaQuery.of(context).size.width * 0.3, // Lebar lingkaran profil (misal 60.0)
+                    MediaQuery.of(context).size.width *
+                    0.3, // Lebar lingkaran profil (misal 60.0)
                 height:
-                    MediaQuery.of(context).size.width * 0.3, // Tinggi lingkaran profil (misal 60.0)
+                    MediaQuery.of(context).size.width *
+                    0.3, // Tinggi lingkaran profil (misal 60.0)
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: AppColors.primary, // Warna border lingkaran
                     width: 12.0, // Lebar border
                   ),
                   shape: BoxShape.circle,
-                  color: Colors.white, // Warna background lingkaran (biasanya putih)
+                  color:
+                      Colors
+                          .white, // Warna background lingkaran (biasanya putih)
                 ),
                 child: Icon(
                   AppIcons.userFill,

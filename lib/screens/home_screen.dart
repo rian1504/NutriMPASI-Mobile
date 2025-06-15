@@ -19,6 +19,7 @@ import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
 import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -1295,7 +1296,12 @@ class _HomeScreenState extends State<HomeScreen>
         'title': 'Makanan Favorit',
         'image': 'assets/images/card/makanan_favorit.png',
         'navigate': (BuildContext context) {
-          // TODO: Halaman Makanan Favorit
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FavoriteRecipeScreen(),
+            ),
+          );
         },
       },
     ];
