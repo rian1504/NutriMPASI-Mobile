@@ -1,9 +1,10 @@
 // lib/utils/app_flushbar.dart
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:nutrimpasi/constants/colors.dart';
 
 // Enum untuk menentukan tipe notifikasi (sukses, error, info)
-enum FlushbarType { success, error, info, warning }
+enum FlushbarType { success, error, info, warning, normal }
 
 class AppFlushbar {
   // Metode statis untuk menampilkan Flushbar
@@ -25,7 +26,8 @@ class AppFlushbar {
 
     switch (type) {
       case FlushbarType.success:
-        backgroundColor = Colors.green.shade700;
+        // backgroundColor = Colors.green.shade700;
+        backgroundColor = AppColors.success;
         iconData = Icons.check_circle_outline;
         break;
       case FlushbarType.error:
@@ -37,8 +39,11 @@ class AppFlushbar {
         iconData = Icons.warning_amber_outlined;
         break;
       case FlushbarType.info:
-      default:
         backgroundColor = Colors.blue.shade700;
+        iconData = Icons.info_outline;
+        break;
+      case FlushbarType.normal:
+        backgroundColor = Colors.black;
         iconData = Icons.info_outline;
         break;
     }
@@ -135,6 +140,24 @@ class AppFlushbar {
       message: message,
       title: title,
       type: FlushbarType.warning,
+      duration: duration,
+      position: position,
+    );
+  }
+
+  static void showNormal(
+    BuildContext context, {
+    required String message,
+    String? title,
+    Duration duration = const Duration(seconds: 3),
+    FlushbarPosition position = FlushbarPosition.BOTTOM,
+    FlushbarStatusCallback? onStatusChanged,
+  }) {
+    show(
+      context,
+      message: message,
+      title: title,
+      type: FlushbarType.normal,
       duration: duration,
       position: position,
     );

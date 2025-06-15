@@ -123,7 +123,12 @@ class OnboardingPage extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(24, 32, 24, MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.fromLTRB(
+                22,
+                32,
+                22,
+                MediaQuery.of(context).padding.bottom + 32,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -175,7 +180,9 @@ class OnboardingPage extends StatelessWidget {
                         child: CircularProgressIndicator(
                           value: (currentPage + 1) / totalPages,
                           backgroundColor: const Color(0xFFE0E0E0),
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.primary,
+                          ),
                           strokeWidth: 3,
                         ),
                       ),
@@ -197,11 +204,16 @@ class OnboardingPage extends StatelessWidget {
                               // Ini adalah contoh navigasi ke halaman login
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
                               );
                             }
                           },
-                          icon: const Icon(Symbols.arrow_forward, color: Colors.white),
+                          icon: const Icon(
+                            Symbols.arrow_forward,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -235,12 +247,18 @@ class OnboardingPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 padding: const EdgeInsets.all(8),
                 minimumSize: const Size(42, 42),
                 elevation: 1,
               ),
-              child: const Icon(Symbols.arrow_back_ios_new_rounded, color: Colors.white, size: 16),
+              child: const Icon(
+                Symbols.arrow_back_ios_new_rounded,
+                color: Colors.white,
+                size: 16,
+              ),
             ),
           ),
 
