@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutrimpasi/blocs/comment/comment_bloc.dart';
 import 'package:nutrimpasi/blocs/like/like_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
@@ -67,6 +68,9 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
 
             context.read<ThreadBloc>().add(FetchThreads());
             context.read<LikeBloc>().add(FetchLikes());
+            context.read<CommentBloc>().add(
+              FetchComments(threadId: widget.thread.id),
+            );
           } else if (state is ThreadError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error), backgroundColor: Colors.red),
@@ -177,9 +181,6 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
                                   content: content,
                                 ),
                               );
-
-                              _titleController.clear();
-                              _contentController.clear();
                             }
                           },
                   loadingIndicator:

@@ -16,9 +16,10 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart' show AppIcons;
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/comment.dart';
+import 'package:nutrimpasi/models/thread.dart' as thread_model;
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart'
-    show showCommentPreviewAndMenu; //showThreadPreviewAndMenu;
+    show showCommentPreviewAndMenu, showThreadPreviewAndMenu;
 import 'package:nutrimpasi/utils/report_dialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -153,9 +154,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
                           children: [
                             _ThreadSection(
                               thread: thread!,
-                              showReport:
-                                  loggedInUser != null &&
-                                  loggedInUser.id != thread!.user.id,
+                              showReport: loggedInUser!.id != thread!.user.id,
+                              showMenu: loggedInUser.id == thread!.user.id,
+                              currentUserId: loggedInUser.id,
                             ),
                             // Komentar
                             if (thread!.comments.isEmpty)
@@ -179,17 +180,12 @@ class _ThreadScreenState extends State<ThreadScreen> {
                                           CommentSection(
                                             comment: comment,
                                             showMenu:
-                                                loggedInUser != null &&
                                                 loggedInUser.id ==
-                                                    comment.user.id,
+                                                comment.user.id,
                                             showReport:
-                                                loggedInUser != null &&
                                                 loggedInUser.id !=
-                                                    comment.user.id,
-                                            currentUserId:
-                                                loggedInUser != null
-                                                    ? loggedInUser.id
-                                                    : 0,
+                                                comment.user.id,
+                                            currentUserId: loggedInUser.id,
                                             threadId: thread!.id.toString(),
                                             highlight:
                                                 widget.highlightCommentId !=
@@ -207,18 +203,6 @@ class _ThreadScreenState extends State<ThreadScreen> {
                                         ],
                                       );
                                     }),
-                                    // ...thread!.comments.map((comment) {
-                                    //   return _CommentSection(
-                                    //     comment: comment,
-                                    //     showMenu:
-                                    //         loggedInUser != null &&
-                                    //         loggedInUser.id == comment.user.id,
-                                    //     showReport:
-                                    //         loggedInUser != null &&
-                                    //         loggedInUser.id != comment.user.id,
-                                    //   );
-                                    // }),
-                                    // Divider(color: AppColors.grey),
                                   ],
                                 ),
                               ),
@@ -244,9 +228,15 @@ class _ThreadScreenState extends State<ThreadScreen> {
 class _ThreadSection extends StatefulWidget {
   final ThreadDetail thread;
   final bool showReport;
-  final bool showMenu = false;
+  final bool showMenu;
+  final int currentUserId;
 
-  const _ThreadSection({required this.thread, this.showReport = false});
+  const _ThreadSection({
+    required this.thread,
+    this.showReport = false,
+    this.showMenu = false,
+    required this.currentUserId,
+  });
 
   @override
   State<_ThreadSection> createState() => _ThreadSectionState();
@@ -261,6 +251,35 @@ class _ThreadSectionState extends State<_ThreadSection> {
     super.initState();
     isLiked = widget.thread.isLike;
     likeCount = widget.thread.likesCount;
+  }
+
+  void _showMenuDialog() {
+    // Konversi inline ke Map/JSON sebagai perantara
+    final convertedThread = thread_model.Thread(
+      id: widget.thread.id,
+      userId: widget.thread.user.id,
+      title: widget.thread.title,
+      content: widget.thread.content,
+      createdAt: widget.thread.createdAt,
+      likesCount: widget.thread.likesCount,
+      commentsCount: widget.thread.commentsCount,
+      isLike: true,
+      user: thread_model.User(
+        id: widget.thread.user.id,
+        name: widget.thread.user.name,
+        avatar: widget.thread.user.avatar,
+      ),
+    );
+
+    showThreadPreviewAndMenu(
+      context: context,
+      thread: convertedThread,
+      threadId: widget.thread.id.toString(),
+      showMenu: widget.showMenu,
+      showReport: widget.showReport,
+      currentUserId: widget.currentUserId,
+      isFromDetailPage: true,
+    );
   }
 
   void _toggleLike() {
@@ -395,19 +414,11 @@ class _ThreadSectionState extends State<_ThreadSection> {
                           ],
                         ),
 
-                        // if (widget.showMenu)
-                        //   GestureDetector(
-                        //     onTap:
-                        //         () => showThreadPreviewAndMenu(
-                        //           context: context,
-                        //           thread: widget.thread as Thread,
-                        //           threadId: widget.thread.id.toString(),
-                        //           showMenu: widget.showMenu,
-                        //           showReport: widget.showReport,
-                        //           currentUserId: widget.thread.user.id,
-                        //         ),
-                        //     child: Icon(AppIcons.menu, size: 20),
-                        //   ),
+                        if (widget.showMenu)
+                          GestureDetector(
+                            onTap: _showMenuDialog,
+                            child: Icon(AppIcons.menu, size: 20),
+                          ),
                         if (widget.showReport)
                           GestureDetector(
                             onTap:

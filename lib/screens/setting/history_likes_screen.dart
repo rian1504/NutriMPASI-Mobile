@@ -273,41 +273,30 @@ class ForumCardState extends State<ForumCard> {
       showMenu: widget.showMenu,
       showReport: widget.showReport,
       currentUserId: widget.currentUserId ?? 0,
+      isFromDetailPage: false,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final int currentLikeCount = widget.thread.likesCount;
-    // VoidCallback? longPressAction;
+    VoidCallback? longPressAction;
 
     // // Logika untuk menentukan aksi longPress
-    // if (widget.showMenu) {
-    //   // Jika postingan ini milik user yang login
-    //   longPressAction = () {
-    //     showThreadPreviewAndMenu(
-    //       // Panggil dialog menu Edit/Delete
-    //       context: context,
-    //       thread: widget.thread,
-    //       threadId: widget.thread.id.toString(), // Pastikan String
-    //       showMenu:
-    //           widget
-    //               .showMenu, // True untuk mengaktifkan opsi Edit/Delete di dialog
-    //       showReport: widget.showReport, // False untuk Report di dialog
-    //       currentUserId: widget.currentUserId ?? 0,
-    //     );
-    //   };
-    // } else if (widget.showReport) {
-    //   // Jika postingan ini milik orang lain (dan bisa direport)
-    //   longPressAction = () {
-    //     showReportDialog(
-    //       // Panggil dialog Report
-    //       context: context,
-    //       category: "thread",
-    //       refersId: int.parse(widget.thread.id.toString()),
-    //     );
-    //   };
-    // }
+    if (widget.showMenu) {
+      // Jika postingan ini milik user yang login
+      longPressAction = _showMenuDialog;
+    } else if (widget.showReport) {
+      // Jika postingan ini milik orang lain (dan bisa direport)
+      longPressAction = () {
+        showReportDialog(
+          // Panggil dialog Report
+          context: context,
+          category: "thread",
+          refersId: int.parse(widget.thread.id.toString()),
+        );
+      };
+    }
 
     return GestureDetector(
       onTap:
@@ -315,8 +304,8 @@ class ForumCardState extends State<ForumCard> {
             context,
             ThreadScreen(threadId: widget.thread.id, screenCategory: 'like'),
           ),
-      onLongPress:
-          widget.showMenu || widget.showReport ? _showMenuDialog : null,
+      onLongPress: longPressAction,
+      // widget.showMenu || widget.showReport ? _showMenuDialog : null,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Column(
