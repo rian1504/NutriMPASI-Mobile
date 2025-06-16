@@ -87,8 +87,8 @@ class _BabyListScreenState extends State<BabyListScreen> {
                 ),
                 padding: EdgeInsets.zero,
                 onPressed: () {
-                  Navigator.pop(context);
                   context.read<BabyBloc>().add(FetchBabies());
+                  Navigator.pop(context);
                 },
               ),
             ),
