@@ -175,32 +175,34 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
                           ),
                           child: Stack(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Flexible(
-                                      flex: 0,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Image.network(
-                                          storageUrl + recipe.image,
-                                          height: 100,
-                                          fit: BoxFit.contain,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  const Icon(
-                                                    Icons.broken_image,
-                                                    size: 70,
-                                                  ),
-                                        ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    flex: 0,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        storageUrl + recipe.image,
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.fitWidth,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(
+                                                  Icons.broken_image,
+                                                  size: 70,
+                                                ),
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: FractionallySizedBox(
-                                        widthFactor: 0.82,
+                                  ),
+                                  Expanded(
+                                    child: FractionallySizedBox(
+                                      widthFactor: 0.82,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                        ),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -225,8 +227,8 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                               Positioned(
                                 top: 8,

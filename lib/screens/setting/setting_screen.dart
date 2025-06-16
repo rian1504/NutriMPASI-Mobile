@@ -123,11 +123,11 @@ class _SettingScreenState extends State<SettingScreen> {
                                 backgroundColor: Colors.grey.shade200,
                                 child: ClipOval(
                                   child:
-                                      loggedInUser!.avatar != null
+                                      loggedInUser?.avatar != null
                                           ? Image.network(
-                                            storageUrl + loggedInUser.avatar!,
-                                            width: 32,
-                                            height: 32,
+                                            storageUrl + loggedInUser!.avatar!,
+                                            width: 120,
+                                            height: 120,
                                             fit: BoxFit.cover,
                                           )
                                           : Icon(
@@ -137,33 +137,12 @@ class _SettingScreenState extends State<SettingScreen> {
                                           ),
                                 ),
                               ),
-                              // tombol edit avatar
-                              Positioned(
-                                bottom: 4,
-                                right: 4,
-                                child: Container(
-                                  padding: EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: AppColors.textWhite,
-                                      width: 2,
-                                    ),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    AppIcons.editFill,
-                                    color: Colors.black,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                           SizedBox(height: 8),
                           // username
                           Text(
-                            loggedInUser.name,
+                            loggedInUser?.name ?? 'Pengguna',
                             style: TextStyle(
                               color: AppColors.textWhite,
                               fontSize: 20,

@@ -29,14 +29,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'title': 'Usulan',
       'subtitle': 'Makanan',
       'description':
-          'Punya resep MPASI favorit? Bagikan kreasi terbaik Anda dan bantu ibu lainnya menemukan inspirasi menu sehat!',
+          'Punya resep MPASI favorit? Bagikan kreasi terbaik Anda, jelajahi ide baru, dan bantu ibu lainnya menemukan inspirasi menu sehat untuk si kecil!',
       'image': 'assets/images/background/onboarding_2.png',
     },
     {
       'title': 'Riwayat',
       'subtitle': 'Masakan',
       'description':
-          'Pantau riwayat MPASI si kecil! Lihat catatan makanan sebelumnya, jumlah gizi, dan perkembangan pola makan bayi Anda.',
+          'Pantau riwayat MPASI si kecil! Lihat makanan yang dikonsumsi, hitung gizi otomatis, dan bandingkan asupan nutrisi setiap bulannya.',
       'image': 'assets/images/background/onboarding_3.png',
     },
   ];

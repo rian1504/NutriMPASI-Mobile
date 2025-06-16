@@ -16,7 +16,6 @@ import 'package:nutrimpasi/screens/forum/edit_thread_screen.dart'
 import 'package:nutrimpasi/screens/forum/forum_screen.dart' show ForumCard;
 import 'package:nutrimpasi/screens/forum/thread_screen.dart'
     show CommentSection;
-import 'package:nutrimpasi/utils/report_dialog.dart' show showReportDialog;
 import 'package:nutrimpasi/widgets/custom_dialog.dart'; // Sesuaikan path jika berbeda
 
 // --- FUNGSI HELPER UNTUK KONFIRMASI HAPUS THREAD ---
