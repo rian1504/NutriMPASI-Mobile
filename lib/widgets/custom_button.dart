@@ -22,6 +22,121 @@ import 'package:nutrimpasi/constants/colors.dart';
 //   }
 // }
 
+class CircleButton extends StatelessWidget {
+  final VoidCallback? onPressed; // Callback saat tombol ditekan
+  final Color? buttonColor; // Warna latar belakang tombol (default bisa diset)
+  final double size; // Ukuran keseluruhan tombol (diameter)
+  final double elevation; // Elevasi/bayangan tombol
+  final EdgeInsetsGeometry margin; // Margin eksternal tombol
+
+  // === PROPERTI UNTUK KONTEN (PILIH SALAH SATU) ===
+  final Widget? child; // Untuk konten yang sepenuhnya kustom
+  final IconData?
+  icon; // Untuk menggunakan Icon (jika child dan imagePath null)
+  final Color? iconColor; // Warna icon (hanya relevan jika icon diberikan)
+  final String?
+  imagePath; // Untuk menggunakan Image.asset (jika child dan icon null)
+  final String?
+  imageUrl; // Untuk menggunakan Image.network (jika child, icon, imagePath null)
+  // ===============================================
+
+  const CircleButton({
+    super.key,
+    required this.onPressed,
+    this.buttonColor = Colors.white,
+    this.size = 40.0,
+    this.elevation = 2.0,
+    this.margin = const EdgeInsets.all(0.0),
+    // --- Pastikan hanya satu dari berikut yang diberikan ---
+    this.child,
+    this.icon,
+    this.iconColor,
+    this.imagePath,
+    this.imageUrl,
+  }) : assert(
+         // Memastikan hanya SATU dari child, icon, imagePath, atau imageUrl yang tidak null
+         (child != null &&
+                 icon == null &&
+                 imagePath == null &&
+                 imageUrl == null) ||
+             (child == null &&
+                 icon != null &&
+                 imagePath == null &&
+                 imageUrl == null) ||
+             (child == null &&
+                 icon == null &&
+                 imagePath != null &&
+                 imageUrl == null) ||
+             (child == null &&
+                 icon == null &&
+                 imagePath == null &&
+                 imageUrl != null),
+         'Anda harus menyediakan tepat satu dari: child, icon, imagePath, atau imageUrl',
+       );
+
+  // Helper untuk menentukan widget konten berdasarkan properti yang diberikan
+  Widget _buildContent() {
+    if (child != null) {
+      return child!;
+    } else if (icon != null) {
+      return Icon(
+        icon,
+        color: iconColor ?? AppColors.primary, // Gunakan iconColor atau default
+        size: size * 0.5, // Ukuran icon proporsional
+      );
+    } else if (imagePath != null) {
+      return Image.asset(
+        imagePath!,
+        fit: BoxFit.contain, // Default fit, bisa dikustomisasi jika Anda mau
+        width: size * 0.5, // Ukuran gambar proporsional
+        height: size * 0.5,
+        color: AppColors.primary,
+      );
+    } else if (imageUrl != null) {
+      return ClipOval(
+        // Biasanya gambar dari URL untuk profil itu melingkar
+        child: Image.network(
+          imageUrl!,
+          fit: BoxFit.cover,
+          width: size * 0.5,
+          height: size * 0.5,
+          color: AppColors.primary,
+        ),
+      );
+    }
+    // Jika semua null (assert akan mencegah ini terjadi), kembalikan SizedBox kosong
+    return const SizedBox.shrink();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: margin,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          shape: const CircleBorder(),
+          backgroundColor: buttonColor,
+          padding:
+              EdgeInsets.zero, // Padding internal ElevatedButton diatur ke nol
+          elevation: elevation,
+          minimumSize: Size(size, size), // Ukuran minimum tombol
+        ),
+        child: SizedBox(
+          // Memastikan _buildContent berada di tengah dan memiliki ukuran yang dikontrol
+          width:
+              size, // Memberikan ruang penuh kepada child agar _buildContent bisa mengatur dirinya
+          height: size,
+          child: Center(
+            child:
+                _buildContent(), // Memanggil helper untuk mendapatkan konten yang tepat
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class SmallButton extends StatelessWidget {
   // Properti yang dapat dikustomisasi
   final String text; // Teks pada tombol
@@ -53,7 +168,8 @@ class SmallButton extends StatelessWidget {
       onPressed: onPressed, // Gunakan callback yang diterima dari properti
       style: ElevatedButton.styleFrom(
         backgroundColor:
-            backgroundColor ?? AppColors.accent, // Gunakan warna default atau yang dikustom
+            backgroundColor ??
+            AppColors.accent, // Gunakan warna default atau yang dikustom
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: padding ?? const EdgeInsets.fromLTRB(20, 8, 20, 8),
         minimumSize: minimumSize ?? const Size(42, 42),
@@ -63,7 +179,9 @@ class SmallButton extends StatelessWidget {
           icon !=
                   null // Jika ada ikon, tampilkan Row dengan ikon dan teks
               ? Row(
-                mainAxisSize: MainAxisSize.min, // Penting agar Row tidak memakan ruang lebih
+                mainAxisSize:
+                    MainAxisSize
+                        .min, // Penting agar Row tidak memakan ruang lebih
                 children: [
                   Icon(icon, color: textColor ?? Colors.white),
                   const SizedBox(width: 8), // Jarak antara ikon dan teks
@@ -125,7 +243,8 @@ class MediumButton extends StatelessWidget {
       onPressed: onPressed, // Gunakan callback yang diterima dari properti
       style: ElevatedButton.styleFrom(
         backgroundColor:
-            backgroundColor ?? AppColors.accent, // Gunakan warna default atau yang dikustom
+            backgroundColor ??
+            AppColors.accent, // Gunakan warna default atau yang dikustom
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         // padding: padding ?? const EdgeInsets.fromLTRB(20, 8, 20, 8),
         padding: padding ?? EdgeInsets.symmetric(horizontal: 32, vertical: 12),
@@ -136,7 +255,9 @@ class MediumButton extends StatelessWidget {
           icon !=
                   null // Jika ada ikon, tampilkan Row dengan ikon dan teks
               ? Row(
-                mainAxisSize: MainAxisSize.min, // Penting agar Row tidak memakan ruang lebih
+                mainAxisSize:
+                    MainAxisSize
+                        .min, // Penting agar Row tidak memakan ruang lebih
                 children: [
                   Icon(icon, color: textColor ?? Colors.white),
                   const SizedBox(width: 8), // Jarak antara ikon dan teks

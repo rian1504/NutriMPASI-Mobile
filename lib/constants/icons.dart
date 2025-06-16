@@ -10,6 +10,11 @@ class AppIcons {
   // Ikon untuk aplikasi Nutrimpasi
   static IconData get like =>
       PhosphorIcons.thumbsUp(PhosphorIconsStyle.regular);
+  static IconData get notification =>
+      PhosphorIcons.bellRinging(PhosphorIconsStyle.regular);
+  static IconData get favoriteRegular =>
+      PhosphorIcons.heart(PhosphorIconsStyle.regular);
+
   static IconData get favorite => PhosphorIcons.heart(PhosphorIconsStyle.bold);
   static IconData get comment => PhosphorIcons.chat(PhosphorIconsStyle.bold);
   static IconData get info => PhosphorIcons.info(PhosphorIconsStyle.bold);

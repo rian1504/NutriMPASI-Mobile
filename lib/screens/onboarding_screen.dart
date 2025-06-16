@@ -124,10 +124,10 @@ class OnboardingPage extends StatelessWidget {
             ),
             child: Padding(
               padding: EdgeInsets.fromLTRB(
-                24,
+                22,
                 32,
-                24,
-                MediaQuery.of(context).padding.bottom,
+                22,
+                MediaQuery.of(context).padding.bottom + 32,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

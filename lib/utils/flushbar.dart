@@ -1,9 +1,10 @@
 // lib/utils/app_flushbar.dart
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:nutrimpasi/constants/colors.dart';
 
 // Enum untuk menentukan tipe notifikasi (sukses, error, info)
-enum FlushbarType { success, error, info, warning }
+enum FlushbarType { success, error, info, warning, normal }
 
 class AppFlushbar {
   // Metode statis untuk menampilkan Flushbar
@@ -20,12 +21,13 @@ class AppFlushbar {
     Widget? mainButton,
   }) {
     Color backgroundColor;
-    IconData iconData;
+    IconData? iconData;
     Color iconColor = Colors.white; // Default icon color
 
     switch (type) {
       case FlushbarType.success:
-        backgroundColor = Colors.green.shade700;
+        // backgroundColor = Colors.green.shade700;
+        backgroundColor = AppColors.success;
         iconData = Icons.check_circle_outline;
         break;
       case FlushbarType.error:
@@ -40,6 +42,10 @@ class AppFlushbar {
         backgroundColor = Colors.blue.shade700;
         iconData = Icons.info_outline;
         break;
+      case FlushbarType.normal:
+        backgroundColor = Colors.black;
+        // iconData = Icons.info_outline;
+        break;
     }
 
     Flushbar(
@@ -49,7 +55,7 @@ class AppFlushbar {
       duration: duration,
       backgroundColor: backgroundColor,
       flushbarPosition: position,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(12),
       margin: const EdgeInsets.all(8),
       boxShadows: [
         BoxShadow(
@@ -69,7 +75,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
   }) {
@@ -87,7 +93,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 5),
+    Duration duration = const Duration(seconds: 3),
     FlushbarPosition position = FlushbarPosition.TOP,
     bool isDismissible = true,
     FlushbarStatusCallback? onStatusChanged,
@@ -107,7 +113,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
   }) {
@@ -125,7 +131,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 4),
+    Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.TOP,
     FlushbarStatusCallback? onStatusChanged,
   }) {
@@ -134,6 +140,24 @@ class AppFlushbar {
       message: message,
       title: title,
       type: FlushbarType.warning,
+      duration: duration,
+      position: position,
+    );
+  }
+
+  static void showNormal(
+    BuildContext context, {
+    required String message,
+    String? title,
+    Duration duration = const Duration(seconds: 2),
+    FlushbarPosition position = FlushbarPosition.BOTTOM,
+    FlushbarStatusCallback? onStatusChanged,
+  }) {
+    show(
+      context,
+      message: message,
+      title: title,
+      type: FlushbarType.normal,
       duration: duration,
       position: position,
     );
