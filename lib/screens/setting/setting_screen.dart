@@ -16,6 +16,7 @@ import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/screens/setting/history_likes_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_dialog.dart';
@@ -38,17 +39,28 @@ class _SettingScreenState extends State<SettingScreen> {
       listener: (context, state) {
         if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(
+            AppFlushbar.showNormal(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+              title: 'Selamat tinggal Mama!',
+              message: state.message,
+              marginVerticalValue: 8,
+            );
             context.read<BabyBloc>().add(ResetBaby());
-            Navigator.pushReplacementNamed(context, '/login');
+
+            Future.delayed(const Duration(seconds: 2), () {
+              if (context.mounted) {
+                // Navigasi ke login
+                Navigator.pushReplacementNamed(context, '/login');
+              }
+            });
           });
         } else if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(
+            AppFlushbar.showError(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+              title: 'Error',
+              message: state.error,
+            );
           });
         }
       },
@@ -118,24 +130,28 @@ class _SettingScreenState extends State<SettingScreen> {
                           Stack(
                             children: [
                               // avatar
-                              CircleAvatar(
-                                radius: 60,
-                                backgroundColor: Colors.grey.shade200,
-                                child: ClipOval(
-                                  child:
-                                      loggedInUser?.avatar != null
-                                          ? Image.network(
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(60),
+                                  color: AppColors.white,
+                                ),
+                                // radius: 60,
+                                // backgroundColor: AppColors.white,
+                                child:
+                                    loggedInUser?.avatar != null
+                                        ? ClipOval(
+                                          child: Image.network(
                                             storageUrl + loggedInUser!.avatar!,
                                             width: 120,
                                             height: 120,
                                             fit: BoxFit.cover,
-                                          )
-                                          : Icon(
-                                            AppIcons.userFill,
-                                            color: AppColors.primary,
-                                            size: 20,
                                           ),
-                                ),
+                                        )
+                                        : Icon(
+                                          Icons.person_rounded,
+                                          color: AppColors.primary,
+                                          size: 120,
+                                        ),
                               ),
                             ],
                           ),
@@ -179,7 +195,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             children: [
                               ListTile(
                                 leading: Icon(
-                                  AppIcons.userFill,
+                                  Icons.person,
                                   color: Colors.black,
                                   size: 24,
                                 ),

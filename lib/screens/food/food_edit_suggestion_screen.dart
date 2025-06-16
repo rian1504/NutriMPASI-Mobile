@@ -9,6 +9,8 @@ import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:nutrimpasi/utils/flushbar.dart';
+
 class FoodEditSuggestionScreen extends StatefulWidget {
   final FoodSuggestion food;
 
@@ -136,11 +138,10 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengakses galeri. Coba periksa izin aplikasi.'),
-          backgroundColor: Colors.red,
-        ),
+      AppFlushbar.showError(
+        context,
+        title: 'Error',
+        message: 'Gagal mengakses galeri. Coba periksa izin aplikasi',
       );
     }
   }
@@ -161,11 +162,10 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengakses kamera. Coba periksa izin aplikasi.'),
-          backgroundColor: Colors.red,
-        ),
+      AppFlushbar.showError(
+        context,
+        title: 'Error',
+        message: 'Gagal mengakses kamera. Coba periksa izin aplikasi',
       );
     }
   }

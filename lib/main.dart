@@ -43,6 +43,7 @@ import 'package:nutrimpasi/screens/home_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_screen.dart';
 import 'package:nutrimpasi/screens/features/schedule_screen.dart';
 import 'package:nutrimpasi/screens/splash_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
@@ -249,19 +250,27 @@ class MainPageState extends State<MainPage> {
         if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             // Tampilkan pesan error
-            ScaffoldMessenger.of(
+            AppFlushbar.showError(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
-
-            // Navigasi ke login
-            Navigator.pushReplacementNamed(context, '/login');
+              title: 'Error',
+              message: state.error,
+            );
+            // Tunggu sebentar lalu navigasi ke home
+            Future.delayed(const Duration(seconds: 2), () {
+              if (context.mounted) {
+                // Navigasi ke login
+                Navigator.pushReplacementNamed(context, '/login');
+              }
+            });
           });
         } else if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             // Tampilkan pesan logout sukses
-            ScaffoldMessenger.of(
+            AppFlushbar.showSuccess(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+              title: 'Berhasil',
+              message: state.message,
+            );
             // Reset Baby
             context.read<BabyBloc>().add(ResetBaby());
             // Navigasi ke login

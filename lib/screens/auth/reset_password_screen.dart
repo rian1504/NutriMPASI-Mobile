@@ -5,6 +5,7 @@ import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String token;
@@ -58,13 +59,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is ResetPasswordSuccess) {
-          // Tampilkan snackbar sukses dan arahkan ke halaman utama
-          ScaffoldMessenger.of(
+          // Tampilkan flushbar sukses dan arahkan ke halaman utama
+          AppFlushbar.showSuccess(
             context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+            title: 'Berhasil',
+            message: state.message,
+          );
 
           // Tunggu sebentar lalu navigasi ke home
-          Future.delayed(const Duration(milliseconds: 500), () {
+          Future.delayed(const Duration(seconds: 2), () {
             if (context.mounted) {
               Navigator.pushReplacement(
                 context,
@@ -73,9 +76,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             }
           });
         } else if (state is AuthenticationError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.error)));
+          AppFlushbar.showError(context, title: 'Error', message: state.error);
         }
       },
       child: Scaffold(

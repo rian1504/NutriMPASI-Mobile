@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -60,20 +61,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is RegistrationSuccess) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            AppFlushbar.showSuccess(context, message: state.message);
 
             // Tunggu sebentar lalu navigasi ke login
-            Future.delayed(const Duration(milliseconds: 500), () {
+            Future.delayed(const Duration(seconds: 3), () {
               if (context.mounted) {
                 Navigator.pushReplacementNamed(context, '/login');
               }
             });
           } else if (state is AuthenticationError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            AppFlushbar.showError(context, message: state.error);
           }
         },
         child: SingleChildScrollView(

@@ -10,6 +10,7 @@ import 'package:nutrimpasi/blocs/like/like_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/thread.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 
@@ -58,12 +59,10 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
           if (state is ThreadUpdated) {
             Navigator.of(context).pop();
 
-            // _showDialogReportSuccess(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Berhasil mengubah thread"),
-                backgroundColor: Colors.green,
-              ),
+            AppFlushbar.showSuccess(
+              context,
+              title: 'Berhasil',
+              message: 'Berhasil mengubah thread',
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
@@ -72,8 +71,10 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
               FetchComments(threadId: widget.thread.id),
             );
           } else if (state is ThreadError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            AppFlushbar.showError(
+              context,
+              title: 'Error',
+              message: state.error,
             );
           }
         },

@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import 'package:nutrimpasi/models/schedule.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/main.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -101,23 +103,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   void _navigateToFoodList() {
-    // Tampilkan snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Pilih makanan yang ingin di tambahkan ke Jadwal Memasak",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: AppColors.accent,
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.05,
-          left: 20,
-          right: 20,
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    // Tampilkan flushbar
+    AppFlushbar.showInfo(
+      context,
+      title: 'Informasi',
+      message: 'Pilih makanan yang ingin ditambahkan ke Jadwal Memasak',
     );
 
     // Fungsi untuk navigasi ke FoodListScreen
@@ -344,11 +334,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           BlocConsumer<ScheduleBloc, ScheduleState>(
             listener: (context, state) {
               if (state is ScheduleUpdated) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Jadwal berhasil diubah'),
-                    backgroundColor: Colors.green,
-                  ),
+                AppFlushbar.showSuccess(
+                  context,
+                  message: "Jadwal berhasil diubah",
+                  title: "Berhasil",
                 );
 
                 setState(() {
@@ -356,11 +345,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   context.read<ScheduleBloc>().add(FetchSchedules());
                 });
               } else if (state is ScheduleDeleted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Jadwal berhasil dihapus'),
-                    backgroundColor: Colors.green,
-                  ),
+                AppFlushbar.showSuccess(
+                  context,
+                  message: "Jadwal berhasil dihapus",
+                  title: "Berhasil",
                 );
 
                 setState(() {
@@ -368,12 +356,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   context.read<ScheduleBloc>().add(FetchSchedules());
                 });
               } else if (state is ScheduleError) {
-                // Tampilkan snackbar jika terjadi error
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.error),
-                    backgroundColor: AppColors.red,
-                  ),
+                // Tampilkan flushbar jika terjadi error
+                AppFlushbar.showError(
+                  context,
+                  title: 'Error',
+                  message: state.error,
                 );
               }
             },

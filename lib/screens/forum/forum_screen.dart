@@ -14,6 +14,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/thread.dart';
 import 'package:nutrimpasi/screens/forum/create_thread_screen.dart';
 import 'package:nutrimpasi/screens/forum/thread_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart'
     show pushWithSlideTransition;
@@ -66,21 +67,18 @@ class _ForumScreenState extends State<ForumScreen> {
               child: BlocConsumer<ThreadBloc, ThreadState>(
                 listener: (context, state) {
                   if (state is ThreadDeleted) {
-                    // _showDialogReportSuccess(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Berhasil menghapus thread"),
-                        backgroundColor: Colors.green,
-                      ),
+                    AppFlushbar.showSuccess(
+                      context,
+                      title: 'Berhasil',
+                      message: 'Berhasil menghapus thread',
                     );
 
                     context.read<ThreadBloc>().add(FetchThreads());
                   } else if (state is ThreadError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.error),
-                        backgroundColor: Colors.red,
-                      ),
+                    AppFlushbar.showError(
+                      context,
+                      title: 'Error',
+                      message: state.error,
                     );
                   }
                 },
@@ -367,7 +365,7 @@ class _ForumTabState extends State<_ForumTab> {
         ),
         if (widget.isMyPosts)
           Positioned(
-            bottom: 48,
+            bottom: 40,
             right: 16,
             child: FloatingActionButton(
               shape: RoundedRectangleBorder(

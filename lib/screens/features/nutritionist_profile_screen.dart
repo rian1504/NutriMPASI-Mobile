@@ -5,6 +5,7 @@ import 'package:nutrimpasi/blocs/nutritionist/nutritionist_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/nutritionist.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NutritionistProfileScreen extends StatefulWidget {
@@ -501,11 +502,11 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     } catch (e) {
       if (mounted) {
-        // Tampilkan snackbar jika terjadi error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Tidak dapat membuka WhatsApp: ${e.toString()}'),
-          ),
+        // Tampilkan flushbar jika terjadi error
+        AppFlushbar.showError(
+          context,
+          title: 'Error',
+          message: 'Tidak dapat membuka WhatsApp: ${e.toString()}',
         );
       }
     }

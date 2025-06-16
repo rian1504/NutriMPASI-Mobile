@@ -42,6 +42,7 @@ class AppIcons {
   static IconData get favoriteFill =>
       PhosphorIcons.heart(PhosphorIconsStyle.fill);
   static IconData get userFill => PhosphorIcons.user(PhosphorIconsStyle.fill);
+  static IconData get avatarFill => PhosphorIcons.userCircle(PhosphorIconsStyle.fill);
   static IconData get menu =>
       PhosphorIcons.dotsThreeOutlineVertical(PhosphorIconsStyle.fill);
   static IconData get deleteFill =>

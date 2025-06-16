@@ -6,6 +6,7 @@ import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_edit_suggestion_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 
 class FoodSuggestionDetailScreen extends StatefulWidget {
   final int foodId;
@@ -663,16 +664,11 @@ class _FoodSuggestionDetailScreenState
                                                       Navigator.pop(context);
                                                       Navigator.pop(context);
 
-                                                      ScaffoldMessenger.of(
+                                                      AppFlushbar.showSuccess(
                                                         context,
-                                                      ).showSnackBar(
-                                                        SnackBar(
-                                                          content: Text(
+                                                        title: 'Berhasil',
+                                                        message:
                                                             'Makanan berhasil dihapus',
-                                                          ),
-                                                          backgroundColor:
-                                                              Colors.green,
-                                                        ),
                                                       );
                                                     },
                                                     child: Row(
@@ -688,7 +684,7 @@ class _FoodSuggestionDetailScreenState
                                                           width: 8,
                                                         ),
                                                         const Text(
-                                                          'Hapus Usulan',
+                                                          'Hapus',
                                                           style: TextStyle(
                                                             fontFamily:
                                                                 'Poppins',
@@ -727,7 +723,7 @@ class _FoodSuggestionDetailScreenState
                                   const Icon(Icons.delete, size: 18),
                                   const SizedBox(width: 8),
                                   const Text(
-                                    'Hapus Usulan',
+                                    'Hapus ',
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 14,

@@ -9,6 +9,7 @@ import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
@@ -617,7 +618,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                             // Mengatur ulang tampilan item yang ditampilkan
                             _displayedItemCount = 5;
 
-                            // Tampilkan snackbar dengan jumlah filter yang diterapkan
+                            // Tampilkan flushbar dengan jumlah filter yang diterapkan
                             int totalFilters =
                                 (_foodCategoryFilters.values
                                     .where((v) => v)
@@ -630,17 +631,16 @@ class _FoodListScreenState extends State<FoodListScreen>
                                     .length);
 
                             if (totalFilters > 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '$totalFilters filter diterapkan',
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                ),
+                              AppFlushbar.showNormal(
+                                context,
+                                message: '$totalFilters filter diterapkan',
+                                marginVerticalValue: 16,
                               );
                             }
                           });
-                          Navigator.pop(context);
+                          Future.delayed(const Duration(seconds: 2), () {
+                            Navigator.pop(context);
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
@@ -1006,8 +1006,10 @@ class _FoodListScreenState extends State<FoodListScreen>
                 });
               }
             } else if (state is FoodError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Gagal memuat data: ${state.error}')),
+              AppFlushbar.showError(
+                context,
+                title: 'Error',
+                message: 'Gagal memuat data: ${state.error}',
               );
             }
           },

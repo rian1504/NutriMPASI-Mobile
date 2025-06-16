@@ -11,6 +11,7 @@ import 'package:nutrimpasi/models/food_record.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class CookingHistoryScreen extends StatefulWidget {
@@ -512,9 +513,11 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                 _groupFoodByTimePeriod();
               });
             } else if (state is FoodRecordError) {
-              ScaffoldMessenger.of(
+              AppFlushbar.showError(
                 context,
-              ).showSnackBar(SnackBar(content: Text(state.error)));
+                title: 'Error',
+                message: state.error,
+              );
             }
           },
         ),
@@ -1356,11 +1359,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       child: InkWell(
         onTap: () {
           if (food.foodId == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Data makanan sudah tidak tersedia'),
-                duration: Duration(seconds: 2),
-              ),
+            AppFlushbar.showInfo(
+              context,
+              title: 'Informasi',
+              message: 'Data makanan sudah tidak tersedia',
             );
           } else {
             Navigator.push(
