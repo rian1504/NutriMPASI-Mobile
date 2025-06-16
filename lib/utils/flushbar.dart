@@ -21,7 +21,7 @@ class AppFlushbar {
     Widget? mainButton,
   }) {
     Color backgroundColor;
-    IconData iconData;
+    IconData? iconData;
     Color iconColor = Colors.white; // Default icon color
 
     switch (type) {
@@ -44,7 +44,7 @@ class AppFlushbar {
         break;
       case FlushbarType.normal:
         backgroundColor = Colors.black;
-        iconData = Icons.info_outline;
+        // iconData = Icons.info_outline;
         break;
     }
 
@@ -55,7 +55,7 @@ class AppFlushbar {
       duration: duration,
       backgroundColor: backgroundColor,
       flushbarPosition: position,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(12),
       margin: const EdgeInsets.all(8),
       boxShadows: [
         BoxShadow(
@@ -75,7 +75,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
   }) {
@@ -93,7 +93,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 5),
+    Duration duration = const Duration(seconds: 3),
     FlushbarPosition position = FlushbarPosition.TOP,
     bool isDismissible = true,
     FlushbarStatusCallback? onStatusChanged,
@@ -113,7 +113,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
   }) {
@@ -131,7 +131,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 4),
+    Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.TOP,
     FlushbarStatusCallback? onStatusChanged,
   }) {
@@ -149,7 +149,7 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
   }) {

@@ -10,6 +10,7 @@ import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/features/notification_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart';
 import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
@@ -18,6 +19,7 @@ import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/screens/setting/history_likes_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_dialog.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -228,14 +230,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                     context,
                                     PasswordSettingScreen(),
                                   );
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder:
-                                  //         (context) =>
-                                  //             const PasswordSettingScreen(),
-                                  //   ),
-                                  // );
                                 },
                               ),
                               ListTile(
@@ -251,12 +245,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   size: 20,
                                 ),
                                 onTap: () {
-                                  Navigator.push(
+                                  pushWithSlideTransition(
                                     context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => const BabyEditScreen(),
-                                    ),
+                                    BabyListScreen(),
                                   );
                                 },
                               ),
@@ -285,13 +276,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   size: 20,
                                 ),
                                 onTap: () {
-                                  Navigator.push(
+                                  pushWithSlideTransition(
                                     context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              const FavoriteRecipeScreen(),
-                                    ),
+                                    FavoriteRecipeScreen(),
                                   );
                                 },
                               ),
@@ -308,13 +295,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   size: 20,
                                 ),
                                 onTap: () {
-                                  Navigator.push(
+                                  pushWithSlideTransition(
                                     context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              const HistoryLikeScreen(),
-                                    ),
+                                    HistoryLikeScreen(),
                                   );
                                 },
                               ),
@@ -342,13 +325,9 @@ class _SettingScreenState extends State<SettingScreen> {
                                   size: 20,
                                 ),
                                 onTap: () {
-                                  Navigator.push(
+                                  pushWithSlideTransition(
                                     context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              const NotificationScreen(),
-                                    ),
+                                    NotificationScreen(),
                                   );
                                 },
                               ),
@@ -376,27 +355,61 @@ class _SettingScreenState extends State<SettingScreen> {
                           elevation: 1,
                           child: Column(
                             children: [
-                              GestureDetector(
-                                child: ListTile(
-                                  leading: Icon(
-                                    AppIcons.logout,
-                                    color: AppColors.error,
-                                    size: 24,
-                                  ),
-                                  title: Text(
-                                    'Keluar',
-                                    style: TextStyle(color: AppColors.error),
-                                  ),
-                                  trailing: Icon(
-                                    AppIcons.arrowRight,
-                                    color: AppColors.error,
-                                    size: 20,
-                                  ),
+                              ListTile(
+                                leading: Icon(
+                                  AppIcons.logout,
+                                  color: AppColors.error,
+                                  size: 24,
                                 ),
-                                onTap: () {
-                                  context.read<AuthenticationBloc>().add(
-                                    LogoutRequested(),
+                                title: Text(
+                                  'Keluar',
+                                  style: TextStyle(color: AppColors.error),
+                                ),
+                                trailing: Icon(
+                                  AppIcons.arrowRight,
+                                  color: AppColors.error,
+                                  size: 20,
+                                ),
+                                onTap: () async {
+                                  // Tampilkan ConfirmDialog
+                                  final bool?
+                                  confirmed = await showDialog<bool>(
+                                    context: context,
+                                    builder: (dialogContext) {
+                                      return ConfirmDialog(
+                                        titleText: "Konfirmasi Keluar",
+                                        contentText:
+                                            "Apakah Anda yakin ingin keluar dari akun ini?",
+                                        confirmButtonText: "Keluar",
+                                        cancelButtonText: "Batal",
+                                        confirmButtonColor:
+                                            AppColors
+                                                .error, // Tombol keluar biasanya merah
+                                        confirmButtonTextColor: Colors.white,
+                                        onCancel:
+                                            () =>
+                                                Navigator.of(dialogContext).pop(
+                                                  false,
+                                                ), // Kembali false jika batal
+                                        onConfirm:
+                                            () =>
+                                                Navigator.of(dialogContext).pop(
+                                                  true,
+                                                ), // Kembali true jika keluar
+                                      );
+                                    },
                                   );
+
+                                  // Jika pengguna mengkonfirmasi (menekan "Keluar")
+                                  if (confirmed == true) {
+                                    // Memicu event LogoutRequested ke AuthenticationBloc
+                                    // Pastikan context masih valid sebelum memanggil Bloc
+                                    if (context.mounted) {
+                                      context.read<AuthenticationBloc>().add(
+                                        LogoutRequested(),
+                                      );
+                                    }
+                                  }
                                 },
                               ),
                             ],

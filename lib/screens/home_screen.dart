@@ -6,6 +6,7 @@ import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/baby_food_recommendation/baby_food_recommendation_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/baby_food_recommendation.dart';
@@ -19,6 +20,8 @@ import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
 import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
+import 'package:nutrimpasi/utils/navigation_animation.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -334,20 +337,18 @@ class _HomeScreenState extends State<HomeScreen>
                     ],
                   ),
                   // Tombol notifikasi
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/icon/daftar_notifikasi.png',
-                      color: AppColors.textBlack,
-                      scale: 5,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: CircleButton(
+                      // imagePath: 'assets/images/icon/daftar_notifikasi.png',
+                      icon: AppIcons.notification,
+                      onPressed: () {
+                        pushWithSlideTransition(
+                          context,
+                          const NotificationScreen(),
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationScreen(),
-                        ),
-                      );
-                    },
                   ),
                 ],
               ),
