@@ -10,6 +10,7 @@ import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodListScreen extends StatefulWidget {
   final bool showUserSuggestions;
@@ -964,31 +965,20 @@ class _FoodListScreenState extends State<FoodListScreen>
                           // Tombol favorit
                           Opacity(
                             opacity: 1 - _appBarAnimation.value,
-                            child: ElevatedButton(
-                              onPressed:
-                                  _appBarAnimation.value < 0.5
-                                      ? () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) =>
-                                                    const FavoriteRecipeScreen(),
-                                          ),
-                                        );
-                                      }
-                                      : null,
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(4),
-                                backgroundColor: Colors.white,
-                                elevation: 2,
-                              ),
-                              child: Image.asset(
-                                'assets/images/icon/daftar_favorit.png',
-                                width: 24,
-                                height: 24,
-                                color: AppColors.primary,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: CircleButton(
+                                onPressed:
+                                    _appBarAnimation.value < 0.5
+                                        ? () {
+                                          pushWithSlideTransition(
+                                            context,
+                                            FavoriteRecipeScreen(),
+                                          );
+                                        }
+                                        : null,
+                                imagePath:
+                                    'assets/images/icon/daftar_favorit.png',
                               ),
                             ),
                           ),

@@ -16,8 +16,7 @@ import 'package:nutrimpasi/screens/forum/edit_thread_screen.dart'
 import 'package:nutrimpasi/screens/forum/forum_screen.dart' show ForumCard;
 import 'package:nutrimpasi/screens/forum/thread_screen.dart'
     show CommentSection;
-// import 'package:nutrimpasi/utils/report_dialog.dart'
-//    show showReportDialog; // Sesuaikan path jika berbeda
+import 'package:nutrimpasi/widgets/custom_dialog.dart'; // Sesuaikan path jika berbeda
 
 // --- FUNGSI HELPER UNTUK KONFIRMASI HAPUS THREAD ---
 Future<void> confirmDeleteThread({
@@ -218,21 +217,16 @@ Future<void> confirmDeleteComment({
   final confirmed = await showDialog<bool>(
     context: context,
     builder:
-        (ctx) => AlertDialog(
-          title: const Text("Konfirmasi Hapus"),
-          content: const Text(
-            "Apakah Anda yakin ingin menghapus komentar ini?",
-          ),
-          actions: [
-            TextButton(
-              child: const Text("Batal"),
-              onPressed: () => Navigator.pop(ctx, false),
-            ),
-            TextButton(
-              child: const Text("Hapus", style: TextStyle(color: Colors.red)),
-              onPressed: () => Navigator.pop(ctx, true),
-            ),
-          ],
+        (ctx) => ConfirmDialog(
+          titleText: "Konfirmasi Hapus",
+          contentText: "Apakah Anda yakin ingin menghapus komentar ini?",
+          confirmButtonColor: AppColors.red,
+          onConfirm: () {
+            // onConfirm sekarang tidak menerima parameter
+            Navigator.pop(ctx, true);
+          },
+          onCancel: () => Navigator.pop(ctx, false),
+          isConfirming: false,
         ),
   );
 

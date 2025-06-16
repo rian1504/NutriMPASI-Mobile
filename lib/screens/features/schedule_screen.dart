@@ -10,6 +10,7 @@ import 'package:nutrimpasi/models/schedule.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/main.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class ScheduleScreen extends StatefulWidget {
   final DateTime? targetDate;
@@ -153,25 +154,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ),
         centerTitle: true,
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CookingHistoryScreen(),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              backgroundColor: Colors.white,
-              padding: const EdgeInsets.all(8.0),
-              elevation: 2,
-            ),
-            child: const Icon(
-              Symbols.history,
-              color: AppColors.primary,
-              size: 20,
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: CircleButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CookingHistoryScreen(),
+                  ),
+                );
+              },
+              icon: Symbols.history,
             ),
           ),
         ],

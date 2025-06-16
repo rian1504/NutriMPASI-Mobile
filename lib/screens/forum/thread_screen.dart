@@ -99,7 +99,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
       appBar: AppBarForum(
         title: "Detail Postingan",
         showBackButton: true,
-        category: widget.screenCategory!,
+        category: widget.screenCategory ?? '',
       ),
       body: Container(
         decoration: BoxDecoration(color: AppColors.primary),
