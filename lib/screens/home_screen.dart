@@ -23,6 +23,7 @@ import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -939,39 +940,13 @@ class _HomeScreenState extends State<HomeScreen>
 
   // Widget untuk menampilkan status kosong ketika tidak ada rekomendasi
   Widget _buildEmptyRecommendation() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.no_food,
-              size: 70,
-              color: AppColors.primaryLowTransparent,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Belum ada rekomendasi',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textBlack,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Belum ada rekomendasi makanan untuk bayi kamu saat ini.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 14,
-                color: AppColors.textGrey,
-              ),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 22),
+      child: EmptyMessage(
+        title: 'Belum ada rekomendasi makanan',
+        subtitle:
+            'Tidak ada rekomendasi makanan yang sesuai untuk bayi kamu saat ini',
+        iconName: Symbols.restaurant_menu,
       ),
     );
   }

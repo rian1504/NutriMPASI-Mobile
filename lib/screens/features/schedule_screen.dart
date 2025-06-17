@@ -6,6 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/schedule.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
@@ -13,6 +14,7 @@ import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class ScheduleScreen extends StatefulWidget {
   final DateTime? targetDate;
@@ -328,7 +330,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          // const SizedBox(height: 8),
 
           // Daftar jadwal makanan
           BlocConsumer<ScheduleBloc, ScheduleState>(
@@ -381,39 +383,52 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               }
 
               if (_scheduleItems.isEmpty) {
-                return Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Symbols.calendar_month,
-                          size: 60,
-                          color: AppColors.primaryLowTransparent,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          "Belum ada jadwal memasak untuk hari ini",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Tambahkan jadwal memasak dengan menekan tombol di atas",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 12,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                      ],
-                    ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  child: EmptyMessage(
+                    title: 'Belum ada jadwal memasak ',
+                    subtitle:
+                        'Tambahkan jadwal memasak untuk hari ini dengan menekan tombol di atas',
+                    buttonText: 'Tambah Jadwal',
+                    iconName: AppIcons.schedule,
                   ),
                 );
+                // return Expanded(
+                //   child: Center(
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: [
+                //         Icon(
+                //           Symbols.calendar_month,
+                //           size: 60,
+                //           color: AppColors.primaryLowTransparent,
+                //         ),
+                //         const SizedBox(height: 16),
+                //         Text(
+                //           "Belum ada jadwal memasak untuk hari ini",
+                //           style: TextStyle(
+                //             fontFamily: 'Poppins',
+                //             fontSize: 16,
+                //             color: AppColors.textGrey,
+                //           ),
+                //         ),
+                //         const SizedBox(height: 8),
+                //         Text(
+                //           "Tambahkan jadwal memasak dengan menekan tombol di atas",
+                //           textAlign: TextAlign.center,
+                //           style: TextStyle(
+                //             fontFamily: 'Poppins',
+                //             fontSize: 12,
+                //             color: AppColors.textGrey,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // );
               }
 
               if (state is ScheduleLoaded) {

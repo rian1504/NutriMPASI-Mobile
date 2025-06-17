@@ -22,6 +22,7 @@ import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/deep_link.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/comment_controller.dart';
@@ -306,7 +307,8 @@ class MainPageState extends State<MainPage> {
               size: _page == 1 ? 35 : 25,
             ),
             Icon(
-              Symbols.calendar_month,
+              // Symbols.calendar_month,
+              AppIcons.schedule,
               color: Colors.white,
               size: _page == 2 ? 35 : 25,
             ),

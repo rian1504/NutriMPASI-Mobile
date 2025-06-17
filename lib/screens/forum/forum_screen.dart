@@ -391,18 +391,21 @@ class _EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EmptyMessage(
-      iconName: AppIcons.forum,
-      title: isMyPosts ? 'Anda belum membuat postingan' : 'Belum ada postingan',
-      // title: 'Belum Ada Thread',
-      subtitle:
-          'Tambahkan postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
-      buttonText: 'Tambah Thread',
-      onPressed:
-          isMyPosts
-              ? () =>
-                  pushWithSlideTransition(context, const CreateThreadScreen())
-              : null, // Jika isMyPosts false, set onPressed ke null
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: EmptyMessage(
+        iconName: AppIcons.forum,
+        title: isMyPosts ? 'Anda belum membuat thread' : 'Belum ada thread',
+        // title: 'Belum Ada Thread',
+        subtitle:
+            'Tambahkan thread atau postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
+        buttonText: 'Tambah Thread',
+        onPressed:
+            isMyPosts
+                ? () =>
+                    pushWithSlideTransition(context, const CreateThreadScreen())
+                : null, // Jika isMyPosts false, set onPressed ke null
+      ),
     );
   }
 }
