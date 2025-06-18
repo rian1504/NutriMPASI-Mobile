@@ -4,6 +4,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
@@ -50,6 +51,9 @@ class _FoodListScreenState extends State<FoodListScreen>
   // Opsi pengurutan makanan
   String _sortOption = 'Terpopuler';
   final List<String> _sortOptions = ['Terpopuler', 'Terbaru', 'Terlama'];
+
+  // Kunci global untuk mendapatkan posisi tombol filter
+  final GlobalKey _dropdownButtonKey = GlobalKey();
 
   // Animasi untuk transisi AppBar
   late AnimationController _animationController;
@@ -369,6 +373,103 @@ class _FoodListScreenState extends State<FoodListScreen>
       default:
         return items;
     }
+  }
+
+  void _showDropdownOptions(BuildContext context, GlobalKey dropdownButtonKey) {
+    // Mendapatkan RenderBox dari GlobalKey untuk mendapatkan posisi tombol
+    final RenderBox renderBox =
+        dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(
+      Offset.zero,
+    ); // Posisi global tombol
+
+    showGeneralDialog(
+      context: context,
+      // KUNCI: Membuat barrier transparan agar kita bisa mengontrol overlay gelap sendiri.
+      barrierColor: Colors.transparent,
+      barrierDismissible: true,
+      barrierLabel: 'Filter Options',
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => Navigator.of(dialogContext).pop(),
+                behavior: HitTestBehavior.translucent,
+                child: Container(color: Colors.black38),
+              ),
+            ),
+
+            // --- Konten Utama Dialog (Tombol yang terlihat & Modal Dropdown) ---
+            Positioned(
+              left: offset.dx + 4,
+              top: offset.dy + 4,
+              width: 0.4 * MediaQuery.of(context).size.width - 8,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                ),
+                alignment: Alignment.topCenter,
+                child: Material(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(8),
+                  elevation: 8,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                        _sortOptions.map((option) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                _sortOption = option;
+                              });
+
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 16.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    option,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          _sortOption == option
+                                              ? AppColors.primary
+                                              : AppColors
+                                                  .black, // Warna teks berdasarkan pilihan
+                                    ),
+                                  ),
+                                  if (_sortOption ==
+                                      option) // Tampilkan ikon cek
+                                    const Icon(
+                                      Icons.check,
+                                      size: 20,
+                                      color: AppColors.primary,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -1408,61 +1509,57 @@ class _FoodListScreenState extends State<FoodListScreen>
 
                     // Dropdown untuk pengurutan
                     if (!_showUserSuggestionsOnly)
-                      Container(
+                      Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withAlpha(25),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: _sortOption,
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: AppColors.textBlack,
-                                ),
-                                style: const TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textBlack,
-                                ),
-                                onChanged: (String? newValue) {
-                                  if (newValue != null) {
-                                    setState(() {
-                                      _sortOption = newValue;
-                                      _displayedItemCount = 5;
-                                    });
-                                  }
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: 0.4 * MediaQuery.of(context).size.width,
+                              child: GestureDetector(
+                                key: _dropdownButtonKey,
+                                onTap: () {
+                                  _showDropdownOptions(
+                                    context,
+                                    _dropdownButtonKey,
+                                  );
                                 },
-                                items:
-                                    _sortOptions.map<DropdownMenuItem<String>>((
-                                      String value,
-                                    ) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0,
+                                child: Card(
+                                  elevation: 1,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      16,
+                                      8,
+                                      16,
+                                      8,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          _sortOption,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.black,
                                           ),
-                                          child: Text(value),
                                         ),
-                                      );
-                                    }).toList(),
+                                        Icon(
+                                          AppIcons.arrowDown,
+                                          size: 20,
+                                          color: AppColors.black,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
 
