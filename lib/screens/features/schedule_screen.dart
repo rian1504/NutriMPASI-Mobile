@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -396,39 +395,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     iconName: AppIcons.schedule,
                   ),
                 );
-                // return Expanded(
-                //   child: Center(
-                //     child: Column(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: [
-                //         Icon(
-                //           Symbols.calendar_month,
-                //           size: 60,
-                //           color: AppColors.primaryLowTransparent,
-                //         ),
-                //         const SizedBox(height: 16),
-                //         Text(
-                //           "Belum ada jadwal memasak untuk hari ini",
-                //           style: TextStyle(
-                //             fontFamily: 'Poppins',
-                //             fontSize: 16,
-                //             color: AppColors.textGrey,
-                //           ),
-                //         ),
-                //         const SizedBox(height: 8),
-                //         Text(
-                //           "Tambahkan jadwal memasak dengan menekan tombol di atas",
-                //           textAlign: TextAlign.center,
-                //           style: TextStyle(
-                //             fontFamily: 'Poppins',
-                //             fontSize: 12,
-                //             color: AppColors.textGrey,
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // );
               }
 
               if (state is ScheduleLoaded) {
