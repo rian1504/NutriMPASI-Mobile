@@ -11,7 +11,11 @@ final class CommentActionInProgress extends CommentState {}
 
 final class CommentStored extends CommentState {}
 
-final class CommentUpdated extends CommentState {}
+final class CommentUpdated extends CommentState {
+  final Comment updatedComment;
+
+  CommentUpdated({required this.updatedComment});
+}
 
 final class CommentDeleted extends CommentState {}
 
