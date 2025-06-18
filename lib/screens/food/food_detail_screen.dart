@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final int foodId;
@@ -170,16 +172,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                     _showDialogReportSuccess();
                                                   } else if (state
                                                       is ReportError) {
-                                                    ScaffoldMessenger.of(
+                                                    AppFlushbar.showError(
                                                       context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          state.error,
-                                                        ),
-                                                        backgroundColor:
-                                                            Colors.red,
-                                                      ),
+                                                      title: 'Error',
+                                                      message: state.error,
                                                     );
                                                   }
                                                 },
@@ -787,25 +783,29 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                       >(
                                         listener: (context, state) {
                                           if (state is ScheduleStored) {
-                                            ScaffoldMessenger.of(
+                                            AppFlushbar.showSuccess(
                                               context,
-                                            ).showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  'Jadwal berhasil disimpan',
-                                                ),
-                                                backgroundColor: Colors.green,
-                                              ),
+                                              message:
+                                                  "Jadwal berhasil disimpan",
+                                              title: "Berhasil",
+                                              position: FlushbarPosition.BOTTOM,
+                                              marginVerticalValue: 0,
                                             );
-                                            Navigator.pop(context);
+                                            Future.delayed(
+                                              const Duration(seconds: 2),
+                                              () {
+                                                if (context.mounted) {
+                                                  Navigator.pop(
+                                                    context,
+                                                  ); // Navigasi setelah delay
+                                                }
+                                              },
+                                            );
                                           } else if (state is ScheduleError) {
-                                            ScaffoldMessenger.of(
+                                            AppFlushbar.showError(
                                               context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Text(state.error),
-                                                backgroundColor: Colors.red,
-                                              ),
+                                              title: 'Error',
+                                              message: state.error,
                                             );
                                           }
                                         },
@@ -1236,10 +1236,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 },
                               );
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Gagal memuat data bayi'),
-                                ),
+                              AppFlushbar.showError(
+                                context,
+                                title: 'Error',
+                                message: 'Gagal memuat data bayi',
                               );
                             }
                           },
@@ -1528,10 +1528,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 },
                               );
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Gagal memuat data bayi'),
-                                ),
+                              AppFlushbar.showError(
+                                context,
+                                title: 'Error',
+                                message: 'Gagal memuat data bayi',
                               );
                             }
                           },

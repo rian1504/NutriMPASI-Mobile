@@ -9,6 +9,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/like.dart';
 import 'package:nutrimpasi/models/thread.dart' as thread_model;
 import 'package:nutrimpasi/screens/forum/thread_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/utils/report_dialog.dart';
@@ -39,19 +40,15 @@ class _HistoryLikeScreenState extends State<HistoryLikeScreen> {
     return BlocListener<thread_bloc.ThreadBloc, thread_bloc.ThreadState>(
       listener: (context, state) {
         if (state is thread_bloc.ThreadDeleted) {
-          // _showDialogReportSuccess(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Berhasil menghapus thread"),
-              backgroundColor: Colors.green,
-            ),
+          AppFlushbar.showSuccess(
+            context,
+            title: 'Berhasil',
+            message: 'Berhasil menghapus thread',
           );
 
           context.read<LikeBloc>().add(FetchLikes());
         } else if (state is thread_bloc.ThreadError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error), backgroundColor: Colors.red),
-          );
+          AppFlushbar.showError(context, title: 'Error', message: state.error);
         }
       },
       child: Scaffold(

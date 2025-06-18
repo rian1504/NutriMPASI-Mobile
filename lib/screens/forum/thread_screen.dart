@@ -798,25 +798,19 @@ class _CommentInputBarState extends State<_CommentInputBar> {
             context,
             message: "Komentar berhasil dikirim!",
             title: "Berhasil",
-            position: FlushbarPosition.BOTTOM, // Atur posisi sesuai keinginan
+            position: FlushbarPosition.BOTTOM,
+            marginVerticalValue: 8,
           );
         } else if (state is CommentDeleted) {
           AppFlushbar.showSuccess(
             context,
-            message: "Komentar berhasil dihapus!",
+            message: "Komentar berhasil dihapus",
             title: "Berhasil",
-            position: FlushbarPosition.BOTTOM, // Atur posisi sesuai keinginan
+            position: FlushbarPosition.BOTTOM,
+            marginVerticalValue: 8,
           );
         } else if (state is CommentError) {
-          // ScaffoldMessenger.of(
-          //   context,
-          // ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
-          AppFlushbar.showError(
-            context,
-            message: state.error,
-            title: "Berhasil",
-            position: FlushbarPosition.BOTTOM, // Atur posisi sesuai keinginan
-          );
+          AppFlushbar.showError(context, message: state.error, title: "Error");
         }
       },
       builder: (context, state) {

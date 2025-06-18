@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart' show AppBarForum;
 
@@ -47,18 +48,18 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
           if (state is ThreadStored) {
             Navigator.of(context).pop();
 
-            // _showDialogReportSuccess(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Berhasil menambah thread"),
-                backgroundColor: Colors.green,
-              ),
+            AppFlushbar.showSuccess(
+              context,
+              title: 'Berhasil',
+              message: 'Berhasil menambah thread!',
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
           } else if (state is ThreadError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            AppFlushbar.showError(
+              context,
+              title: 'Error',
+              message: state.error,
             );
           }
         },

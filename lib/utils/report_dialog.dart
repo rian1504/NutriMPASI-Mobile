@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/report/report_bloc.dart'; // Impor ReportBloc, ReportEvent, ReportState
 import 'package:nutrimpasi/constants/colors.dart'; // Impor AppColors
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart'; // Impor MessageDialog
 import 'dart:async'; // Untuk Future.delayed
 
@@ -78,12 +79,10 @@ Future<void> showReportDialog({
                   blocConsumerContext,
                   rootNavigator: true,
                 ).pop(); // Tutup dialog laporan ini
-                ScaffoldMessenger.of(context).showSnackBar(
-                  // Gunakan context asli dari pemanggil
-                  SnackBar(
-                    content: Text(state.error),
-                    backgroundColor: Colors.red,
-                  ),
+                AppFlushbar.showError(
+                  context,
+                  title: 'Error',
+                  message: state.error,
                 );
               }
             },

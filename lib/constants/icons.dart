@@ -42,6 +42,8 @@ class AppIcons {
   static IconData get favoriteFill =>
       PhosphorIcons.heart(PhosphorIconsStyle.fill);
   static IconData get userFill => PhosphorIcons.user(PhosphorIconsStyle.fill);
+  static IconData get avatarFill =>
+      PhosphorIcons.userCircle(PhosphorIconsStyle.fill);
   static IconData get menu =>
       PhosphorIcons.dotsThreeOutlineVertical(PhosphorIconsStyle.fill);
   static IconData get deleteFill =>
@@ -49,6 +51,8 @@ class AppIcons {
   static IconData get lockFill => PhosphorIcons.lock(PhosphorIconsStyle.fill);
   static IconData get send =>
       PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill);
+  static IconData get calendar =>
+      PhosphorIcons.calendarBlank(PhosphorIconsStyle.fill);
   // static const like = PhosphorIcons.thumbsUp;
   // static const profile = PhosphorIcons.thumbsUp;
 
@@ -63,4 +67,9 @@ class AppIcons {
   // static const IconData delete = Icons.delete;
   static const IconData check = Icons.check_circle;
   static const IconData uncheck = Icons.radio_button_unchecked;
+
+  //  Symbols.restaurant_menu,
+  //  Symbols.home_rounded,
+  // Symbols.forum,
+  // Symbols.settings,
 }

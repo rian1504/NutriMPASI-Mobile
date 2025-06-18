@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
@@ -9,8 +10,10 @@ import 'package:nutrimpasi/models/food.dart';
 import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class FoodListScreen extends StatefulWidget {
   final bool showUserSuggestions;
@@ -617,7 +620,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                             // Mengatur ulang tampilan item yang ditampilkan
                             _displayedItemCount = 5;
 
-                            // Tampilkan snackbar dengan jumlah filter yang diterapkan
+                            // Tampilkan flushbar dengan jumlah filter yang diterapkan
                             int totalFilters =
                                 (_foodCategoryFilters.values
                                     .where((v) => v)
@@ -630,17 +633,16 @@ class _FoodListScreenState extends State<FoodListScreen>
                                     .length);
 
                             if (totalFilters > 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '$totalFilters filter diterapkan',
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                ),
+                              AppFlushbar.showNormal(
+                                context,
+                                message: '$totalFilters filter diterapkan',
+                                marginVerticalValue: 16,
                               );
                             }
                           });
-                          Navigator.pop(context);
+                          Future.delayed(const Duration(seconds: 2), () {
+                            Navigator.pop(context);
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
@@ -1006,8 +1008,10 @@ class _FoodListScreenState extends State<FoodListScreen>
                 });
               }
             } else if (state is FoodError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Gagal memuat data: ${state.error}')),
+              AppFlushbar.showError(
+                context,
+                title: 'Error',
+                message: 'Gagal memuat data: ${state.error}',
               );
             }
           },
@@ -1461,7 +1465,8 @@ class _FoodListScreenState extends State<FoodListScreen>
                       ),
 
                     // Add space only if dropdown is shown
-                    if (!_showUserSuggestionsOnly) const SizedBox(height: 12),
+                    if (!_showUserSuggestionsOnly && _foodItems.isNotEmpty)
+                      const SizedBox(height: 12),
 
                     // Info pencarian aktif
                     if (_activeSearchQuery.isNotEmpty)
@@ -1551,44 +1556,24 @@ class _FoodListScreenState extends State<FoodListScreen>
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16.0,
                             ),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 50.0,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.no_food,
-                                      size: 70,
-                                      color: AppColors.primaryLowTransparent,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'Belum ada resep',
-                                      style: const TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.textBlack,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      _activeSearchQuery.isNotEmpty
-                                          ? 'Tidak ada resep yang sesuai dengan pencarian Anda'
-                                          : 'Coba ubah filter atau tambahkan usulan resep baru',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 14,
-                                        color: AppColors.textGrey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            child: EmptyMessage(
+                              title:
+                                  _showUserSuggestionsOnly
+                                      ? 'Anda belum mengusulkan resep'
+                                      : 'Belum ada resep makanan ',
+                              subtitle:
+                                  _activeSearchQuery.isNotEmpty
+                                      ? 'Tidak ada resep yang sesuai dengan pencarian Anda'
+                                      : 'Coba ubah filter atau tambahkan usulan resep baru',
+                              iconName: Symbols.restaurant_menu,
+                              buttonText: 'Tambah Usulan',
+                              onPressed:
+                                  _showUserSuggestionsOnly
+                                      ? () => pushWithSlideTransition(
+                                        context,
+                                        FoodAddSuggestionScreen(),
+                                      )
+                                      : null, // Jika isMyPosts false, set onPressed ke null,
                             ),
                           );
                         }

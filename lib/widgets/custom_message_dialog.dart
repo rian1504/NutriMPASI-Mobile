@@ -13,7 +13,11 @@ class MessageDialog extends StatelessWidget {
   final String imagePath;
   final String message;
 
-  const MessageDialog({super.key, required this.imagePath, required this.message});
+  const MessageDialog({
+    super.key,
+    required this.imagePath,
+    required this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,11 @@ class MessageDialog extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(44, 0, 8, 0),
-                child: Image.asset(imagePath, width: double.infinity, fit: BoxFit.contain),
+                child: Image.asset(
+                  imagePath,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                ),
               ),
               const SizedBox(height: 16),
               Text(
@@ -52,7 +60,7 @@ class MessageDialog extends StatelessWidget {
 class EmptyMessage extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String buttonText;
+  final String? buttonText;
   final VoidCallback? onPressed;
   final IconData? iconName;
 
@@ -60,38 +68,22 @@ class EmptyMessage extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.buttonText,
+    this.buttonText,
     this.onPressed,
-    this.iconName = Symbols.child_care,
+    this.iconName,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: Container(
-        // margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-
-        // child: AnimatedContainer(
-        //   duration: const Duration(milliseconds: 300),
-        //   curve: Curves.easeInOut,
-        //   margin: EdgeInsets.symmetric(
-        //     horizontal: 8,
-        //     vertical: isCurrentItem ? 0 : 20,
-        //   ),
-        // child: Container(
-        padding: EdgeInsets.fromLTRB(16, 24, 16, MediaQuery.of(context).viewInsets.bottom + 24),
-        decoration: BoxDecoration(
-          color: Colors.white.withAlpha(200),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-              spreadRadius: 2,
-              offset: const Offset(0, 5),
-            ),
-          ],
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          16,
+          24,
+          16,
+          MediaQuery.of(context).viewInsets.bottom + 24,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +91,10 @@ class EmptyMessage extends StatelessWidget {
             // Ikon dan judul
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(color: AppColors.bisque, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: AppColors.bisque,
+                shape: BoxShape.circle,
+              ),
               child: Icon(iconName, size: 60, color: AppColors.primary),
             ),
             const SizedBox(height: 16),
@@ -112,7 +107,7 @@ class EmptyMessage extends StatelessWidget {
                 color: AppColors.textBlack,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Text(
@@ -121,23 +116,17 @@ class EmptyMessage extends StatelessWidget {
                 style: TextStyle(fontSize: 12, color: AppColors.textGrey),
               ),
             ),
-            const SizedBox(height: 16),
+            if (onPressed != null) const SizedBox(height: 16),
             // Tombol tambah
-            // ElevatedButton.icon(
-            //   onPressed: onPressed,
-            //   icon: const Icon(Symbols.add),
-            //   label: Text(buttonText),
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: AppColors.accent,
-            //     foregroundColor: Colors.white,
-            //     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            //   ),
-            // ),
-            MediumButton(icon: AppIcons.add, text: buttonText, onPressed: onPressed),
+            if (onPressed != null)
+              MediumButton(
+                icon: AppIcons.add, // Asumsi AppIcons.add ada
+                text: buttonText ?? '',
+                onPressed:
+                    onPressed, // Meneruskan callback onPressed yang diterima
+              ),
           ],
         ),
-        // ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -5,12 +6,15 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/schedule.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/main.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class ScheduleScreen extends StatefulWidget {
   final DateTime? targetDate;
@@ -101,23 +105,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   void _navigateToFoodList() {
-    // Tampilkan snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Pilih makanan yang ingin di tambahkan ke Jadwal Memasak",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: AppColors.accent,
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.05,
-          left: 20,
-          right: 20,
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    // Tampilkan flushbar
+    AppFlushbar.showInfo(
+      context,
+      title: 'Informasi',
+      message: 'Pilih makanan yang ingin ditambahkan ke Jadwal Memasak',
     );
 
     // Fungsi untuk navigasi ke FoodListScreen
@@ -338,17 +330,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          // const SizedBox(height: 8),
 
           // Daftar jadwal makanan
           BlocConsumer<ScheduleBloc, ScheduleState>(
             listener: (context, state) {
               if (state is ScheduleUpdated) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Jadwal berhasil diubah'),
-                    backgroundColor: Colors.green,
-                  ),
+                AppFlushbar.showSuccess(
+                  context,
+                  message: "Jadwal berhasil diubah",
+                  title: "Berhasil",
                 );
 
                 setState(() {
@@ -356,11 +347,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   context.read<ScheduleBloc>().add(FetchSchedules());
                 });
               } else if (state is ScheduleDeleted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Jadwal berhasil dihapus'),
-                    backgroundColor: Colors.green,
-                  ),
+                AppFlushbar.showSuccess(
+                  context,
+                  message: "Jadwal berhasil dihapus",
+                  title: "Berhasil",
                 );
 
                 setState(() {
@@ -368,12 +358,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   context.read<ScheduleBloc>().add(FetchSchedules());
                 });
               } else if (state is ScheduleError) {
-                // Tampilkan snackbar jika terjadi error
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.error),
-                    backgroundColor: AppColors.red,
-                  ),
+                // Tampilkan flushbar jika terjadi error
+                AppFlushbar.showError(
+                  context,
+                  title: 'Error',
+                  message: state.error,
                 );
               }
             },
@@ -394,39 +383,52 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               }
 
               if (_scheduleItems.isEmpty) {
-                return Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Symbols.calendar_month,
-                          size: 60,
-                          color: AppColors.primaryLowTransparent,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          "Belum ada jadwal memasak untuk hari ini",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Tambahkan jadwal memasak dengan menekan tombol di atas",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 12,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                      ],
-                    ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  child: EmptyMessage(
+                    title: 'Belum ada jadwal memasak ',
+                    subtitle:
+                        'Tambahkan jadwal memasak untuk hari ini dengan menekan tombol di atas',
+                    buttonText: 'Tambah Jadwal',
+                    iconName: AppIcons.schedule,
                   ),
                 );
+                // return Expanded(
+                //   child: Center(
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: [
+                //         Icon(
+                //           Symbols.calendar_month,
+                //           size: 60,
+                //           color: AppColors.primaryLowTransparent,
+                //         ),
+                //         const SizedBox(height: 16),
+                //         Text(
+                //           "Belum ada jadwal memasak untuk hari ini",
+                //           style: TextStyle(
+                //             fontFamily: 'Poppins',
+                //             fontSize: 16,
+                //             color: AppColors.textGrey,
+                //           ),
+                //         ),
+                //         const SizedBox(height: 8),
+                //         Text(
+                //           "Tambahkan jadwal memasak dengan menekan tombol di atas",
+                //           textAlign: TextAlign.center,
+                //           style: TextStyle(
+                //             fontFamily: 'Poppins',
+                //             fontSize: 12,
+                //             color: AppColors.textGrey,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // );
               }
 
               if (state is ScheduleLoaded) {

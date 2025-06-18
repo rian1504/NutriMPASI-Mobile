@@ -93,11 +93,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengakses galeri. Coba periksa izin aplikasi.'),
-          backgroundColor: Colors.red,
-        ),
+      AppFlushbar.showError(
+        context,
+        title: 'Error',
+        message: 'Gagal mengakses galeri. Coba periksa izin aplikasi.',
       );
     }
   }
@@ -119,11 +118,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengakses kamera. Coba periksa izin aplikasi.'),
-          backgroundColor: Colors.red,
-        ),
+      AppFlushbar.showError(
+        context,
+        title: 'Error',
+        message: 'Gagal mengakses kamera. Coba periksa izin aplikasi.',
       );
     }
   }
@@ -240,14 +238,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
             message: "Profil berhasil diperbarui!",
             title: "Berhasil",
             position: FlushbarPosition.BOTTOM,
+            marginVerticalValue: 8,
           );
         } else if (state is ProfileError) {
-          AppFlushbar.showError(
-            context,
-            message: state.error,
-            title: "Gagal",
-            position: FlushbarPosition.BOTTOM,
-          );
+          AppFlushbar.showError(context, message: state.error, title: "Error");
         }
       },
       builder: (context, state) {
