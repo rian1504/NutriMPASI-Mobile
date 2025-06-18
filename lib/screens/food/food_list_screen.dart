@@ -641,7 +641,9 @@ class _FoodListScreenState extends State<FoodListScreen>
                             }
                           });
                           Future.delayed(const Duration(seconds: 2), () {
-                            Navigator.pop(context);
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           });
                         },
                         style: ElevatedButton.styleFrom(
