@@ -34,6 +34,7 @@ class CircleButton extends StatelessWidget {
   final IconData?
   icon; // Untuk menggunakan Icon (jika child dan imagePath null)
   final Color? iconColor; // Warna icon (hanya relevan jika icon diberikan)
+  final double? iconSize;
   final String?
   imagePath; // Untuk menggunakan Image.asset (jika child dan icon null)
   final String?
@@ -50,6 +51,7 @@ class CircleButton extends StatelessWidget {
     // --- Pastikan hanya satu dari berikut yang diberikan ---
     this.child,
     this.icon,
+    this.iconSize,
     this.iconColor,
     this.imagePath,
     this.imageUrl,
@@ -82,7 +84,7 @@ class CircleButton extends StatelessWidget {
       return Icon(
         icon,
         color: iconColor ?? AppColors.primary, // Gunakan iconColor atau default
-        size: size * 0.5, // Ukuran icon proporsional
+        size: iconSize ?? size * 0.5, // Ukuran icon proporsional
       );
     } else if (imagePath != null) {
       return Image.asset(
@@ -312,7 +314,7 @@ class LeadingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       top: top ?? MediaQuery.of(context).padding.top + 4,
-      left: left ?? 4,
+      left: left ?? 8,
       child: FloatingActionButton(
         mini: true,
         backgroundColor: backgroundColor,

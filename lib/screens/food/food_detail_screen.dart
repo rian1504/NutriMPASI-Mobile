@@ -8,12 +8,14 @@ import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/blocs/favorite/favorite_bloc.dart' as favorite_bloc;
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_detail/food_detail_bloc.dart';
-import 'package:nutrimpasi/blocs/report/report_bloc.dart';
 import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
+import 'package:nutrimpasi/utils/report_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final int foodId;
@@ -84,340 +86,45 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 decoration: BoxDecoration(
                                   color: AppColors.primary,
                                   borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.elliptical(200, 70),
-                                    bottomRight: Radius.elliptical(200, 70),
+                                    bottomLeft: Radius.elliptical(200, 100),
+                                    bottomRight: Radius.elliptical(200, 100),
                                   ),
                                 ),
                               ),
                             ),
 
                             // Tombol kembali
-                            Positioned(
-                              top: MediaQuery.of(context).padding.top + 16,
-                              left: 16,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Material(
-                                  elevation: 3,
-                                  shadowColor: Colors.black54,
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: IconButton(
-                                      icon: const Icon(
-                                        Symbols.arrow_back_ios_new_rounded,
-                                        color: AppColors.textBlack,
-                                        size: 24,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        context.read<FoodBloc>().add(
-                                          FetchFoods(),
-                                        );
-                                        context
-                                            .read<favorite_bloc.FavoriteBloc>()
-                                            .add(
-                                              favorite_bloc.FetchFavorites(),
-                                            );
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            LeadingActionButton(
+                              onPressed: () {
+                                context.read<FoodBloc>().add(FetchFoods());
+                                context.read<favorite_bloc.FavoriteBloc>().add(
+                                  favorite_bloc.FetchFavorites(),
+                                );
+                                Navigator.pop(context);
+                              },
+                              icon: AppIcons.back,
                             ),
 
                             // Tombol lapor
                             if (food.source == null &&
                                 food.userId != loggedInUser?.id)
                               Positioned(
-                                top: MediaQuery.of(context).padding.top + 24,
-                                right: 24,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Material(
-                                    elevation: 3,
-                                    shadowColor: Colors.black54,
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: Container(
-                                      width: 36,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Symbols.error_outline_rounded,
-                                          color: AppColors.primary,
-                                          size: 36,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {
-                                          // Menampilkan dialog laporan
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return BlocConsumer<
-                                                ReportBloc,
-                                                ReportState
-                                              >(
-                                                listener: (context, state) {
-                                                  if (state is ReportSuccess) {
-                                                    Navigator.pop(context);
-
-                                                    _showDialogReportSuccess();
-                                                  } else if (state
-                                                      is ReportError) {
-                                                    AppFlushbar.showError(
-                                                      context,
-                                                      title: 'Error',
-                                                      message: state.error,
-                                                    );
-                                                  }
-                                                },
-                                                builder: (context, state) {
-                                                  return Dialog(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            16,
-                                                          ),
-                                                    ),
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                            16,
-                                                          ),
-                                                      child: Form(
-                                                        key: formKey,
-                                                        child: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Text(
-                                                                  'Laporkan Resep',
-                                                                  style: TextStyle(
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontSize:
-                                                                        18,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color:
-                                                                        AppColors
-                                                                            .textBlack,
-                                                                  ),
-                                                                ),
-
-                                                                Material(
-                                                                  color:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  child: InkWell(
-                                                                    onTap:
-                                                                        state
-                                                                                is ReportLoading
-                                                                            ? null
-                                                                            : () => Navigator.pop(
-                                                                              context,
-                                                                            ),
-                                                                    customBorder:
-                                                                        const CircleBorder(),
-                                                                    child: Container(
-                                                                      width: 24,
-                                                                      height:
-                                                                          24,
-                                                                      decoration: BoxDecoration(
-                                                                        shape:
-                                                                            BoxShape.circle,
-                                                                        color:
-                                                                            Colors.white,
-                                                                        border: Border.all(
-                                                                          color:
-                                                                              AppColors.textBlack,
-                                                                        ),
-                                                                      ),
-                                                                      child: const Center(
-                                                                        child: Icon(
-                                                                          Icons
-                                                                              .close,
-                                                                          color:
-                                                                              AppColors.textBlack,
-                                                                          size:
-                                                                              18,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-
-                                                            const SizedBox(
-                                                              height: 16,
-                                                            ),
-
-                                                            const Text(
-                                                              'Alasan laporan:',
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontSize: 14,
-                                                                color:
-                                                                    AppColors
-                                                                        .textGrey,
-                                                              ),
-                                                            ),
-
-                                                            const SizedBox(
-                                                              height: 8,
-                                                            ),
-
-                                                            TextFormField(
-                                                              onChanged: (
-                                                                value,
-                                                              ) {
-                                                                reportReason =
-                                                                    value;
-                                                              },
-                                                              maxLines: 5,
-                                                              decoration: InputDecoration(
-                                                                hintText:
-                                                                    'Tuliskan alasan laporan...',
-                                                                border: OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        8,
-                                                                      ),
-                                                                ),
-                                                                contentPadding:
-                                                                    const EdgeInsets.all(
-                                                                      12,
-                                                                    ),
-                                                              ),
-                                                              validator: (
-                                                                value,
-                                                              ) {
-                                                                if (value ==
-                                                                        null ||
-                                                                    value
-                                                                        .trim()
-                                                                        .isEmpty) {
-                                                                  return 'Alasan laporan tidak boleh kosong';
-                                                                }
-                                                                if (value
-                                                                        .trim()
-                                                                        .length <
-                                                                    4) {
-                                                                  return 'Alasan laporan minimal 4 karakter';
-                                                                }
-                                                                return null;
-                                                              },
-                                                            ),
-
-                                                            const SizedBox(
-                                                              height: 24,
-                                                            ),
-
-                                                            // Tombol Kirim Laporan
-                                                            Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              child: ElevatedButton(
-                                                                onPressed:
-                                                                    state
-                                                                            is ReportLoading
-                                                                        ? null
-                                                                        : () {
-                                                                          if (formKey
-                                                                              .currentState!
-                                                                              .validate()) {
-                                                                            context
-                                                                                .read<
-                                                                                  ReportBloc
-                                                                                >()
-                                                                                .add(
-                                                                                  Report(
-                                                                                    category:
-                                                                                        "food",
-                                                                                    refersId:
-                                                                                        food.id,
-                                                                                    content:
-                                                                                        reportReason,
-                                                                                  ),
-                                                                                );
-                                                                          }
-                                                                        },
-                                                                style: ElevatedButton.styleFrom(
-                                                                  backgroundColor:
-                                                                      AppColors
-                                                                          .accent,
-                                                                  foregroundColor:
-                                                                      Colors
-                                                                          .white,
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          8,
-                                                                        ),
-                                                                  ),
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            12,
-                                                                        horizontal:
-                                                                            24,
-                                                                      ),
-                                                                ),
-                                                                child:
-                                                                    state
-                                                                            is ReportLoading
-                                                                        ? const CircularProgressIndicator(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          strokeWidth:
-                                                                              2,
-                                                                        )
-                                                                        : const Text(
-                                                                          'Kirim Laporan',
-                                                                          style: TextStyle(
-                                                                            fontFamily:
-                                                                                'Poppins',
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                          ),
-                                                                        ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
+                                top: MediaQuery.of(context).padding.top + 4,
+                                right: 8,
+                                child: CircleButton(
+                                  onPressed: () {
+                                    // Menampilkan dialog laporan
+                                    showReportDialog(
+                                      context: context,
+                                      category: 'food',
+                                      refersId: widget.foodId,
+                                      imagePath:
+                                          'assets/images/component/berhasil_melaporkan_makanan.png',
+                                    );
+                                  },
+                                  size: 44,
+                                  iconSize: 24,
+                                  icon: AppIcons.reportRegular,
                                 ),
                               ),
 
@@ -459,8 +166,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
                             // Tombol favorit
                             Positioned(
-                              top: MediaQuery.of(context).padding.top + 175,
-                              right: 24,
+                              top: MediaQuery.of(context).padding.top + 165,
+                              right: 20,
                               child: GestureDetector(
                                 onTap: () {
                                   context.read<FoodDetailBloc>().add(
@@ -1624,66 +1331,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  void _showDialogReportSuccess() {
-    // Tampilkan dialog sukses
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        Future.delayed(Duration(seconds: 2), () {
-          // Cek apakah dialogContext masih terpasang
-          if (dialogContext.mounted && Navigator.canPop(dialogContext)) {
-            Navigator.of(dialogContext).pop();
-          }
-        });
-
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Gambar sukses
-                Image.asset(
-                  'assets/images/component/berhasil_melaporkan_makanan.png',
-                  height: 200,
-                  width: 200,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 20),
-                // Teks berhasil
-                const Text(
-                  'Berhasil Melaporkan Resep',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.accent,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Usulan Makanan',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.accent,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

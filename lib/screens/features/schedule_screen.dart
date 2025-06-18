@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +12,7 @@ import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
+import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
@@ -150,12 +150,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             padding: const EdgeInsets.only(right: 8.0),
             child: CircleButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CookingHistoryScreen(),
-                  ),
-                );
+                pushWithSlideTransition(context, CookingHistoryScreen());
               },
               icon: Symbols.history,
             ),
@@ -329,8 +324,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               ],
             ),
           ),
-
-          // const SizedBox(height: 8),
+          if (_scheduleItems.isNotEmpty) SizedBox(height: 8),
 
           // Daftar jadwal makanan
           BlocConsumer<ScheduleBloc, ScheduleState>(
@@ -386,7 +380,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
-                    vertical: 16,
+                    vertical: 8,
                   ),
                   child: EmptyMessage(
                     title: 'Belum ada jadwal memasak ',
@@ -396,39 +390,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     iconName: AppIcons.schedule,
                   ),
                 );
-                // return Expanded(
-                //   child: Center(
-                //     child: Column(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: [
-                //         Icon(
-                //           Symbols.calendar_month,
-                //           size: 60,
-                //           color: AppColors.primaryLowTransparent,
-                //         ),
-                //         const SizedBox(height: 16),
-                //         Text(
-                //           "Belum ada jadwal memasak untuk hari ini",
-                //           style: TextStyle(
-                //             fontFamily: 'Poppins',
-                //             fontSize: 16,
-                //             color: AppColors.textGrey,
-                //           ),
-                //         ),
-                //         const SizedBox(height: 8),
-                //         Text(
-                //           "Tambahkan jadwal memasak dengan menekan tombol di atas",
-                //           textAlign: TextAlign.center,
-                //           style: TextStyle(
-                //             fontFamily: 'Poppins',
-                //             fontSize: 12,
-                //             color: AppColors.textGrey,
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // );
               }
 
               if (state is ScheduleLoaded) {
@@ -1106,151 +1067,167 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               ),
 
                               // Card jadwal
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                transform: Matrix4.translationValues(
-                                  isOpen ? -120 : 0,
-                                  0,
-                                  0,
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withAlpha(25),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      // Gambar makanan
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          storageUrl + food!.image,
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      // Info makanan
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              food.name,
-                                              style: const TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.textBlack,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            SizedBox(
-                                              height: 40,
-                                              child: SingleChildScrollView(
-                                                scrollDirection: Axis.vertical,
-                                                child: Column(
-                                                  children:
-                                                      babies.map((baby) {
-                                                        return Padding(
-                                                          padding:
-                                                              const EdgeInsets.only(
-                                                                right: 5,
-                                                              ),
-                                                          child: Text(
-                                                            baby.name,
-                                                            style: TextStyle(
-                                                              fontFamily:
-                                                                  'Poppins',
-                                                              fontSize: 12,
-                                                              color:
-                                                                  AppColors
-                                                                      .textGrey,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      // Tombol masak
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 8.0,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              "${babies.length.toString()} porsi",
-                                              style: const TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.accent,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 12),
-                                            GestureDetector(
-                                              onTap: () {
-                                                // Mengubah list baby ke list id baby
-                                                List<String> babyId =
-                                                    babies
-                                                        .map(
-                                                          (baby) =>
-                                                              baby.id
-                                                                  .toString(),
-                                                        )
-                                                        .toList();
+                              GestureDetector(
+                                onTap: () {
+                                  // Mengubah list baby ke list id baby
+                                  List<String> babyId =
+                                      babies
+                                          .map((baby) => baby.id.toString())
+                                          .toList();
 
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (
-                                                          context,
-                                                        ) => CookingGuideScreen(
-                                                          foodId:
-                                                              food.id
-                                                                  .toString(),
-                                                          babyId: babyId,
-                                                          scheduleId:
-                                                              item.id
-                                                                  .toString(),
-                                                        ),
-                                                  ),
-                                                );
-                                              },
-                                              child: Container(
-                                                padding: const EdgeInsets.all(
-                                                  10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: AppColors.accent,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: const Icon(
-                                                  Symbols.chef_hat,
-                                                  color: Colors.white,
-                                                  size: 20,
+                                  pushWithSlideTransition(
+                                    context,
+                                    CookingGuideScreen(
+                                      foodId: food.id.toString(),
+                                      babyId: babyId,
+                                      scheduleId: item.id.toString(),
+                                    ),
+                                  );
+                                }, 
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  transform: Matrix4.translationValues(
+                                    isOpen ? -120 : 0,
+                                    0,
+                                    0,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withAlpha(25),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        // Gambar makanan
+                                        ClipRRect(
+                                          // borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10),
+                                          ),
+                                          child: Image.network(
+                                            storageUrl + food!.image,
+                                            width: 100,
+                                            height: 100,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        // Info makanan
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                food.name,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.textBlack,
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              const SizedBox(height: 4),
+                                              SizedBox(
+                                                height: 40,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  child: Column(
+                                                    children:
+                                                        babies.map((baby) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets.only(
+                                                                  right: 5,
+                                                                ),
+                                                            child: Text(
+                                                              baby.name,
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                fontSize: 12,
+                                                                color:
+                                                                    AppColors
+                                                                        .textGrey,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        // Tombol masak
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 8.0,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "${babies.length.toString()} porsi",
+                                                style: const TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.accent,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 12),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  // Mengubah list baby ke list id baby
+                                                  List<String> babyId =
+                                                      babies
+                                                          .map(
+                                                            (baby) =>
+                                                                baby.id
+                                                                    .toString(),
+                                                          )
+                                                          .toList();
+
+                                                  pushWithSlideTransition(
+                                                    context,
+                                                    CookingGuideScreen(
+                                                      foodId:
+                                                          food.id.toString(),
+                                                      babyId: babyId,
+                                                      scheduleId:
+                                                          item.id.toString(),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(
+                                                    10,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.accent,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Icon(
+                                                    Symbols.chef_hat,
+                                                    color: Colors.white,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

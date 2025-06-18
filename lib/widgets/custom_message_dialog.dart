@@ -4,7 +4,6 @@
 // Tanggal: 18 Mei 2025
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
@@ -31,14 +30,25 @@ class MessageDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(44, 0, 8, 0),
-                child: Image.asset(
-                  imagePath,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
+              if (imagePath ==
+                  'assets/images/component/berhasil_melaporkan_konten.png')
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(44, 0, 8, 0),
+                  child: Image.asset(
+                    imagePath,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: Image.asset(
+                    imagePath,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
               const SizedBox(height: 16),
               Text(
                 message,

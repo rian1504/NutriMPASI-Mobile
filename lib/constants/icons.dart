@@ -14,6 +14,8 @@ class AppIcons {
       PhosphorIcons.bellRinging(PhosphorIconsStyle.regular);
   static IconData get favoriteRegular =>
       PhosphorIcons.heart(PhosphorIconsStyle.regular);
+  static IconData get reportRegular =>
+      PhosphorIcons.warningCircle(PhosphorIconsStyle.regular);
 
   static IconData get favorite => PhosphorIcons.heart(PhosphorIconsStyle.bold);
   static IconData get comment => PhosphorIcons.chat(PhosphorIconsStyle.bold);
@@ -27,6 +29,7 @@ class AppIcons {
   static IconData get arrowDown =>
       PhosphorIcons.caretDown(PhosphorIconsStyle.bold);
   static IconData get arrowUp => PhosphorIcons.caretUp(PhosphorIconsStyle.bold);
+  static IconData get home => PhosphorIcons.house(PhosphorIconsStyle.fill);
   static IconData get logout => PhosphorIcons.signOut(PhosphorIconsStyle.fill);
   static IconData get notificationFill =>
       PhosphorIcons.bellRinging(PhosphorIconsStyle.fill);
@@ -51,15 +54,15 @@ class AppIcons {
   static IconData get lockFill => PhosphorIcons.lock(PhosphorIconsStyle.fill);
   static IconData get send =>
       PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill);
+  static IconData get setting => PhosphorIcons.gearSix(PhosphorIconsStyle.fill);
   static IconData get calendar =>
-      PhosphorIcons.calendarBlank(PhosphorIconsStyle.fill);
+      PhosphorIcons.calendarDots(PhosphorIconsStyle.regular);
   // static const like = PhosphorIcons.thumbsUp;
   // static const profile = PhosphorIcons.thumbsUp;
 
   static const IconData nutrition = Icons.food_bank;
   static const IconData schedule = Icons.calendar_today;
   static const IconData forum = Icons.forum;
-  static const IconData home = Icons.home;
   // static const IconData baby = Icons.child_care;
   static const IconData search = Icons.search;
   static const IconData add = Icons.add;

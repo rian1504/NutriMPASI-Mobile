@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/food_cooking.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_dialog.dart';
 
 class CookingGuideScreen extends StatefulWidget {
   final String foodId;
@@ -44,52 +47,61 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
     return await showDialog<bool>(
           context: context,
           builder:
-              (context) => AlertDialog(
-                content: const Text(
-                  'Anda yakin ingin keluar dari Panduan Memasak?',
-                  textAlign: TextAlign.center,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-                actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-                actions: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.componentBlack!,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          child: const Text('Batal'),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.red,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          child: const Text('Keluar'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              (context) => ConfirmDialog(
+                titleText: 'Konfirmasi Keluar',
+                contentText: 'Anda yakin ingin keluar dari Panduan Memasak?',
+                onConfirm: () => Navigator.pop(context, true),
+                onCancel: () => Navigator.pop(context, false),
+                confirmButtonColor: AppColors.error,
+                confirmButtonText: 'Keluar',
               ),
+
+          //  AlertDialog(
+          //   content: const Text(
+          //     'Anda yakin ingin keluar dari Panduan Memasak?',
+          //     textAlign: TextAlign.center,
+          //   ),
+          //   shape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.circular(12),
+          //   ),
+          //   contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+          //   actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+          //   actions: [
+          //     Row(
+          //       children: [
+          //         Expanded(
+          //           child: ElevatedButton(
+          //             onPressed: () => Navigator.pop(context, false),
+          //             style: ElevatedButton.styleFrom(
+          //               backgroundColor: AppColors.componentBlack!,
+          //               foregroundColor: Colors.white,
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(8),
+          //               ),
+          //               padding: const EdgeInsets.symmetric(vertical: 12),
+          //             ),
+          //             child: const Text('Batal'),
+          //           ),
+          //         ),
+          //         const SizedBox(width: 16),
+          //         Expanded(
+          //           child: ElevatedButton(
+          //             onPressed: () => Navigator.pop(context, true),
+          //             style: ElevatedButton.styleFrom(
+          //               backgroundColor: AppColors.red,
+          //               foregroundColor: Colors.white,
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(8),
+          //               ),
+          //               padding: const EdgeInsets.symmetric(vertical: 12),
+          //             ),
+          //             child: const Text('Keluar'),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
         ) ??
         false;
   }
@@ -217,43 +229,20 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                 ),
 
                 // Tombol kembali
-                Positioned(
-                  top: MediaQuery.of(context).padding.top + 16,
-                  left: 16,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Material(
-                      elevation: 3,
-                      shadowColor: Colors.black54,
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Symbols.arrow_back_ios_new_rounded,
-                            color: AppColors.textBlack,
-                            size: 24,
-                          ),
-                          padding: EdgeInsets.zero,
-                          onPressed:
-                              state is FoodCookingCompleteLoading
-                                  ? null
-                                  : () async {
-                                    final shouldPop =
-                                        await _showExitConfirmationDialog();
-                                    if (shouldPop) {
-                                      if (context.mounted) {
-                                        Navigator.pop(context);
-                                      }
-                                    }
-                                  },
-                        ),
-                      ),
-                    ),
-                  ),
+                LeadingActionButton(
+                  onPressed:
+                      state is FoodCookingCompleteLoading
+                          ? null
+                          : () async {
+                            final shouldPop =
+                                await _showExitConfirmationDialog();
+                            if (shouldPop) {
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                  icon: AppIcons.back,
                 ),
 
                 // Panel detail resep
