@@ -4,6 +4,7 @@
 // Tanggal: 13 Mei 2025
 
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AppIcons {
@@ -51,7 +52,7 @@ class AppIcons {
       PhosphorIcons.dotsThreeOutlineVertical(PhosphorIconsStyle.fill);
   static IconData get deleteFill =>
       PhosphorIcons.trash(PhosphorIconsStyle.fill);
-  static IconData get lockFill => PhosphorIcons.lock(PhosphorIconsStyle.fill);
+  // static IconData get lockFill => PhosphorIcons.lock(PhosphorIconsStyle.fill);
   static IconData get send =>
       PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill);
   static IconData get setting => PhosphorIcons.gearSix(PhosphorIconsStyle.fill);
@@ -70,6 +71,8 @@ class AppIcons {
   // static const IconData delete = Icons.delete;
   static const IconData check = Icons.check_circle;
   static const IconData uncheck = Icons.radio_button_unchecked;
+  static const IconData lockFill = Icons.lock_rounded;
+  static const IconData food = Symbols.restaurant_menu;
 
   //  Symbols.restaurant_menu,
   //  Symbols.home_rounded,

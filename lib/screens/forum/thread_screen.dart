@@ -391,25 +391,29 @@ class _ThreadSectionState extends State<_ThreadSection> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: Icon(
+                            InkWell(
+                              borderRadius: BorderRadius.circular(48),
+                              onTap: _toggleLike,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // IconButton(
+                                  Icon(
                                     isLiked
                                         ? AppIcons.favoriteFill
                                         : AppIcons.favorite,
                                     color: Colors.red,
                                     size: 24,
                                   ),
-                                  onPressed: _toggleLike,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  likeCount.toString(),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
+                                  // onPressed: _toggleLike,
+                                  // ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    likeCount.toString(),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

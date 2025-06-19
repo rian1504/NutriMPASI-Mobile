@@ -91,6 +91,8 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
             LeadingActionButton(
               onPressed: () => Navigator.pop(context),
               icon: AppIcons.back,
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
             ),
             Padding(
               padding: EdgeInsets.only(

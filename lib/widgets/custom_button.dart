@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 
 // class MediumButton extends StatelessWidget {
 //   final Widget text;
@@ -298,9 +300,11 @@ class LeadingActionButton extends StatelessWidget {
   final double elevation;
   final double? top;
   final double? left;
+  final bool? potioned;
+  final double? size;
 
   const LeadingActionButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.icon,
     this.backgroundColor = Colors.white,
@@ -308,12 +312,14 @@ class LeadingActionButton extends StatelessWidget {
     this.elevation = 3,
     this.top,
     this.left,
-  }) : super(key: key);
+    this.potioned = true,
+    this.size = 40,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: top ?? MediaQuery.of(context).padding.top + 4,
+      top: top ?? getStatusBarHeight(context) + 8,
       left: left ?? 8,
       child: FloatingActionButton(
         mini: true,

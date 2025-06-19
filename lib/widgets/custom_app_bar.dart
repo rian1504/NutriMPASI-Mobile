@@ -12,6 +12,245 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
+// Tinggi status bar
+double getStatusBarHeight(BuildContext context) =>
+    MediaQuery.of(context).padding.top;
+// Tinggi AppBar 56.0 dp
+const double getAppBarHeight = kToolbarHeight;
+
+class CustomAppBar extends StatelessWidget {
+  final String title;
+  final IconData? leadingIcon;
+  final IconData? icon;
+  final VoidCallback? onLeadingPressed;
+  final Widget?
+  customLeadingWidget; // Untuk widget leading yang sepenuhnya kustom
+  final Widget? trailingWidget; // Untuk widget aksi di kanan
+  final bool? appBarContent; // Konten utama yang bisa di-scroll
+  final Widget content;
+
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    this.leadingIcon,
+    this.icon,
+    this.onLeadingPressed,
+    this.customLeadingWidget,
+    this.trailingWidget,
+    this.appBarContent = false,
+    required this.content,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Stack(
+        clipBehavior: Clip.none,
+        // Scaffold.body adalah Stack utama
+        children: [
+          // LAPISAN 1: BACKGROUND HEADER
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height:
+                getStatusBarHeight(context) +
+                getAppBarHeight, // Tinggi total area header
+            child: Container(
+              color: AppColors.primary, // Warna latar belakang header
+              // Anda bisa mengganti dengan Image.asset atau Image.network di sini
+              // child: Image.asset('assets/images/header_bg.png', fit: BoxFit.cover),
+            ),
+          ),
+
+          if (appBarContent == true)
+            Positioned(
+              // top: 30,
+              top: getAppBarHeight + getStatusBarHeight(context),
+              left: 0,
+              right: 0,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 125,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primary,
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              icon,
+                              size: 100,
+                              color: AppColors.accent,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // LAPISAN 2: KONTEN UTAMA LAYAR (HARUS PUNYA PADDING DARI ATAS)
+          Positioned.fill(
+            top:
+                getStatusBarHeight(context) +
+                getAppBarHeight +
+                110, // Konten dimulai di bawah header kustom
+            child: content,
+          ),
+
+          // LAPISAN 3: ELEMEN HEADER KUSTOM (Positioned)
+
+          // 3a. LEADING BUTTON (Positioned FloatingActionButton-like)
+          // customLeadingWidget ?? // Prioritaskan customLeadingWidget jika diberikan
+          LeadingActionButton(
+            onPressed: () => Navigator.pop(context),
+            icon: AppIcons.back,
+          ),
+
+          // 3b. JUDUL DI TENGAH (Positioned Text)
+          Positioned(
+            top:
+                getStatusBarHeight(context) +
+                (getAppBarHeight / 2) -
+                8, // Sekitar tengah vertikal di toolbar
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          ),
+
+          // 3c. TRAILING WIDGET (ACTIONS)
+          Positioned(
+            top:
+                getStatusBarHeight(context) +
+                4, // Sejajar dengan tombol leading
+            right: 8, // Jarak dari kanan
+            child:
+                trailingWidget ??
+                const SizedBox.shrink(), // Gunakan trailingWidget jika ada
+          ),
+
+          // 3d. Header Content (Jika ada)
+          // if (appBarContent == true)
+          //   Positioned(
+          //     // top: 50,
+          //     top:
+          //         getStatusBarHeight(context) +
+          //         getAppBarHeight +
+          //         0, // Tinggi total area header,
+          //     child: Stack(
+          //       clipBehavior: Clip.none,
+          //       children: [
+          //         Container(
+          //           width: double.infinity,
+          //           height: 125,
+          //           decoration: BoxDecoration(
+          //             color: AppColors.primary,
+          //             borderRadius: const BorderRadius.only(
+          //               bottomLeft: Radius.circular(30),
+          //               bottomRight: Radius.circular(30),
+          //             ),
+          //             boxShadow: [
+          //               BoxShadow(
+          //                 color: Colors.black.withAlpha(50),
+          //                 offset: const Offset(0, 4),
+          //                 blurRadius: 8,
+          //                 spreadRadius: 2,
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //         Positioned(
+          //           top: 0,
+          //           left: 0,
+          //           right: 0,
+          //           child: Center(
+          //             child: Container(
+          //               width: 200,
+          //               height: 200,
+          //               decoration: BoxDecoration(
+          //                 shape: BoxShape.circle,
+          //                 color: AppColors.primary,
+          //                 boxShadow: [
+          //                   BoxShadow(
+          //                     color: Colors.black.withAlpha(10),
+          //                     offset: const Offset(0, 8),
+          //                     blurRadius: 0,
+          //                     spreadRadius: 0,
+          //                   ),
+          //                 ],
+          //               ),
+          //               child: Center(
+          //                 child: Container(
+          //                   width: 150,
+          //                   height: 150,
+          //                   decoration: BoxDecoration(
+          //                     color: Colors.white,
+          //                     shape: BoxShape.circle,
+          //                     boxShadow: [
+          //                       BoxShadow(
+          //                         color: Colors.black.withAlpha(25),
+          //                         blurRadius: 6,
+          //                         spreadRadius: 1,
+          //                       ),
+          //                     ],
+          //                   ),
+          //                   child: const Icon(
+          //                     Icons.lock_rounded,
+          //                     size: 100,
+          //                     color: AppColors.accent,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+        ],
+      ),
+    );
+  }
+}
+
 //Widget untuk membuat AppBarForum dengan rounded corner di bagian kanan bawah
 class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
   final bool showTabs;

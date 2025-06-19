@@ -20,7 +20,7 @@ import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
 import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
-import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipe_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
@@ -947,6 +947,8 @@ class _HomeScreenState extends State<HomeScreen>
         subtitle:
             'Tidak ada rekomendasi makanan yang sesuai untuk bayi kamu saat ini',
         iconName: Symbols.restaurant_menu,
+        iconSize: 24,
+        radius: 12,
       ),
     );
   }

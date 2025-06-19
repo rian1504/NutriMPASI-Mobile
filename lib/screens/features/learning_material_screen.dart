@@ -56,6 +56,8 @@ class LearningMaterialScreen extends StatelessWidget {
               LeadingActionButton(
                 onPressed: () => Navigator.pop(context),
                 icon: AppIcons.back,
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
               ),
             ],
           ),

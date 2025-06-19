@@ -24,6 +24,7 @@ class AppColors {
   static Color accentHighTransparent = Color(0xFF5966B1).withAlpha(25);
   static Color errorHighTranparent = Color(0xFFFE2323).withAlpha(25);
   static Color primaryLowTransparent = Color(0xFFFC8207).withAlpha(175);
+  static Color errorLowTranparent = Color(0xFFFE2323).withAlpha(175);
 
   // Grey color
   static const Color grey = Color(0xFFD9D9D9);

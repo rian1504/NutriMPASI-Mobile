@@ -15,6 +15,7 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/cooking_guide_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/report_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodDetailScreen extends StatefulWidget {
@@ -109,7 +110,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                             if (food.source == null &&
                                 food.userId != loggedInUser?.id)
                               Positioned(
-                                top: MediaQuery.of(context).padding.top + 4,
+                                top: getStatusBarHeight(context) + 8,
                                 right: 8,
                                 child: CircleButton(
                                   onPressed: () {
