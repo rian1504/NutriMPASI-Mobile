@@ -41,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen>
   int _currentBabyIndex = 0;
   int _currentRecommendationIndex = 0;
   Timer? _autoScrollTimer;
+  int? _selectedBabyId;
 
   // Status loading data bayi
   bool _isBabyDataLoading = true;
@@ -187,6 +188,9 @@ class _HomeScreenState extends State<HomeScreen>
             currentPageRound < babies.length) {
           setState(() {
             _currentBabyIndex = currentPageRound;
+            if (babies.isNotEmpty && _currentBabyIndex < babies.length) {
+              _selectedBabyId = babies[_currentBabyIndex].id;
+            }
           });
 
           // Fetch rekomendasi untuk bayi yang baru dipilih
@@ -227,6 +231,29 @@ class _HomeScreenState extends State<HomeScreen>
   List<Baby> babies = [];
   List<BabyFoodRecommendation> _recommendedFoods = [];
 
+  void _restoreBabyPosition() {
+    if (_selectedBabyId != null && babies.isNotEmpty) {
+      final int indexToRestore = babies.indexWhere(
+        (baby) => baby.id == _selectedBabyId,
+      );
+      if (indexToRestore >= 0 && indexToRestore < babies.length) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_babyController.hasClients && mounted) {
+            _babyController.jumpToPage(indexToRestore);
+            setState(() {
+              _currentBabyIndex = indexToRestore;
+            });
+
+            // Also restore the food recommendations for this baby
+            context.read<BabyFoodRecommendationBloc>().add(
+              FetchBabyFoodRecommendation(babyId: babies[indexToRestore].id),
+            );
+          }
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -241,19 +268,20 @@ class _HomeScreenState extends State<HomeScreen>
             return BlocConsumer<BabyBloc, BabyState>(
               listener: (context, babyState) {
                 if (babyState is BabyLoaded) {
-                  if (_isBabyDataLoading) {
-                    setState(() {
-                      babies = babyState.babies;
-                      _isBabyDataLoading = false;
-                    });
-                    // Trigger fetch rekomendasi saat bayi pertama kali load
-                    if (babyState.babies.isNotEmpty) {
-                      context.read<BabyFoodRecommendationBloc>().add(
-                        FetchBabyFoodRecommendation(
-                          babyId: babyState.babies.first.id,
-                        ),
-                      );
-                    }
+                  setState(() {
+                    babies = babyState.babies;
+                    _isBabyDataLoading = false;
+                  });
+
+                  _restoreBabyPosition();
+
+                  if (_selectedBabyId == null && babyState.babies.isNotEmpty) {
+                    _selectedBabyId = babyState.babies.first.id;
+                    context.read<BabyFoodRecommendationBloc>().add(
+                      FetchBabyFoodRecommendation(
+                        babyId: babyState.babies.first.id,
+                      ),
+                    );
                   }
                 }
               },
@@ -412,6 +440,10 @@ class _HomeScreenState extends State<HomeScreen>
                         );
                       } else if (state is BabyLoaded) {
                         babies = state.babies;
+                        if (babies.isNotEmpty &&
+                            _currentBabyIndex < babies.length) {
+                          _selectedBabyId = babies[_currentBabyIndex].id;
+                        }
                       } else if (state is BabyError) {
                         return Center(child: Text(state.error));
                       }
@@ -748,12 +780,20 @@ class _HomeScreenState extends State<HomeScreen>
                   top: 45,
                   child: InkWell(
                     onTap: () {
+                      if (babies.isNotEmpty &&
+                          _currentBabyIndex < babies.length) {
+                        _selectedBabyId = babies[_currentBabyIndex].id;
+                      }
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const BabyListScreen(),
                         ),
-                      );
+                      ).then((_) {
+                        if (mounted) {
+                          context.read<BabyBloc>().add(FetchBabies());
+                        }
+                      });
                     },
                     borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(20),

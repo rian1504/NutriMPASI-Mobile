@@ -7,7 +7,6 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/favorite.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart';
-import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class FavoriteRecipeScreen extends StatefulWidget {

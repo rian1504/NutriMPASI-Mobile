@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/food_cooking/food_cooking_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
@@ -31,6 +30,158 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
   bool _showIngredients = true;
 
   FoodCookingGuide? food;
+
+  // Fungsi untuk menghitung jumlah bahan berdasarkan jumlah bayi
+  String scaleIngredient(String ingredient) {
+    // jika hanya 1 bayi yang dipilih, kembalikan jumlah bahan asli
+    if (widget.babyId.length <= 1) {
+      return ingredient;
+    }
+
+    // Jika format umum
+    RegExp quantityPatternMiddle = RegExp(
+      r'([a-zA-Z\s]+)\s+(\d+(?:[,.]\d+)?|\d+\/\d+)\s*([a-zA-Z]*)',
+      caseSensitive: false,
+    );
+
+    // Jika format kuantitas di awal
+    RegExp quantityPatternBegin = RegExp(
+      r'^(\d+(?:[,.]\d+)?|\d+\/\d+)\s*([a-zA-Z]*)\s+([a-zA-Z\s]+)',
+      caseSensitive: false,
+    );
+
+    // Jika format kuantitas di tengah
+    var matchMiddle = quantityPatternMiddle.firstMatch(ingredient);
+    if (matchMiddle != null) {
+      String itemName = matchMiddle.group(1)?.trim() ?? '';
+      String quantityStr = matchMiddle.group(2) ?? '';
+      String unit = matchMiddle.group(3) ?? '';
+
+      double value;
+      if (quantityStr.contains('/')) {
+        var parts = quantityStr.split('/');
+        double numerator = double.parse(parts[0]);
+        double denominator = double.parse(parts[1]);
+        value = numerator / denominator * widget.babyId.length;
+      } else {
+        if (quantityStr.contains(',')) {
+          quantityStr = quantityStr.replaceAll(',', '.');
+        }
+        value = double.tryParse(quantityStr) ?? 0;
+        value *= widget.babyId.length;
+      }
+
+      String newQuantity;
+      if (value == value.toInt()) {
+        newQuantity = value.toInt().toString();
+      } else {
+        newQuantity = value.toString().replaceAll('.', ',');
+      }
+
+      return "$itemName $newQuantity $unit".trim();
+    }
+
+    // Jika format kuantitas di awal
+    var matchBegin = quantityPatternBegin.firstMatch(ingredient);
+    if (matchBegin != null) {
+      String quantityStr = matchBegin.group(1) ?? '';
+      String unit = matchBegin.group(2) ?? '';
+      String itemName = matchBegin.group(3)?.trim() ?? '';
+
+      double value;
+      if (quantityStr.contains('/')) {
+        var parts = quantityStr.split('/');
+        double numerator = double.parse(parts[0]);
+        double denominator = double.parse(parts[1]);
+        value = numerator / denominator * widget.babyId.length;
+      } else {
+        if (quantityStr.contains(',')) {
+          quantityStr = quantityStr.replaceAll(',', '.');
+        }
+        value = double.tryParse(quantityStr) ?? 0;
+        value *= widget.babyId.length;
+      }
+
+      String newQuantity;
+      if (value == value.toInt()) {
+        newQuantity = value.toInt().toString();
+      } else {
+        newQuantity = value.toString().replaceAll('.', ',');
+      }
+
+      return "$newQuantity $unit $itemName".trim();
+    }
+
+    // Jika format kuantitas di akhir
+    RegExp spaceUnitPattern = RegExp(
+      r'(.+?)\s+(\d+(?:[,.]\d+)?|\d+\/\d+)\s+([a-zA-Z]+)',
+      caseSensitive: false,
+    );
+
+    var spaceMatch = spaceUnitPattern.firstMatch(ingredient);
+    if (spaceMatch != null) {
+      String itemName = spaceMatch.group(1)?.trim() ?? '';
+      String quantityStr = spaceMatch.group(2) ?? '';
+      String unit = spaceMatch.group(3) ?? '';
+
+      double value;
+      if (quantityStr.contains('/')) {
+        var parts = quantityStr.split('/');
+        double numerator = double.parse(parts[0]);
+        double denominator = double.parse(parts[1]);
+        value = numerator / denominator * widget.babyId.length;
+      } else {
+        if (quantityStr.contains(',')) {
+          quantityStr = quantityStr.replaceAll(',', '.');
+        }
+        value = double.tryParse(quantityStr) ?? 0;
+        value *= widget.babyId.length;
+      }
+
+      String newQuantity;
+      if (value == value.toInt()) {
+        newQuantity = value.toInt().toString();
+      } else {
+        newQuantity = value.toString().replaceAll('.', ',');
+      }
+
+      return "$itemName $newQuantity $unit".trim();
+    }
+
+    // Jika tidak ada pola yang cocok, gunakan regex untuk menangkap angka
+    RegExp numbersOnly = RegExp(r'(\d+(?:[,.]\d+)?|\d+\/\d+)');
+    var numMatch = numbersOnly.firstMatch(ingredient);
+    if (numMatch != null) {
+      String quantityStr = numMatch.group(1) ?? '';
+      String before = ingredient.substring(0, numMatch.start);
+      String after = ingredient.substring(numMatch.end);
+
+      double value;
+      if (quantityStr.contains('/')) {
+        var parts = quantityStr.split('/');
+        double numerator = double.parse(parts[0]);
+        double denominator = double.parse(parts[1]);
+        value = numerator / denominator * widget.babyId.length;
+      } else {
+        if (quantityStr.contains(',')) {
+          quantityStr = quantityStr.replaceAll(',', '.');
+        }
+        value = double.tryParse(quantityStr) ?? 0;
+        value *= widget.babyId.length;
+      }
+
+      String newQuantity;
+      if (value == value.toInt()) {
+        newQuantity = value.toInt().toString();
+      } else {
+        newQuantity = value.toString().replaceAll('.', ',');
+      }
+
+      return before + newQuantity + after;
+    }
+
+    return ingredient;
+  }
 
   @override
   void initState() {
@@ -320,7 +471,8 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: '1 Set ',
+                                              text:
+                                                  '${widget.babyId.length} Set ',
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontFamily: 'Poppins',
@@ -329,7 +481,8 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                               ),
                                             ),
                                             TextSpan(
-                                              text: '(${food!.portion} Porsi)',
+                                              text:
+                                                  '(${food!.portion * widget.babyId.length} Porsi)',
                                               style: TextStyle(
                                                 fontSize: 12,
                                                 fontFamily: 'Poppins',
@@ -469,7 +622,12 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: food!.recipe.length,
                                   itemBuilder: (context, index) {
-                                    final ingredient = food!.recipe[index];
+                                    final originalIngredient =
+                                        food!.recipe[index];
+                                    final scaledIngredient = scaleIngredient(
+                                      originalIngredient,
+                                    );
+
                                     return Padding(
                                       padding: const EdgeInsets.only(
                                         bottom: 16,
@@ -496,7 +654,9 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                             ),
                                           ),
                                           const SizedBox(width: 12),
-                                          Expanded(child: Text(ingredient)),
+                                          Expanded(
+                                            child: Text(scaledIngredient),
+                                          ),
                                         ],
                                       ),
                                     );
@@ -504,7 +664,6 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                 ),
                               ),
 
-                              // Bagian daftar buah
                               // Bagian daftar buah
                               if (food!.fruit.any(
                                 (item) => item.trim().isNotEmpty,
@@ -549,7 +708,9 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                                         itemCount: food!.fruit.length,
                                         padding: const EdgeInsets.all(16),
                                         itemBuilder: (context, index) {
-                                          final fruit = food!.fruit[index];
+                                          final fruit = scaleIngredient(
+                                            food!.fruit[index],
+                                          );
                                           return Padding(
                                             padding: const EdgeInsets.only(
                                               bottom: 8,

@@ -77,7 +77,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         comments: updatedComments,
       );
 
-      emit(CommentUpdated());
+      emit(CommentUpdated(updatedComment: updatedComment));
       emit(CommentLoaded(thread: updatedThread));
     } catch (e) {
       emit(CommentError('Update Comment gagal: ${e.toString()}'));

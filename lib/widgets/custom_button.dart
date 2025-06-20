@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 
 // class MediumButton extends StatelessWidget {

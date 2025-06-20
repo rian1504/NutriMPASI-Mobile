@@ -4,6 +4,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
@@ -50,6 +51,9 @@ class _FoodListScreenState extends State<FoodListScreen>
   // Opsi pengurutan makanan
   String _sortOption = 'Terpopuler';
   final List<String> _sortOptions = ['Terpopuler', 'Terbaru', 'Terlama'];
+
+  // Kunci global untuk mendapatkan posisi tombol filter
+  final GlobalKey _dropdownButtonKey = GlobalKey();
 
   // Animasi untuk transisi AppBar
   late AnimationController _animationController;
@@ -371,6 +375,103 @@ class _FoodListScreenState extends State<FoodListScreen>
     }
   }
 
+  void _showDropdownOptions(BuildContext context, GlobalKey dropdownButtonKey) {
+    // Mendapatkan RenderBox dari GlobalKey untuk mendapatkan posisi tombol
+    final RenderBox renderBox =
+        dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(
+      Offset.zero,
+    ); // Posisi global tombol
+
+    showGeneralDialog(
+      context: context,
+      // KUNCI: Membuat barrier transparan agar kita bisa mengontrol overlay gelap sendiri.
+      barrierColor: Colors.transparent,
+      barrierDismissible: true,
+      barrierLabel: 'Filter Options',
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => Navigator.of(dialogContext).pop(),
+                behavior: HitTestBehavior.translucent,
+                child: Container(color: Colors.black38),
+              ),
+            ),
+
+            // --- Konten Utama Dialog (Tombol yang terlihat & Modal Dropdown) ---
+            Positioned(
+              left: offset.dx + 4,
+              top: offset.dy + 4,
+              width: 0.4 * MediaQuery.of(context).size.width - 8,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                ),
+                alignment: Alignment.topCenter,
+                child: Material(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(8),
+                  elevation: 8,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                        _sortOptions.map((option) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                _sortOption = option;
+                              });
+
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 16.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    option,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          _sortOption == option
+                                              ? AppColors.primary
+                                              : AppColors
+                                                  .black, // Warna teks berdasarkan pilihan
+                                    ),
+                                  ),
+                                  if (_sortOption ==
+                                      option) // Tampilkan ikon cek
+                                    const Icon(
+                                      Icons.check,
+                                      size: 20,
+                                      color: AppColors.primary,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -641,7 +742,9 @@ class _FoodListScreenState extends State<FoodListScreen>
                             }
                           });
                           Future.delayed(const Duration(seconds: 2), () {
-                            Navigator.pop(context);
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           });
                         },
                         style: ElevatedButton.styleFrom(
@@ -1017,34 +1120,39 @@ class _FoodListScreenState extends State<FoodListScreen>
           },
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Judul halaman
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Masak apa hari ini?',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 28,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.textBlack,
-                              ),
-                            ),
-                          ],
-                        ),
+              SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Judul halaman
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        top: 8.0,
+                        bottom: 16.0,
+                        left: 16.0,
+                        right: 16.0,
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Masak apa hari ini?',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                      // Kotak pencarian
-                      AnimatedOpacity(
+                    // Kotak pencarian
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: AnimatedOpacity(
                         opacity: _showSearchInAppBar ? 0.0 : 1.0,
                         duration: const Duration(milliseconds: 300),
                         child: AnimatedContainer(
@@ -1062,11 +1170,14 @@ class _FoodListScreenState extends State<FoodListScreen>
                                   : _buildSearchBar(),
                         ),
                       ),
+                    ),
 
-                      const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                      // Banner berdasarkan toggle dengan animasi fade
-                      AnimatedSwitcher(
+                    // Banner berdasarkan toggle dengan animasi fade
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         transitionBuilder: (
                           Widget child,
@@ -1258,11 +1369,14 @@ class _FoodListScreenState extends State<FoodListScreen>
                                   ),
                                 ),
                       ),
+                    ),
 
-                      const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                      // Toggle pilihan tampilan dengan animasi slide
-                      Container(
+                    // Toggle pilihan tampilan dengan animasi slide
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Container(
                         height: 40,
                         decoration: BoxDecoration(
                           color: AppColors.primary,
@@ -1389,240 +1503,243 @@ class _FoodListScreenState extends State<FoodListScreen>
                           ],
                         ),
                       ),
+                    ),
 
-                      const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                      // Dropdown untuk pengurutan
-                      if (!_showUserSuggestionsOnly)
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withAlpha(25),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: _sortOption,
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: AppColors.textBlack,
-                                ),
-                                style: const TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textBlack,
-                                ),
-                                onChanged: (String? newValue) {
-                                  if (newValue != null) {
-                                    setState(() {
-                                      _sortOption = newValue;
-                                      _displayedItemCount = 5;
-                                    });
-                                  }
+                    // Dropdown untuk pengurutan
+                    if (!_showUserSuggestionsOnly)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: 0.4 * MediaQuery.of(context).size.width,
+                              child: GestureDetector(
+                                key: _dropdownButtonKey,
+                                onTap: () {
+                                  _showDropdownOptions(
+                                    context,
+                                    _dropdownButtonKey,
+                                  );
                                 },
-                                items:
-                                    _sortOptions.map<DropdownMenuItem<String>>((
-                                      String value,
-                                    ) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0,
-                                          ),
-                                          child: Text(value),
-                                        ),
-                                      );
-                                    }).toList(),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                      // Add space only if dropdown is shown
-                      if (!_showUserSuggestionsOnly && _foodItems.isNotEmpty)
-                        const SizedBox(height: 12),
-
-                      // Info pencarian aktif
-                      if (_activeSearchQuery.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withAlpha(25),
+                                child: Card(
+                                  elevation: 1,
+                                  shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.search,
-                                        size: 16,
-                                        color: AppColors.primary,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          'Pencarian: $_activeSearchQuery',
-                                          style: const TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 12,
-                                            color: AppColors.primary,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      16,
+                                      8,
+                                      16,
+                                      8,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          _sortOption,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.black,
                                           ),
                                         ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _activeSearchQuery = '';
-                                            _searchController.clear();
-                                            _displayedItemCount = 5;
-                                          });
+                                        Icon(
+                                          AppIcons.arrowDown,
+                                          size: 20,
+                                          color: AppColors.black,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
-                                          // Jika searchbar di appbar, force pindahkan ke body
-                                          if (_showSearchInAppBar) {
-                                            _forceSearchBarToBody();
-                                          }
-                                        },
-                                        child: const Icon(
-                                          Icons.close,
-                                          size: 16,
+                    // Add space only if dropdown is shown
+                    if (!_showUserSuggestionsOnly && _foodItems.isNotEmpty)
+                      const SizedBox(height: 12),
+
+                    // Info pencarian aktif
+                    if (_activeSearchQuery.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 12.0,
+                          left: 16.0,
+                          right: 16.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withAlpha(25),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.search,
+                                      size: 16,
+                                      color: AppColors.primary,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Pencarian: $_activeSearchQuery',
+                                        style: const TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
                                           color: AppColors.primary,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _activeSearchQuery = '';
+                                          _searchController.clear();
+                                          _displayedItemCount = 5;
+                                        });
+
+                                        // Jika searchbar di appbar, force pindahkan ke body
+                                        if (_showSearchInAppBar) {
+                                          _forceSearchBarToBody();
+                                        }
+                                      },
+                                      child: const Icon(
+                                        Icons.close,
+                                        size: 16,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+                      ),
 
-                      // Daftar kartu makanan
-                      BlocBuilder<FoodBloc, FoodState>(
-                        builder: (context, state) {
-                          if (state is FoodLoading && _foodItems.isEmpty) {
-                            // Tampilkan loading hanya pada muatan awal
-                            return const Center(
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 100),
-                                  CircularProgressIndicator(),
-                                ],
-                              ),
-                            );
-                          }
+                    // Daftar kartu makanan
+                    BlocBuilder<FoodBloc, FoodState>(
+                      builder: (context, state) {
+                        if (state is FoodLoading && _foodItems.isEmpty) {
+                          // Tampilkan loading hanya pada muatan awal
+                          return const Center(
+                            child: Column(
+                              children: [
+                                SizedBox(height: 100),
+                                CircularProgressIndicator(),
+                              ],
+                            ),
+                          );
+                        }
 
-                          // Dapatkan item yang difilter
-                          final filteredItems = _getFilteredFoodItems();
+                        // Dapatkan item yang difilter
+                        final filteredItems = _getFilteredFoodItems();
 
-                          if (filteredItems.isEmpty && state is! FoodLoading) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16.0,
-                              ),
-                              child: EmptyMessage(
-                                title:
-                                    _showUserSuggestionsOnly
-                                        ? 'Anda belum mengusulkan resep'
-                                        : 'Belum ada resep makanan ',
-                                subtitle:
-                                    _activeSearchQuery.isNotEmpty
-                                        ? 'Tidak ada resep yang sesuai dengan pencarian Anda'
-                                        : 'Coba ubah filter atau tambahkan usulan resep baru',
-                                iconName: Symbols.restaurant_menu,
-                                buttonText: 'Tambah Usulan',
-                                onPressed:
-                                    _showUserSuggestionsOnly
-                                        ? () => pushWithSlideTransition(
-                                          context,
-                                          FoodAddSuggestionScreen(),
-                                        )
-                                        : null, // Jika isMyPosts false, set onPressed ke null,
-                              ),
-                            );
-                          }
-
-                          return Column(
-                            children: [
-                              ...filteredItems.take(_displayedItemCount).map((
-                                item,
-                              ) {
-                                if (_showUserSuggestionsOnly) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
+                        if (filteredItems.isEmpty && state is! FoodLoading) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: EmptyMessage(
+                              title:
+                                  _showUserSuggestionsOnly
+                                      ? 'Anda belum mengusulkan resep'
+                                      : 'Belum ada resep makanan ',
+                              subtitle:
+                                  _activeSearchQuery.isNotEmpty
+                                      ? 'Tidak ada resep yang sesuai dengan pencarian Anda'
+                                      : 'Coba ubah filter atau tambahkan usulan resep baru',
+                              iconName: Symbols.restaurant_menu,
+                              buttonText: 'Tambah Usulan',
+                              onPressed:
+                                  _showUserSuggestionsOnly
+                                      ? () => pushWithSlideTransition(
                                         context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  FoodSuggestionDetailScreen(
-                                                    foodId: item.id,
-                                                  ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      child: _buildFoodCard(item, context),
-                                    ),
-                                  );
-                                } else {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => FoodDetailScreen(
-                                                foodId: item.id,
-                                              ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      child: _buildFoodCard(item, context),
-                                    ),
-                                  );
-                                }
-                              }),
+                                        FoodAddSuggestionScreen(),
+                                      )
+                                      : null, // Jika isMyPosts false, set onPressed ke null,
+                            ),
+                          );
+                        }
 
-                              // Indikator loading
-                              if (_isLoadingMore)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
+                        return Column(
+                          children: [
+                            ...filteredItems.take(_displayedItemCount).map((
+                              item,
+                            ) {
+                              if (_showUserSuggestionsOnly) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                FoodSuggestionDetailScreen(
+                                                  foodId: item.id,
+                                                ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 12),
+                                    child: _buildFoodCard(item, context),
                                   ),
-                                  child: const Center(
-                                    child: CircularProgressIndicator(
-                                      color: AppColors.primary,
-                                    ),
+                                );
+                              } else {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => FoodDetailScreen(
+                                              foodId: item.id,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 12),
+                                    child: _buildFoodCard(item, context),
+                                  ),
+                                );
+                              }
+                            }),
+
+                            // Indikator loading
+                            if (_isLoadingMore)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.primary,
                                   ),
                                 ),
-                            ],
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 76),
-                    ],
-                  ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 76),
+                  ],
                 ),
               ),
 
@@ -1668,140 +1785,144 @@ class _FoodListScreenState extends State<FoodListScreen>
 
   // Widget kartu makanan
   Widget _buildFoodCard(Food item, BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Row(
-        children: [
-          // Gambar makanan
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              bottomLeft: Radius.circular(10),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Card(
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Row(
+          children: [
+            // Gambar makanan
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+              ),
+              child: Image.network(
+                storageUrl + item.image,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             ),
-            child: Image.network(
-              storageUrl + item.image,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Nama makanan
-                          Text(
-                            item.name,
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textBlack,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          // Deskripsi singkat
-                          Text(
-                            item.description,
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 12,
-                              color: AppColors.textGrey,
-                            ),
-                            textAlign: TextAlign.justify,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Indikator sumber (tidak ditampilkan dalam mode usulan saya)
-                      if (!_showUserSuggestionsOnly)
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: AppColors.accent.withAlpha(25),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Image.asset(
-                            item.source == 'WHO'
-                                ? 'assets/images/icon/source_who.png'
-                                : item.source == 'KEMENKES'
-                                ? 'assets/images/icon/source_kemenkes.png'
-                                : 'assets/images/icon/source_pengguna.png',
-                            width: 16,
-                            height: 16,
-                          ),
-                        ),
-                      if (_showUserSuggestionsOnly) const SizedBox(height: 24),
-                      const SizedBox(height: 32),
-                      // Indikator favorit
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            item.isFavorite
-                                ? Stack(
-                                  alignment: Alignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.favorite,
-                                      color: Colors.white,
-                                      size: 12,
-                                    ),
-                                    Icon(
-                                      Icons.favorite,
-                                      color: AppColors.buff,
-                                      size: 12,
-                                    ),
-                                  ],
-                                )
-                                : const Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.white,
-                                  size: 12,
-                                ),
-                            const SizedBox(width: 4),
+                            // Nama makanan
                             Text(
-                              item.favoritesCount.toString(),
+                              item.name,
                               style: const TextStyle(
                                 fontFamily: 'Poppins',
-                                fontSize: 8,
-                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textBlack,
                               ),
+                            ),
+                            const SizedBox(height: 4),
+                            // Deskripsi singkat
+                            Text(
+                              item.description,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 12,
+                                color: AppColors.textGrey,
+                              ),
+                              textAlign: TextAlign.justify,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Indikator sumber (tidak ditampilkan dalam mode usulan saya)
+                        if (!_showUserSuggestionsOnly)
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.accent.withAlpha(25),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Image.asset(
+                              item.source == 'WHO'
+                                  ? 'assets/images/icon/source_who.png'
+                                  : item.source == 'KEMENKES'
+                                  ? 'assets/images/icon/source_kemenkes.png'
+                                  : 'assets/images/icon/source_pengguna.png',
+                              width: 16,
+                              height: 16,
+                            ),
+                          ),
+                        if (_showUserSuggestionsOnly)
+                          const SizedBox(height: 24),
+                        const SizedBox(height: 32),
+                        // Indikator favorit
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              item.isFavorite
+                                  ? Stack(
+                                    alignment: Alignment.center,
+                                    children: const [
+                                      Icon(
+                                        Icons.favorite,
+                                        color: Colors.white,
+                                        size: 12,
+                                      ),
+                                      Icon(
+                                        Icons.favorite,
+                                        color: AppColors.buff,
+                                        size: 12,
+                                      ),
+                                    ],
+                                  )
+                                  : const Icon(
+                                    Icons.favorite_border,
+                                    color: Colors.white,
+                                    size: 12,
+                                  ),
+                              const SizedBox(width: 4),
+                              Text(
+                                item.favoritesCount.toString(),
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 8,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

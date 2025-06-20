@@ -679,7 +679,9 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                   Future.delayed(
                                     const Duration(seconds: 2),
                                     () {
-                                      Navigator.pop(context);
+                                      if (context.mounted) {
+                                        Navigator.pop(context);
+                                      }
                                     },
                                   );
                                 } else if (state is BabyError) {

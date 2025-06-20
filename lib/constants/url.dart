@@ -1,9 +1,9 @@
 // BASE URL
 // server lokal dengan debug ke windows/web browser
-// String baseUrl = 'http://127.0.0.1:8000/';
+String baseUrl = 'http://127.0.0.1:8000/';
 
 // universal menggunakan API dari server
-String baseUrl = 'https://nutrimpasi.site/';
+// String baseUrl = 'https://nutrimpasi.site/';
 
 // jika menggunakan API lokal dan device emulator android (AVD)
 // String baseUrl = 'http://10.0.2.2:8000/';
@@ -13,7 +13,6 @@ String baseUrl = 'https://nutrimpasi.site/';
 // php artisan serve --host=0.0.0.0 --port=8000
 // baseUrl bisa diketahui dengan menjalankan perintah 'ipconfig' di terminal mengambil ipv4
 // String baseUrl = 'http://192.168.x.x:8000/';
-// String baseUrl = 'http://192.168.81.214:8000/';
 
 String apiUrl = '${baseUrl}api/';
 String storageUrl = '${baseUrl}storage/';
