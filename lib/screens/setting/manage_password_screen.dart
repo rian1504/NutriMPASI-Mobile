@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 
-class PasswordSettingScreen extends StatefulWidget {
-  const PasswordSettingScreen({super.key});
+class ManageSettingScreen extends StatefulWidget {
+  const ManageSettingScreen({super.key});
 
   @override
-  State<PasswordSettingScreen> createState() => _PasswordSettingScreenState();
+  State<ManageSettingScreen> createState() => _ManageSettingScreenState();
 }
 
-class _PasswordSettingScreenState extends State<PasswordSettingScreen> {
+class _ManageSettingScreenState extends State<ManageSettingScreen> {
   // Controller untuk form
   final _formKey = GlobalKey<FormState>();
   bool _obscureOldPassword = true;
@@ -77,130 +79,26 @@ class _PasswordSettingScreenState extends State<PasswordSettingScreen> {
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: AppColors.primary,
-            elevation: 0,
-            leading: IconButton(
-              icon:
-                  state is AuthenticationLoading
-                      ? Text('')
-                      : Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed:
-                  state is AuthenticationLoading
-                      ? null
-                      : () {
-                        Navigator.pop(context);
-                      },
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(8),
-              ),
-            ),
-            title: const Text(
-              'Kelola Kata Sandi',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            centerTitle: true,
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  clipBehavior: Clip.none,
+        return CustomAppBar(
+          title: 'Kelola Kata Sandi',
+          appBarContent: true,
+          icon: AppIcons.lockFill,
+          content: Column(
+            children: [
+              const SizedBox(height: 100),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Stack(
                   children: [
                     Container(
-                      width: double.infinity,
-                      height: 125,
+                      margin: const EdgeInsets.only(bottom: 24),
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(50),
-                            offset: const Offset(0, 4),
-                            blurRadius: 8,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: Container(
-                          width: 200,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.primary,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(10),
-                                offset: const Offset(0, 8),
-                                blurRadius: 0,
-                                spreadRadius: 0,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Container(
-                              width: 150,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withAlpha(25),
-                                    blurRadius: 6,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.lock_rounded,
-                                size: 100,
-                                color: AppColors.accent,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 100),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Stack(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 30),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(15),
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
+                      child: Material(
+                        elevation: 2,
+                        borderRadius: BorderRadius.circular(20),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Form(
@@ -323,59 +221,59 @@ class _PasswordSettingScreenState extends State<PasswordSettingScreen> {
                           ),
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.accent,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 60,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.accent,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 60,
+                              vertical: 12,
                             ),
-                            onPressed:
-                                state is AuthenticationLoading
-                                    ? null
-                                    : () {
-                                      if (loggedInUser != null) {
-                                        // Add a null check for loggedInUser
-                                        _savePassword(userId: loggedInUser.id);
-                                      } else {
-                                        // Handle the case where loggedInUser is null,
-                                        // e.g., show an error or log a message.
-                                        // For now, you might just do nothing or show a debug print.
-                                        debugPrint(
-                                          'Error: loggedInUser is null when trying to save password.',
-                                        );
-                                      }
-                                    },
-                            child:
-                                state is AuthenticationLoading
-                                    ? CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                    : Text(
-                                      'Simpan',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
                           ),
+                          onPressed:
+                              state is AuthenticationLoading
+                                  ? null
+                                  : () {
+                                    if (loggedInUser != null) {
+                                      // Add a null check for loggedInUser
+                                      _savePassword(userId: loggedInUser.id);
+                                    } else {
+                                      // Handle the case where loggedInUser is null,
+                                      // e.g., show an error or log a message.
+                                      // For now, you might just do nothing or show a debug print.
+                                      debugPrint(
+                                        'Error: loggedInUser is null when trying to save password.',
+                                      );
+                                    }
+                                  },
+                          child:
+                              state is AuthenticationLoading
+                                  ? CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                  : Text(
+                                    'Simpan',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

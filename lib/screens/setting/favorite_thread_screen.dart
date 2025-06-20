@@ -9,19 +9,22 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/like.dart';
 import 'package:nutrimpasi/models/thread.dart' as thread_model;
 import 'package:nutrimpasi/screens/forum/thread_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/utils/report_dialog.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class HistoryLikeScreen extends StatefulWidget {
-  const HistoryLikeScreen({super.key});
+class FavoriteThreadScreen extends StatefulWidget {
+  const FavoriteThreadScreen({super.key});
 
   @override
-  State<HistoryLikeScreen> createState() => _HistoryLikeScreenState();
+  State<FavoriteThreadScreen> createState() => _FavoriteThreadScreenState();
 }
 
-class _HistoryLikeScreenState extends State<HistoryLikeScreen> {
+class _FavoriteThreadScreenState extends State<FavoriteThreadScreen> {
   List<Like> likes = [];
 
   @override
@@ -39,121 +42,25 @@ class _HistoryLikeScreenState extends State<HistoryLikeScreen> {
     return BlocListener<thread_bloc.ThreadBloc, thread_bloc.ThreadState>(
       listener: (context, state) {
         if (state is thread_bloc.ThreadDeleted) {
-          // _showDialogReportSuccess(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Berhasil menghapus thread"),
-              backgroundColor: Colors.green,
-            ),
+          AppFlushbar.showSuccess(
+            context,
+            title: 'Berhasil',
+            message: 'Berhasil menghapus thread',
           );
 
           context.read<LikeBloc>().add(FetchLikes());
         } else if (state is thread_bloc.ThreadError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error), backgroundColor: Colors.red),
-          );
+          AppFlushbar.showError(context, title: 'Error', message: state.error);
         }
       },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
-            onPressed: () => Navigator.pop(context),
-            style: IconButton.styleFrom(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.all(8),
-            ),
-          ),
-          title: const Text(
-            'Thread yang Disukai',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          centerTitle: true,
-        ),
-        body: Column(
+      child: CustomAppBar(
+        title: 'Thread yang Disukai',
+        appBarContent: true,
+        icon: AppIcons.likeFill,
+        content: // Daftar konten thread yang disukai
+            Column(
           children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 125,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(50),
-                        offset: const Offset(0, 4),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primary,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(10),
-                            offset: const Offset(0, 8),
-                            blurRadius: 0,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(25),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.thumb_up_alt_rounded,
-                            size: 100,
-                            color: AppColors.accent,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 100),
-
-            // Daftar konten thread yang disukai
+            SizedBox(height: 100),
             BlocBuilder<LikeBloc, LikeState>(
               builder: (context, state) {
                 if (state is LikeLoading) {
@@ -171,12 +78,13 @@ class _HistoryLikeScreenState extends State<HistoryLikeScreen> {
                 }
 
                 if (likes.isEmpty) {
-                  return const Expanded(
-                    child: Center(
-                      child: Text(
-                        'Belum ada postingan yang disukai!',
-                        style: TextStyle(fontSize: 16),
-                      ),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: EmptyMessage(
+                      title: 'Anda belum menyukai thread',
+                      subtitle:
+                          'Belum ada thread yang Anda sukai. Temukan berbagai diskusi menarik di forum dan tekan tombol suka pada thread favorit Anda agar mudah ditemukan kembali di halaman ini.',
+                      iconName: AppIcons.forum,
                     ),
                   );
                 }

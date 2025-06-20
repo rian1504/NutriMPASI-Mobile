@@ -9,7 +9,7 @@ class LearningMaterialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(
@@ -21,21 +21,12 @@ class LearningMaterialScreen extends StatelessWidget {
                 fit: BoxFit.fitWidth,
               ),
               // Row dengan tombol kembali dan judul
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Tombol Kembali
-                    LeadingActionButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: AppIcons.back,
-                    ),
-                    // Judul Materi Pembelajaran
-                    const Text(
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Center(
+                    child: Text(
                       'Materi Pembelajaran',
                       style: TextStyle(
                         fontSize: 20,
@@ -43,9 +34,30 @@ class LearningMaterialScreen extends StatelessWidget {
                         color: AppColors.textBlack,
                       ),
                     ),
-                    const SizedBox(width: 48),
-                  ],
+                  ),
                 ),
+              ),
+              // Positioned(
+              //   // left: 0,
+              //   // right: 0,
+              //   top: MediaQuery.of(context).padding.top,
+              //   child: Center(
+              //     child: Text(
+              //       'Materi Pembelajaran',
+              //       style: TextStyle(
+              //         fontSize: 20,
+              //         fontWeight: FontWeight.bold,
+              //         color: AppColors.textBlack,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Tombol Kembali
+              LeadingActionButton(
+                onPressed: () => Navigator.pop(context),
+                icon: AppIcons.back,
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
               ),
             ],
           ),

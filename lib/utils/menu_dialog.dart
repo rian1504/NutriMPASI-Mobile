@@ -54,9 +54,6 @@ Future<void> confirmDeleteThread({
       context.read<ThreadBloc>().add(
         DeleteThreads(threadId: int.parse(threadId)),
       );
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(content: Text('Komentar berhasil dihapus!'), backgroundColor: Colors.green),
-      // );
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/report/report_bloc.dart'; // Impor ReportBloc, ReportEvent, ReportState
 import 'package:nutrimpasi/constants/colors.dart'; // Impor AppColors
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart'; // Impor MessageDialog
 import 'dart:async'; // Untuk Future.delayed
 
@@ -12,19 +13,34 @@ import 'dart:async'; // Untuk Future.delayed
 void _showReportSuccessDialog({
   required BuildContext context,
   required String displayCategory, // Misal: "postingan", "komentar"
+  String? imagePath,
 }) {
-  showDialog(
+  showGeneralDialog(
     context: context,
     barrierDismissible: false,
+    barrierLabel: 'Tutup',
+    barrierColor: Colors.black54,
     useRootNavigator: true,
-    builder: (dialogContext) {
+    transitionDuration: const Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOut,
+        ), // Opacity dari 0.0 ke 1.0
+        child: child,
+      );
+    },
+    pageBuilder: (dialogContext, _, __) {
       Future.delayed(const Duration(seconds: 3)).then((_) {
         if (dialogContext.mounted) {
           Navigator.of(dialogContext, rootNavigator: true).pop();
         }
       });
       return MessageDialog(
-        imagePath: "assets/images/card/lapor_konten.png", // Pastikan path benar
+        imagePath:
+            imagePath ??
+            "assets/images/component/berhasil_melaporkan_konten.png", // Pastikan path benar
         message: "Berhasil melaporkan $displayCategory ini",
       );
     },
@@ -37,10 +53,11 @@ Future<void> showReportDialog({
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
   required String category,
   required int refersId,
+  String? imagePath,
 }) async {
-  String _reportReason =
-      ''; // Variabel lokal untuk input, tidak ada _formKey yang diakses dari luar
-  final _formKey = GlobalKey<FormState>(); // Key lokal untuk form
+  String reportReason =
+      ''; // Variabel lokal untuk input, tidak ada formKey yang diakses dari luar
+  final formKey = GlobalKey<FormState>(); // Key lokal untuk form
 
   await showGeneralDialog(
     // Gunakan await agar bisa menangani pop dialog dengan benar
@@ -72,18 +89,17 @@ Future<void> showReportDialog({
                   displayCategory: _getDisplayCategory(
                     category,
                   ), // Ambil displayCategory dari fungsi helper
+                  imagePath: imagePath,
                 );
               } else if (state is ReportError) {
                 Navigator.of(
                   blocConsumerContext,
                   rootNavigator: true,
                 ).pop(); // Tutup dialog laporan ini
-                ScaffoldMessenger.of(context).showSnackBar(
-                  // Gunakan context asli dari pemanggil
-                  SnackBar(
-                    content: Text(state.error),
-                    backgroundColor: Colors.red,
-                  ),
+                AppFlushbar.showError(
+                  context,
+                  title: 'Error',
+                  message: state.error,
                 );
               }
             },
@@ -105,11 +121,10 @@ Future<void> showReportDialog({
                   ),
                 ),
                 content: Form(
-                  key: _formKey,
+                  key: formKey,
                   child: TextFormField(
                     onChanged: (value) {
-                      _reportReason =
-                          value; // Update _reportReason lokal dialog
+                      reportReason = value; // Update reportReason lokal dialog
                     },
                     style: const TextStyle(
                       fontSize: 14,
@@ -172,12 +187,12 @@ Future<void> showReportDialog({
                             isLoading
                                 ? null
                                 : () {
-                                  if (_formKey.currentState!.validate()) {
+                                  if (formKey.currentState!.validate()) {
                                     context.read<ReportBloc>().add(
                                       Report(
                                         category: category,
                                         refersId: refersId,
-                                        content: _reportReason,
+                                        content: reportReason,
                                       ),
                                     );
                                   }

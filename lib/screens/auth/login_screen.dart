@@ -49,10 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
               context,
               title: "Selamat datang mama!",
               message: state.message ?? 'Login berhasil',
+              marginVerticalValue: 8,
             );
 
             // Tunggu sebentar lalu navigasi ke home
-            Future.delayed(const Duration(seconds: 3), () {
+            Future.delayed(const Duration(seconds: 2), () {
               if (context.mounted) {
                 Navigator.pushReplacementNamed(context, '/home');
               }

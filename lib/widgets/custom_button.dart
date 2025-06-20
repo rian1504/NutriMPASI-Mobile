@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 
 // class MediumButton extends StatelessWidget {
 //   final Widget text;
@@ -34,6 +35,7 @@ class CircleButton extends StatelessWidget {
   final IconData?
   icon; // Untuk menggunakan Icon (jika child dan imagePath null)
   final Color? iconColor; // Warna icon (hanya relevan jika icon diberikan)
+  final double? iconSize;
   final String?
   imagePath; // Untuk menggunakan Image.asset (jika child dan icon null)
   final String?
@@ -50,6 +52,7 @@ class CircleButton extends StatelessWidget {
     // --- Pastikan hanya satu dari berikut yang diberikan ---
     this.child,
     this.icon,
+    this.iconSize,
     this.iconColor,
     this.imagePath,
     this.imageUrl,
@@ -82,7 +85,7 @@ class CircleButton extends StatelessWidget {
       return Icon(
         icon,
         color: iconColor ?? AppColors.primary, // Gunakan iconColor atau default
-        size: size * 0.5, // Ukuran icon proporsional
+        size: iconSize ?? size * 0.5, // Ukuran icon proporsional
       );
     } else if (imagePath != null) {
       return Image.asset(
@@ -296,9 +299,11 @@ class LeadingActionButton extends StatelessWidget {
   final double elevation;
   final double? top;
   final double? left;
+  final bool? potioned;
+  final double? size;
 
   const LeadingActionButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.icon,
     this.backgroundColor = Colors.white,
@@ -306,13 +311,15 @@ class LeadingActionButton extends StatelessWidget {
     this.elevation = 3,
     this.top,
     this.left,
-  }) : super(key: key);
+    this.potioned = true,
+    this.size = 40,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: top ?? MediaQuery.of(context).padding.top + 4,
-      left: left ?? 4,
+      top: top ?? getStatusBarHeight(context) + 8,
+      left: left ?? 8,
       child: FloatingActionButton(
         mini: true,
         backgroundColor: backgroundColor,

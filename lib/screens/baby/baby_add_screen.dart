@@ -4,6 +4,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:intl/intl.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 
 class BabyAddScreen extends StatefulWidget {
   const BabyAddScreen({super.key});
@@ -667,23 +668,27 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                             child: BlocConsumer<BabyBloc, BabyState>(
                               listener: (context, state) {
                                 if (state is BabyStored) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Data bayi berhasil disimpan!',
-                                      ),
-                                      duration: Duration(seconds: 2),
-                                    ),
+                                  AppFlushbar.showSuccess(
+                                    context,
+                                    title: 'Berhasil',
+                                    message: 'Data bayi berhasil disimpan',
+                                    marginVerticalValue: 8,
                                   );
 
                                   context.read<BabyBloc>().add(FetchBabies());
-                                  Navigator.pop(context);
+                                  Future.delayed(
+                                    const Duration(seconds: 2),
+                                    () {
+                                      if (context.mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    },
+                                  );
                                 } else if (state is BabyError) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(state.error),
-                                      duration: const Duration(seconds: 2),
-                                    ),
+                                  AppFlushbar.showError(
+                                    context,
+                                    title: 'Error',
+                                    message: state.error,
                                   );
                                 }
                               },

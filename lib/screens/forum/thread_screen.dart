@@ -401,25 +401,29 @@ class _ThreadSectionState extends State<_ThreadSection> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: Icon(
+                            InkWell(
+                              borderRadius: BorderRadius.circular(48),
+                              onTap: _toggleLike,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // IconButton(
+                                  Icon(
                                     isLiked
                                         ? AppIcons.favoriteFill
                                         : AppIcons.favorite,
                                     color: Colors.red,
                                     size: 24,
                                   ),
-                                  onPressed: _toggleLike,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  likeCount.toString(),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
+                                  // onPressed: _toggleLike,
+                                  // ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    likeCount.toString(),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -869,25 +873,19 @@ class _CommentInputBarState extends State<_CommentInputBar> {
             context,
             message: "Komentar berhasil dikirim!",
             title: "Berhasil",
-            position: FlushbarPosition.BOTTOM, // Atur posisi sesuai keinginan
+            position: FlushbarPosition.BOTTOM,
+            marginVerticalValue: 8,
           );
         } else if (state is CommentDeleted) {
           AppFlushbar.showSuccess(
             context,
-            message: "Komentar berhasil dihapus!",
+            message: "Komentar berhasil dihapus",
             title: "Berhasil",
-            position: FlushbarPosition.BOTTOM, // Atur posisi sesuai keinginan
+            position: FlushbarPosition.BOTTOM,
+            marginVerticalValue: 8,
           );
         } else if (state is CommentError) {
-          // ScaffoldMessenger.of(
-          //   context,
-          // ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
-          AppFlushbar.showError(
-            context,
-            message: state.error,
-            title: "Berhasil",
-            position: FlushbarPosition.BOTTOM, // Atur posisi sesuai keinginan
-          );
+          AppFlushbar.showError(context, message: state.error, title: "Error");
         }
       },
       builder: (context, state) {

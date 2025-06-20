@@ -12,11 +12,13 @@ import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/features/notification_screen.dart';
-import 'package:nutrimpasi/screens/setting/setting_profile_screen.dart';
-import 'package:nutrimpasi/screens/setting/setting_password_screen.dart';
-import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
-import 'package:nutrimpasi/screens/setting/history_likes_screen.dart';
+import 'package:nutrimpasi/screens/setting/manage_profile_screen.dart';
+import 'package:nutrimpasi/screens/setting/manage_password_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipe_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_thread_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
+import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_dialog.dart';
 
@@ -38,17 +40,28 @@ class _SettingScreenState extends State<SettingScreen> {
       listener: (context, state) {
         if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(
+            AppFlushbar.showNormal(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+              title: 'Selamat tinggal Mama!',
+              message: state.message,
+              marginVerticalValue: 8,
+            );
             context.read<BabyBloc>().add(ResetBaby());
-            Navigator.pushReplacementNamed(context, '/login');
+
+            Future.delayed(const Duration(seconds: 2), () {
+              if (context.mounted) {
+                // Navigasi ke login
+                Navigator.pushReplacementNamed(context, '/login');
+              }
+            });
           });
         } else if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(
+            AppFlushbar.showError(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+              title: 'Error',
+              message: state.error,
+            );
           });
         }
       },
@@ -75,82 +88,91 @@ class _SettingScreenState extends State<SettingScreen> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        8,
-                        MediaQuery.of(context).padding.top,
-                        8,
-                        8,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.asset(
-                                'assets/images/logo/nutrimpasi.png',
-                                height: 56,
+                    child: Stack(
+                      // mainAxisSize: MainAxisSize.max,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Positioned(
+                          top:
+                              getStatusBarHeight(context) +
+                              (getAppBarHeight / 2) -
+                              10, // Sekitar tengah vertikal di toolbar
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: Text(
+                              'Pengaturan',
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.white,
                               ),
-                              Text(
-                                "Pengaturan",
-                                style: const TextStyle(
-                                  color: AppColors.textWhite,
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              CircleButton(
-                                onPressed: () {
-                                  pushWithSlideTransition(
-                                    context,
-                                    FavoriteRecipeScreen(),
-                                  );
-                                },
-                                icon: AppIcons.favoriteRegular,
-                              ),
-                            ],
+                            ),
                           ),
-
-                          // SizedBox(height: 14),
-                          Stack(
+                        ),
+                        Positioned(
+                          top:
+                              getStatusBarHeight(context) +
+                              4, // Sejajar dengan tombol leading
+                          right: 8, // Jarak dari kanan
+                          child: CircleButton(
+                            onPressed: () {
+                              pushWithSlideTransition(
+                                context,
+                                FavoriteRecipeScreen(),
+                              );
+                            },
+                            icon: AppIcons.favoriteRegular,
+                          ),
+                        ),
+                        Positioned(
+                          top:
+                              getStatusBarHeight(context) +
+                              (getAppBarHeight), // Sekitar tengah vertikal di toolbar
+                          left: 0,
+                          right: 0,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              // avatar
-                              CircleAvatar(
-                                radius: 60,
-                                backgroundColor: Colors.grey.shade200,
-                                child: ClipOval(
-                                  child:
-                                      loggedInUser?.avatar != null
-                                          ? Image.network(
+                              //avatar
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(60),
+                                  color: AppColors.white,
+                                ),
+                                // radius: 60,
+                                // backgroundColor: AppColors.white,
+                                child:
+                                    loggedInUser?.avatar != null
+                                        ? ClipOval(
+                                          child: Image.network(
                                             storageUrl + loggedInUser!.avatar!,
                                             width: 120,
                                             height: 120,
                                             fit: BoxFit.cover,
-                                          )
-                                          : Icon(
-                                            AppIcons.userFill,
-                                            color: AppColors.primary,
-                                            size: 20,
                                           ),
+                                        )
+                                        : Icon(
+                                          Icons.person_rounded,
+                                          color: AppColors.primary,
+                                          size: 120,
+                                        ),
+                              ),
+                              SizedBox(height: 8),
+                              // nama pengguna
+                              Text(
+                                loggedInUser?.name ?? 'Pengguna',
+                                style: TextStyle(
+                                  color: AppColors.textWhite,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
-                          // username
-                          Text(
-                            loggedInUser?.name ?? 'Pengguna',
-                            style: TextStyle(
-                              color: AppColors.textWhite,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -179,7 +201,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             children: [
                               ListTile(
                                 leading: Icon(
-                                  AppIcons.userFill,
+                                  Icons.person,
                                   color: Colors.black,
                                   size: 24,
                                 ),
@@ -192,7 +214,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 onTap: () {
                                   pushWithSlideTransition(
                                     context,
-                                    ProfileSettingScreen(user: loggedInUser),
+                                    ManageProfileScreen(user: loggedInUser),
                                   );
                                 },
                               ),
@@ -211,7 +233,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 onTap: () {
                                   pushWithSlideTransition(
                                     context,
-                                    PasswordSettingScreen(),
+                                    ManageSettingScreen(),
                                   );
                                 },
                               ),
@@ -280,7 +302,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 onTap: () {
                                   pushWithSlideTransition(
                                     context,
-                                    HistoryLikeScreen(),
+                                    FavoriteThreadScreen(),
                                   );
                                 },
                               ),

@@ -7,6 +7,8 @@ import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_add_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
+import 'package:nutrimpasi/widgets/custom_dialog.dart';
 
 class BabyListScreen extends StatefulWidget {
   const BabyListScreen({super.key});
@@ -87,8 +89,8 @@ class _BabyListScreenState extends State<BabyListScreen> {
                 ),
                 padding: EdgeInsets.zero,
                 onPressed: () {
-                  Navigator.pop(context);
                   context.read<BabyBloc>().add(FetchBabies());
+                  Navigator.pop(context);
                 },
               ),
             ),
@@ -167,16 +169,19 @@ class _BabyListScreenState extends State<BabyListScreen> {
                       child: BlocConsumer<BabyBloc, BabyState>(
                         listener: (context, state) {
                           if (state is BabyError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(state.error)),
+                            AppFlushbar.showError(
+                              context,
+                              title: 'Error',
+                              message: state.error,
                             );
                           }
 
                           if (state is BabyDeleted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Profil bayi berhasil dihapus'),
-                              ),
+                            AppFlushbar.showSuccess(
+                              context,
+                              title: 'Berhasil',
+                              message: 'Profil bayi berhasil dihapus',
+                              marginVerticalValue: 8,
                             );
 
                             context.read<BabyBloc>().add(FetchBabies());
@@ -614,66 +619,17 @@ class _BabyListScreenState extends State<BabyListScreen> {
     showDialog(
       context: context,
       builder:
-          (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Anda yakin ingin menghapus Profil Bayi ini?',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Tombol Batal
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.componentBlack,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Batal'),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      // Tombol Hapus
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.red,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-
-                            context.read<BabyBloc>().add(
-                              DeleteBabies(babyId: baby.id),
-                            );
-                          },
-                          child: const Text('Hapus'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+          (context) => ConfirmDialog(
+            titleText: 'Konfirmasi Hapus',
+            contentText: 'Anda yakin ingin menghapus Profil Bayi ini?',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: AppColors.red,
+            onConfirm: () {
+              Navigator.pop(context);
+              context.read<BabyBloc>().add(DeleteBabies(babyId: baby.id));
+            },
+            onCancel: () => Navigator.pop(context, false),
           ),
     );
   }

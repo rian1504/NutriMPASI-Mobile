@@ -5,7 +5,7 @@ import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
 import 'package:nutrimpasi/screens/food/cooking_history_screen.dart';
 import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
-import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipe_screen.dart';
 
 class FeatureListScreen extends StatelessWidget {
   const FeatureListScreen({super.key});

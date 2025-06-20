@@ -12,15 +12,15 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/user.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 
-class ProfileSettingScreen extends StatefulWidget {
+class ManageProfileScreen extends StatefulWidget {
   final User? user;
-  const ProfileSettingScreen({super.key, this.user});
+  const ManageProfileScreen({super.key, this.user});
 
   @override
-  State<ProfileSettingScreen> createState() => _ProfileSettingScreenState();
+  State<ManageProfileScreen> createState() => _ManageProfileScreenState();
 }
 
-class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
+class _ManageProfileScreenState extends State<ManageProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nameController;
@@ -93,11 +93,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengakses galeri. Coba periksa izin aplikasi.'),
-          backgroundColor: Colors.red,
-        ),
+      AppFlushbar.showError(
+        context,
+        title: 'Error',
+        message: 'Gagal mengakses galeri. Coba periksa izin aplikasi.',
       );
     }
   }
@@ -119,11 +118,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengakses kamera. Coba periksa izin aplikasi.'),
-          backgroundColor: Colors.red,
-        ),
+      AppFlushbar.showError(
+        context,
+        title: 'Error',
+        message: 'Gagal mengakses kamera. Coba periksa izin aplikasi.',
       );
     }
   }
@@ -240,14 +238,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
             message: "Profil berhasil diperbarui!",
             title: "Berhasil",
             position: FlushbarPosition.BOTTOM,
+            marginVerticalValue: 8,
           );
         } else if (state is ProfileError) {
-          AppFlushbar.showError(
-            context,
-            message: state.error,
-            title: "Gagal",
-            position: FlushbarPosition.BOTTOM,
-          );
+          AppFlushbar.showError(context, message: state.error, title: "Error");
         }
       },
       builder: (context, state) {
@@ -498,8 +492,8 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
         onTap: () {
           _showImageSourceOptions();
         },
-        splashColor: Colors.grey.withOpacity(0.3),
-        highlightColor: Colors.grey.withOpacity(0.1),
+        splashColor: Colors.grey.withAlpha(75),
+        highlightColor: Colors.grey.withAlpha(25),
         child: Container(
           width: 40,
           height: 40,

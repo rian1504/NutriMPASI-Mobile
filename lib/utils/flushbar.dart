@@ -12,21 +12,22 @@ class AppFlushbar {
     BuildContext context, {
     required String message,
     String? title,
-    FlushbarType type = FlushbarType.info, // Default ke info
+    FlushbarType type = FlushbarType.info,
     Duration duration = const Duration(seconds: 3),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     bool isDismissible = true,
     FlushbarDismissDirection dismissDirection =
         FlushbarDismissDirection.HORIZONTAL,
     Widget? mainButton,
+    double? marginVertical,
   }) {
+    double marginVerticalValue = marginVertical ?? 88;
     Color backgroundColor;
     IconData? iconData;
-    Color iconColor = Colors.white; // Default icon color
+    Color iconColor = Colors.white;
 
     switch (type) {
       case FlushbarType.success:
-        // backgroundColor = Colors.green.shade700;
         backgroundColor = AppColors.success;
         iconData = Icons.check_circle_outline;
         break;
@@ -39,7 +40,7 @@ class AppFlushbar {
         iconData = Icons.warning_amber_outlined;
         break;
       case FlushbarType.info:
-        backgroundColor = Colors.blue.shade700;
+        backgroundColor = AppColors.accent;
         iconData = Icons.info_outline;
         break;
       case FlushbarType.normal:
@@ -56,10 +57,16 @@ class AppFlushbar {
       backgroundColor: backgroundColor,
       flushbarPosition: position,
       borderRadius: BorderRadius.circular(12),
-      margin: const EdgeInsets.all(8),
+      margin: EdgeInsets.fromLTRB(
+        8,
+        // MediaQuery.of(context).padding.top,
+        8,
+        8,
+        marginVerticalValue,
+      ),
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.3),
+          color: Colors.black.withAlpha(75),
           offset: const Offset(0.0, 2.0),
           blurRadius: 3.0,
         ),
@@ -78,6 +85,7 @@ class AppFlushbar {
     Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
+    double? marginVerticalValue,
   }) {
     show(
       context,
@@ -86,6 +94,7 @@ class AppFlushbar {
       type: FlushbarType.success,
       duration: duration,
       position: position,
+      marginVertical: marginVerticalValue,
     );
   }
 
@@ -97,6 +106,7 @@ class AppFlushbar {
     FlushbarPosition position = FlushbarPosition.TOP,
     bool isDismissible = true,
     FlushbarStatusCallback? onStatusChanged,
+    double? marginVerticalValue,
   }) {
     show(
       context,
@@ -106,6 +116,7 @@ class AppFlushbar {
       duration: duration,
       position: position,
       isDismissible: isDismissible,
+      marginVertical: marginVerticalValue,
     );
   }
 
@@ -116,6 +127,7 @@ class AppFlushbar {
     Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
+    double? marginVerticalValue,
   }) {
     show(
       context,
@@ -124,6 +136,7 @@ class AppFlushbar {
       type: FlushbarType.info,
       duration: duration,
       position: position,
+      marginVertical: marginVerticalValue,
     );
   }
 
@@ -134,6 +147,7 @@ class AppFlushbar {
     Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.TOP,
     FlushbarStatusCallback? onStatusChanged,
+    double? marginVerticalValue,
   }) {
     show(
       context,
@@ -142,6 +156,7 @@ class AppFlushbar {
       type: FlushbarType.warning,
       duration: duration,
       position: position,
+      marginVertical: marginVerticalValue,
     );
   }
 
@@ -152,6 +167,7 @@ class AppFlushbar {
     Duration duration = const Duration(seconds: 2),
     FlushbarPosition position = FlushbarPosition.BOTTOM,
     FlushbarStatusCallback? onStatusChanged,
+    double? marginVerticalValue,
   }) {
     show(
       context,
@@ -160,6 +176,7 @@ class AppFlushbar {
       type: FlushbarType.normal,
       duration: duration,
       position: position,
+      marginVertical: marginVerticalValue,
     );
   }
 }

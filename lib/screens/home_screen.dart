@@ -20,9 +20,10 @@ import 'package:nutrimpasi/screens/features/nutritionist_profile_screen.dart';
 import 'package:nutrimpasi/screens/features/feature_list_screen.dart';
 import 'package:nutrimpasi/screens/food/food_recommendation_screen.dart';
 import 'package:nutrimpasi/screens/features/learning_material_screen.dart';
-import 'package:nutrimpasi/screens/setting/favorite_recipes_screen.dart';
+import 'package:nutrimpasi/screens/setting/favorite_recipe_screen.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen>
   int _currentBabyIndex = 0;
   int _currentRecommendationIndex = 0;
   Timer? _autoScrollTimer;
+  int? _selectedBabyId;
 
   // Status loading data bayi
   bool _isBabyDataLoading = true;
@@ -186,6 +188,9 @@ class _HomeScreenState extends State<HomeScreen>
             currentPageRound < babies.length) {
           setState(() {
             _currentBabyIndex = currentPageRound;
+            if (babies.isNotEmpty && _currentBabyIndex < babies.length) {
+              _selectedBabyId = babies[_currentBabyIndex].id;
+            }
           });
 
           // Fetch rekomendasi untuk bayi yang baru dipilih
@@ -226,6 +231,29 @@ class _HomeScreenState extends State<HomeScreen>
   List<Baby> babies = [];
   List<BabyFoodRecommendation> _recommendedFoods = [];
 
+  void _restoreBabyPosition() {
+    if (_selectedBabyId != null && babies.isNotEmpty) {
+      final int indexToRestore = babies.indexWhere(
+        (baby) => baby.id == _selectedBabyId,
+      );
+      if (indexToRestore >= 0 && indexToRestore < babies.length) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_babyController.hasClients && mounted) {
+            _babyController.jumpToPage(indexToRestore);
+            setState(() {
+              _currentBabyIndex = indexToRestore;
+            });
+
+            // Also restore the food recommendations for this baby
+            context.read<BabyFoodRecommendationBloc>().add(
+              FetchBabyFoodRecommendation(babyId: babies[indexToRestore].id),
+            );
+          }
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -240,19 +268,20 @@ class _HomeScreenState extends State<HomeScreen>
             return BlocConsumer<BabyBloc, BabyState>(
               listener: (context, babyState) {
                 if (babyState is BabyLoaded) {
-                  if (_isBabyDataLoading) {
-                    setState(() {
-                      babies = babyState.babies;
-                      _isBabyDataLoading = false;
-                    });
-                    // Trigger fetch rekomendasi saat bayi pertama kali load
-                    if (babyState.babies.isNotEmpty) {
-                      context.read<BabyFoodRecommendationBloc>().add(
-                        FetchBabyFoodRecommendation(
-                          babyId: babyState.babies.first.id,
-                        ),
-                      );
-                    }
+                  setState(() {
+                    babies = babyState.babies;
+                    _isBabyDataLoading = false;
+                  });
+
+                  _restoreBabyPosition();
+
+                  if (_selectedBabyId == null && babyState.babies.isNotEmpty) {
+                    _selectedBabyId = babyState.babies.first.id;
+                    context.read<BabyFoodRecommendationBloc>().add(
+                      FetchBabyFoodRecommendation(
+                        babyId: babyState.babies.first.id,
+                      ),
+                    );
                   }
                 }
               },
@@ -411,6 +440,10 @@ class _HomeScreenState extends State<HomeScreen>
                         );
                       } else if (state is BabyLoaded) {
                         babies = state.babies;
+                        if (babies.isNotEmpty &&
+                            _currentBabyIndex < babies.length) {
+                          _selectedBabyId = babies[_currentBabyIndex].id;
+                        }
                       } else if (state is BabyError) {
                         return Center(child: Text(state.error));
                       }
@@ -747,12 +780,20 @@ class _HomeScreenState extends State<HomeScreen>
                   top: 45,
                   child: InkWell(
                     onTap: () {
+                      if (babies.isNotEmpty &&
+                          _currentBabyIndex < babies.length) {
+                        _selectedBabyId = babies[_currentBabyIndex].id;
+                      }
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const BabyListScreen(),
                         ),
-                      );
+                      ).then((_) {
+                        if (mounted) {
+                          context.read<BabyBloc>().add(FetchBabies());
+                        }
+                      });
                     },
                     borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(20),
@@ -939,39 +980,15 @@ class _HomeScreenState extends State<HomeScreen>
 
   // Widget untuk menampilkan status kosong ketika tidak ada rekomendasi
   Widget _buildEmptyRecommendation() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.no_food,
-              size: 70,
-              color: AppColors.primaryLowTransparent,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Belum ada rekomendasi',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textBlack,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Belum ada rekomendasi makanan untuk bayi kamu saat ini.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 14,
-                color: AppColors.textGrey,
-              ),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 22),
+      child: EmptyMessage(
+        title: 'Belum ada rekomendasi makanan',
+        subtitle:
+            'Tidak ada rekomendasi makanan yang sesuai untuk bayi kamu saat ini',
+        iconName: Symbols.restaurant_menu,
+        iconSize: 24,
+        radius: 12,
       ),
     );
   }
