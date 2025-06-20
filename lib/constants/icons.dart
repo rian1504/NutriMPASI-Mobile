@@ -4,6 +4,7 @@
 // Tanggal: 13 Mei 2025
 
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AppIcons {
@@ -14,6 +15,8 @@ class AppIcons {
       PhosphorIcons.bellRinging(PhosphorIconsStyle.regular);
   static IconData get favoriteRegular =>
       PhosphorIcons.heart(PhosphorIconsStyle.regular);
+  static IconData get reportRegular =>
+      PhosphorIcons.warningCircle(PhosphorIconsStyle.regular);
 
   static IconData get favorite => PhosphorIcons.heart(PhosphorIconsStyle.bold);
   static IconData get comment => PhosphorIcons.chat(PhosphorIconsStyle.bold);
@@ -27,6 +30,7 @@ class AppIcons {
   static IconData get arrowDown =>
       PhosphorIcons.caretDown(PhosphorIconsStyle.bold);
   static IconData get arrowUp => PhosphorIcons.caretUp(PhosphorIconsStyle.bold);
+  static IconData get home => PhosphorIcons.house(PhosphorIconsStyle.fill);
   static IconData get logout => PhosphorIcons.signOut(PhosphorIconsStyle.fill);
   static IconData get notificationFill =>
       PhosphorIcons.bellRinging(PhosphorIconsStyle.fill);
@@ -48,18 +52,18 @@ class AppIcons {
       PhosphorIcons.dotsThreeOutlineVertical(PhosphorIconsStyle.fill);
   static IconData get deleteFill =>
       PhosphorIcons.trash(PhosphorIconsStyle.fill);
-  static IconData get lockFill => PhosphorIcons.lock(PhosphorIconsStyle.fill);
+  // static IconData get lockFill => PhosphorIcons.lock(PhosphorIconsStyle.fill);
   static IconData get send =>
       PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill);
+  static IconData get setting => PhosphorIcons.gearSix(PhosphorIconsStyle.fill);
   static IconData get calendar =>
-      PhosphorIcons.calendarBlank(PhosphorIconsStyle.fill);
+      PhosphorIcons.calendarDots(PhosphorIconsStyle.regular);
   // static const like = PhosphorIcons.thumbsUp;
   // static const profile = PhosphorIcons.thumbsUp;
 
   static const IconData nutrition = Icons.food_bank;
   static const IconData schedule = Icons.calendar_today;
   static const IconData forum = Icons.forum;
-  static const IconData home = Icons.home;
   // static const IconData baby = Icons.child_care;
   static const IconData search = Icons.search;
   static const IconData add = Icons.add;
@@ -67,6 +71,8 @@ class AppIcons {
   // static const IconData delete = Icons.delete;
   static const IconData check = Icons.check_circle;
   static const IconData uncheck = Icons.radio_button_unchecked;
+  static const IconData lockFill = Icons.lock_rounded;
+  static const IconData food = Symbols.restaurant_menu;
 
   //  Symbols.restaurant_menu,
   //  Symbols.home_rounded,

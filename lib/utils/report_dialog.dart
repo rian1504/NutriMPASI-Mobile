@@ -13,19 +13,34 @@ import 'dart:async'; // Untuk Future.delayed
 void _showReportSuccessDialog({
   required BuildContext context,
   required String displayCategory, // Misal: "postingan", "komentar"
+  String? imagePath,
 }) {
-  showDialog(
+  showGeneralDialog(
     context: context,
     barrierDismissible: false,
+    barrierLabel: 'Tutup',
+    barrierColor: Colors.black54,
     useRootNavigator: true,
-    builder: (dialogContext) {
+    transitionDuration: const Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOut,
+        ), // Opacity dari 0.0 ke 1.0
+        child: child,
+      );
+    },
+    pageBuilder: (dialogContext, _, __) {
       Future.delayed(const Duration(seconds: 3)).then((_) {
         if (dialogContext.mounted) {
           Navigator.of(dialogContext, rootNavigator: true).pop();
         }
       });
       return MessageDialog(
-        imagePath: "assets/images/card/lapor_konten.png", // Pastikan path benar
+        imagePath:
+            imagePath ??
+            "assets/images/component/berhasil_melaporkan_konten.png", // Pastikan path benar
         message: "Berhasil melaporkan $displayCategory ini",
       );
     },
@@ -38,6 +53,7 @@ Future<void> showReportDialog({
   required BuildContext context, // Context dari tempat fungsi ini dipanggil
   required String category,
   required int refersId,
+  String? imagePath,
 }) async {
   String _reportReason =
       ''; // Variabel lokal untuk input, tidak ada _formKey yang diakses dari luar
@@ -73,6 +89,7 @@ Future<void> showReportDialog({
                   displayCategory: _getDisplayCategory(
                     category,
                   ), // Ambil displayCategory dari fungsi helper
+                  imagePath: imagePath,
                 );
               } else if (state is ReportError) {
                 Navigator.of(

@@ -12,15 +12,15 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/user.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 
-class ProfileSettingScreen extends StatefulWidget {
+class ManageProfileScreen extends StatefulWidget {
   final User? user;
-  const ProfileSettingScreen({super.key, this.user});
+  const ManageProfileScreen({super.key, this.user});
 
   @override
-  State<ProfileSettingScreen> createState() => _ProfileSettingScreenState();
+  State<ManageProfileScreen> createState() => _ManageProfileScreenState();
 }
 
-class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
+class _ManageProfileScreenState extends State<ManageProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nameController;

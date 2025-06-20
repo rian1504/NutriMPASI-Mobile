@@ -4,7 +4,6 @@
 // Tanggal: 18 Mei 2025
 
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
@@ -31,14 +30,25 @@ class MessageDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(44, 0, 8, 0),
-                child: Image.asset(
-                  imagePath,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
+              if (imagePath ==
+                  'assets/images/component/berhasil_melaporkan_konten.png')
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(44, 0, 8, 0),
+                  child: Image.asset(
+                    imagePath,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: Image.asset(
+                    imagePath,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
               const SizedBox(height: 16),
               Text(
                 message,
@@ -62,7 +72,9 @@ class EmptyMessage extends StatelessWidget {
   final String subtitle;
   final String? buttonText;
   final VoidCallback? onPressed;
-  final IconData? iconName;
+  final double? radius;
+  final IconData iconName;
+  final double? iconSize;
 
   const EmptyMessage({
     super.key,
@@ -70,7 +82,9 @@ class EmptyMessage extends StatelessWidget {
     required this.subtitle,
     this.buttonText,
     this.onPressed,
-    this.iconName,
+    this.radius,
+    required this.iconName,
+    this.iconSize = 60,
   });
 
   @override
@@ -90,12 +104,12 @@ class EmptyMessage extends StatelessWidget {
           children: [
             // Ikon dan judul
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(radius ?? 60),
               decoration: BoxDecoration(
                 color: AppColors.bisque,
                 shape: BoxShape.circle,
               ),
-              child: Icon(iconName, size: 60, color: AppColors.primary),
+              child: Icon(iconName, size: iconSize, color: AppColors.primary),
             ),
             const SizedBox(height: 16),
             Text(

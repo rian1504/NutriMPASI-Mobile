@@ -524,42 +524,6 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
       ],
       child: Scaffold(
         backgroundColor: AppColors.background,
-        // appBar: AppBar(
-        //   backgroundColor: AppColors.primary,
-        //   elevation: 0,
-        //   leading: Padding(
-        //     padding: const EdgeInsets.all(8.0),
-        //     child: Material(
-        //       elevation: 3,
-        //       shadowColor: Colors.black54,
-        //       borderRadius: BorderRadius.circular(16),
-        //       child: Container(
-        //         decoration: BoxDecoration(
-        //           color: Colors.white,
-        //           borderRadius: BorderRadius.circular(16),
-        //         ),
-        //         child: IconButton(
-        //           icon: const Icon(
-        //             Symbols.arrow_back_ios_new_rounded,
-        //             color: AppColors.textBlack,
-        //             size: 24,
-        //           ),
-        //           padding: EdgeInsets.zero,
-        //           onPressed: () => Navigator.pop(context),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        //   title: const Text(
-        //     'Riwayat Memasak',
-        //     style: TextStyle(
-        //       fontFamily: 'Poppins',
-        //       color: Colors.white,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        //   centerTitle: true,
-        // ),
         body: Stack(
           children: [
             Padding(
@@ -999,72 +963,62 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Dropdown untuk memilih bayi
-          Container(
-            width: 100,
-            height: 44,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(8),
+          Material(
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedBaby,
-                icon: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.white,
-                  size: 20,
-                ),
-                iconSize: 20,
-                elevation: 16,
-                isDense: true,
-                isExpanded: true,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-                dropdownColor: AppColors.primary,
-                onChanged: (String? newValue) {
-                  final currentState = context.read<FoodRecordBloc>().state;
-                  if (currentState is FoodRecordLoaded) {
-                    setState(() {
-                      _selectedBaby = newValue!;
-                      _shouldAnimateNutrition = true;
-                      _historyItems =
-                          currentState.foodRecords
-                              .where(
-                                (food) =>
-                                    food.babyId.toString() == _selectedBaby,
-                              )
-                              .toList();
-                      _groupFoodByTimePeriod();
-                    });
-                  }
-                },
-                selectedItemBuilder: (BuildContext context) {
-                  return _babies.map<Widget>((baby) {
-                    return Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        _truncateBabyName(baby.name),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
-                  }).toList();
-                },
-                items:
-                    _babies.map<DropdownMenuItem<String>>((baby) {
-                      return DropdownMenuItem<String>(
-                        value: baby.id.toString(),
+            child: Container(
+              width: 100,
+              height: 44,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: _selectedBaby,
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  iconSize: 20,
+                  elevation: 16,
+                  isDense: true,
+                  isExpanded: true,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  dropdownColor: AppColors.primary,
+                  onChanged: (String? newValue) {
+                    final currentState = context.read<FoodRecordBloc>().state;
+                    if (currentState is FoodRecordLoaded) {
+                      setState(() {
+                        _selectedBaby = newValue!;
+                        _shouldAnimateNutrition = true;
+                        _historyItems =
+                            currentState.foodRecords
+                                .where(
+                                  (food) =>
+                                      food.babyId.toString() == _selectedBaby,
+                                )
+                                .toList();
+                        _groupFoodByTimePeriod();
+                      });
+                    }
+                  },
+                  selectedItemBuilder: (BuildContext context) {
+                    return _babies.map<Widget>((baby) {
+                      return Container(
+                        alignment: Alignment.centerLeft,
                         child: Text(
-                          baby.name,
+                          _truncateBabyName(baby.name),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -1072,7 +1026,23 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                           ),
                         ),
                       );
-                    }).toList(),
+                    }).toList();
+                  },
+                  items:
+                      _babies.map<DropdownMenuItem<String>>((baby) {
+                        return DropdownMenuItem<String>(
+                          value: baby.id.toString(),
+                          child: Text(
+                            baby.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                ),
               ),
             ),
           ),
@@ -1081,20 +1051,26 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
 
           // Tampilan periode waktu terpilih
           Expanded(
-            child: Container(
-              height: 44,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
+            child: Material(
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                ), // Menerapkan radius 12.0 ke semua 4 sudut
               ),
-              child: Center(
-                child: Text(
-                  _selectedTimePeriod,
-                  style: const TextStyle(
-                    color: AppColors.textBlack,
-                    fontSize: 14,
+              child: Container(
+                height: 44,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 0,
+                ),
+                child: Center(
+                  child: Text(
+                    _selectedTimePeriod,
+                    style: const TextStyle(
+                      color: AppColors.textBlack,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
@@ -1104,29 +1080,22 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
           const SizedBox(width: 8),
 
           // Tombol filter
-          Container(
-            height: 44,
-            width: 44,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(25),
-                  spreadRadius: 1,
-                  blurRadius: 3,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+          Material(
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () {
                 // Tampilkan bottom sheet filter
                 _showFilterBottomSheet(context);
               },
-              icon: const Icon(Symbols.filter_list, size: 20),
-              color: AppColors.textBlack,
+              child: SizedBox(
+                height: 44,
+                width: 44,
+                child: Icon(Symbols.filter_list, size: 20),
+              ),
             ),
           ),
         ],

@@ -297,7 +297,8 @@ class MainPageState extends State<MainPage> {
           index: _page,
           items: [
             Icon(
-              Symbols.home_rounded,
+              // Symbols.home_rounded,
+              AppIcons.home,
               color: Colors.white,
               size: _page == 0 ? 35 : 25,
             ),
@@ -307,9 +308,10 @@ class MainPageState extends State<MainPage> {
               size: _page == 1 ? 35 : 25,
             ),
             Icon(
-              // Symbols.calendar_month,
-              AppIcons.schedule,
+              // AppIcons.calendar,
+              Symbols.calendar_month,
               color: Colors.white,
+              fill: 1,
               size: _page == 2 ? 35 : 25,
             ),
             Icon(
@@ -320,6 +322,7 @@ class MainPageState extends State<MainPage> {
             Icon(
               Symbols.settings,
               color: Colors.white,
+              fill: 1,
               size: _page == 4 ? 35 : 25,
             ),
           ],
