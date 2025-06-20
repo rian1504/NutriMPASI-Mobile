@@ -55,9 +55,9 @@ Future<void> showReportDialog({
   required int refersId,
   String? imagePath,
 }) async {
-  String _reportReason =
-      ''; // Variabel lokal untuk input, tidak ada _formKey yang diakses dari luar
-  final _formKey = GlobalKey<FormState>(); // Key lokal untuk form
+  String reportReason =
+      ''; // Variabel lokal untuk input, tidak ada formKey yang diakses dari luar
+  final formKey = GlobalKey<FormState>(); // Key lokal untuk form
 
   await showGeneralDialog(
     // Gunakan await agar bisa menangani pop dialog dengan benar
@@ -121,11 +121,10 @@ Future<void> showReportDialog({
                   ),
                 ),
                 content: Form(
-                  key: _formKey,
+                  key: formKey,
                   child: TextFormField(
                     onChanged: (value) {
-                      _reportReason =
-                          value; // Update _reportReason lokal dialog
+                      reportReason = value; // Update reportReason lokal dialog
                     },
                     style: const TextStyle(
                       fontSize: 14,
@@ -188,12 +187,12 @@ Future<void> showReportDialog({
                             isLoading
                                 ? null
                                 : () {
-                                  if (_formKey.currentState!.validate()) {
+                                  if (formKey.currentState!.validate()) {
                                     context.read<ReportBloc>().add(
                                       Report(
                                         category: category,
                                         refersId: refersId,
-                                        content: _reportReason,
+                                        content: reportReason,
                                       ),
                                     );
                                   }

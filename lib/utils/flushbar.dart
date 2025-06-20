@@ -66,7 +66,7 @@ class AppFlushbar {
       ),
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.3),
+          color: Colors.black.withAlpha(75),
           offset: const Offset(0.0, 2.0),
           blurRadius: 3.0,
         ),

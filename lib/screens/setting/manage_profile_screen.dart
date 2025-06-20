@@ -492,8 +492,8 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
         onTap: () {
           _showImageSourceOptions();
         },
-        splashColor: Colors.grey.withOpacity(0.3),
-        highlightColor: Colors.grey.withOpacity(0.1),
+        splashColor: Colors.grey.withAlpha(75),
+        highlightColor: Colors.grey.withAlpha(25),
         child: Container(
           width: 40,
           height: 40,
