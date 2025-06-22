@@ -6,7 +6,8 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/food_suggestion.dart';
 
 class FoodSuggestionController {
-  final Dio _dio = RemoteDio().dio;
+  Dio _dio = RemoteDio().dio;
+  set dio(Dio dioInstance) => _dio = dioInstance;
 
   Future<List<FoodCategory>> getFoodCategory() async {
     try {

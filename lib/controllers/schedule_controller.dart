@@ -6,7 +6,8 @@ import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/schedule.dart';
 
 class ScheduleController {
-  final Dio _dio = RemoteDio().dio;
+  Dio _dio = RemoteDio().dio;
+  set dio(Dio dioInstance) => _dio = dioInstance;
 
   Future<List<Schedule>> getSchedule() async {
     try {
