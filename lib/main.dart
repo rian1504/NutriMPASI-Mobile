@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -49,9 +51,14 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'screens/onboarding_screen.dart';
 import 'constants/colors.dart';
 
+bool isInTestMode = false;
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
+  // Check if running in test mode
+  isInTestMode = Platform.environment.containsKey('FLUTTER_TEST');
+
   // Make main async
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");

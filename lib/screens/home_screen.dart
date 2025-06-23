@@ -54,16 +54,19 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     super.initState();
-    _initAnimationController();
-    _initBabyController();
-    _startAutoScroll();
 
-    // Load data
+    // Only initialize animations and timers if not in test mode
+    if (!isInTestMode) {
+      _initAnimationController();
+      _initBabyController();
+      _startAutoScroll();
+    }
+
+    // Load data more simply when in test
     final babyState = context.read<BabyBloc>().state;
     if (babyState is! BabyLoaded) {
       context.read<BabyBloc>().add(FetchBabies());
     } else {
-      // Jika data sudah ter-load, perbarui status loading
       setState(() {
         _isBabyDataLoading = false;
         babies = babyState.babies;
@@ -1333,6 +1336,7 @@ class _HomeScreenState extends State<HomeScreen>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: InkWell(
+              key: ValueKey('features_section'),
               onTap: () {
                 Navigator.push(
                   context,
