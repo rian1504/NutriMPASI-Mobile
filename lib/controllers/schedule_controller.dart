@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,9 +15,6 @@ class ScheduleController {
     try {
       // Kirim request ke API
       final response = await _dio.get(ApiEndpoints.schedule);
-
-      // Debug response
-      debugPrint('Get Schedule response: ${response.data}');
 
       // Return data
       return (response.data['data'] as List)
@@ -46,9 +45,6 @@ class ScheduleController {
         '${ApiEndpoints.schedule}/$foodId',
         data: data,
       );
-
-      // Debug response
-      debugPrint('Store Schedule response: ${response.data}');
     } on DioException catch (e) {
       debugPrint('Store Schedule error: ${e.response?.data}');
       throw _handleError(e);
@@ -61,9 +57,6 @@ class ScheduleController {
       final response = await _dio.get(
         '${ApiEndpoints.schedule}/$scheduleId/edit',
       );
-
-      // Debug response
-      debugPrint('Edit Schedule response: ${response.data}');
 
       // Return data
       return Schedule.fromJson(response.data['data']);
@@ -92,9 +85,6 @@ class ScheduleController {
         '${ApiEndpoints.schedule}/$scheduleId/update',
         data: data,
       );
-
-      // Debug response
-      debugPrint('Update Schedule response: ${response.data}');
     } on DioException catch (e) {
       debugPrint('Update Schedule error: ${e.response?.data}');
       throw _handleError(e);
@@ -107,9 +97,6 @@ class ScheduleController {
       final response = await _dio.delete(
         '${ApiEndpoints.schedule}/$scheduleId',
       );
-
-      // Debug response
-      debugPrint('Delete Schedule response: ${response.data}');
     } on DioException catch (e) {
       debugPrint('Delete Schedule error: ${e.response?.data}');
       throw _handleError(e);

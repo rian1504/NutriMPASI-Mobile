@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +16,6 @@ class FoodSuggestionController {
       // Kirim request ke API
       final response = await _dio.get(ApiEndpoints.foodCategory);
 
-      // Debug response
-      debugPrint('Get Food Category response: ${response.data}');
-
       // Return data
       return (response.data['data'] as List)
           .map((e) => FoodCategory.fromJson(e))
@@ -31,9 +30,6 @@ class FoodSuggestionController {
     try {
       // Kirim request ke API
       final response = await _dio.get('${ApiEndpoints.foodSuggestion}/$foodId');
-
-      // Debug response
-      debugPrint('Get Food Suggestion response: ${response.data}');
 
       // Return data
       return FoodSuggestion.fromJson(response.data['data']);
@@ -77,8 +73,6 @@ class FoodSuggestionController {
       // Kirim request ke API
       final response = await _dio.post(ApiEndpoints.foodSuggestion, data: data);
 
-      // Debug response
-      debugPrint('Store food response: ${response.data}');
     } on DioException catch (e) {
       debugPrint('Store food error: ${e.response?.data}');
       throw _handleError(e);
@@ -129,8 +123,6 @@ class FoodSuggestionController {
         data: data,
       );
 
-      // Debug response
-      debugPrint('Update food response: ${response.data}');
     } on DioException catch (e) {
       debugPrint('Update food error: ${e.response?.data}');
       throw _handleError(e);
@@ -144,8 +136,6 @@ class FoodSuggestionController {
         '${ApiEndpoints.foodSuggestion}/$foodId',
       );
 
-      // Debug response
-      debugPrint('Delete Food Suggestion response: ${response.data}');
     } on DioException catch (e) {
       debugPrint('Delete Food Suggestion error: ${e.response?.data}');
       throw _handleError(e);

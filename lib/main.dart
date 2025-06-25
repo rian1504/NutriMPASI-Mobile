@@ -315,7 +315,6 @@ class MainPageState extends State<MainPage> {
               size: _page == 1 ? 35 : 25,
             ),
             Icon(
-              // AppIcons.calendar,
               Symbols.calendar_month,
               color: Colors.white,
               fill: 1,

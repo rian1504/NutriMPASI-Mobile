@@ -8,7 +8,6 @@ class DeepLinkHandler {
 
   static Future<void> initDeepLinking() async {
     try {
-      debugPrint('Deep link initialization started');
 
       // Handle cold start (app launched from terminated state)
       final initialUri = await _appLinks.getInitialLink();
@@ -29,7 +28,6 @@ class DeepLinkHandler {
           debugPrint('Deep link stream error: $error');
         },
       );
-      debugPrint('Deep link initialization finished');
     } catch (e) {
       debugPrint('Deep link initialization error: $e');
     }

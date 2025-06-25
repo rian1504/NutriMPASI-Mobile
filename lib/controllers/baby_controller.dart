@@ -14,9 +14,6 @@ class BabyController {
       // Kirim request ke API
       final response = await _dio.get(ApiEndpoints.baby);
 
-      // Debug response
-      debugPrint('Get baby response: ${response.data}');
-
       // Return data
       return (response.data['data'] as List)
           .map((e) => Baby.fromJson(e))
@@ -109,9 +106,6 @@ class BabyController {
       final response = await _dio.get(
         '${ApiEndpoints.babyFoodRecommendation}/$babyId',
       );
-
-      // Debug response
-      debugPrint('Get baby food recommendation response: ${response.data}');
 
       // Return data
       return (response.data['data'] as List)

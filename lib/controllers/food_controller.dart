@@ -13,9 +13,6 @@ class FoodController {
       // Kirim request ke API
       final response = await _dio.get(ApiEndpoints.food);
 
-      // Debug response
-      debugPrint('Get Food response: ${response.data}');
-
       // Return data
       return (response.data['data'] as List)
           .map((e) => Food.fromJson(e))
@@ -30,9 +27,6 @@ class FoodController {
     try {
       // Kirim request ke API
       final response = await _dio.get(ApiEndpoints.foodCategory);
-
-      // Debug response
-      debugPrint('Get Food Category response: ${response.data}');
 
       // Return data
       return (response.data['data'] as List)
@@ -65,9 +59,6 @@ class FoodController {
         queryParameters: data,
       );
 
-      // Debug response
-      debugPrint('Get Filter Food response: ${response.data}');
-
       // Return data
       return (response.data['data'] as List)
           .map((e) => Food.fromJson(e))
@@ -82,9 +73,6 @@ class FoodController {
     try {
       // Kirim request ke API
       final response = await _dio.get('${ApiEndpoints.food}/$foodId');
-
-      // Debug response
-      debugPrint('Get Food Detail response: ${response.data}');
 
       // Return data
       return Food.fromJson(response.data['data']);

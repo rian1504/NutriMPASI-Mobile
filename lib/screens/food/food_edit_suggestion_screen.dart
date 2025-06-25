@@ -680,7 +680,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   TextFormField(
-                                    key: _recipeNameKey,
+                                    key: ValueKey('_recipeNameKey'),
                                     controller: _recipeNameController,
                                     decoration: _getInputDecoration(),
                                     validator: (value) {

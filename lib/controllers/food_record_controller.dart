@@ -13,9 +13,6 @@ class FoodRecordController {
       // Kirim request ke API
       final response = await _dio.get(ApiEndpoints.foodRecord);
 
-      // Debug response
-      debugPrint('Get Food Record response: ${response.data}');
-
       // Return data
       return (response.data['data'] as List)
           .map((e) => FoodRecord.fromJson(e))

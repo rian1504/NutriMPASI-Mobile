@@ -1786,6 +1786,7 @@ class _FoodListScreenState extends State<FoodListScreen>
   // Widget kartu makanan
   Widget _buildFoodCard(Food item, BuildContext context) {
     return Padding(
+      key: ValueKey('food_card'),
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Card(
         margin: EdgeInsets.zero,

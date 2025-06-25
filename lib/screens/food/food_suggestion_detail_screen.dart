@@ -723,7 +723,7 @@ class _FoodSuggestionDetailScreenState
                                   const Icon(Icons.delete, size: 18),
                                   const SizedBox(width: 8),
                                   const Text(
-                                    'Hapus ',
+                                    'Hapus',
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 14,

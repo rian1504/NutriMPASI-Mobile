@@ -12,9 +12,6 @@ class FavoriteController {
       // Kirim request ke API
       final response = await _dio.get(ApiEndpoints.favorite);
 
-      // Debug response
-      debugPrint('Get Favorite response: ${response.data}');
-
       // Return data
       return (response.data['data'] as List)
           .map((e) => Favorite.fromJson(e))

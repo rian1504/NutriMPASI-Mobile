@@ -61,9 +61,6 @@ class AuthenticationController {
       final token = result['token'];
       final message = result['message'];
 
-      // debug response
-      debugPrint('Login response: $result');
-
       // return response
       return {'user': User.fromJson(user), 'token': token, 'message': message};
     } on DioException catch (e) {

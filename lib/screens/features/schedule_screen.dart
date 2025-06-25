@@ -34,13 +34,27 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   // Variabel untuk card yang sedang terbuka
   String? _openCardId;
 
+  // Flag untuk memastikan kita hanya mengatur openCardId sekali saat pertama kali data diterima
+  bool _hasSetOpenCard = false;
+
   // Data schedule
   List<Schedule> get _scheduleItems {
     final state = context.read<ScheduleBloc>().state;
     if (state is ScheduleLoaded) {
-      return state.schedules.where((schedule) {
-        return isSameDay(schedule.date, _selectedDate);
-      }).toList();
+      final schedules =
+          state.schedules.where((schedule) {
+            return isSameDay(schedule.date, _selectedDate);
+          }).toList();
+
+      // Jika belum pernah mengatur openCardId dan ada item dalam daftar jadwal,
+      // buka card pertama secara otomatis
+      if (!_hasSetOpenCard && schedules.isNotEmpty) {
+        _hasSetOpenCard = true;
+        final firstItem = schedules.first;
+        _openCardId = '${firstItem.food?.id}_0';
+      }
+
+      return schedules;
     }
     return [];
   }
@@ -126,6 +140,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       setState(() {
         _currentDay = index;
         _selectedDate = _days[index]['fullDate'];
+
+        // Reset openCardId when date changes
+        _openCardId = null;
+        _hasSetOpenCard = false;
       });
     }
   }
@@ -338,6 +356,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                 setState(() {
                   _openCardId = null;
+                  _hasSetOpenCard = false;
                   context.read<ScheduleBloc>().add(FetchSchedules());
                 });
               } else if (state is ScheduleDeleted) {
@@ -1067,167 +1086,147 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               ),
 
                               // Card jadwal
-                              GestureDetector(
-                                onTap: () {
-                                  // Mengubah list baby ke list id baby
-                                  List<String> babyId =
-                                      babies
-                                          .map((baby) => baby.id.toString())
-                                          .toList();
-
-                                  pushWithSlideTransition(
-                                    context,
-                                    CookingGuideScreen(
-                                      foodId: food.id.toString(),
-                                      babyId: babyId,
-                                      scheduleId: item.id.toString(),
-                                    ),
-                                  );
-                                }, 
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
-                                  transform: Matrix4.translationValues(
-                                    isOpen ? -120 : 0,
-                                    0,
-                                    0,
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                transform: Matrix4.translationValues(
+                                  isOpen ? -120 : 0,
+                                  0,
+                                  0,
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withAlpha(25),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withAlpha(25),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
+                                  child: Row(
+                                    children: [
+                                      // Gambar makanan
+                                      ClipRRect(
+                                        // borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
                                         ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        // Gambar makanan
-                                        ClipRRect(
-                                          // borderRadius: BorderRadius.circular(10),
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10),
-                                          ),
-                                          child: Image.network(
-                                            storageUrl + food!.image,
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                          ),
+                                        child: Image.network(
+                                          storageUrl + food!.image,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
                                         ),
-                                        const SizedBox(width: 12),
-                                        // Info makanan
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                food.name,
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.textBlack,
-                                                ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      // Info makanan
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              food.name,
+                                              style: const TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.textBlack,
                                               ),
-                                              const SizedBox(height: 4),
-                                              SizedBox(
-                                                height: 40,
-                                                child: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  child: Column(
-                                                    children:
-                                                        babies.map((baby) {
-                                                          return Padding(
-                                                            padding:
-                                                                const EdgeInsets.only(
-                                                                  right: 5,
-                                                                ),
-                                                            child: Text(
-                                                              baby.name,
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontSize: 12,
-                                                                color:
-                                                                    AppColors
-                                                                        .textGrey,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            SizedBox(
+                                              height: 40,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.vertical,
+                                                child: Column(
+                                                  children:
+                                                      babies.map((baby) {
+                                                        return Padding(
+                                                          padding:
+                                                              const EdgeInsets.only(
+                                                                right: 5,
                                                               ),
+                                                          child: Text(
+                                                            baby.name,
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Poppins',
+                                                              fontSize: 12,
+                                                              color:
+                                                                  AppColors
+                                                                      .textGrey,
                                                             ),
-                                                          );
-                                                        }).toList(),
-                                                  ),
+                                                          ),
+                                                        );
+                                                      }).toList(),
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                        // Tombol masak
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 8.0,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "${babies.length.toString()} porsi",
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.accent,
-                                                ),
+                                      ),
+                                      // Tombol masak
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 8.0,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "${babies.length.toString()} porsi",
+                                              style: const TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.accent,
                                               ),
-                                              const SizedBox(height: 12),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  // Mengubah list baby ke list id baby
-                                                  List<String> babyId =
-                                                      babies
-                                                          .map(
-                                                            (baby) =>
-                                                                baby.id
-                                                                    .toString(),
-                                                          )
-                                                          .toList();
+                                            ),
+                                            const SizedBox(height: 12),
+                                            GestureDetector(
+                                              onTap: () {
+                                                // Mengubah list baby ke list id baby
+                                                List<String> babyId =
+                                                    babies
+                                                        .map(
+                                                          (baby) =>
+                                                              baby.id
+                                                                  .toString(),
+                                                        )
+                                                        .toList();
 
-                                                  pushWithSlideTransition(
-                                                    context,
-                                                    CookingGuideScreen(
-                                                      foodId:
-                                                          food.id.toString(),
-                                                      babyId: babyId,
-                                                      scheduleId:
-                                                          item.id.toString(),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    10,
+                                                pushWithSlideTransition(
+                                                  context,
+                                                  CookingGuideScreen(
+                                                    foodId: food.id.toString(),
+                                                    babyId: babyId,
+                                                    scheduleId:
+                                                        item.id.toString(),
                                                   ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.accent,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: const Icon(
-                                                    Symbols.chef_hat,
-                                                    color: Colors.white,
-                                                    size: 20,
-                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  10,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.accent,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: const Icon(
+                                                  Symbols.chef_hat,
+                                                  color: Colors.white,
+                                                  size: 20,
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -1239,7 +1238,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   ),
                 );
               }
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             },
           ),
         ],
