@@ -131,7 +131,7 @@ void main() {
       }
     });
 
-    testWidgets('Test Fitur Riwayat Makanan', (tester) async {
+    testWidgets(': Test Fitur Riwayat Makanan', (tester) async {
       try {
         debugPrint('Memulai test fitur riwayat makanan...');
 
@@ -301,7 +301,7 @@ void main() {
       }
     });
 
-    testWidgets('Test Fitur Usulan Makanan', (tester) async {
+    testWidgets(': Test Fitur Usulan Makanan', (tester) async {
       try {
         debugPrint('Memulai test fitur usulan makanan...');
 
@@ -922,7 +922,7 @@ void main() {
       }
     });
 
-    testWidgets('Test Fitur Jadwal Makanan', (tester) async {
+    testWidgets(': Test Fitur Jadwal Makanan', (tester) async {
       try {
         debugPrint('Memulai test jadwal makanan...');
 
@@ -1002,17 +1002,17 @@ void main() {
 
         // Temukan dan pilih bayi
         debugPrint('Mencoba memilih bayi untuk jadwal');
-        final albertoRow = find.text('Alberto').last;
+        final abdulRow = find.text('Abdul').last;
         expect(
-          albertoRow,
+          abdulRow,
           findsWidgets,
-          reason: 'Tidak dapat menemukan bayi bernama Alberto',
+          reason: 'Tidak dapat menemukan bayi bernama Abdul',
         );
 
         // Dapatkan posisi tengah dari widget teks untuk tap di dekatnya
-        final albertoRowPos = tester.getCenter(albertoRow);
+        final abdulRowPos = tester.getCenter(abdulRow);
         // Tap sedikit ke kiri dari teks
-        await tester.tapAt(Offset(albertoRowPos.dx - 30, albertoRowPos.dy));
+        await tester.tapAt(Offset(abdulRowPos.dx - 30, abdulRowPos.dy));
         await tester.pumpAndSettle();
         debugPrint('Berhasil memilih bayi');
 
@@ -1082,11 +1082,11 @@ void main() {
         await tester.pump(const Duration(seconds: 2));
 
         // Mencoba menemukan bayi di jadwal terbaru
-        final albertoInSchedule = find.text('Alberto', skipOffstage: false);
+        final abdulInSchedule = find.text('Abdul', skipOffstage: false);
         expect(
-          albertoInSchedule,
+          abdulInSchedule,
           findsWidgets,
-          reason: 'Jadwal untuk Alberto tidak ditemukan',
+          reason: 'Jadwal untuk Abdul tidak ditemukan',
         );
 
         // Tunggu sebentar untuk UI stabil

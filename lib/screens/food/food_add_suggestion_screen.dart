@@ -356,8 +356,6 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
         _imagePath = tempPath;
         _showPhotoError = false;
       });
-
-      debugPrint('Test image loaded successfully');
     } catch (e) {
       debugPrint('Error loading test image: $e');
       // In case of error, we'll show a message but continue the test
