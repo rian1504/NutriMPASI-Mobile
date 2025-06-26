@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrimpasi/constants/remote_dio.dart';
 import 'package:nutrimpasi/constants/secure_storage.dart';
@@ -49,8 +50,15 @@ class AuthenticationController {
     required String password,
   }) async {
     try {
+      // get fcm token
+      final String? fcmToken = await FirebaseMessaging.instance.getToken();
+
       // data
-      final data = {'email': email, 'password': password};
+      final data = {
+        'email': email,
+        'password': password,
+        'fcm_token': fcmToken,
+      };
 
       // kirim data ke API
       final response = await _dio.post(ApiEndpoints.login, data: data);

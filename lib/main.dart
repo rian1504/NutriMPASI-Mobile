@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +24,7 @@ import 'package:nutrimpasi/blocs/schedule/schedule_bloc.dart';
 import 'package:nutrimpasi/blocs/thread/thread_bloc.dart';
 import 'package:nutrimpasi/constants/deep_link.dart';
 import 'package:nutrimpasi/constants/icons.dart';
+import 'package:nutrimpasi/constants/notification.dart';
 import 'package:nutrimpasi/controllers/authentication_controller.dart';
 import 'package:nutrimpasi/controllers/baby_controller.dart';
 import 'package:nutrimpasi/controllers/comment_controller.dart';
@@ -36,6 +38,7 @@ import 'package:nutrimpasi/controllers/nutritionist_controller.dart';
 import 'package:nutrimpasi/controllers/report_controller.dart';
 import 'package:nutrimpasi/controllers/schedule_controller.dart';
 import 'package:nutrimpasi/controllers/thread_controller.dart';
+import 'package:nutrimpasi/firebase_options.dart';
 import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/auth/register_screen.dart';
 import 'package:nutrimpasi/screens/food/food_list_screen.dart';
@@ -55,6 +58,8 @@ Future<void> main() async {
   // Make main async
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await setupPushNotifications();
 
   // set locale timeago package
   timeago.setLocaleMessages('id', timeago.IdMessages());
