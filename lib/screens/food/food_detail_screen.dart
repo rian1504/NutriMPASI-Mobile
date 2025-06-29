@@ -623,39 +623,57 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                   child: Column(
                                                     children:
                                                         babies.map((baby) {
-                                                          return Row(
-                                                            children: [
-                                                              Checkbox(
-                                                                value:
-                                                                    selectedBabies[baby
+                                                          return InkWell(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectedBabies[baby
+                                                                        .id] =
+                                                                    !(selectedBabies[baby
+                                                                            .id] ??
+                                                                        false);
+                                                                if (selectedBabies[baby
                                                                         .id] ??
-                                                                    false,
-                                                                onChanged: (
-                                                                  value,
-                                                                ) {
-                                                                  setState(() {
-                                                                    selectedBabies[baby
-                                                                            .id] =
-                                                                        value!;
-                                                                    if (value) {
-                                                                      babyValidationError =
-                                                                          null;
-                                                                    }
-                                                                  });
-                                                                },
-                                                                activeColor:
-                                                                    AppColors
-                                                                        .primary,
-                                                              ),
-                                                              Text(
-                                                                baby.name,
-                                                                style: const TextStyle(
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontSize: 14,
+                                                                    false) {
+                                                                  babyValidationError =
+                                                                      null;
+                                                                }
+                                                              });
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Checkbox(
+                                                                  value:
+                                                                      selectedBabies[baby
+                                                                          .id] ??
+                                                                      false,
+                                                                  onChanged: (
+                                                                    value,
+                                                                  ) {
+                                                                    setState(() {
+                                                                      selectedBabies[baby
+                                                                              .id] =
+                                                                          value!;
+                                                                      if (value) {
+                                                                        babyValidationError =
+                                                                            null;
+                                                                      }
+                                                                    });
+                                                                  },
+                                                                  activeColor:
+                                                                      AppColors
+                                                                          .primary,
                                                                 ),
-                                                              ),
-                                                            ],
+                                                                Text(
+                                                                  baby.name,
+                                                                  style: const TextStyle(
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           );
                                                         }).toList(),
                                                   ),
@@ -1091,41 +1109,56 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                 child: Column(
                                                   children:
                                                       babies.map((baby) {
-                                                        return Row(
-                                                          children: [
-                                                            Checkbox(
-                                                              value:
-                                                                  selectedBabies[baby
+                                                        return InkWell(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              selectedBabies[baby
+                                                                      .id] =
+                                                                  !(selectedBabies[baby
+                                                                          .id] ??
+                                                                      false);
+                                                              if (selectedBabies[baby
                                                                       .id] ??
-                                                                  false,
-                                                              onChanged: (
-                                                                value,
-                                                              ) {
-                                                                setState(() {
-                                                                  selectedBabies[baby
-                                                                          .id] =
-                                                                      value!;
-                                                                  if (value) {
-                                                                    babyValidationError =
-                                                                        null;
-                                                                  }
-                                                                });
-                                                              },
-                                                              activeColor:
-                                                                  AppColors
-                                                                      .primary,
-                                                            ),
-                                                            Text(
-                                                              baby.name,
-                                                              style:
-                                                                  const TextStyle(
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
-                                                            ),
-                                                          ],
+                                                                  false) {
+                                                                babyValidationError =
+                                                                    null;
+                                                              }
+                                                            });
+                                                          },
+                                                          child: Row(
+                                                            children: [
+                                                              Checkbox(
+                                                                value:
+                                                                    selectedBabies[baby
+                                                                        .id] ??
+                                                                    false,
+                                                                onChanged: (
+                                                                  value,
+                                                                ) {
+                                                                  setState(() {
+                                                                    selectedBabies[baby
+                                                                            .id] =
+                                                                        value!;
+                                                                    if (value) {
+                                                                      babyValidationError =
+                                                                          null;
+                                                                    }
+                                                                  });
+                                                                },
+                                                                activeColor:
+                                                                    AppColors
+                                                                        .primary,
+                                                              ),
+                                                              Text(
+                                                                baby.name,
+                                                                style: const TextStyle(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         );
                                                       }).toList(),
                                                 ),
