@@ -11,15 +11,15 @@ import 'dart:io';
 
 import 'package:nutrimpasi/widgets/custom_button.dart';
 
-class FoodAddSuggestionScreen extends StatefulWidget {
-  const FoodAddSuggestionScreen({super.key});
+class FoodSuggestionAddScreen extends StatefulWidget {
+  const FoodSuggestionAddScreen({super.key});
 
   @override
-  State<FoodAddSuggestionScreen> createState() =>
-      _FoodAddSuggestionScreenState();
+  State<FoodSuggestionAddScreen> createState() =>
+      _FoodSuggestionAddScreenState();
 }
 
-class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
+class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
   // Kunci form untuk validasi
   final _formKey = GlobalKey<FormState>();
 
