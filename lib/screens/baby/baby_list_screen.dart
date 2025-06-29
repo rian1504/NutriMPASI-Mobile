@@ -199,15 +199,6 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           if (state is BabyLoaded) {
                             _babies = state.babies;
 
-                            // Reset Carousel
-                            // if (_carouselController.hasClients) {
-                            //   _carouselController.animateToPage(
-                            //     0,
-                            //     duration: const Duration(milliseconds: 300),
-                            //     curve: Curves.easeInOut,
-                            //   );
-                            // }
-
                             // Jika ada bayi yang sudah ada, set carousel ke halaman pertama
                             if (!_carouselController.hasClients) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {

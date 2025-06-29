@@ -206,53 +206,6 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
                 confirmButtonColor: AppColors.error,
                 confirmButtonText: 'Keluar',
               ),
-
-          //  AlertDialog(
-          //   content: const Text(
-          //     'Anda yakin ingin keluar dari Panduan Memasak?',
-          //     textAlign: TextAlign.center,
-          //   ),
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(12),
-          //   ),
-          //   contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-          //   actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-          //   actions: [
-          //     Row(
-          //       children: [
-          //         Expanded(
-          //           child: ElevatedButton(
-          //             onPressed: () => Navigator.pop(context, false),
-          //             style: ElevatedButton.styleFrom(
-          //               backgroundColor: AppColors.componentBlack!,
-          //               foregroundColor: Colors.white,
-          //               shape: RoundedRectangleBorder(
-          //                 borderRadius: BorderRadius.circular(8),
-          //               ),
-          //               padding: const EdgeInsets.symmetric(vertical: 12),
-          //             ),
-          //             child: const Text('Batal'),
-          //           ),
-          //         ),
-          //         const SizedBox(width: 16),
-          //         Expanded(
-          //           child: ElevatedButton(
-          //             onPressed: () => Navigator.pop(context, true),
-          //             style: ElevatedButton.styleFrom(
-          //               backgroundColor: AppColors.red,
-          //               foregroundColor: Colors.white,
-          //               shape: RoundedRectangleBorder(
-          //                 borderRadius: BorderRadius.circular(8),
-          //               ),
-          //               padding: const EdgeInsets.symmetric(vertical: 12),
-          //             ),
-          //             child: const Text('Keluar'),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
         ) ??
         false;
   }

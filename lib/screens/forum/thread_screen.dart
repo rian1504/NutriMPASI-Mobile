@@ -771,15 +771,6 @@ class _CommentSectionState extends State<CommentSection> {
                                 ),
                               ),
                             ),
-                          // // Tombol untuk menu
-                          // if (widget.showMenu)
-                          //   IconButton(
-                          //     key: _menuKey,
-                          //     icon: Icon(AppIcons.menu, size: 20),
-                          //     onPressed: _showMenu,
-                          //   ),
-                          // // Tombol untuk like, comment, dan report
-                          // if (widget.showReport) ReportButton(category: "comment", refersId: widget.comment.id),
                         ],
                       ),
                     ),

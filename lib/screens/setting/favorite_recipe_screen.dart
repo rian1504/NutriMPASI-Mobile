@@ -172,32 +172,5 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
         ],
       ),
     );
-    // return Scaffold(
-    //   backgroundColor: AppColors.background,
-    //   appBar: AppBar(
-    //     backgroundColor: AppColors.primary,
-    //     elevation: 0,
-    //     leading: IconButton(
-    //       icon: const Icon(Icons.arrow_back_ios_new_rounded),
-    //       onPressed: () => Navigator.pop(context),
-    //       style: IconButton.styleFrom(
-    //         backgroundColor: Colors.white,
-    //         shape: RoundedRectangleBorder(
-    //           borderRadius: BorderRadius.circular(10),
-    //         ),
-    //         padding: const EdgeInsets.all(8),
-    //       ),
-    //     ),
-    //     title: const Text(
-    //       'Resep Favorit',
-    //       style: TextStyle(
-    //         fontSize: 24,
-    //         fontWeight: FontWeight.bold,
-    //         color: Colors.white,
-    //       ),
-    //     ),
-    //     centerTitle: true,
-    //   ),
-    //   body:    );
   }
 }
