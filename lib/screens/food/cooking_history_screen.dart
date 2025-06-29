@@ -43,6 +43,9 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
   // Data yang dikelompokkan berdasarkan waktu
   Map<String, List<FoodRecord>> _groupedData = {};
 
+  // Kunci global untuk mendapatkan posisi tombol dropdown bayi
+  final GlobalKey _babyDropdownButtonKey = GlobalKey();
+
   // Animation controller untuk indikator progres
   late AnimationController _animationController;
   late Animation<double> _progressAnimation;
@@ -474,6 +477,120 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     }
 
     return {'energy': energy, 'protein': protein, 'fat': fat};
+  }
+
+  // Fungsi untuk menampilkan dropdown bayi menggunakan showGeneralDialog
+  void _showBabyDropdownOptions(
+    BuildContext context,
+    GlobalKey dropdownButtonKey,
+  ) {
+    // Mendapatkan RenderBox dari GlobalKey untuk mendapatkan posisi tombol
+    final RenderBox renderBox =
+        dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(
+      Offset.zero,
+    ); // Posisi global tombol
+
+    showGeneralDialog(
+      context: context,
+      // KUNCI: Membuat barrier transparan agar kita bisa mengontrol overlay gelap sendiri.
+      barrierColor: Colors.transparent,
+      barrierDismissible: true,
+      barrierLabel: 'Baby Options',
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => Navigator.of(dialogContext).pop(),
+                behavior: HitTestBehavior.translucent,
+                child: Container(color: Colors.black38),
+              ),
+            ),
+
+            // --- Konten Utama Dialog (Tombol yang terlihat & Modal Dropdown) ---
+            Positioned(
+              left: offset.dx,
+              top: offset.dy,
+              width: 100,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                ),
+                alignment: Alignment.topCenter,
+                child: Material(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  elevation: 8,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                        _babies.map((baby) {
+                          return InkWell(
+                            onTap: () {
+                              final currentState =
+                                  context.read<FoodRecordBloc>().state;
+                              if (currentState is FoodRecordLoaded) {
+                                setState(() {
+                                  _selectedBaby = baby.id.toString();
+                                  _shouldAnimateNutrition = true;
+                                  _historyItems =
+                                      currentState.foodRecords
+                                          .where(
+                                            (food) =>
+                                                food.babyId.toString() ==
+                                                _selectedBaby,
+                                          )
+                                          .toList();
+                                  _groupFoodByTimePeriod();
+                                });
+                              }
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 16.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      baby.name,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  if (_selectedBaby ==
+                                      baby.id.toString()) // Tampilkan ikon cek
+                                    const Icon(
+                                      Icons.check,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -963,85 +1080,64 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Dropdown untuk memilih bayi
-          Material(
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              width: 100,
-              height: 44,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
+          GestureDetector(
+            key: _babyDropdownButtonKey,
+            onTap: () {
+              _showBabyDropdownOptions(context, _babyDropdownButtonKey);
+            },
+            child: Material(
+              elevation: 1,
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _selectedBaby,
-                  icon: const Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  iconSize: 20,
-                  elevation: 16,
-                  isDense: true,
-                  isExpanded: true,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  dropdownColor: AppColors.primary,
-                  onChanged: (String? newValue) {
-                    final currentState = context.read<FoodRecordBloc>().state;
-                    if (currentState is FoodRecordLoaded) {
-                      setState(() {
-                        _selectedBaby = newValue!;
-                        _shouldAnimateNutrition = true;
-                        _historyItems =
-                            currentState.foodRecords
-                                .where(
-                                  (food) =>
-                                      food.babyId.toString() == _selectedBaby,
-                                )
-                                .toList();
-                        _groupFoodByTimePeriod();
-                      });
-                    }
-                  },
-                  selectedItemBuilder: (BuildContext context) {
-                    return _babies.map<Widget>((baby) {
-                      return Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          _truncateBabyName(baby.name),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
+              child: Container(
+                width: 100,
+                height: 44,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 0,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _truncateBabyName(
+                          _babies
+                              .firstWhere(
+                                (baby) => baby.id.toString() == _selectedBaby,
+                                orElse:
+                                    () =>
+                                        _babies.isNotEmpty
+                                            ? _babies.first
+                                            : Baby(
+                                              id: 0,
+                                              name: "Pilih Bayi",
+                                              gender: 'laki-laki',
+                                              isProfileComplete: true,
+                                            ),
+                              )
+                              .name,
                         ),
-                      );
-                    }).toList();
-                  },
-                  items:
-                      _babies.map<DropdownMenuItem<String>>((baby) {
-                        return DropdownMenuItem<String>(
-                          value: baby.id.toString(),
-                          child: Text(
-                            baby.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ],
                 ),
               ),
             ),
