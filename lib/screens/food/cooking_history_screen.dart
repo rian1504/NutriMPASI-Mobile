@@ -1117,7 +1117,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                             : Baby(
                                               id: 0,
                                               name: "Pilih Bayi",
-                                              gender: 'laki-laki',
+                                              gender: 'L',
                                               isProfileComplete: true,
                                             ),
                               )

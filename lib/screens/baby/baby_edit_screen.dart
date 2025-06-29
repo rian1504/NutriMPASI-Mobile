@@ -124,15 +124,29 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         // Tombol kembali dengan styling custom
-        leading: IconButton(
-          icon: const Icon(Symbols.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.pop(context),
-          style: IconButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black54,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new_rounded,
+                  color: AppColors.textBlack,
+                  size: 24,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
-            padding: const EdgeInsets.all(8),
           ),
         ),
         title: const Text(
