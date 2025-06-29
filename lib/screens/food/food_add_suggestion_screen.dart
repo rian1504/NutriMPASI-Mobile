@@ -1182,7 +1182,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                 IconButton(
                                                   icon: Icon(
                                                     Icons.remove_circle_outline,
-                                                    color: AppColors.red,
+                                                    color: AppColors.error,
                                                   ),
                                                   onPressed:
                                                       () =>
@@ -1316,7 +1316,7 @@ class _FoodAddSuggestionScreenState extends State<FoodAddSuggestionScreen> {
                                                 IconButton(
                                                   icon: Icon(
                                                     Icons.remove_circle_outline,
-                                                    color: AppColors.red,
+                                                    color: AppColors.error,
                                                   ),
                                                   onPressed:
                                                       () => _removeStepField(

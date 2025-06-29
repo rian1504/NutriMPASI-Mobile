@@ -458,7 +458,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                     // Tombol edit
                                     Container(
                                       decoration: BoxDecoration(
-                                        color: AppColors.red,
+                                        color: AppColors.error,
                                       ),
                                       child: Container(
                                         width: 80,
@@ -930,7 +930,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       width: 60,
                                       margin: const EdgeInsets.only(right: 2),
                                       decoration: BoxDecoration(
-                                        color: AppColors.red,
+                                        color: AppColors.error,
                                         borderRadius: BorderRadius.only(
                                           topRight: Radius.circular(10),
                                           bottomRight: Radius.circular(10),
@@ -1009,7 +1009,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                               style: ElevatedButton.styleFrom(
                                                                 backgroundColor:
                                                                     AppColors
-                                                                        .red,
+                                                                        .error,
                                                                 foregroundColor:
                                                                     Colors
                                                                         .white,
@@ -1083,7 +1083,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       scheduleId: item.id.toString(),
                                     ),
                                   );
-                                }, 
+                                },
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 300),
                                   transform: Matrix4.translationValues(

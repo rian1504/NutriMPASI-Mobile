@@ -1362,7 +1362,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                               IconButton(
                                                 icon: Icon(
                                                   Icons.remove_circle_outline,
-                                                  color: AppColors.red,
+                                                  color: AppColors.error,
                                                 ),
                                                 onPressed:
                                                     () =>
@@ -1495,7 +1495,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                               IconButton(
                                                 icon: Icon(
                                                   Icons.remove_circle_outline,
-                                                  color: AppColors.red,
+                                                  color: AppColors.error,
                                                 ),
                                                 onPressed:
                                                     () =>

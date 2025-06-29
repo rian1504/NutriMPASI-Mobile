@@ -776,8 +776,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                   style: TextStyle(
                                     color:
                                         diff >= 0
-                                            ? AppColors.green
-                                            : AppColors.red,
+                                            ? AppColors.success
+                                            : AppColors.error,
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -827,7 +827,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                             'Protein',
                             _proteinAnimation.value,
                             'g',
-                            AppColors.red,
+                            AppColors.error,
                           );
                         },
                       ),
@@ -840,7 +840,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                             'Lemak',
                             _fatAnimation.value,
                             'g',
-                            AppColors.green,
+                            AppColors.success,
                           );
                         },
                       ),
@@ -1556,7 +1556,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     if (percentage < 60) {
       message =
           'Asupan kalori masih kurang dari kebutuhan bulanan yang direkomendasikan.';
-      messageColor = AppColors.red;
+      messageColor = AppColors.error;
     } else if (percentage > 110) {
       message =
           'Asupan kalori melebihi kebutuhan bulanan yang direkomendasikan.';
@@ -1564,7 +1564,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
     } else {
       message =
           'Asupan kalori sudah sesuai dengan kebutuhan bulanan yang direkomendasikan.';
-      messageColor = AppColors.green;
+      messageColor = AppColors.success;
     }
 
     return Container(

@@ -217,7 +217,7 @@ Future<void> confirmDeleteComment({
         (ctx) => ConfirmDialog(
           titleText: "Konfirmasi Hapus",
           contentText: "Apakah Anda yakin ingin menghapus komentar ini?",
-          confirmButtonColor: AppColors.red,
+          confirmButtonColor: AppColors.error,
           onConfirm: () {
             // onConfirm sekarang tidak menerima parameter
             Navigator.pop(ctx, true);

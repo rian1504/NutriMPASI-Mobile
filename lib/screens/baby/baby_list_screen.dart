@@ -363,7 +363,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           _showDeleteConfirmation(baby);
                         },
                         style: IconButton.styleFrom(
-                          backgroundColor: AppColors.red,
+                          backgroundColor: AppColors.error,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.all(8),
                         ),
@@ -615,7 +615,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
             contentText: 'Anda yakin ingin menghapus Profil Bayi ini?',
             confirmButtonText: 'Hapus',
             cancelButtonText: 'Batal',
-            confirmButtonColor: AppColors.red,
+            confirmButtonColor: AppColors.error,
             onConfirm: () {
               Navigator.pop(context);
               context.read<BabyBloc>().add(DeleteBabies(babyId: baby.id));

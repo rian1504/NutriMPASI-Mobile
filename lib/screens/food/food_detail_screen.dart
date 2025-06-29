@@ -199,7 +199,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                           food.isFavorite
                                               ? Icons.favorite
                                               : Icons.favorite_border,
-                                          color: AppColors.red,
+                                          color: AppColors.error,
                                           size: 20,
                                         ),
                                       ),

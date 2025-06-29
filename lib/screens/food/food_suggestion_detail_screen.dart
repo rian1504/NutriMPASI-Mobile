@@ -633,7 +633,7 @@ class _FoodSuggestionDetailScreenState
                                                   child: ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor:
-                                                          AppColors.red,
+                                                          AppColors.error,
                                                       foregroundColor:
                                                           Colors.white,
                                                       shape: RoundedRectangleBorder(
@@ -707,7 +707,7 @@ class _FoodSuggestionDetailScreenState
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.red,
+                                backgroundColor: AppColors.error,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
