@@ -7,8 +7,9 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
-  another_flushbar: ^1.12.30
   app_links: ^6.4.0
+  another_flushbar: ^1.12.30
+  bottom_picker: ^2.0.4
   curved_navigation_bar: ^1.0.6
   dio: ^5.8.0+1
   firebase_core: ^3.14.0

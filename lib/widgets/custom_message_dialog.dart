@@ -104,7 +104,7 @@ class EmptyMessage extends StatelessWidget {
           children: [
             // Ikon dan judul
             Container(
-              padding: EdgeInsets.all(radius ?? 60),
+              padding: EdgeInsets.all(radius ?? 20),
               decoration: BoxDecoration(
                 color: AppColors.bisque,
                 shape: BoxShape.circle,

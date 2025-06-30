@@ -41,6 +41,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
     'schedule': 'Jadwal',
   };
 
+  // Kunci global untuk mendapatkan posisi tombol dropdown kategori
+  final GlobalKey _dropdownButtonKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +73,102 @@ class _NotificationScreenState extends State<NotificationScreen> {
       }
     });
     context.read<NotificationBloc>().add(ReadAllNotifications());
+  }
+
+  // Fungsi untuk menampilkan dropdown kategori menggunakan showGeneralDialog
+  void _showCategoryDropdownOptions(
+    BuildContext context,
+    GlobalKey dropdownButtonKey,
+  ) {
+    // Mendapatkan RenderBox dari GlobalKey untuk mendapatkan posisi tombol
+    final RenderBox renderBox =
+        dropdownButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(
+      Offset.zero,
+    ); // Posisi global tombol
+
+    showGeneralDialog(
+      context: context,
+      // KUNCI: Membuat barrier transparan agar kita bisa mengontrol overlay gelap sendiri.
+      barrierColor: Colors.transparent,
+      barrierDismissible: true,
+      barrierLabel: 'Category Options',
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => Navigator.of(dialogContext).pop(),
+                behavior: HitTestBehavior.translucent,
+                child: Container(color: Colors.black38),
+              ),
+            ),
+
+            // --- Konten Utama Dialog (Tombol yang terlihat & Modal Dropdown) ---
+            Positioned(
+              left: offset.dx,
+              top: offset.dy,
+              width: 150,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                ),
+                alignment: Alignment.topCenter,
+                child: Material(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  elevation: 8,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                        _categories.map((category) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                _selectedCategory = category;
+                              });
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 16.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _categoryDisplayNames[category] ?? category,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  if (_selectedCategory ==
+                                      category) // Tampilkan ikon cek
+                                    const Icon(
+                                      Icons.check,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Menampilkan modal detail laporan
@@ -275,44 +374,47 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         children: [
                           // Dropdown untuk kategori
                           Expanded(
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: _selectedCategory,
-                                icon: const Icon(
-                                  Symbols.arrow_drop_down,
-                                  color: Colors.white,
+                            child: GestureDetector(
+                              key: _dropdownButtonKey,
+                              onTap: () {
+                                _showCategoryDropdownOptions(
+                                  context,
+                                  _dropdownButtonKey,
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
                                 ),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                isExpanded: true,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _selectedCategory = newValue;
-                                  });
-                                },
-                                items:
-                                    _categories.map<DropdownMenuItem<String>>((
-                                      String value,
-                                    ) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          _categoryDisplayNames[value] ?? value,
-                                          style: TextStyle(
-                                            color:
-                                                _selectedCategory == value
-                                                    ? Colors.white
-                                                    : AppColors.textBlack,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                dropdownColor: AppColors.primary,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _categoryDisplayNames[_selectedCategory!] ??
+                                          _selectedCategory!,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    const Icon(
+                                      Symbols.arrow_drop_down,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
+
                           const SizedBox(width: 16),
                           // Tombol tandai sudah dibaca
                           TextButton(
@@ -358,6 +460,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                             )
                             : ListView.builder(
+                              padding: EdgeInsets.zero,
                               itemCount: filteredNotifications.length,
                               itemBuilder: (context, index) {
                                 final notification =

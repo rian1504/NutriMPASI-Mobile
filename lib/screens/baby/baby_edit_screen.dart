@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -6,6 +7,8 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 
 class BabyEditScreen extends StatefulWidget {
   final Baby? baby;
@@ -68,35 +71,74 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
 
   /// Fungsi untuk menampilkan date picker dan memilih tanggal lahir
   Future<void> _selectDate(BuildContext context) async {
-    // Tanggal maksimal adalah 6 bulan yang lalu (untuk bayi minimal usia 6 bulan)
+    // Tanggal minimal adalah 24 bulan (2 tahun) yang lalu
+    final twoYearsAgo = DateTime.now().subtract(const Duration(days: 730));
+    // Tanggal maksimal adalah 6 bulan yang lalu
     final sixMonthsAgo = DateTime.now().subtract(const Duration(days: 182));
 
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? sixMonthsAgo,
-      firstDate: DateTime(2010),
-      lastDate: sixMonthsAgo,
-      // Format tanggal Indonesia
-      locale: const Locale('id', 'ID'),
-      builder: (BuildContext context, Widget? child) {
-        // Custom theme untuk date picker
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(primary: AppColors.primary),
-          ),
-          child: child!,
-        );
+    // Memastikan initial date dalam range yang valid
+    final initialDate =
+        _selectedDate != null
+            ? _selectedDate!
+            : DateTime(sixMonthsAgo.year, sixMonthsAgo.month, sixMonthsAgo.day);
+
+    BottomPicker.date(
+      pickerTitle: Text(
+        'Pilih Tanggal Lahir',
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          color: AppColors.textBlack,
+        ),
+      ),
+      titleAlignment: Alignment.center,
+      backgroundColor: Colors.white,
+      buttonContent: const Text(
+        'Pilih',
+        style: TextStyle(color: Colors.white, fontSize: 16),
+        textAlign: TextAlign.center,
+      ),
+      buttonSingleColor: AppColors.primary,
+      displayCloseIcon: true,
+      closeIconColor: AppColors.textBlack,
+      closeIconSize: 24,
+      initialDateTime: initialDate,
+      maxDateTime: sixMonthsAgo,
+      minDateTime: twoYearsAgo,
+      dateOrder: DatePickerDateOrder.dmy,
+      pickerTextStyle: const TextStyle(
+        color: AppColors.textBlack,
+        fontWeight: FontWeight.w500,
+        fontSize: 14,
+      ),
+      onChange: (date) {},
+      onSubmit: (date) {
+        // Memastikan tanggal yang dipilih valid
+        final selectedDate = date as DateTime;
+        if (selectedDate.isAfter(sixMonthsAgo) ||
+            selectedDate.isBefore(twoYearsAgo)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Tanggal harus antara ${DateFormat('d MMMM y', 'id_ID').format(twoYearsAgo)} dan ${DateFormat('d MMMM y', 'id_ID').format(sixMonthsAgo)}',
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
+        setState(() {
+          _selectedDate = selectedDate;
+          _birthDateController.text = DateFormat(
+            'EEEE, d MMMM y',
+            'id_ID',
+          ).format(selectedDate);
+        });
       },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-        _birthDateController.text = DateFormat(
-          'EEEE, d MMMM y',
-          'id_ID',
-        ).format(picked);
-      });
-    }
+      bottomPickerTheme: BottomPickerTheme.plumPlate,
+      height: 300,
+    ).show(context);
   }
 
   /// Fungsi untuk menyimpan data bayi
@@ -124,15 +166,29 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         // Tombol kembali dengan styling custom
-        leading: IconButton(
-          icon: const Icon(Symbols.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.pop(context),
-          style: IconButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black54,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Symbols.arrow_back_ios_new_rounded,
+                  color: AppColors.textBlack,
+                  size: 24,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
-            padding: const EdgeInsets.all(8),
           ),
         ),
         title: const Text(

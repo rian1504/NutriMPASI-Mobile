@@ -1,3 +1,5 @@
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -458,7 +460,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                     // Tombol edit
                                     Container(
                                       decoration: BoxDecoration(
-                                        color: AppColors.red,
+                                        color: AppColors.error,
                                       ),
                                       child: Container(
                                         width: 80,
@@ -700,35 +702,146 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                                 ),
                                                                 InkWell(
                                                                   onTap: () async {
-                                                                    final DateTime?
-                                                                    picked = await showDatePicker(
-                                                                      context:
-                                                                          context,
-                                                                      initialDate:
-                                                                          selectedDate ??
-                                                                          DateTime.now(),
-                                                                      firstDate:
-                                                                          DateTime.now(),
-                                                                      lastDate: DateTime.now().add(
-                                                                        const Duration(
+                                                                    // Tanggal hari ini
+                                                                    final today =
+                                                                        DateTime.now();
+
+                                                                    // Buat 7 hari ke depan (hari ini + 6 hari)
+                                                                    final List<
+                                                                      DateTime
+                                                                    >
+                                                                    nextSevenDays = List.generate(
+                                                                      7,
+                                                                      (
+                                                                        index,
+                                                                      ) => today.add(
+                                                                        Duration(
                                                                           days:
-                                                                              6,
+                                                                              index,
                                                                         ),
                                                                       ),
-                                                                      // Format tanggal Indonesia
-                                                                      locale:
-                                                                          const Locale(
-                                                                            'id',
-                                                                            'ID',
-                                                                          ),
                                                                     );
-                                                                    if (picked !=
+
+                                                                    // Format nama hari dalam Bahasa Indonesia
+                                                                    final List<
+                                                                      String
+                                                                    >
+                                                                    dayNames =
+                                                                        nextSevenDays.map((
+                                                                          date,
+                                                                        ) {
+                                                                          return DateFormat(
+                                                                            'EEEE, d MMMM y',
+                                                                            'id_ID',
+                                                                          ).format(
+                                                                            date,
+                                                                          );
+                                                                        }).toList();
+
+                                                                    // Temukan indeks tanggal yang sesuai dengan yang sudah dipilih sebelumnya
+                                                                    int
+                                                                    initialIndex =
+                                                                        0;
+                                                                    if (selectedDate !=
                                                                         null) {
-                                                                      setState(() {
-                                                                        selectedDate =
-                                                                            picked;
-                                                                      });
+                                                                      // Cari tanggal yang sama dari list nextSevenDays
+                                                                      for (
+                                                                        int i =
+                                                                            0;
+                                                                        i <
+                                                                            nextSevenDays.length;
+                                                                        i++
+                                                                      ) {
+                                                                        if (isSameDay(
+                                                                          nextSevenDays[i],
+                                                                          selectedDate!,
+                                                                        )) {
+                                                                          initialIndex =
+                                                                              i;
+                                                                          break;
+                                                                        }
+                                                                      }
                                                                     }
+
+                                                                    BottomPicker(
+                                                                      items:
+                                                                          dayNames
+                                                                              .map(
+                                                                                (
+                                                                                  day,
+                                                                                ) => Text(
+                                                                                  day,
+                                                                                  style: const TextStyle(
+                                                                                    color:
+                                                                                        AppColors.textBlack,
+                                                                                    fontSize:
+                                                                                        28,
+                                                                                    fontFamily:
+                                                                                        'Poppins',
+                                                                                  ),
+                                                                                ),
+                                                                              )
+                                                                              .toList(),
+                                                                      pickerTitle: const Text(
+                                                                        'Pilih Hari',
+                                                                        style: TextStyle(
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontSize:
+                                                                              16,
+                                                                          color:
+                                                                              AppColors.textBlack,
+                                                                        ),
+                                                                      ),
+                                                                      titleAlignment:
+                                                                          Alignment
+                                                                              .center,
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      buttonContent: const Text(
+                                                                        'Pilih',
+                                                                        style: TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              16,
+                                                                        ),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                      ),
+                                                                      buttonSingleColor:
+                                                                          AppColors
+                                                                              .primary,
+                                                                      displayCloseIcon:
+                                                                          true,
+                                                                      closeIconColor:
+                                                                          AppColors
+                                                                              .textBlack,
+                                                                      closeIconSize:
+                                                                          24,
+                                                                      displaySubmitButton:
+                                                                          true,
+                                                                      selectedItemIndex:
+                                                                          initialIndex,
+                                                                      onSubmit: (
+                                                                        index,
+                                                                      ) {
+                                                                        setState(() {
+                                                                          // Simpan tanggal yang dipilih
+                                                                          selectedDate =
+                                                                              nextSevenDays[index
+                                                                                  as int];
+                                                                        });
+                                                                      },
+                                                                      bottomPickerTheme:
+                                                                          BottomPickerTheme
+                                                                              .plumPlate,
+                                                                      height:
+                                                                          300,
+                                                                    ).show(
+                                                                      context,
+                                                                    );
                                                                   },
                                                                   child: Container(
                                                                     padding: const EdgeInsets.symmetric(
@@ -930,7 +1043,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       width: 60,
                                       margin: const EdgeInsets.only(right: 2),
                                       decoration: BoxDecoration(
-                                        color: AppColors.red,
+                                        color: AppColors.error,
                                         borderRadius: BorderRadius.only(
                                           topRight: Radius.circular(10),
                                           bottomRight: Radius.circular(10),
@@ -1009,7 +1122,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                               style: ElevatedButton.styleFrom(
                                                                 backgroundColor:
                                                                     AppColors
-                                                                        .red,
+                                                                        .error,
                                                                 foregroundColor:
                                                                     Colors
                                                                         .white,
@@ -1083,7 +1196,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       scheduleId: item.id.toString(),
                                     ),
                                   );
-                                }, 
+                                },
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 300),
                                   transform: Matrix4.translationValues(

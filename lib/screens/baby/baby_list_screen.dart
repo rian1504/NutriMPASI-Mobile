@@ -199,15 +199,6 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           if (state is BabyLoaded) {
                             _babies = state.babies;
 
-                            // Reset Carousel
-                            // if (_carouselController.hasClients) {
-                            //   _carouselController.animateToPage(
-                            //     0,
-                            //     duration: const Duration(milliseconds: 300),
-                            //     curve: Curves.easeInOut,
-                            //   );
-                            // }
-
                             // Jika ada bayi yang sudah ada, set carousel ke halaman pertama
                             if (!_carouselController.hasClients) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -372,7 +363,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           _showDeleteConfirmation(baby);
                         },
                         style: IconButton.styleFrom(
-                          backgroundColor: AppColors.red,
+                          backgroundColor: AppColors.error,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.all(8),
                         ),
@@ -624,7 +615,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
             contentText: 'Anda yakin ingin menghapus Profil Bayi ini?',
             confirmButtonText: 'Hapus',
             cancelButtonText: 'Batal',
-            confirmButtonColor: AppColors.red,
+            confirmButtonColor: AppColors.error,
             onConfirm: () {
               Navigator.pop(context);
               context.read<BabyBloc>().add(DeleteBabies(babyId: baby.id));

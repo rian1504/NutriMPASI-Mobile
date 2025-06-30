@@ -8,7 +8,7 @@ import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
 import 'package:nutrimpasi/models/food.dart';
-import 'package:nutrimpasi/screens/food/food_add_suggestion_screen.dart';
+import 'package:nutrimpasi/screens/food/food_suggestion_add_screen.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_detail_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipe_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
@@ -1294,7 +1294,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                           onTap: () {
                                             pushWithSlideTransition(
                                               context,
-                                              FoodAddSuggestionScreen(),
+                                              FoodSuggestionAddScreen(),
                                             );
                                           },
                                           child: Container(
@@ -1670,7 +1670,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                   _showUserSuggestionsOnly
                                       ? () => pushWithSlideTransition(
                                         context,
-                                        FoodAddSuggestionScreen(),
+                                        FoodSuggestionAddScreen(),
                                       )
                                       : null, // Jika isMyPosts false, set onPressed ke null,
                             ),

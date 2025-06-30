@@ -37,21 +37,6 @@ class LearningMaterialScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // Positioned(
-              //   // left: 0,
-              //   // right: 0,
-              //   top: MediaQuery.of(context).padding.top,
-              //   child: Center(
-              //     child: Text(
-              //       'Materi Pembelajaran',
-              //       style: TextStyle(
-              //         fontSize: 20,
-              //         fontWeight: FontWeight.bold,
-              //         color: AppColors.textBlack,
-              //       ),
-              //     ),
-              //   ),
-              // ),
               // Tombol Kembali
               LeadingActionButton(
                 onPressed: () => Navigator.pop(context),

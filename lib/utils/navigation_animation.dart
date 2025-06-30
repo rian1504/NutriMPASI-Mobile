@@ -16,11 +16,6 @@ void pushWithSlideTransition(BuildContext context, Widget page) {
           end: Offset.zero,
         ).animate(animation);
 
-        // final secondaryOffset = Tween<Offset>(
-        //   begin: Offset.zero,
-        //   end: Offset(-0.3, 0.0),
-        // ).animate(secondaryAnimation);
-
         return SlideTransition(position: offsetAnimation, child: child);
       },
     ),
