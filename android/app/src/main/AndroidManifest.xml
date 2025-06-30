@@ -35,10 +35,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Use your actual domain -->
-                <!-- <data
+                <data
                     android:scheme="https"
                     android:host="nutrimpasi.site"
-                    android:pathPrefix="/password-reset" /> -->
+                    android:pathPrefix="/password-reset" />
                 <!-- Keep http for local testing if needed -->
                 <data
                     android:scheme="http"

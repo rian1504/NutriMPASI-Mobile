@@ -92,6 +92,7 @@ class DeepLinkHandler {
         'Navigating to reset password screen with token=$token, email=$email',
       );
 
+      Future.delayed(Duration(milliseconds: 100), () {});
       // Ensure the navigator is ready and push the replacement route
       if (navigatorKey.currentState != null) {
         // Use pushReplacement to replace the current screen (e.g., splash, home, etc.)
