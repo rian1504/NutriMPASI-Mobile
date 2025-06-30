@@ -419,8 +419,9 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
 
               // Foto Profil + Kamera
               Positioned(
-                top: 25,
-                left: MediaQuery.of(context).size.width / 2 - 75,
+                top: 0,
+                left: 0,
+                right: 0,
                 child: _buildProfilePictureWithCamera(),
               ),
             ],
@@ -435,6 +436,24 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
     return Stack(
       alignment: Alignment.center,
       children: [
+        // Circle background (orange circle)
+        Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(10),
+                offset: const Offset(0, 8),
+                blurRadius: 0,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+        ),
+
         // Container utama untuk foto profil
         Container(
           width: 150,
@@ -477,7 +496,7 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
         ),
 
         // Tombol kamera
-        Positioned(right: -5, top: 55, child: _buildCameraButton()),
+        Positioned(left: 150, right: 0, top: 85, child: _buildCameraButton()),
       ],
     );
   }

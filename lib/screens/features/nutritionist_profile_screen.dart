@@ -58,33 +58,6 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      //   leading: Padding(
-      //     padding: const EdgeInsets.all(8.0),
-      //     child: Material(
-      //       elevation: 3,
-      //       shadowColor: Colors.black54,
-      //       borderRadius: BorderRadius.circular(16),
-      //       child: Container(
-      //         decoration: BoxDecoration(
-      //           color: Colors.white,
-      //           borderRadius: BorderRadius.circular(16),
-      //         ),
-      //         child: IconButton(
-      //           icon: const Icon(
-      //             Symbols.arrow_back_ios_new_rounded,
-      //             color: AppColors.textBlack,
-      //             size: 24,
-      //           ),
-      //           padding: EdgeInsets.zero,
-      //           onPressed: () => Navigator.pop(context),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // ),
       body: SafeArea(
         child: Stack(
           children: [

@@ -11,17 +11,17 @@ import 'dart:io';
 
 import 'package:nutrimpasi/utils/flushbar.dart';
 
-class FoodEditSuggestionScreen extends StatefulWidget {
+class FoodSuggestionEditScreen extends StatefulWidget {
   final FoodSuggestion food;
 
-  const FoodEditSuggestionScreen({super.key, required this.food});
+  const FoodSuggestionEditScreen({super.key, required this.food});
 
   @override
-  State<FoodEditSuggestionScreen> createState() =>
-      _FoodEditSuggestionScreenState();
+  State<FoodSuggestionEditScreen> createState() =>
+      _FoodSuggestionEditScreenState();
 }
 
-class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
+class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
   // Kunci form untuk validasi
   final _formKey = GlobalKey<FormState>();
 
@@ -1362,7 +1362,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                               IconButton(
                                                 icon: Icon(
                                                   Icons.remove_circle_outline,
-                                                  color: AppColors.red,
+                                                  color: AppColors.error,
                                                 ),
                                                 onPressed:
                                                     () =>
@@ -1495,7 +1495,7 @@ class _FoodEditSuggestionScreenState extends State<FoodEditSuggestionScreen> {
                                               IconButton(
                                                 icon: Icon(
                                                   Icons.remove_circle_outline,
-                                                  color: AppColors.red,
+                                                  color: AppColors.error,
                                                 ),
                                                 onPressed:
                                                     () =>

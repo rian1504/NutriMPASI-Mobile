@@ -325,20 +325,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       if (value.length < 8) {
                                         return 'Kata sandi minimal 8 karakter!';
                                       }
-                                      // if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu huruf kapital!';
-                                      // }
-                                      // if (!RegExp(r'[a-z]').hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu huruf kecil!';
-                                      // }
-                                      // if (!RegExp(r'[0-9]').hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu angka!';
-                                      // }
-                                      // if (!RegExp(
-                                      //   r'[!@#$%^&*(),.?":{}|<>]',
-                                      // ).hasMatch(value)) {
-                                      //   return 'Kata sandi harus mengandung setidaknya satu karakter spesial!';
-                                      // }
                                       return null;
                                     },
                                   ),

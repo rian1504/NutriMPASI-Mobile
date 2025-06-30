@@ -5,7 +5,7 @@ import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
-import 'package:nutrimpasi/screens/food/food_edit_suggestion_screen.dart';
+import 'package:nutrimpasi/screens/food/food_suggestion_edit_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 
 class FoodSuggestionDetailScreen extends StatefulWidget {
@@ -529,7 +529,7 @@ class _FoodSuggestionDetailScreenState
                                   context,
                                   MaterialPageRoute(
                                     builder:
-                                        (context) => FoodEditSuggestionScreen(
+                                        (context) => FoodSuggestionEditScreen(
                                           food: food,
                                         ),
                                   ),
@@ -633,7 +633,7 @@ class _FoodSuggestionDetailScreenState
                                                   child: ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor:
-                                                          AppColors.red,
+                                                          AppColors.error,
                                                       foregroundColor:
                                                           Colors.white,
                                                       shape: RoundedRectangleBorder(
@@ -707,7 +707,7 @@ class _FoodSuggestionDetailScreenState
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.red,
+                                backgroundColor: AppColors.error,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),

@@ -17,6 +17,8 @@ import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/report_dialog.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final int foodId;
@@ -199,7 +201,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                           food.isFavorite
                                               ? Icons.favorite
                                               : Icons.favorite_border,
-                                          color: AppColors.red,
+                                          color: AppColors.error,
                                           size: 20,
                                         ),
                                       ),
@@ -623,39 +625,57 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                   child: Column(
                                                     children:
                                                         babies.map((baby) {
-                                                          return Row(
-                                                            children: [
-                                                              Checkbox(
-                                                                value:
-                                                                    selectedBabies[baby
+                                                          return InkWell(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectedBabies[baby
+                                                                        .id] =
+                                                                    !(selectedBabies[baby
+                                                                            .id] ??
+                                                                        false);
+                                                                if (selectedBabies[baby
                                                                         .id] ??
-                                                                    false,
-                                                                onChanged: (
-                                                                  value,
-                                                                ) {
-                                                                  setState(() {
-                                                                    selectedBabies[baby
-                                                                            .id] =
-                                                                        value!;
-                                                                    if (value) {
-                                                                      babyValidationError =
-                                                                          null;
-                                                                    }
-                                                                  });
-                                                                },
-                                                                activeColor:
-                                                                    AppColors
-                                                                        .primary,
-                                                              ),
-                                                              Text(
-                                                                baby.name,
-                                                                style: const TextStyle(
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontSize: 14,
+                                                                    false) {
+                                                                  babyValidationError =
+                                                                      null;
+                                                                }
+                                                              });
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Checkbox(
+                                                                  value:
+                                                                      selectedBabies[baby
+                                                                          .id] ??
+                                                                      false,
+                                                                  onChanged: (
+                                                                    value,
+                                                                  ) {
+                                                                    setState(() {
+                                                                      selectedBabies[baby
+                                                                              .id] =
+                                                                          value!;
+                                                                      if (value) {
+                                                                        babyValidationError =
+                                                                            null;
+                                                                      }
+                                                                    });
+                                                                  },
+                                                                  activeColor:
+                                                                      AppColors
+                                                                          .primary,
                                                                 ),
-                                                              ),
-                                                            ],
+                                                                Text(
+                                                                  baby.name,
+                                                                  style: const TextStyle(
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           );
                                                         }).toList(),
                                                   ),
@@ -690,32 +710,134 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                 const SizedBox(height: 8),
                                                 InkWell(
                                                   onTap: () async {
-                                                    final DateTime? pickedDate =
-                                                        await showDatePicker(
-                                                          context: context,
-                                                          initialDate:
-                                                              DateTime.now(),
-                                                          firstDate:
-                                                              DateTime.now(),
-                                                          lastDate:
-                                                              DateTime.now().add(
-                                                                const Duration(
-                                                                  days: 6,
-                                                                ),
-                                                              ),
-                                                          locale: const Locale(
-                                                            'id',
-                                                            'ID',
+                                                    // Tanggal hari ini
+                                                    final today =
+                                                        DateTime.now();
+
+                                                    // Buat 7 hari ke depan (hari ini + 6 hari)
+                                                    final List<DateTime>
+                                                    nextSevenDays =
+                                                        List.generate(
+                                                          7,
+                                                          (index) => today.add(
+                                                            Duration(
+                                                              days: index,
+                                                            ),
                                                           ),
                                                         );
-                                                    if (pickedDate != null) {
-                                                      setState(() {
-                                                        selectedDate =
-                                                            pickedDate;
-                                                        dateValidationError =
-                                                            null;
-                                                      });
+
+                                                    // Format nama hari dalam Bahasa Indonesia
+                                                    final List<String>
+                                                    dayNames =
+                                                        nextSevenDays.map((
+                                                          date,
+                                                        ) {
+                                                          return DateFormat(
+                                                            'EEEE, d MMMM y',
+                                                            'id_ID',
+                                                          ).format(date);
+                                                        }).toList();
+
+                                                    // Temukan indeks tanggal yang sesuai dengan yang sudah dipilih sebelumnya
+                                                    int initialIndex = 0;
+                                                    if (selectedDate != null) {
+                                                      // Fungsi untuk cek apakah dua tanggal adalah hari yang sama
+                                                      bool isSameDay(
+                                                        DateTime date1,
+                                                        DateTime date2,
+                                                      ) {
+                                                        return date1.year ==
+                                                                date2.year &&
+                                                            date1.month ==
+                                                                date2.month &&
+                                                            date1.day ==
+                                                                date2.day;
+                                                      }
+
+                                                      // Cari tanggal yang sama dari list nextSevenDays
+                                                      for (
+                                                        int i = 0;
+                                                        i <
+                                                            nextSevenDays
+                                                                .length;
+                                                        i++
+                                                      ) {
+                                                        if (isSameDay(
+                                                          nextSevenDays[i],
+                                                          selectedDate!,
+                                                        )) {
+                                                          initialIndex = i;
+                                                          break;
+                                                        }
+                                                      }
                                                     }
+
+                                                    BottomPicker(
+                                                      items:
+                                                          dayNames
+                                                              .map(
+                                                                (day) => Text(
+                                                                  day,
+                                                                  style: const TextStyle(
+                                                                    color:
+                                                                        AppColors
+                                                                            .textBlack,
+                                                                    fontSize:
+                                                                        28,
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                  ),
+                                                                ),
+                                                              )
+                                                              .toList(),
+                                                      pickerTitle: const Text(
+                                                        'Pilih Hari',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color:
+                                                              AppColors
+                                                                  .textBlack,
+                                                        ),
+                                                      ),
+                                                      titleAlignment:
+                                                          Alignment.center,
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      buttonContent: const Text(
+                                                        'Pilih',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                      buttonSingleColor:
+                                                          AppColors.primary,
+                                                      displayCloseIcon: true,
+                                                      closeIconColor:
+                                                          AppColors.textBlack,
+                                                      closeIconSize: 24,
+                                                      displaySubmitButton: true,
+                                                      selectedItemIndex:
+                                                          initialIndex,
+                                                      onSubmit: (index) {
+                                                        setState(() {
+                                                          // Simpan tanggal yang dipilih
+                                                          selectedDate =
+                                                              nextSevenDays[index
+                                                                  as int];
+                                                          dateValidationError =
+                                                              null;
+                                                        });
+                                                      },
+                                                      bottomPickerTheme:
+                                                          BottomPickerTheme
+                                                              .plumPlate,
+                                                      height: 300,
+                                                    ).show(context);
                                                   },
                                                   child: Container(
                                                     padding:
@@ -1091,41 +1213,56 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                                 child: Column(
                                                   children:
                                                       babies.map((baby) {
-                                                        return Row(
-                                                          children: [
-                                                            Checkbox(
-                                                              value:
-                                                                  selectedBabies[baby
+                                                        return InkWell(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              selectedBabies[baby
+                                                                      .id] =
+                                                                  !(selectedBabies[baby
+                                                                          .id] ??
+                                                                      false);
+                                                              if (selectedBabies[baby
                                                                       .id] ??
-                                                                  false,
-                                                              onChanged: (
-                                                                value,
-                                                              ) {
-                                                                setState(() {
-                                                                  selectedBabies[baby
-                                                                          .id] =
-                                                                      value!;
-                                                                  if (value) {
-                                                                    babyValidationError =
-                                                                        null;
-                                                                  }
-                                                                });
-                                                              },
-                                                              activeColor:
-                                                                  AppColors
-                                                                      .primary,
-                                                            ),
-                                                            Text(
-                                                              baby.name,
-                                                              style:
-                                                                  const TextStyle(
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
-                                                            ),
-                                                          ],
+                                                                  false) {
+                                                                babyValidationError =
+                                                                    null;
+                                                              }
+                                                            });
+                                                          },
+                                                          child: Row(
+                                                            children: [
+                                                              Checkbox(
+                                                                value:
+                                                                    selectedBabies[baby
+                                                                        .id] ??
+                                                                    false,
+                                                                onChanged: (
+                                                                  value,
+                                                                ) {
+                                                                  setState(() {
+                                                                    selectedBabies[baby
+                                                                            .id] =
+                                                                        value!;
+                                                                    if (value) {
+                                                                      babyValidationError =
+                                                                          null;
+                                                                    }
+                                                                  });
+                                                                },
+                                                                activeColor:
+                                                                    AppColors
+                                                                        .primary,
+                                                              ),
+                                                              Text(
+                                                                baby.name,
+                                                                style: const TextStyle(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         );
                                                       }).toList(),
                                                 ),
