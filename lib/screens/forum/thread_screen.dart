@@ -555,8 +555,6 @@ class _CommentSectionState extends State<CommentSection> {
   @override
   Widget build(BuildContext context) {
     VoidCallback? longPressAction;
-    GlobalKey?
-    gestureDetectorKey; // GlobalKey opsional untuk GestureDetector ini
 
     if (widget.showMenu) {
       longPressAction =
@@ -569,8 +567,6 @@ class _CommentSectionState extends State<CommentSection> {
             showReport: widget.showReport,
             onEdit: widget.onEdit,
           );
-      // Jika Anda perlu GlobalKey spesifik untuk menu (misal untuk posisi), letakkan di sini
-      // gestureDetectorKey = _menuKey;
     } else if (widget.showReport) {
       longPressAction =
           () => showReportDialog(
@@ -578,8 +574,6 @@ class _CommentSectionState extends State<CommentSection> {
             category: "comment",
             refersId: widget.comment.id,
           );
-      // Jika Anda perlu GlobalKey spesifik untuk report, letakkan di sini
-      // gestureDetectorKey = _reportKey;
     }
 
     // Tentukan apakah teks perlu dipotong
@@ -588,197 +582,186 @@ class _CommentSectionState extends State<CommentSection> {
     final bool shouldShowCollapse =
         widget.comment.content.length > _maxChars && _isExpanded;
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.basic,
-      child: GestureDetector(
-        key: gestureDetectorKey,
-        behavior: HitTestBehavior.opaque,
-        onLongPress: () {
-          if (context.size != null) {
-            longPressAction?.call();
-          }
-        },
-        child: Container(
-          constraints: BoxConstraints(minHeight: 60),
-          decoration: BoxDecoration(
-            // Use _isHighlighted instead of widget.highlight
-            color: _isHighlighted ? AppColors.buff.withAlpha(75) : null,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 10, 16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // photo profile
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryHighTransparent, // abu-abu muda
-                        shape: BoxShape.circle,
-                      ),
-                      child:
-                          widget.comment.user.avatar != null
-                              ? ClipOval(
-                                child: Image.network(
-                                  storageUrl + widget.comment.user.avatar!,
-                                  width: 32,
-                                  height: 32,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                              : Icon(
-                                AppIcons.userFill,
-                                color: AppColors.primary,
-                                size:
-                                    20, // opsional, atur agar pas di lingkaran
-                              ),
+    return GestureDetector(
+      onLongPress: longPressAction,
+      child: Container(
+        constraints: BoxConstraints(minHeight: 60),
+        decoration: BoxDecoration(
+          // Use _isHighlighted instead of widget.highlight
+          color: _isHighlighted ? AppColors.buff.withAlpha(75) : null,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 10, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // photo profile
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryHighTransparent, // abu-abu muda
+                      shape: BoxShape.circle,
                     ),
-                    SizedBox(width: 8),
-                    // Nama pengguna dan isi komentar
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Nama pengguna
-                              Text(
-                                widget.comment.user.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
-                                  color: AppColors.textBlack,
+                    child:
+                        widget.comment.user.avatar != null
+                            ? ClipOval(
+                              child: Image.network(
+                                storageUrl + widget.comment.user.avatar!,
+                                width: 32,
+                                height: 32,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                            : Icon(
+                              AppIcons.userFill,
+                              color: AppColors.primary,
+                              size: 20, // opsional, atur agar pas di lingkaran
+                            ),
+                  ),
+                  SizedBox(width: 8),
+                  // Nama pengguna dan isi komentar
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Nama pengguna
+                            Text(
+                              widget.comment.user.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                            // menu edit delete
+                            if (widget.showMenu)
+                              GestureDetector(
+                                onTap:
+                                    () => showCommentPreviewAndMenu(
+                                      context: context,
+                                      comment: widget.comment,
+                                      threadId: widget.threadId,
+                                      currentUserId: widget.currentUserId,
+                                      showMenu: widget.showMenu,
+                                      showReport: widget.showReport,
+                                      onEdit: widget.onEdit!,
+                                    ),
+                                child: Icon(AppIcons.menu, size: 20),
+                              ),
+                            // report comment
+                            if (widget.showReport)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6.0),
+                                child: GestureDetector(
+                                  onTap:
+                                      () => showReportDialog(
+                                        context: context,
+                                        category: "comment",
+                                        refersId: widget.comment.id,
+                                      ),
+                                  child: Icon(AppIcons.report, size: 20),
                                 ),
                               ),
-                              // menu edit delete
-                              if (widget.showMenu)
-                                GestureDetector(
-                                  onTap:
-                                      () => showCommentPreviewAndMenu(
-                                        context: context,
-                                        comment: widget.comment,
-                                        threadId: widget.threadId,
-                                        currentUserId: widget.currentUserId,
-                                        showMenu: widget.showMenu,
-                                        showReport: widget.showReport,
-                                        onEdit: widget.onEdit!,
-                                      ),
-                                  child: Icon(AppIcons.menu, size: 20),
-                                ),
-                              // report comment
-                              if (widget.showReport)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 6.0),
-                                  child: GestureDetector(
-                                    onTap:
-                                        () => showReportDialog(
-                                          context: context,
-                                          category: "comment",
-                                          refersId: widget.comment.id,
-                                        ),
-                                    child: Icon(AppIcons.report, size: 20),
+                          ],
+                        ),
+                        // Tanggal posting
+                        Text(
+                          timeago.format(widget.comment.createdAt),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 10,
+                            color: AppColors.textGrey,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text.rich(
+                            TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text:
+                                      _isExpanded // Jika diperluas
+                                          ? widget
+                                              .comment
+                                              .content // Tampilkan seluruh konten
+                                          : (widget.comment.content.length >
+                                                  _maxChars // Jika tidak diperluas dan panjang melebihi batas
+                                              ? widget.comment.content
+                                                  .substring(
+                                                    0,
+                                                    _maxChars,
+                                                  ) // Potong teks
+                                              : widget
+                                                  .comment
+                                                  .content), // Atau tampilkan seluruhnya jika tidak melebihi batas
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.textBlack,
                                   ),
                                 ),
-                            ],
-                          ),
-                          // Tanggal posting
-                          Text(
-                            timeago.format(widget.comment.createdAt),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 10,
-                              color: AppColors.textGrey,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Text.rich(
-                              TextSpan(
-                                children: <TextSpan>[
+                                // Tampilkan "Selengkapnya" hanya jika teks terpotong DAN belum diperluas
+                                if (shouldShowReadMore)
                                   TextSpan(
                                     text:
-                                        _isExpanded // Jika diperluas
-                                            ? widget
-                                                .comment
-                                                .content // Tampilkan seluruh konten
-                                            : (widget.comment.content.length >
-                                                    _maxChars // Jika tidak diperluas dan panjang melebihi batas
-                                                ? widget.comment.content
-                                                    .substring(
-                                                      0,
-                                                      _maxChars,
-                                                    ) // Potong teks
-                                                : widget
-                                                    .comment
-                                                    .content), // Atau tampilkan seluruhnya jika tidak melebihi batas
+                                        '  Selengkapnya', // Tambahkan ellipsis di sini
                                     style: const TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.textBlack,
+                                      color: AppColors.accent,
+                                      fontWeight: FontWeight.normal,
                                     ),
+                                    recognizer:
+                                        TapGestureRecognizer()
+                                          ..onTap = () {
+                                            setState(() {
+                                              _isExpanded =
+                                                  true; // Perluas teks saat diklik
+                                            });
+                                          },
                                   ),
-                                  // Tampilkan "Selengkapnya" hanya jika teks terpotong DAN belum diperluas
-                                  if (shouldShowReadMore)
-                                    TextSpan(
-                                      text:
-                                          '  Selengkapnya', // Tambahkan ellipsis di sini
-                                      style: const TextStyle(
-                                        color: AppColors.accent,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                      recognizer:
-                                          TapGestureRecognizer()
-                                            ..onTap = () {
-                                              setState(() {
-                                                _isExpanded =
-                                                    true; // Perluas teks saat diklik
-                                              });
-                                            },
-                                    ),
-                                ],
-                              ),
-                              textAlign: TextAlign.justify,
-                              // Jika Anda ingin mengontrol maxLines secara eksplisit, gunakan ini:
-                              // maxLines: _isExpanded ? null : _maxLinesInitial,
-                              // overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                              ],
                             ),
+                            textAlign: TextAlign.justify,
+                            // Jika Anda ingin mengontrol maxLines secara eksplisit, gunakan ini:
+                            // maxLines: _isExpanded ? null : _maxLinesInitial,
+                            // overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
                           ),
-                          // Tombol "Ciutkan" akan muncul di baris baru di bawah teks yang diperluas
-                          if (shouldShowCollapse) // Hanya tampilkan "Ciutkan" jika teks sudah diperluas
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _isExpanded =
-                                      false; // Ciutkan teks saat diklik
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 4.0,
-                                ), // Beri jarak dari teks di atasnya
-                                child: Text(
-                                  'Sembunyikan',
-                                  style: TextStyle(
-                                    color: AppColors.accent,
-                                    fontWeight: FontWeight.normal,
-                                    // fontSize: 12,
-                                  ),
+                        ),
+                        // Tombol "Ciutkan" akan muncul di baris baru di bawah teks yang diperluas
+                        if (shouldShowCollapse) // Hanya tampilkan "Ciutkan" jika teks sudah diperluas
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isExpanded = false; // Ciutkan teks saat diklik
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 4.0,
+                              ), // Beri jarak dari teks di atasnya
+                              child: Text(
+                                'Sembunyikan',
+                                style: TextStyle(
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.normal,
+                                  // fontSize: 12,
                                 ),
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
