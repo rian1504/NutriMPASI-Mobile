@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1099390437436",
+    "project_id": "nutrimpasi-7e538",
+    "storage_bucket": "nutrimpasi-7e538.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1099390437436:android:87706033c8aeadb7499b39",
+        "android_client_info": {
+          "package_name": "com.example.nutrimpasi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASUuOU3GCTTgCjwOexVQXXB_Qm33UWx18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

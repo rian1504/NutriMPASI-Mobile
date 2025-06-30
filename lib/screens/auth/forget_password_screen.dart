@@ -47,7 +47,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           // Tunggu sebentar lalu navigasi ke home
           Future.delayed(const Duration(seconds: 2), () {
             if (context.mounted) {
-              Navigator.pushReplacementNamed(context, '/home');
+              Navigator.pushReplacementNamed(context, '/login');
             }
           });
         } else if (state is AuthenticationError) {
