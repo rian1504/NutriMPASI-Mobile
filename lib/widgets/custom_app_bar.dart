@@ -45,128 +45,134 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
-        clipBehavior: Clip.none,
-        // Scaffold.body adalah Stack utama
-        children: [
-          // LAPISAN 1: BACKGROUND HEADER
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height:
-                getStatusBarHeight(context) +
-                getAppBarHeight, // Tinggi total area header
-            child: Container(
-              color: AppColors.primary, // Warna latar belakang header
-              // Anda bisa mengganti dengan Image.asset atau Image.network di sini
-              // child: Image.asset('assets/images/header_bg.png', fit: BoxFit.cover),
-            ),
-          ),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            clipBehavior: Clip.none,
+            // Scaffold.body adalah Stack utama
+            children: [
+              // LAPISAN 1: BACKGROUND HEADER
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height:
+                    getStatusBarHeight(context) +
+                    getAppBarHeight, // Tinggi total area header
+                child: Container(
+                  color: AppColors.primary, // Warna latar belakang header
+                  // Anda bisa mengganti dengan Image.asset atau Image.network di sini
+                  // child: Image.asset('assets/images/header_bg.png', fit: BoxFit.cover),
+                ),
+              ),
 
-          if (appBarContent == true)
-            Positioned(
-              // top: 30,
-              top: getAppBarHeight + getStatusBarHeight(context),
-              left: 0,
-              right: 0,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 125,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Container(
-                        width: 200,
-                        height: 200,
+              if (appBarContent == true)
+                Positioned(
+                  // top: 30,
+                  top: getAppBarHeight + getStatusBarHeight(context),
+                  left: 0,
+                  right: 0,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 125,
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
                           color: AppColors.primary,
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
                         ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
                         child: Center(
                           child: Container(
-                            width: 150,
-                            height: 150,
+                            width: 200,
+                            height: 200,
                             decoration: BoxDecoration(
-                              color: Colors.white,
                               shape: BoxShape.circle,
+                              color: AppColors.primary,
                             ),
-                            child: Icon(
-                              icon,
-                              size: 100,
-                              color: AppColors.accent,
+                            child: Center(
+                              child: Container(
+                                width: 150,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  icon,
+                                  size: 100,
+                                  color: AppColors.accent,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
+                    ],
+                  ),
+                ),
+
+              // LAPISAN 2: KONTEN UTAMA LAYAR (HARUS PUNYA PADDING DARI ATAS)
+              Positioned.fill(
+                top:
+                    getStatusBarHeight(context) +
+                    getAppBarHeight +
+                    110, // Konten dimulai di bawah header kustom
+                child: content,
+              ),
+
+              // LAPISAN 3: ELEMEN HEADER KUSTOM (Positioned)
+
+              // 3a. LEADING BUTTON (Positioned FloatingActionButton-like)
+              // customLeadingWidget ?? // Prioritaskan customLeadingWidget jika diberikan
+              LeadingActionButton(
+                onPressed: () => Navigator.pop(context),
+                icon: AppIcons.back,
+              ),
+
+              // 3b. JUDUL DI TENGAH (Positioned Text)
+              Positioned(
+                top:
+                    getStatusBarHeight(context) +
+                    (getAppBarHeight / 2) -
+                    8, // Sekitar tengah vertikal di toolbar
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
                     ),
                   ),
-                ],
-              ),
-            ),
-
-          // LAPISAN 2: KONTEN UTAMA LAYAR (HARUS PUNYA PADDING DARI ATAS)
-          Positioned.fill(
-            top:
-                getStatusBarHeight(context) +
-                getAppBarHeight +
-                110, // Konten dimulai di bawah header kustom
-            child: content,
-          ),
-
-          // LAPISAN 3: ELEMEN HEADER KUSTOM (Positioned)
-
-          // 3a. LEADING BUTTON (Positioned FloatingActionButton-like)
-          // customLeadingWidget ?? // Prioritaskan customLeadingWidget jika diberikan
-          LeadingActionButton(
-            onPressed: () => Navigator.pop(context),
-            icon: AppIcons.back,
-          ),
-
-          // 3b. JUDUL DI TENGAH (Positioned Text)
-          Positioned(
-            top:
-                getStatusBarHeight(context) +
-                (getAppBarHeight / 2) -
-                8, // Sekitar tengah vertikal di toolbar
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
                 ),
               ),
-            ),
-          ),
 
-          // 3c. TRAILING WIDGET (ACTIONS)
-          Positioned(
-            top:
-                getStatusBarHeight(context) +
-                4, // Sejajar dengan tombol leading
-            right: 8, // Jarak dari kanan
-            child:
-                trailingWidget ??
-                const SizedBox.shrink(), // Gunakan trailingWidget jika ada
+              // 3c. TRAILING WIDGET (ACTIONS)
+              Positioned(
+                top:
+                    getStatusBarHeight(context) +
+                    4, // Sejajar dengan tombol leading
+                right: 8, // Jarak dari kanan
+                child:
+                    trailingWidget ??
+                    const SizedBox.shrink(), // Gunakan trailingWidget jika ada
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
