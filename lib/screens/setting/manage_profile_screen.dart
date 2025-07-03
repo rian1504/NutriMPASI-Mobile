@@ -233,6 +233,7 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
     return BlocConsumer<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is ProfileUpdated) {
+          Navigator.pop(context);
           AppFlushbar.showSuccess(
             context,
             message: "Profil berhasil diperbarui!",

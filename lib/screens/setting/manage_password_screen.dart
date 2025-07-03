@@ -63,6 +63,7 @@ class _ManageSettingScreenState extends State<ManageSettingScreen> {
     return BlocConsumer<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is PasswordUpdated) {
+          Navigator.pop(context);
           AppFlushbar.showSuccess(
             context,
             message: "Password berhasil diperbarui!",

@@ -493,23 +493,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                       >(
                                         listener: (context, state) {
                                           if (state is ScheduleStored) {
+                                            Navigator.pop(context);
                                             AppFlushbar.showSuccess(
                                               context,
                                               message:
                                                   "Jadwal berhasil disimpan",
                                               title: "Berhasil",
                                               position: FlushbarPosition.BOTTOM,
-                                              marginVerticalValue: 0,
-                                            );
-                                            Future.delayed(
-                                              const Duration(seconds: 2),
-                                              () {
-                                                if (context.mounted) {
-                                                  Navigator.pop(
-                                                    context,
-                                                  ); // Navigasi setelah delay
-                                                }
-                                              },
+                                              marginVerticalValue: 128,
                                             );
                                           } else if (state is ScheduleError) {
                                             AppFlushbar.showError(
