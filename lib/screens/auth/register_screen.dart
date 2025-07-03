@@ -120,12 +120,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Expanded(
                                 child: TextButton(
                                   onPressed: () {
-                                    Navigator.pushReplacement(
+                                    Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                         builder:
                                             (context) => const LoginScreen(),
                                       ),
+                                      (route) => false,
                                     );
                                   },
                                   style: TextButton.styleFrom(

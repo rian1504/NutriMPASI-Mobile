@@ -5,11 +5,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/screens/auth/login_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_list_screen.dart';
 import 'package:nutrimpasi/screens/features/notification_screen.dart';
 import 'package:nutrimpasi/screens/setting/manage_profile_screen.dart';
@@ -19,7 +21,6 @@ import 'package:nutrimpasi/screens/setting/favorite_thread_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart';
-import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/widgets/custom_dialog.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -40,6 +41,14 @@ class _SettingScreenState extends State<SettingScreen> {
       listener: (context, state) {
         if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) {
+              // Navigasi ke login
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
+            }
             AppFlushbar.showNormal(
               context,
               title: 'Selamat tinggal Mama!',
@@ -47,13 +56,6 @@ class _SettingScreenState extends State<SettingScreen> {
               marginVerticalValue: 8,
             );
             context.read<BabyBloc>().add(ResetBaby());
-
-            Future.delayed(const Duration(seconds: 2), () {
-              if (context.mounted) {
-                // Navigasi ke login
-                Navigator.pushReplacementNamed(context, '/login');
-              }
-            });
           });
         } else if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -109,21 +111,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                 color: AppColors.white,
                               ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          top:
-                              getStatusBarHeight(context) +
-                              4, // Sejajar dengan tombol leading
-                          right: 8, // Jarak dari kanan
-                          child: CircleButton(
-                            onPressed: () {
-                              pushWithSlideTransition(
-                                context,
-                                FavoriteRecipeScreen(),
-                              );
-                            },
-                            icon: AppIcons.favoriteRegular,
                           ),
                         ),
                         Positioned(
@@ -189,238 +176,248 @@ class _SettingScreenState extends State<SettingScreen> {
                   right: 0,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            color: AppColors.textWhite,
+                            elevation: 1,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(
+                                    Icons.person,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  title: Text('Profil Saya'),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.greyDark,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    pushWithSlideTransition(
+                                      context,
+                                      ManageProfileScreen(user: loggedInUser),
+                                    );
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(
+                                    AppIcons.lockFill,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  title: Text('Kelola Kata Sandi'),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.greyDark,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    pushWithSlideTransition(
+                                      context,
+                                      ManageSettingScreen(),
+                                    );
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(
+                                    AppIcons.baby,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  title: Text('Kelola Profil Bayi'),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.greyDark,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    pushWithSlideTransition(
+                                      context,
+                                      BabyListScreen(),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                          color: AppColors.textWhite,
-                          elevation: 1,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: Icon(
-                                  Icons.person,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                                title: Text('Profil Saya'),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.greyDark,
-                                  size: 20,
-                                ),
-                                onTap: () {
-                                  pushWithSlideTransition(
-                                    context,
-                                    ManageProfileScreen(user: loggedInUser),
-                                  );
-                                },
-                              ),
-                              ListTile(
-                                leading: Icon(
-                                  AppIcons.lockFill,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                                title: Text('Kelola Kata Sandi'),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.greyDark,
-                                  size: 20,
-                                ),
-                                onTap: () {
-                                  pushWithSlideTransition(
-                                    context,
-                                    ManageSettingScreen(),
-                                  );
-                                },
-                              ),
-                              ListTile(
-                                leading: Icon(
-                                  AppIcons.baby,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                                title: Text('Kelola Profil Bayi'),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.greyDark,
-                                  size: 20,
-                                ),
-                                onTap: () {
-                                  pushWithSlideTransition(
-                                    context,
-                                    BabyListScreen(),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
 
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            color: AppColors.textWhite,
+                            elevation: 1,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(
+                                    AppIcons.favoriteFill,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  title: Text('Resep Favorit'),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.greyDark,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    pushWithSlideTransition(
+                                      context,
+                                      FavoriteRecipeScreen(),
+                                    );
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(
+                                    AppIcons.forum,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  title: Text('Thread yang Disukai'),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.greyDark,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    pushWithSlideTransition(
+                                      context,
+                                      FavoriteThreadScreen(),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                          color: AppColors.textWhite,
-                          elevation: 1,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: Icon(
-                                  AppIcons.favoriteFill,
-                                  color: Colors.black,
-                                  size: 24,
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            color: AppColors.textWhite,
+                            elevation: 1,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(
+                                    AppIcons.notificationFill,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  title: Text('Notifikasi'),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.greyDark,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    pushWithSlideTransition(
+                                      context,
+                                      NotificationScreen(),
+                                    );
+                                  },
                                 ),
-                                title: Text('Resep Favorit'),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.greyDark,
-                                  size: 20,
+                                ListTile(
+                                  leading: Icon(
+                                    Symbols.info,
+                                    color: Colors.black,
+                                    size: 24,
+                                  ),
+                                  title: Text('Tentang Aplikasi'),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.greyDark,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    pushWithSlideTransition(
+                                      context,
+                                      NotificationScreen(),
+                                    );
+                                  },
                                 ),
-                                onTap: () {
-                                  pushWithSlideTransition(
-                                    context,
-                                    FavoriteRecipeScreen(),
-                                  );
-                                },
-                              ),
-                              ListTile(
-                                leading: Icon(
-                                  AppIcons.forum,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                                title: Text('Thread yang Disukai'),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.greyDark,
-                                  size: 20,
-                                ),
-                                onTap: () {
-                                  pushWithSlideTransition(
-                                    context,
-                                    FavoriteThreadScreen(),
-                                  );
-                                },
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          color: AppColors.textWhite,
-                          elevation: 1,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: Icon(
-                                  AppIcons.notificationFill,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                                title: Text('Notifikasi'),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.greyDark,
-                                  size: 20,
-                                ),
-                                onTap: () {
-                                  pushWithSlideTransition(
-                                    context,
-                                    NotificationScreen(),
-                                  );
-                                },
-                              ),
-                              ListTile(
-                                leading: Icon(
-                                  AppIcons.commentFill,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                                title: Text('Bahasa'),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.greyDark,
-                                  size: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          color: AppColors.textWhite,
-                          elevation: 1,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: Icon(
-                                  AppIcons.logout,
-                                  color: AppColors.error,
-                                  size: 24,
-                                ),
-                                title: Text(
-                                  'Keluar',
-                                  style: TextStyle(color: AppColors.error),
-                                ),
-                                trailing: Icon(
-                                  AppIcons.arrowRight,
-                                  color: AppColors.error,
-                                  size: 20,
-                                ),
-                                onTap: () async {
-                                  // Tampilkan ConfirmDialog
-                                  final bool?
-                                  confirmed = await showDialog<bool>(
-                                    context: context,
-                                    builder: (dialogContext) {
-                                      return ConfirmDialog(
-                                        titleText: "Konfirmasi Keluar",
-                                        contentText:
-                                            "Apakah Anda yakin ingin keluar dari akun ini?",
-                                        confirmButtonText: "Keluar",
-                                        cancelButtonText: "Batal",
-                                        confirmButtonColor:
-                                            AppColors
-                                                .error, // Tombol keluar biasanya merah
-                                        confirmButtonTextColor: Colors.white,
-                                        onCancel:
-                                            () =>
-                                                Navigator.of(dialogContext).pop(
-                                                  false,
-                                                ), // Kembali false jika batal
-                                        onConfirm:
-                                            () =>
-                                                Navigator.of(dialogContext).pop(
-                                                  true,
-                                                ), // Kembali true jika keluar
-                                      );
-                                    },
-                                  );
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            color: AppColors.textWhite,
+                            elevation: 1,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(
+                                    AppIcons.logout,
+                                    color: AppColors.error,
+                                    size: 24,
+                                  ),
+                                  title: Text(
+                                    'Keluar',
+                                    style: TextStyle(color: AppColors.error),
+                                  ),
+                                  trailing: Icon(
+                                    AppIcons.arrowRight,
+                                    color: AppColors.error,
+                                    size: 20,
+                                  ),
+                                  onTap: () async {
+                                    // Tampilkan ConfirmDialog
+                                    final bool?
+                                    confirmed = await showDialog<bool>(
+                                      context: context,
+                                      builder: (dialogContext) {
+                                        return ConfirmDialog(
+                                          titleText: "Konfirmasi Keluar",
+                                          contentText:
+                                              "Apakah Anda yakin ingin keluar dari akun ini?",
+                                          confirmButtonText: "Keluar",
+                                          cancelButtonText: "Batal",
+                                          confirmButtonColor:
+                                              AppColors
+                                                  .error, // Tombol keluar biasanya merah
+                                          confirmButtonTextColor: Colors.white,
+                                          onCancel:
+                                              () => Navigator.of(
+                                                dialogContext,
+                                              ).pop(
+                                                false,
+                                              ), // Kembali false jika batal
+                                          onConfirm:
+                                              () => Navigator.of(
+                                                dialogContext,
+                                              ).pop(
+                                                true,
+                                              ), // Kembali true jika keluar
+                                        );
+                                      },
+                                    );
 
-                                  // Jika pengguna mengkonfirmasi (menekan "Keluar")
-                                  if (confirmed == true) {
-                                    // Memicu event LogoutRequested ke AuthenticationBloc
-                                    // Pastikan context masih valid sebelum memanggil Bloc
-                                    if (context.mounted) {
-                                      context.read<AuthenticationBloc>().add(
-                                        LogoutRequested(),
-                                      );
+                                    // Jika pengguna mengkonfirmasi (menekan "Keluar")
+                                    if (confirmed == true) {
+                                      // Memicu event LogoutRequested ke AuthenticationBloc
+                                      // Pastikan context masih valid sebelum memanggil Bloc
+                                      if (context.mounted) {
+                                        context.read<AuthenticationBloc>().add(
+                                          LogoutRequested(),
+                                        );
+                                      }
                                     }
-                                  }
-                                },
-                              ),
-                            ],
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

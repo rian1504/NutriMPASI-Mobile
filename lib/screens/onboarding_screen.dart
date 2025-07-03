@@ -201,11 +201,12 @@ class OnboardingPage extends StatelessWidget {
                                 curve: Curves.easeInOut,
                               );
                             } else {
-                              Navigator.pushReplacement(
+                              Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const LoginScreen(),
                                 ),
+                                (route) => false,
                               );
                             }
                           },
@@ -269,9 +270,10 @@ class OnboardingPage extends StatelessWidget {
             child: SmallButton(
               text: "Lewati",
               onPressed: () {
-                Navigator.pushReplacement(
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
                 );
               },
             ),

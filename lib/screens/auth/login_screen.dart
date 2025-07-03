@@ -138,13 +138,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Expanded(
                                   child: TextButton(
                                     onPressed: () {
-                                      Navigator.pushReplacement(
+                                      Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
                                           builder:
                                               (context) =>
                                                   const RegisterScreen(),
                                         ),
+                                        (route) => false,
                                       );
                                     },
                                     style: TextButton.styleFrom(
@@ -261,13 +262,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       alignment: Alignment.centerRight,
                                       child: TextButton(
                                         onPressed: () {
-                                          Navigator.push(
+                                          Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
                                               builder:
                                                   (context) =>
                                                       const ForgetPasswordScreen(),
                                             ),
+                                            (route) => false,
                                           );
                                         },
                                         child: const Text(

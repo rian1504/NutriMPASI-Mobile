@@ -234,13 +234,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushReplacement(
+                                                  Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const LoginScreen(),
                                                     ),
+                                                    (route) => false,
                                                   );
                                                 },
                                         ),
@@ -261,13 +262,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushReplacement(
+                                                  Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const RegisterScreen(),
                                                     ),
+                                                    (route) => false,
                                                   );
                                                 },
                                         ),

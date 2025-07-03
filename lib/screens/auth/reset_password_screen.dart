@@ -326,13 +326,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushReplacement(
+                                                  Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const LoginScreen(),
                                                     ),
+                                                    (route) => false,
                                                   );
                                                 },
                                         ),
@@ -353,13 +354,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushReplacement(
+                                                  Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const RegisterScreen(),
                                                     ),
+                                                    (route) => false,
                                                   );
                                                 },
                                         ),
