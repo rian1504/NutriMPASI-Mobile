@@ -958,7 +958,7 @@ class _CommentInputBarState extends State<_CommentInputBar> {
                     state is CommentActionInProgress
                         ? CircularProgressIndicator(color: Colors.white)
                         : Icon(
-                          isEditing ? Icons.save : AppIcons.send,
+                          isEditing ? Icons.check : AppIcons.send,
                           color: Colors.white,
                           size: 20,
                         ),
