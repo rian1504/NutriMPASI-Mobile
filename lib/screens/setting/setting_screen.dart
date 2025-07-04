@@ -5,7 +5,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
@@ -135,7 +134,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                         loggedInUser?.avatar != null
                                             ? ClipOval(
                                               child: Image.network(
-                                                storageUrl + loggedInUser!.avatar!,
+                                                storageUrl +
+                                                    loggedInUser!.avatar!,
                                                 width: 120,
                                                 height: 120,
                                                 fit: BoxFit.cover,
@@ -247,7 +247,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                 ],
                               ),
                             ),
-                        
                             Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
@@ -325,12 +324,13 @@ class _SettingScreenState extends State<SettingScreen> {
                                     },
                                   ),
                                   ListTile(
-                                    leading: Icon(
-                                      Symbols.info,
+                                    leading: Image.asset(
+                                      'assets/images/icon/nutrimpasi.png',
+                                      width: 24,
+                                      height: 24,
                                       color: Colors.black,
-                                      size: 24,
                                     ),
-                                    title: Text('Tentang Aplikasi'),
+                                    title: Text('Tentang NutriMPASI'),
                                     trailing: Icon(
                                       AppIcons.arrowRight,
                                       color: AppColors.greyDark,
@@ -384,7 +384,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                             confirmButtonColor:
                                                 AppColors
                                                     .error, // Tombol keluar biasanya merah
-                                            confirmButtonTextColor: Colors.white,
+                                            confirmButtonTextColor:
+                                                Colors.white,
                                             onCancel:
                                                 () => Navigator.of(
                                                   dialogContext,
@@ -400,15 +401,15 @@ class _SettingScreenState extends State<SettingScreen> {
                                           );
                                         },
                                       );
-                        
+
                                       // Jika pengguna mengkonfirmasi (menekan "Keluar")
                                       if (confirmed == true) {
                                         // Memicu event LogoutRequested ke AuthenticationBloc
                                         // Pastikan context masih valid sebelum memanggil Bloc
                                         if (context.mounted) {
-                                          context.read<AuthenticationBloc>().add(
-                                            LogoutRequested(),
-                                          );
+                                          context
+                                              .read<AuthenticationBloc>()
+                                              .add(LogoutRequested());
                                         }
                                       }
                                     },
@@ -416,6 +417,34 @@ class _SettingScreenState extends State<SettingScreen> {
                                 ],
                               ),
                             ),
+                            SizedBox(height: 16),
+                            // Informasi versi dan copyright
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Versi 1.0.0',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.greyDark,
+                                    ),
+                                  ),
+                                  Text(
+                                    '© 2025 Politeknik Negeri Batam',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.greyDark,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 24),
                           ],
                         ),
                       ),
