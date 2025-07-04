@@ -17,6 +17,7 @@ import 'package:nutrimpasi/screens/setting/manage_profile_screen.dart';
 import 'package:nutrimpasi/screens/setting/manage_password_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_recipe_screen.dart';
 import 'package:nutrimpasi/screens/setting/favorite_thread_screen.dart';
+import 'package:nutrimpasi/screens/setting/about_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart';
@@ -339,7 +340,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     onTap: () {
                                       pushWithSlideTransition(
                                         context,
-                                        NotificationScreen(),
+                                        AboutScreen(),
                                       );
                                     },
                                   ),
