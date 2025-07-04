@@ -336,6 +336,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 LeadingActionButton(
                   onPressed: () => Navigator.pop(context),
                   icon: AppIcons.back,
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                 ),
               ],
             ),
@@ -595,6 +597,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
               LeadingActionButton(
                 onPressed: () => Navigator.pop(context),
                 icon: AppIcons.back,
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
               ),
             ],
           ),
