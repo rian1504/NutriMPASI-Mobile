@@ -50,7 +50,7 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBarForum(
-        title: "Edit Thread",
+        title: "Edit Postingan",
         showExitButton: true,
         category: '',
       ),
@@ -62,7 +62,7 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
             AppFlushbar.showSuccess(
               context,
               title: 'Berhasil',
-              message: 'Berhasil mengubah thread',
+              message: 'Berhasil mengubah postingan',
             );
 
             context.read<ThreadBloc>().add(FetchThreads());
@@ -114,7 +114,7 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
                                   focusNode: _titleFocusNode,
                                   maxLines: 1,
                                   decoration: InputDecoration(
-                                    hintText: 'Judul Thread',
+                                    hintText: 'Judul Postingan',
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {

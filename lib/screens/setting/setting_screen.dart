@@ -281,7 +281,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                       color: Colors.black,
                                       size: 24,
                                     ),
-                                    title: Text('Thread yang Disukai'),
+                                    title: Text('Postingan yang Disukai'),
                                     trailing: Icon(
                                       AppIcons.arrowRight,
                                       color: AppColors.greyDark,

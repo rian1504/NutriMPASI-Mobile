@@ -29,7 +29,9 @@ Future<void> confirmDeleteThread({
     builder:
         (ctx) => AlertDialog(
           title: const Text("Konfirmasi Hapus"),
-          content: const Text("Apakah Anda yakin ingin menghapus thread ini?"),
+          content: const Text(
+            "Apakah Anda yakin ingin menghapus postingan ini?",
+          ),
           actions: [
             TextButton(
               child: const Text("Batal"),
@@ -130,7 +132,7 @@ void showThreadPreviewAndMenu({
                               color: AppColors.accent,
                             ),
                             title: Text(
-                              "Edit Thread",
+                              "Edit Postingan",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.accent,
@@ -170,7 +172,7 @@ void showThreadPreviewAndMenu({
                                 color: AppColors.error,
                               ),
                               title: Text(
-                                "Hapus Thread",
+                                "Hapus Postingan",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: AppColors.error,

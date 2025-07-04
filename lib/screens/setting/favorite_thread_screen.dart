@@ -45,7 +45,7 @@ class _FavoriteThreadScreenState extends State<FavoriteThreadScreen> {
           AppFlushbar.showSuccess(
             context,
             title: 'Berhasil',
-            message: 'Berhasil menghapus thread',
+            message: 'Berhasil menghapus postingan',
           );
 
           context.read<LikeBloc>().add(FetchLikes());
@@ -54,7 +54,7 @@ class _FavoriteThreadScreenState extends State<FavoriteThreadScreen> {
         }
       },
       child: CustomAppBar(
-        title: 'Thread yang Disukai',
+        title: 'Postingan yang Disukai',
         appBarContent: true,
         icon: AppIcons.likeFill,
         content: // Daftar konten thread yang disukai
@@ -81,9 +81,9 @@ class _FavoriteThreadScreenState extends State<FavoriteThreadScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: EmptyMessage(
-                      title: 'Anda belum menyukai thread',
+                      title: 'Anda belum menyukai postingan',
                       subtitle:
-                          'Belum ada thread yang Anda sukai. Temukan berbagai diskusi menarik di forum dan tekan tombol suka pada thread favorit Anda agar mudah ditemukan kembali di halaman ini.',
+                          'Belum ada postingan yang Anda sukai. Temukan berbagai diskusi menarik di forum dan tekan tombol suka pada postingan favorit Anda agar mudah ditemukan kembali di halaman ini.',
                       iconName: AppIcons.forum,
                     ),
                   );
