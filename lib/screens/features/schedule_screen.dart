@@ -16,6 +16,7 @@ import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_button.dart';
+import 'package:nutrimpasi/widgets/custom_dialog.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -465,7 +466,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       child: Container(
                                         width: 80,
                                         decoration: BoxDecoration(
-                                          color: AppColors.amber,
+                                          color: AppColors.warning,
                                           borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(10),
                                             bottomRight: Radius.circular(10),
@@ -1054,117 +1055,34 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                           // Tampilkan dialog konfirmasi hapus
                                           showDialog(
                                             context: context,
-                                            builder: (BuildContext context) {
-                                              return Dialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                ),
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    20,
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        'Anda yakin ingin menghapus Jadwal Memasak "${food!.name}" ini?',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 24,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          // Tombol Batal
-                                                          Expanded(
-                                                            child: ElevatedButton(
-                                                              style: ElevatedButton.styleFrom(
-                                                                backgroundColor:
-                                                                    AppColors
-                                                                        .componentBlack,
-                                                                foregroundColor:
-                                                                    Colors
-                                                                        .white,
-                                                                shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        10,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                  context,
-                                                                ).pop();
-                                                              },
-                                                              child: const Text(
-                                                                'Batal',
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          // Tombol Hapus
-                                                          Expanded(
-                                                            child: ElevatedButton(
-                                                              style: ElevatedButton.styleFrom(
-                                                                backgroundColor:
-                                                                    AppColors
-                                                                        .error,
-                                                                foregroundColor:
-                                                                    Colors
-                                                                        .white,
-                                                                shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        10,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              onPressed: () {
-                                                                if (!mounted) {
-                                                                  return;
-                                                                }
+                                            builder:
+                                                (ctx) => ConfirmDialog(
+                                                  titleText: 'Konfirmasi Hapus',
+                                                  contentText:
+                                                      'Anda yakin ingin menghapus Jadwal Memasak "${food!.name}" ini?',
+                                                  confirmButtonText: 'Hapus',
+                                                  confirmButtonColor:
+                                                      AppColors.error,
+                                                  onConfirm: () {
+                                                    if (!mounted) {
+                                                      return;
+                                                    }
 
-                                                                context
-                                                                    .read<
-                                                                      ScheduleBloc
-                                                                    >()
-                                                                    .add(
-                                                                      DeleteSchedules(
-                                                                        scheduleId:
-                                                                            item.id,
-                                                                      ),
-                                                                    );
-
-                                                                Navigator.pop(
-                                                                  context,
-                                                                );
-                                                              },
-                                                              child: const Text(
-                                                                'Hapus',
-                                                              ),
-                                                            ),
+                                                    context
+                                                        .read<ScheduleBloc>()
+                                                        .add(
+                                                          DeleteSchedules(
+                                                            scheduleId: item.id,
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
+                                                        );
+                                                    Navigator.of(ctx).pop();
+                                                  },
+                                                  // cancelButtonColor: AppColors.componentBlack,
+                                                  cancelButtonText: 'Batal',
+                                                  onCancel: () {
+                                                    Navigator.of(ctx).pop();
+                                                  },
                                                 ),
-                                              );
-                                            },
                                           );
                                         },
                                         child: const Center(
