@@ -90,6 +90,7 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
                               children: [
                                 TextFormField(
                                   controller: _titleController,
+                                  textInputAction: TextInputAction.next,
                                   focusNode: _titleFocusNode,
                                   maxLines: 1,
                                   decoration: InputDecoration(

@@ -1,8 +1,3 @@
-// Nama file: about_screen.dart
-// Deskripsi: File ini adalah halaman tentang aplikasi NutriMPASI.
-// Dibuat oleh: Firmansyah Pramudia Ariyanto - NIM: 3312301030
-// Tanggal: 26 Mei 2025
-
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';

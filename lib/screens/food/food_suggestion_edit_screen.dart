@@ -681,6 +681,7 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                   const SizedBox(height: 4),
                                   TextFormField(
                                     key: _recipeNameKey,
+                                    textInputAction: TextInputAction.next,
                                     controller: _recipeNameController,
                                     decoration: _getInputDecoration(),
                                     validator: (value) {
@@ -1215,6 +1216,7 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                   const SizedBox(height: 4),
                                   TextFormField(
                                     key: _portionKey,
+                                    textInputAction: TextInputAction.next,
                                     controller: _servingsController,
                                     decoration: _getInputDecoration(),
                                     keyboardType: TextInputType.number,
@@ -1406,6 +1408,7 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                   const SizedBox(height: 4),
                                   TextFormField(
                                     controller: _fruitsController,
+                                    textInputAction: TextInputAction.next,
                                     decoration: _getInputDecoration(),
                                   ),
 

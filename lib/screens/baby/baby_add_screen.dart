@@ -312,6 +312,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                             // Input field untuk nama bayi dengan validasi
                             TextFormField(
                               controller: _nameController,
+                              textInputAction: TextInputAction.next,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -513,6 +514,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                       // Input field untuk tinggi bayi dengan satuan cm
                                       TextFormField(
                                         controller: _heightController,
+                                        textInputAction: TextInputAction.next,
                                         keyboardType: TextInputType.number,
                                         decoration: InputDecoration(
                                           border: OutlineInputBorder(
@@ -594,6 +596,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                       // Input field untuk berat bayi (mendukung angka desimal)
                                       TextFormField(
                                         controller: _weightController,
+                                        textInputAction: TextInputAction.next,
                                         keyboardType:
                                             const TextInputType.numberWithOptions(
                                               decimal: true,
