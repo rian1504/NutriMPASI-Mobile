@@ -496,7 +496,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                             color:
                                                 notification.isRead
                                                     ? Colors.grey.shade200
-                                                    : AppColors.buff,
+                                                    : AppColors.white,
                                             borderRadius: BorderRadius.circular(
                                               20,
                                             ),
