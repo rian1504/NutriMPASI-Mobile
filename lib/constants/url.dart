@@ -14,7 +14,7 @@ String baseUrl = 'https://nutrimpasi.site/';
 // baseUrl bisa diketahui dengan menjalankan perintah 'ipconfig' di terminal mengambil ipv4
 // String baseUrl = 'http://192.168.x.x:8000/';
 
-String apiUrl = '${baseUrl}api/';
+String apiUrl = '${baseUrl}api/v1/';
 String storageUrl = '${baseUrl}storage/';
 var headers = {'Accept': 'application/json'};
 
