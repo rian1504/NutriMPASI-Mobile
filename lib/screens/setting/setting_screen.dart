@@ -22,6 +22,7 @@ import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 import 'package:nutrimpasi/widgets/custom_dialog.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -31,6 +32,23 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  String appVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getAppVersion();
+  }
+
+  Future<void> _getAppVersion() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        appVersion = packageInfo.version;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Dapatkan data user dari authentication bloc
@@ -429,7 +447,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Versi 1.0.0',
+                                    'Versi $appVersion',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: AppColors.greyDark,

@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  String appVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getAppVersion();
+  }
+
+  Future<void> _getAppVersion() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        appVersion = packageInfo.version;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +78,32 @@ class AboutScreen extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Background
+                // Lingkaran besar di belakang
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            offset: const Offset(0, 8),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Lataran bawah dengan warna primer
                 Container(
                   width: double.infinity,
                   height: 125,
@@ -76,7 +124,7 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Logo Politeknik
+                // Lingkaran besar di depan (warna primer)
                 Positioned(
                   top: 0,
                   left: 0,
@@ -88,38 +136,37 @@ class AboutScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Logo aplikasi di tengah lingkaran
+                Positioned(
+                  top: 25,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withAlpha(10),
-                            offset: const Offset(0, 8),
-                            blurRadius: 0,
-                            spreadRadius: 0,
+                            color: Colors.black.withAlpha(25),
+                            blurRadius: 6,
+                            spreadRadius: 1,
                           ),
                         ],
                       ),
-                      child: Center(
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(25),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          // Logo Politeknik
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/images/logo/nutrimpasi.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                      // Logo Politeknik
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/images/logo/nutrimpasi.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
@@ -128,7 +175,7 @@ class AboutScreen extends StatelessWidget {
               ],
             ),
 
-            SizedBox(height: 100),
+            const SizedBox(height: 100),
 
             // Konten utama tentang aplikasi
             Padding(
@@ -166,10 +213,10 @@ class AboutScreen extends StatelessWidget {
                       const SizedBox(height: 8),
 
                       // Versi aplikasi
-                      const Center(
+                      Center(
                         child: Text(
-                          'Versi 1.0.0',
-                          style: TextStyle(
+                          'Versi $appVersion',
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.greyDark,
                           ),
@@ -384,6 +431,8 @@ class AboutScreen extends StatelessWidget {
                 ),
               ),
             ),
+
+            const SizedBox(height: 20),
           ],
         ),
       ),
