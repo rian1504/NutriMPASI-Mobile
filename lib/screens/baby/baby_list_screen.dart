@@ -351,7 +351,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                           });
                         },
                         style: IconButton.styleFrom(
-                          backgroundColor: AppColors.amber,
+                          backgroundColor: AppColors.warning,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.all(8),
                         ),
