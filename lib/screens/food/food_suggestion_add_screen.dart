@@ -466,7 +466,6 @@ class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
           return Stack(
             children: [
               Padding(
-                // padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                 padding: EdgeInsets.fromLTRB(22, kToolbarHeight + 0, 22, 22),
                 child: Column(
                   children: [
@@ -1454,12 +1453,10 @@ class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
                                                       )
                                                       .toList();
 
-                                              if (_fruitsController
-                                                  .text
-                                                  .isNotEmpty) {
-                                                ingredients.add(
-                                                  _fruitsController.text,
-                                                );
+                                              String trimmedFruits =
+                                                  _fruitsController.text.trim();
+                                              if (trimmedFruits.isNotEmpty) {
+                                                ingredients.add(trimmedFruits);
                                               }
 
                                               final storedFood = FoodSuggestion(
@@ -1482,11 +1479,10 @@ class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
                                                         .map((c) => c.text)
                                                         .toList(),
                                                 fruit:
-                                                    _fruitsController
-                                                            .text
-                                                            .isNotEmpty
-                                                        ? _fruitsController.text
-                                                            .split(', ')
+                                                    trimmedFruits.isNotEmpty
+                                                        ? trimmedFruits.split(
+                                                          ', ',
+                                                        )
                                                         : null,
                                                 step:
                                                     _stepControllers
