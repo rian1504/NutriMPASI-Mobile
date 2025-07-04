@@ -6,7 +6,6 @@ import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/favorite.dart';
 import 'package:nutrimpasi/screens/food/food_detail_screen.dart';
-import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 
 class FavoriteRecipeScreen extends StatefulWidget {
@@ -27,45 +26,180 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomAppBar(
-      title: 'Resep Favorit',
-      appBarContent: true,
-      icon: AppIcons.favoriteFill,
-      content: Column(
-        children: [
-          const SizedBox(height: 80),
-
-          // Daftar makanan favorite
-          BlocBuilder<FavoriteBloc, FavoriteState>(
-            builder: (context, state) {
-              if (state is FavoriteLoading) {
-                return const Expanded(
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Material(
+            elevation: 5,
+            shadowColor: Colors.black54,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: AppColors.textBlack,
+                  size: 24,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        ),
+        title: const Text(
+          'Resep Favorit',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Lingkaran besar di belakang
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
                   child: Center(
-                    child: CircularProgressIndicator(color: AppColors.primary),
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            offset: const Offset(0, 8),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                );
-              }
+                ),
 
-              if (state is FavoriteLoaded) {
-                favorites = state.favorites;
-              }
-
-              if (favorites.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: EmptyMessage(
-                    title: 'Anda belum menyukai resep makanan',
-                    subtitle:
-                        'Belum ada resep yang Anda tandai sebagai favorit. Coba cari resep yang Anda suka dan tandai sebagai favorit. ',
-                    iconName: AppIcons.food,
+                // Lataran bawah dengan warna primer
+                Container(
+                  width: double.infinity,
+                  height: 125,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(50),
+                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      ),
+                    ],
                   ),
-                );
-              }
+                ),
 
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ListView.builder(
+                // Lingkaran besar di depan (warna primer)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Icon favorit di tengah lingkaran
+                Positioned(
+                  top: 25,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(25),
+                            blurRadius: 6,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        AppIcons.favoriteFill,
+                        size: 80,
+                        color: AppColors.accent,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 100),
+
+            // Daftar makanan favorit
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                builder: (context, state) {
+                  if (state is FavoriteLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    );
+                  }
+
+                  if (state is FavoriteLoaded) {
+                    favorites = state.favorites;
+                  }
+
+                  if (favorites.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: EmptyMessage(
+                        title: 'Anda belum menyukai resep makanan',
+                        subtitle:
+                            'Belum ada resep yang Anda tandai sebagai favorit. Coba cari resep yang Anda suka dan tandai sebagai favorit. ',
+                        iconName: AppIcons.food,
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: favorites.length,
                     itemBuilder: (context, index) {
                       final recipe = favorites[index].food;
@@ -81,8 +215,11 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
                           );
                         },
                         child: Card(
-                          elevation: 3,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          elevation: 2,
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 4,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -94,7 +231,7 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
                                   Flexible(
                                     flex: 0,
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.only(
+                                      borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(15),
                                         bottomLeft: Radius.circular(15),
                                       ),
@@ -114,7 +251,12 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
                                   ),
                                   Expanded(
                                     child: Padding(
-                                      padding: EdgeInsets.fromLTRB(8, 8, 48, 8),
+                                      padding: const EdgeInsets.fromLTRB(
+                                        8,
+                                        8,
+                                        48,
+                                        8,
+                                      ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -164,12 +306,14 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
                         ),
                       );
                     },
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

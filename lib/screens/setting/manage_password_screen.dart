@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
-import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
-import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 
 class ManageSettingScreen extends StatefulWidget {
   const ManageSettingScreen({super.key});
@@ -80,53 +78,251 @@ class _ManageSettingScreenState extends State<ManageSettingScreen> {
         }
       },
       builder: (context, state) {
-        return CustomAppBar(
-          title: 'Kelola Kata Sandi',
-          appBarContent: true,
-          icon: AppIcons.lockFill,
-          content: Column(
-            children: [
-              const SizedBox(height: 100),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Stack(
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+            backgroundColor: AppColors.primary,
+            elevation: 0,
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Material(
+                elevation: 5,
+                shadowColor: Colors.black54,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon:
+                        state is AuthenticationLoading
+                            ? Container()
+                            : const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: AppColors.textBlack,
+                              size: 24,
+                            ),
+                    onPressed:
+                        state is AuthenticationLoading
+                            ? null
+                            : () {
+                              Navigator.pop(context);
+                            },
+                    padding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+            ),
+            title: const Text(
+              'Kelola Kata Sandi',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 24),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                    // Lingkaran besar di belakang
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(50),
+                                offset: const Offset(0, 8),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      child: Material(
-                        elevation: 2,
-                        borderRadius: BorderRadius.circular(20),
+                    ),
+
+                    // Lataran bawah dengan warna primer
+                    Container(
+                      width: double.infinity,
+                      height: 125,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            offset: const Offset(0, 4),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Lingkaran besar di depan (warna primer)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Icon kunci di tengah lingkaran
+                    Positioned(
+                      top: 25,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(25),
+                                blurRadius: 6,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.lock,
+                            size: 80,
+                            color: AppColors.accent,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 100),
+
+                // Konten utama untuk form
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 30),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(15),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Form(
                             key: _formKey,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _buildTextField(
+                                // Field password lama
+                                RichText(
+                                  text: const TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Kata Sandi Lama',
+                                        style: TextStyle(
+                                          color: AppColors.textBlack,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: '*',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
                                   controller: _oldPasswordController,
                                   focusNode: _oldPasswordFocusNode,
                                   textInputAction: TextInputAction.next,
-                                  hintText: 'Kata sandi lama',
                                   obscureText: _obscureOldPassword,
-                                  prefixIcon: Icons.lock,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscureOldPassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: AppColors.componentGrey!,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureOldPassword =
-                                            !_obscureOldPassword;
-                                      });
-                                      _oldPasswordFocusNode.requestFocus();
-                                    },
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Kata sandi lama',
+                                    prefixIcon: const Icon(
+                                      Icons.lock,
+                                      color: Colors.black,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscureOldPassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscureOldPassword =
+                                              !_obscureOldPassword;
+                                        });
+                                        _oldPasswordFocusNode.requestFocus();
+                                      },
+                                    ),
                                   ),
                                   onFieldSubmitted: (_) {
                                     FocusScope.of(
@@ -143,28 +339,81 @@ class _ManageSettingScreenState extends State<ManageSettingScreen> {
                                     return null;
                                   },
                                 ),
+
                                 const SizedBox(height: 16),
-                                _buildTextField(
+
+                                // Field password baru
+                                RichText(
+                                  text: const TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Kata Sandi Baru',
+                                        style: TextStyle(
+                                          color: AppColors.textBlack,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: '*',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
                                   controller: _newPasswordController,
                                   focusNode: _newPasswordFocusNode,
                                   textInputAction: TextInputAction.next,
-                                  hintText: 'Kata sandi baru',
                                   obscureText: _obscureNewPassword,
-                                  prefixIcon: Icons.lock_outlined,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscureNewPassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: AppColors.componentGrey!,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureNewPassword =
-                                            !_obscureNewPassword;
-                                      });
-                                      _newPasswordFocusNode.requestFocus();
-                                    },
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Kata sandi baru',
+                                    prefixIcon: const Icon(
+                                      Icons.lock_outlined,
+                                      color: Colors.black,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscureNewPassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscureNewPassword =
+                                              !_obscureNewPassword;
+                                        });
+                                        _newPasswordFocusNode.requestFocus();
+                                      },
+                                    ),
                                   ),
                                   onFieldSubmitted: (_) {
                                     FocusScope.of(context).requestFocus(
@@ -181,30 +430,83 @@ class _ManageSettingScreenState extends State<ManageSettingScreen> {
                                     return null;
                                   },
                                 ),
+
                                 const SizedBox(height: 16),
-                                _buildTextField(
+
+                                // Field konfirmasi password baru
+                                RichText(
+                                  text: const TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Konfirmasi Kata Sandi Baru',
+                                        style: TextStyle(
+                                          color: AppColors.textBlack,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: '*',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
                                   controller:
                                       _newPasswordConfirmationController,
                                   focusNode: _newPasswordConfirmationFocusNode,
-                                  textInputAction: TextInputAction.next,
-                                  hintText: 'Konfirmasi kata sandi baru',
+                                  textInputAction: TextInputAction.done,
                                   obscureText: _obscureNewPasswordConfirmation,
-                                  prefixIcon: Icons.lock_reset_outlined,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscureNewPasswordConfirmation
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: AppColors.componentGrey!,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureNewPasswordConfirmation =
-                                            !_obscureNewPasswordConfirmation;
-                                      });
-                                      _newPasswordConfirmationFocusNode
-                                          .requestFocus();
-                                    },
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Konfirmasi kata sandi baru',
+                                    prefixIcon: const Icon(
+                                      Icons.lock_reset_outlined,
+                                      color: Colors.black,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscureNewPasswordConfirmation
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscureNewPasswordConfirmation =
+                                              !_obscureNewPasswordConfirmation;
+                                        });
+                                        _newPasswordConfirmationFocusNode
+                                            .requestFocus();
+                                      },
+                                    ),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -216,111 +518,75 @@ class _ManageSettingScreenState extends State<ManageSettingScreen> {
                                     return null;
                                   },
                                 ),
+
                                 const SizedBox(height: 30),
                               ],
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.accent,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 60,
-                              vertical: 12,
+                      // Tombol simpan di bagian bawah form
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 60,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          onPressed:
-                              state is AuthenticationLoading
-                                  ? null
-                                  : () {
-                                    if (loggedInUser != null) {
-                                      // Add a null check for loggedInUser
-                                      _savePassword(userId: loggedInUser.id);
-                                    } else {
-                                      // Handle the case where loggedInUser is null,
-                                      // e.g., show an error or log a message.
-                                      // For now, you might just do nothing or show a debug print.
-                                      debugPrint(
-                                        'Error: loggedInUser is null when trying to save password.',
-                                      );
-                                    }
-                                  },
-                          child:
-                              state is AuthenticationLoading
-                                  ? CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                  : Text(
-                                    'Simpan',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                            onPressed:
+                                state is AuthenticationLoading
+                                    ? null
+                                    : () {
+                                      if (loggedInUser != null) {
+                                        // Add a null check for loggedInUser
+                                        _savePassword(userId: loggedInUser.id);
+                                      } else {
+                                        // Handle the case where loggedInUser is null,
+                                        debugPrint(
+                                          'Error: loggedInUser is null when trying to save password.',
+                                        );
+                                      }
+                                    },
+                            child:
+                                state is AuthenticationLoading
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.0,
+                                      ),
+                                    )
+                                    : const Text(
+                                      'Simpan',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    String? hintText,
-    FocusNode? focusNode,
-    TextInputAction? textInputAction,
-    void Function(String)? onFieldSubmitted,
-    TextInputType keyboardType = TextInputType.text,
-    String? Function(String?)? validator,
-    bool obscureText = false,
-    IconData? prefixIcon,
-    IconButton? suffixIcon,
-  }) {
-    return TextFormField(
-      controller: controller,
-      focusNode: focusNode,
-      textInputAction: textInputAction,
-      onFieldSubmitted: onFieldSubmitted,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        prefixIcon:
-            prefixIcon != null ? Icon(prefixIcon, color: Colors.black) : null,
-        suffixIcon: suffixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.componentGrey ?? Colors.grey),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.componentGrey ?? Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.componentGrey ?? Colors.grey),
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        hintText: hintText,
-      ),
-      validator: validator,
     );
   }
 }

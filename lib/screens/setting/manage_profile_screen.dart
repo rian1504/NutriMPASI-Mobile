@@ -21,10 +21,22 @@ class ManageProfileScreen extends StatefulWidget {
 }
 
 class _ManageProfileScreenState extends State<ManageProfileScreen> {
+  // Form key untuk validasi input
   final _formKey = GlobalKey<FormState>();
 
+  // Controller untuk field input
   late TextEditingController _nameController;
   late TextEditingController _emailController;
+
+  // State untuk image picker
+  String? _imagePath;
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  // State untuk validasi foto
+  bool _showPhotoError = false;
+  bool _showImageSizeError = false;
+  final GlobalKey _photoFieldKey = GlobalKey();
 
   @override
   void initState() {
@@ -67,17 +79,6 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
     }
   }
 
-  String? _imagePath;
-  File? _imageFile;
-  final ImagePicker _picker = ImagePicker();
-
-  // Tambah state untuk melacak error validasi foto
-  bool _showPhotoError = false;
-  bool _showImageSizeError = false;
-
-  // Menambahkan global key untuk navigasi otomatis ke error
-  final GlobalKey _photoFieldKey = GlobalKey();
-
   // Method untuk memilih foto dari gallery
   Future<void> _getImageFromGallery() async {
     try {
@@ -89,6 +90,8 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
         setState(() {
           _imageFile = File(selectedImage.path);
           _imagePath = selectedImage.path;
+          _showPhotoError = false;
+          _showImageSizeError = false;
         });
       }
     } catch (e) {
@@ -251,28 +254,40 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
           appBar: AppBar(
             backgroundColor: AppColors.primary,
             elevation: 0,
-            leading: IconButton(
-              icon:
-                  state is AuthenticationLoading
-                      ? Text('')
-                      : Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed:
-                  state is AuthenticationLoading
-                      ? null
-                      : () {
-                        Navigator.pop(context);
-                      },
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Material(
+                elevation: 5,
+                shadowColor: Colors.black54,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon:
+                        state is AuthenticationLoading
+                            ? Container()
+                            : const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: AppColors.textBlack,
+                              size: 24,
+                            ),
+                    onPressed:
+                        state is AuthenticationLoading
+                            ? null
+                            : () {
+                              Navigator.pop(context);
+                            },
+                    padding: EdgeInsets.zero,
+                  ),
                 ),
-                padding: const EdgeInsets.all(8),
               ),
             ),
-            title: Text(
+            title: const Text(
               'Pengaturan Profil',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -281,299 +296,394 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
             centerTitle: true,
           ),
           body: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height - 90,
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: [
-                  // Background
-                  Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 125,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
+            child: Column(
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Lingkaran besar di belakang
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(50),
+                                offset: const Offset(0, 8),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                            ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(50),
-                              offset: const Offset(0, 4),
-                              blurRadius: 8,
-                              spreadRadius: 2,
+                        ),
+                      ),
+                    ),
+
+                    // Lataran bawah dengan warna primer
+                    Container(
+                      width: double.infinity,
+                      height: 125,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            offset: const Offset(0, 4),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Lingkaran besar di depan (warna primer)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Foto profil di tengah lingkaran
+                    Positioned(
+                      top: 25,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Container untuk foto profil
+                            Container(
+                              width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withAlpha(25),
+                                    blurRadius: 6,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child:
+                                  _imageFile != null
+                                      ? ClipOval(
+                                        child: Image.file(
+                                          _imageFile!,
+                                          width: 150,
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                      : widget.user!.avatar != null
+                                      ? ClipOval(
+                                        child: Image.network(
+                                          storageUrl + widget.user!.avatar!,
+                                          width: 150,
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                      : const Icon(
+                                        Icons.person,
+                                        size: 100,
+                                        color: AppColors.accent,
+                                      ),
+                            ),
+
+                            // Tombol kamera di posisi kanan bawah
+                            Positioned(
+                              right: 0,
+                              bottom: 10,
+                              child: Material(
+                                color: Colors.transparent,
+                                shape: const CircleBorder(),
+                                clipBehavior: Clip.antiAlias,
+                                child: InkWell(
+                                  onTap: () {
+                                    _showImageSourceOptions();
+                                  },
+                                  splashColor: Colors.grey.withAlpha(75),
+                                  highlightColor: Colors.grey.withAlpha(25),
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 4,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 100),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Stack(
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 100),
+
+                // Konten utama untuk form
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 30),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(15),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  margin: const EdgeInsets.only(bottom: 30),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withAlpha(15),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
+                                // Field nama pengguna
+                                RichText(
+                                  text: const TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Nama',
+                                        style: TextStyle(
+                                          color: AppColors.textBlack,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: '*',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Poppins',
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          _buildTextFieldWithIcon(
-                                            controller: _nameController,
-                                            icon: Icons.portrait_outlined,
-                                            labelText: 'Ganti nama akun',
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Nama tidak boleh kosong';
-                                              }
-                                              if (value.length < 4) {
-                                                return 'Nama minimal 4 karakter';
-                                              }
-                                              if (value.length > 255) {
-                                                return 'Nama maksimal 255 karakter';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          const SizedBox(height: 16),
-                                          _buildTextFieldWithIcon(
-                                            controller: _emailController,
-                                            icon: Icons.email_outlined,
-                                            labelText: 'Ubah alamat email',
-                                            keyboardType:
-                                                TextInputType.emailAddress,
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Email tidak boleh kosong';
-                                              }
-                                              if (!RegExp(
-                                                r'^[^@]+@[^@]+\.[^@]+',
-                                              ).hasMatch(value)) {
-                                                return 'Masukkan email yang valid';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          const SizedBox(height: 50),
-                                        ],
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  controller: _nameController,
+                                  textInputAction: TextInputAction.next,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: Center(
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.accent,
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 60,
-                                          vertical: 12,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30,
-                                          ),
-                                        ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
                                       ),
-                                      onPressed:
-                                          state is AuthenticationLoading
-                                              ? null
-                                              : _saveProfile,
-                                      child:
-                                          state is AuthenticationLoading
-                                              ? CircularProgressIndicator(
-                                                color: Colors.white,
-                                              )
-                                              : Text(
-                                                'Simpan',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Masukkan nama',
+                                    prefixIcon: const Icon(
+                                      Icons.portrait_outlined,
+                                      color: AppColors.textBlack,
                                     ),
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Nama tidak boleh kosong';
+                                    }
+                                    if (value.length < 4) {
+                                      return 'Nama minimal 4 karakter';
+                                    }
+                                    if (value.length > 255) {
+                                      return 'Nama maksimal 255 karakter';
+                                    }
+                                    return null;
+                                  },
                                 ),
+
+                                const SizedBox(height: 16),
+
+                                // Field email
+                                RichText(
+                                  text: const TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Email',
+                                        style: TextStyle(
+                                          color: AppColors.textBlack,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: '*',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        color: AppColors.componentGrey!,
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Masukkan email',
+                                    prefixIcon: const Icon(
+                                      Icons.email_outlined,
+                                      color: AppColors.textBlack,
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Email tidak boleh kosong';
+                                    }
+                                    if (!RegExp(
+                                      r'^[^@]+@[^@]+\.[^@]+',
+                                    ).hasMatch(value)) {
+                                      return 'Masukkan email yang valid';
+                                    }
+                                    return null;
+                                  },
+                                ),
+
+                                const SizedBox(height: 30),
                               ],
                             ),
                           ),
                         ),
                       ),
+                      // Tombol simpan di bagian bawah form
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 60,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed:
+                                state is AuthenticationLoading
+                                    ? null
+                                    : _saveProfile,
+                            child:
+                                state is AuthenticationLoading
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.0,
+                                      ),
+                                    )
+                                    : const Text(
+                                      'Simpan',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
+                ),
 
-                  // Foto Profil + Kamera
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: _buildProfilePictureWithCamera(),
-                  ),
-                ],
-              ),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         );
       },
-    );
-  }
-
-  // Fungsi untuk membangun widget foto profil dengan kamera
-  Widget _buildProfilePictureWithCamera() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        // Circle background (orange circle)
-        Container(
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(10),
-                offset: const Offset(0, 8),
-                blurRadius: 0,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-        ),
-
-        // Container utama untuk foto profil
-        Container(
-          width: 150,
-          height: 150,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(25),
-                blurRadius: 6,
-                spreadRadius: 1,
-              ),
-            ],
-          ),
-          child:
-              _imageFile != null
-                  ? ClipOval(
-                    child: Image.file(
-                      _imageFile!,
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                  : widget.user!.avatar != null
-                  ? ClipOval(
-                    child: Image.network(
-                      storageUrl + widget.user!.avatar!,
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                  : const Icon(
-                    Icons.person,
-                    size: 100,
-                    color: AppColors.accent,
-                  ),
-        ),
-
-        // Tombol kamera
-        Positioned(left: 150, right: 0, top: 85, child: _buildCameraButton()),
-      ],
-    );
-  }
-
-  // Fungsi untuk membangun tombol kamera
-  Widget _buildCameraButton() {
-    return Material(
-      color: Colors.transparent,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
-          _showImageSourceOptions();
-        },
-        splashColor: Colors.grey.withAlpha(75),
-        highlightColor: Colors.grey.withAlpha(25),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(color: Colors.black26, blurRadius: 4, spreadRadius: 1),
-            ],
-          ),
-          child: const Icon(
-            Icons.camera_alt_rounded,
-            size: 20,
-            color: Colors.grey,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextFieldWithIcon({
-    required TextEditingController controller,
-    required IconData icon,
-    String? labelText,
-    TextInputType keyboardType = TextInputType.text,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.black),
-        labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.componentGrey ?? Colors.grey),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.componentGrey ?? Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.componentGrey ?? Colors.grey),
-        ),
-        filled: true,
-        fillColor: Colors.white,
-      ),
-      validator: validator,
     );
   }
 }
