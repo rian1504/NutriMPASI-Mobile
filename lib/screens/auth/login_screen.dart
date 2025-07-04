@@ -45,19 +45,15 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
+            if (context.mounted) {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
             AppFlushbar.showNormal(
               context,
               title: "Selamat datang mama!",
               message: state.message ?? 'Login berhasil',
               marginVerticalValue: 8,
             );
-
-            // Tunggu sebentar lalu navigasi ke home
-            Future.delayed(const Duration(seconds: 2), () {
-              if (context.mounted) {
-                Navigator.pushReplacementNamed(context, '/home');
-              }
-            });
           } else if (state is AuthenticationError) {
             AppFlushbar.showError(context, message: state.error);
           }

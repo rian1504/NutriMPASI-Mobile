@@ -59,22 +59,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is ResetPasswordSuccess) {
+          if (context.mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+          }
           // Tampilkan flushbar sukses dan arahkan ke halaman utama
           AppFlushbar.showSuccess(
             context,
             title: 'Berhasil',
             message: state.message,
           );
-
-          // Tunggu sebentar lalu navigasi ke home
-          Future.delayed(const Duration(seconds: 2), () {
-            if (context.mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-            }
-          });
         } else if (state is AuthenticationError) {
           AppFlushbar.showError(context, title: 'Error', message: state.error);
         }

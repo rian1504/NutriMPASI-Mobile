@@ -750,21 +750,15 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
                             child: BlocConsumer<BabyBloc, BabyState>(
                               listener: (context, state) {
                                 if (state is BabyUpdated) {
+                                  context.read<BabyBloc>().add(FetchBabies());
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                  }
                                   AppFlushbar.showSuccess(
                                     context,
                                     title: 'Berhasil',
                                     message: 'Data bayi berhasil disimpan',
                                     marginVerticalValue: 8,
-                                  );
-
-                                  context.read<BabyBloc>().add(FetchBabies());
-                                  Future.delayed(
-                                    const Duration(seconds: 2),
-                                    () {
-                                      if (context.mounted) {
-                                        Navigator.pop(context);
-                                      }
-                                    },
                                   );
                                 } else if (state is BabyError) {
                                   AppFlushbar.showError(
