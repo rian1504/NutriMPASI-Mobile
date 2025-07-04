@@ -61,14 +61,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is RegistrationSuccess) {
+            if (context.mounted) {
+              Navigator.pushReplacementNamed(context, '/login');
+            }
             AppFlushbar.showSuccess(context, message: state.message);
-
-            // Tunggu sebentar lalu navigasi ke login
-            Future.delayed(const Duration(seconds: 3), () {
-              if (context.mounted) {
-                Navigator.pushReplacementNamed(context, '/login');
-              }
-            });
           } else if (state is AuthenticationError) {
             AppFlushbar.showError(context, message: state.error);
           }
@@ -120,12 +116,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Expanded(
                                 child: TextButton(
                                   onPressed: () {
-                                    Navigator.pushReplacement(
+                                    Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                         builder:
                                             (context) => const LoginScreen(),
                                       ),
+                                      (route) => false,
                                     );
                                   },
                                   style: TextButton.styleFrom(

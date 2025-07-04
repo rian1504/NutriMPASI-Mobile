@@ -889,7 +889,12 @@ class _HomeScreenState extends State<HomeScreen>
           BlocBuilder<BabyFoodRecommendationBloc, BabyFoodRecommendationState>(
             builder: (context, state) {
               if (state is BabyFoodRecommendationLoading) {
-                return Center(child: CircularProgressIndicator());
+                return Column(
+                  children: [
+                    SizedBox(height: 75),
+                    Center(child: CircularProgressIndicator()),
+                  ],
+                );
               }
 
               if (state is BabyFoodRecommendationError) {

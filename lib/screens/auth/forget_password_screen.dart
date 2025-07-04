@@ -37,19 +37,15 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is ForgotPasswordSuccess) {
+          if (context.mounted) {
+            Navigator.pushReplacementNamed(context, '/login');
+          }
           // Tampilkan flushbar sukses dan arahkan ke halaman utama
           AppFlushbar.showSuccess(
             context,
             title: 'Berhasil',
             message: state.message,
           );
-
-          // Tunggu sebentar lalu navigasi ke home
-          Future.delayed(const Duration(seconds: 2), () {
-            if (context.mounted) {
-              Navigator.pushReplacementNamed(context, '/login');
-            }
-          });
         } else if (state is AuthenticationError) {
           AppFlushbar.showError(context, title: 'Error', message: state.error);
         }
@@ -130,7 +126,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                 children: [
                                   TextFormField(
                                     controller: _emailController,
-                                    textInputAction: TextInputAction.next,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
                                       labelText: 'Email',
@@ -234,13 +229,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushReplacement(
+                                                  Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const LoginScreen(),
                                                     ),
+                                                    (route) => false,
                                                   );
                                                 },
                                         ),
@@ -261,13 +257,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushReplacement(
+                                                  Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const RegisterScreen(),
                                                     ),
+                                                    (route) => false,
                                                   );
                                                 },
                                         ),

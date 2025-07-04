@@ -142,13 +142,13 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Material(
-            elevation: 3,
+            elevation: 5,
             shadowColor: Colors.black54,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
                 icon: const Icon(
@@ -312,6 +312,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                             // Input field untuk nama bayi dengan validasi
                             TextFormField(
                               controller: _nameController,
+                              textInputAction: TextInputAction.next,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -513,6 +514,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                       // Input field untuk tinggi bayi dengan satuan cm
                                       TextFormField(
                                         controller: _heightController,
+                                        textInputAction: TextInputAction.next,
                                         keyboardType: TextInputType.number,
                                         decoration: InputDecoration(
                                           border: OutlineInputBorder(
@@ -594,6 +596,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                                       // Input field untuk berat bayi (mendukung angka desimal)
                                       TextFormField(
                                         controller: _weightController,
+                                        textInputAction: TextInputAction.next,
                                         keyboardType:
                                             const TextInputType.numberWithOptions(
                                               decimal: true,
@@ -723,21 +726,15 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                             child: BlocConsumer<BabyBloc, BabyState>(
                               listener: (context, state) {
                                 if (state is BabyStored) {
+                                  context.read<BabyBloc>().add(FetchBabies());
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                  }
                                   AppFlushbar.showSuccess(
                                     context,
                                     title: 'Berhasil',
                                     message: 'Data bayi berhasil disimpan',
                                     marginVerticalValue: 8,
-                                  );
-
-                                  context.read<BabyBloc>().add(FetchBabies());
-                                  Future.delayed(
-                                    const Duration(seconds: 2),
-                                    () {
-                                      if (context.mounted) {
-                                        Navigator.pop(context);
-                                      }
-                                    },
                                   );
                                 } else if (state is BabyError) {
                                   AppFlushbar.showError(

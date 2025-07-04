@@ -255,32 +255,26 @@ class MainPageState extends State<MainPage> {
       listener: (context, state) {
         if (state is AuthenticationError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushReplacementNamed(context, '/login');
             // Tampilkan pesan error
             AppFlushbar.showError(
               context,
               title: 'Error',
               message: state.error,
             );
-            // Tunggu sebentar lalu navigasi ke home
-            Future.delayed(const Duration(seconds: 2), () {
-              if (context.mounted) {
-                // Navigasi ke login
-                Navigator.pushReplacementNamed(context, '/login');
-              }
-            });
           });
         } else if (state is LogoutSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Reset Baby
+            context.read<BabyBloc>().add(ResetBaby());
+            // Navigasi ke login
+            Navigator.pushReplacementNamed(context, '/login');
             // Tampilkan pesan logout sukses
             AppFlushbar.showSuccess(
               context,
               title: 'Berhasil',
               message: state.message,
             );
-            // Reset Baby
-            context.read<BabyBloc>().add(ResetBaby());
-            // Navigasi ke login
-            Navigator.pushReplacementNamed(context, '/login');
           });
         }
       },

@@ -110,6 +110,7 @@ class _EditThreadScreenState extends State<EditThreadScreen> {
                               children: [
                                 TextFormField(
                                   controller: _titleController,
+                                  textInputAction: TextInputAction.next,
                                   focusNode: _titleFocusNode,
                                   maxLines: 1,
                                   decoration: InputDecoration(

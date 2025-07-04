@@ -112,18 +112,18 @@ class FeatureListScreen extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Material(
-            elevation: 3,
+            elevation: 5,
             shadowColor: Colors.black54,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
                 icon: const Icon(
                   Symbols.arrow_back_ios_new_rounded,
-                  color: AppColors.textBlack,
+                  color: AppColors.white,
                   size: 24,
                 ),
                 padding: EdgeInsets.zero,

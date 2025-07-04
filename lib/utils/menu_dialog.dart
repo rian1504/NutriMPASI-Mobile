@@ -244,140 +244,135 @@ void showCommentPreviewAndMenu({
   required int currentUserId,
   required Function(Comment)? onEdit,
 }) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    showGeneralDialog(
-      context: context,
-      barrierColor: Colors.black87,
-      barrierDismissible: true,
-      barrierLabel: 'Comment Options',
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (dialogContext, animation, secondaryAnimation) {
-        return Align(
-          alignment: Alignment.center,
-          child: ScaleTransition(
-            scale: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutBack,
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // === Bagian Preview Komentar (Non-Interaktif) ===
-                  SizedBox(
-                    width:
-                        MediaQuery.of(context).size.width *
-                        0.9, // Lebar sekitar 90%
-                    child: IgnorePointer(
-                      ignoring: true,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        margin: EdgeInsets.zero,
-                        elevation: 4,
-                        child: CommentSection(
-                          // Menggunakan CommentSection (tanpa underscore)
-                          key: ValueKey('${comment.id}_dialog_preview'),
-                          comment: comment,
-                          showMenu: false, // Tidak perlu menu di preview
-                          showReport: false, // Tidak perlu report di preview
-                          currentUserId: currentUserId,
-                          threadId: threadId,
-                        ),
+  showGeneralDialog(
+    context: context,
+    barrierColor: Colors.black87,
+    barrierDismissible: true,
+    barrierLabel: 'Comment Options',
+    transitionDuration: const Duration(milliseconds: 300),
+    pageBuilder: (dialogContext, animation, secondaryAnimation) {
+      return Align(
+        alignment: Alignment.center,
+        child: ScaleTransition(
+          scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+          child: Material(
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // === Bagian Preview Komentar (Non-Interaktif) ===
+                SizedBox(
+                  width:
+                      MediaQuery.of(context).size.width *
+                      0.9, // Lebar sekitar 90%
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      margin: EdgeInsets.zero,
+                      elevation: 4,
+                      child: CommentSection(
+                        // Menggunakan CommentSection (tanpa underscore)
+                        key: ValueKey('${comment.id}_dialog_preview'),
+                        comment: comment,
+                        showMenu: false, // Tidak perlu menu di preview
+                        showReport: false, // Tidak perlu report di preview
+                        currentUserId: currentUserId,
+                        threadId: threadId,
                       ),
                     ),
                   ),
-                  // === Bagian Opsi "Report", "Block Account", dll. ===
-                  const SizedBox(height: 4),
+                ),
+                // === Bagian Opsi "Report", "Block Account", dll. ===
+                const SizedBox(height: 4),
 
-                  Padding(
-                    padding: const EdgeInsets.only(right: 4.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * (1 / 2.5),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (showMenu)
-                            // Tombol Edit Thread
-                            Material(
-                              elevation: 4,
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.white,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.accentHighTransparent,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: ListTile(
-                                  leading: Icon(
-                                    AppIcons.edit,
-                                    size: 20,
-                                    color: AppColors.accent,
-                                  ),
-                                  title: const Text(
-                                    "Edit Komentar",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColors.accent,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.pop(dialogContext);
-                                    if (onEdit != null) {
-                                      onEdit(comment);
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          SizedBox(height: 2),
+                Padding(
+                  padding: const EdgeInsets.only(right: 4.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * (1 / 2.5),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (showMenu)
+                          // Tombol Edit Thread
                           Material(
                             elevation: 4,
                             borderRadius: BorderRadius.circular(4),
-                            color: AppColors.white,
+                            color: Colors.white,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: AppColors.errorHighTranparent,
+                                color: AppColors.accentHighTransparent,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: ListTile(
                                 leading: Icon(
-                                  AppIcons.deleteFill,
+                                  AppIcons.edit,
                                   size: 20,
-                                  color: AppColors.error,
+                                  color: AppColors.accent,
                                 ),
                                 title: const Text(
-                                  "Hapus Komentar",
+                                  "Edit Komentar",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: AppColors.error,
+                                    color: AppColors.accent,
                                   ),
                                 ),
                                 onTap: () {
                                   Navigator.pop(dialogContext);
-                                  confirmDeleteComment(
-                                    // Panggil fungsi modular
-                                    context: context,
-                                    commentId: comment.id,
-                                    threadId: threadId,
-                                  );
+                                  if (onEdit != null) {
+                                    onEdit(comment);
+                                  }
                                 },
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        SizedBox(height: 2),
+                        Material(
+                          elevation: 4,
+                          borderRadius: BorderRadius.circular(4),
+                          color: AppColors.white,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.errorHighTranparent,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                AppIcons.deleteFill,
+                                size: 20,
+                                color: AppColors.error,
+                              ),
+                              title: const Text(
+                                "Hapus Komentar",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.error,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.pop(dialogContext);
+                                confirmDeleteComment(
+                                  // Panggil fungsi modular
+                                  context: context,
+                                  commentId: comment.id,
+                                  threadId: threadId,
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        );
-      },
-    );
-  });
+        ),
+      );
+    },
+  );
 }

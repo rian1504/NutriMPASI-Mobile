@@ -233,6 +233,7 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
     return BlocConsumer<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is ProfileUpdated) {
+          Navigator.pop(context);
           AppFlushbar.showSuccess(
             context,
             message: "Profil berhasil diperbarui!",
@@ -279,152 +280,162 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
             ),
             centerTitle: true,
           ),
-          body: Stack(
-            children: [
-              // Background
-              Column(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height - 90,
+              width: MediaQuery.of(context).size.width,
+              child: Stack(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    height: 125,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(50),
-                          offset: const Offset(0, 4),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 100),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Stack(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 30),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withAlpha(15),
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildTextFieldWithIcon(
-                                        controller: _nameController,
-                                        icon: Icons.portrait_outlined,
-                                        labelText: 'Ganti nama akun',
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Nama tidak boleh kosong';
-                                          }
-                                          if (value.length < 4) {
-                                            return 'Nama minimal 4 karakter';
-                                          }
-                                          if (value.length > 255) {
-                                            return 'Nama maksimal 255 karakter';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      const SizedBox(height: 16),
-                                      _buildTextFieldWithIcon(
-                                        controller: _emailController,
-                                        icon: Icons.email_outlined,
-                                        labelText: 'Ubah alamat email',
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Email tidak boleh kosong';
-                                          }
-                                          if (!RegExp(
-                                            r'^[^@]+@[^@]+\.[^@]+',
-                                          ).hasMatch(value)) {
-                                            return 'Masukkan email yang valid';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      const SizedBox(height: 50),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Center(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.accent,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 60,
-                                      vertical: 12,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
-                                  onPressed:
-                                      state is AuthenticationLoading
-                                          ? null
-                                          : _saveProfile,
-                                  child:
-                                      state is AuthenticationLoading
-                                          ? CircularProgressIndicator(
-                                            color: Colors.white,
-                                          )
-                                          : Text(
-                                            'Simpan',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                ),
-                              ),
+                  // Background
+                  Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 125,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(50),
+                              offset: const Offset(0, 4),
+                              blurRadius: 8,
+                              spreadRadius: 2,
                             ),
                           ],
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 100),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 30),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withAlpha(15),
+                                        blurRadius: 10,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _buildTextFieldWithIcon(
+                                            controller: _nameController,
+                                            icon: Icons.portrait_outlined,
+                                            labelText: 'Ganti nama akun',
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Nama tidak boleh kosong';
+                                              }
+                                              if (value.length < 4) {
+                                                return 'Nama minimal 4 karakter';
+                                              }
+                                              if (value.length > 255) {
+                                                return 'Nama maksimal 255 karakter';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                          const SizedBox(height: 16),
+                                          _buildTextFieldWithIcon(
+                                            controller: _emailController,
+                                            icon: Icons.email_outlined,
+                                            labelText: 'Ubah alamat email',
+                                            keyboardType:
+                                                TextInputType.emailAddress,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Email tidak boleh kosong';
+                                              }
+                                              if (!RegExp(
+                                                r'^[^@]+@[^@]+\.[^@]+',
+                                              ).hasMatch(value)) {
+                                                return 'Masukkan email yang valid';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                          const SizedBox(height: 50),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Center(
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.accent,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 60,
+                                          vertical: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed:
+                                          state is AuthenticationLoading
+                                              ? null
+                                              : _saveProfile,
+                                      child:
+                                          state is AuthenticationLoading
+                                              ? CircularProgressIndicator(
+                                                color: Colors.white,
+                                              )
+                                              : Text(
+                                                'Simpan',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Foto Profil + Kamera
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: _buildProfilePictureWithCamera(),
                   ),
                 ],
               ),
-
-              // Foto Profil + Kamera
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: _buildProfilePictureWithCamera(),
-              ),
-            ],
+            ),
           ),
         );
       },

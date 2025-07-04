@@ -734,16 +734,11 @@ class _FoodListScreenState extends State<FoodListScreen>
                                     .length);
 
                             if (totalFilters > 0) {
-                              AppFlushbar.showNormal(
+                              Navigator.pop(context);
+                              AppFlushbar.showInfo(
                                 context,
                                 message: '$totalFilters filter diterapkan',
-                                marginVerticalValue: 16,
                               );
-                            }
-                          });
-                          Future.delayed(const Duration(seconds: 2), () {
-                            if (context.mounted) {
-                              Navigator.pop(context);
                             }
                           });
                         },
