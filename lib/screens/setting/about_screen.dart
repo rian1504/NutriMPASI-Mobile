@@ -175,8 +175,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ],
             ),
 
-            const SizedBox(height: 100),
-
+            const SizedBox(height: 80),
             // Konten utama tentang aplikasi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -194,7 +193,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -210,8 +209,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
-
+                      const SizedBox(height: 4),
                       // Versi aplikasi
                       Center(
                         child: Text(
@@ -223,8 +221,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Deskripsi aplikasi
                       const Text(
                         'Tentang Aplikasi',
@@ -235,19 +232,19 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
 
                       const Text(
                         'NutriMPASI adalah aplikasi panduan makanan pendamping ASI yang merupakan hasil proyek PBL (Project Based Learning) dari Politeknik Negeri Batam. Aplikasi ini dibuat khusus untuk membantu para ibu dalam memberikan nutrisi terbaik untuk bayi usia 6-24 bulan.\n\nSebagai solusi inovatif dalam bidang kesehatan bayi, NutriMPASI dirancang untuk memudahkan ibu dalam menyiapkan makanan bergizi, memantau perkembangan bayi, dan berbagi pengalaman dengan komunitas ibu lainnya. Dengan fitur resep MPASI sehat, pemantauan pertumbuhan, forum diskusi, dan pengingat jadwal makan, NutriMPASI hadir sebagai solusi terpadu untuk kebutuhan nutrisi bayi Anda.',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textBlack,
+                          height: 1.5,
                         ),
                         textAlign: TextAlign.justify,
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Tim pengembang
                       const Text(
                         'Tim Pengembang',
@@ -258,7 +255,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
 
                       _buildDeveloperItem(
                         context,
@@ -288,8 +285,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         'Anggota - Frontend dan UI/UX',
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Manajer proyek
                       const Text(
                         'Manajer Proyek',
@@ -300,7 +296,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
 
                       _buildMentorItem(
                         context,
@@ -308,8 +304,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         'NIK: 113115',
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Logo Politeknik dan Jurusan
                       const Text(
                         'Institusi',
@@ -320,8 +315,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 16),
-
+                      const SizedBox(height: 20),
                       // Baris untuk logo Politeknik dan Jurusan
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -349,19 +343,19 @@ class _AboutScreenState extends State<AboutScreen> {
                                   fit: BoxFit.contain,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
                               const Text(
                                 'Politeknik Negeri Batam',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
 
-                          const SizedBox(width: 20),
-
+                          const SizedBox(width: 24),
                           // Logo Jurusan
                           Column(
                             children: [
@@ -385,21 +379,21 @@ class _AboutScreenState extends State<AboutScreen> {
                                   fit: BoxFit.contain,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
                               const Text(
                                 'Teknik Informatika',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Copyright
                       const Center(
                         child: Text(
@@ -413,7 +407,6 @@ class _AboutScreenState extends State<AboutScreen> {
                       ),
 
                       const SizedBox(height: 8),
-
                       // Kontak
                       const Center(
                         child: Text(
@@ -425,14 +418,14 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                     ],
                   ),
                 ),
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -447,7 +440,7 @@ class _AboutScreenState extends State<AboutScreen> {
     String role,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -473,6 +466,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     color: AppColors.textBlack,
                   ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   nim,
                   style: const TextStyle(
@@ -480,6 +474,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     color: AppColors.greyDark,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   role,
                   style: const TextStyle(
@@ -499,7 +494,7 @@ class _AboutScreenState extends State<AboutScreen> {
   // Widget untuk menampilkan item manajer proyek
   Widget _buildMentorItem(BuildContext context, String name, String id) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -525,6 +520,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     color: AppColors.textBlack,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   id,
                   style: const TextStyle(
