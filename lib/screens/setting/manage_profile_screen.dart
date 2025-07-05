@@ -372,6 +372,7 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
                       child: Center(
                         child: Stack(
                           alignment: Alignment.center,
+                          clipBehavior: Clip.none,
                           children: [
                             // Container untuk foto profil
                             Container(
@@ -414,10 +415,10 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
                                       ),
                             ),
 
-                            // Tombol kamera di posisi kanan bawah
+                            // Tombol foto profil
                             Positioned(
-                              right: 0,
-                              bottom: 10,
+                              right: -20,
+                              bottom: 50,
                               child: Material(
                                 color: Colors.transparent,
                                 shape: const CircleBorder(),
@@ -434,13 +435,12 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
                                     decoration: const BoxDecoration(
                                       color: Colors.white,
                                       shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 4,
-                                          spreadRadius: 1,
+                                      border: Border.fromBorderSide(
+                                        BorderSide(
+                                          color: AppColors.primary,
+                                          width: 2,
                                         ),
-                                      ],
+                                      ),
                                     ),
                                     child: const Icon(
                                       Icons.edit,
