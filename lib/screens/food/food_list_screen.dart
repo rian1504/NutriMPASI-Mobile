@@ -560,7 +560,15 @@ class _FoodListScreenState extends State<FoodListScreen>
                               children:
                                   tempFoodCategoryFilters.keys.map((category) {
                                     return FilterChip(
-                                      label: Text(category),
+                                      label: Text(
+                                        category,
+                                        style: TextStyle(
+                                          color:
+                                              tempFoodCategoryFilters[category]!
+                                                  ? AppColors.primary
+                                                  : AppColors.textBlack,
+                                        ),
+                                      ),
                                       selected:
                                           tempFoodCategoryFilters[category]!,
                                       selectedColor: AppColors.primary

@@ -1279,22 +1279,43 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                             decoration: BoxDecoration(
                               color:
                                   _selectedTimePeriod == period
-                                      ? AppColors.primary
-                                      : AppColors.buff,
+                                      ? AppColors.primary.withAlpha(50)
+                                      : AppColors.white,
+                              border: Border.all(
+                                color: _selectedTimePeriod == period
+                                    ? AppColors.primary
+                                    : AppColors.componentGrey!,
+                              ),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
-                              child: Text(
-                                period,
-                                style: TextStyle(
-                                  color:
-                                      _selectedTimePeriod == period
-                                          ? Colors.white
-                                          : AppColors.textBlack,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                ),
-                              ),
+                              child:
+                                  _selectedTimePeriod == period
+                                      ? Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            Icons.check,
+                                            color: AppColors.primary,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            period,
+                                            style: const TextStyle(
+                                              color: AppColors.primary,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                      : Text(
+                                        period,
+                                        style: const TextStyle(
+                                          color: AppColors.textBlack,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                             ),
                           ),
                         ),
