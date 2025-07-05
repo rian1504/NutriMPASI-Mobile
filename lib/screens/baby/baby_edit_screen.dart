@@ -117,13 +117,12 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
         final selectedDate = date as DateTime;
         if (selectedDate.isAfter(sixMonthsAgo) ||
             selectedDate.isBefore(twoYearsAgo)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
+          AppFlushbar.showWarning(
+            context,
+            title: 'Perhatian!',
+            message:
                 'Tanggal harus antara ${DateFormat('d MMMM y', 'id_ID').format(twoYearsAgo)} dan ${DateFormat('d MMMM y', 'id_ID').format(sixMonthsAgo)}',
-              ),
-              backgroundColor: Colors.red,
-            ),
+            marginVerticalValue: 8,
           );
           return;
         }
