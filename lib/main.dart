@@ -212,8 +212,14 @@ class MainApp extends StatelessWidget {
 class MainPage extends StatefulWidget {
   final int initialPage;
   final DateTime? targetDate;
+  final Map<String, dynamic>? additionalParams;
 
-  const MainPage({super.key, this.initialPage = 0, this.targetDate});
+  const MainPage({
+    super.key,
+    this.initialPage = 0,
+    this.targetDate,
+    this.additionalParams,
+  });
 
   @override
   State<MainPage> createState() => MainPageState();
@@ -229,6 +235,9 @@ class MainPageState extends State<MainPage> {
     _page = widget.initialPage;
     if (widget.targetDate != null) {
       _pageParams = {'targetDate': widget.targetDate};
+    }
+    if (widget.additionalParams != null) {
+      _pageParams.addAll(widget.additionalParams!);
     }
   }
 
