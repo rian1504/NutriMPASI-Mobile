@@ -597,7 +597,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                         ],
                                                       ),
                                             ),
-                                            const SizedBox(width: 16),
+                                            const SizedBox(width: 4),
                                             // Informasi bayi
                                             Expanded(
                                               child: Column(
