@@ -565,7 +565,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                         fontFamily: 'Poppins',
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.white,
+                                        color:
+                                            _selectedBaby == baby.id.toString()
+                                                ? Colors.black
+                                                : Colors.white,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -576,7 +579,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                     const Icon(
                                       Icons.check,
                                       size: 16,
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                 ],
                               ),
@@ -1282,9 +1285,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                       ? AppColors.primary.withAlpha(50)
                                       : AppColors.white,
                               border: Border.all(
-                                color: _selectedTimePeriod == period
-                                    ? AppColors.primary
-                                    : AppColors.componentGrey!,
+                                color:
+                                    _selectedTimePeriod == period
+                                        ? AppColors.primary
+                                        : AppColors.componentGrey!,
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -1292,7 +1296,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                               child:
                                   _selectedTimePeriod == period
                                       ? Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.check,

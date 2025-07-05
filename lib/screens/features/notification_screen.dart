@@ -146,7 +146,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       fontFamily: 'Poppins',
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                                      color:
+                                          _selectedCategory == category
+                                              ? Colors.black
+                                              : Colors.white,
                                     ),
                                   ),
                                   if (_selectedCategory ==
@@ -154,7 +157,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     const Icon(
                                       Icons.check,
                                       size: 16,
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                 ],
                               ),
