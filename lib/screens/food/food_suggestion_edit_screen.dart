@@ -502,6 +502,21 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
     }
   }
 
+  // Helper method untuk mengkapitalisasi setiap kata
+  String _capitalizeEachWord(String text) {
+    if (text.isEmpty) return text;
+
+    return text
+        .split(' ')
+        .map(
+          (word) =>
+              word.isEmpty
+                  ? word
+                  : word[0].toUpperCase() + word.substring(1).toLowerCase(),
+        )
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1620,8 +1635,9 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                                 foodCategoryId:
                                                     _selectedCategory?.id ??
                                                     widget.food.foodCategoryId,
-                                                name:
-                                                    _recipeNameController.text,
+                                                name: _capitalizeEachWord(
+                                                  _recipeNameController.text,
+                                                ),
                                                 image:
                                                     _imagePath ??
                                                     widget.food.image,
