@@ -1417,28 +1417,41 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
           ),
         ],
       ),
-      child: ExpansionTile(
-        initiallyExpanded: _isGroupExpanded(groupTitle),
-        onExpansionChanged: (isExpanded) {
-          _toggleGroupExpansion(groupTitle, isExpanded);
-        },
-        backgroundColor: Colors.transparent,
-        collapsedBackgroundColor: Colors.transparent,
-        title: Text(
-          groupTitle,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: AppColors.textBlack,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          expansionTileTheme: const ExpansionTileThemeData(
+            shape: Border(),
+            collapsedShape: Border(),
           ),
         ),
-        children:
-            foods.map((food) {
-              return Container(
-                margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                child: _buildFoodHistoryItem(food),
-              );
-            }).toList(),
+        child: ExpansionTile(
+          initiallyExpanded: _isGroupExpanded(groupTitle),
+          onExpansionChanged: (isExpanded) {
+            _toggleGroupExpansion(groupTitle, isExpanded);
+          },
+          backgroundColor: Colors.transparent,
+          collapsedBackgroundColor: Colors.transparent,
+          title: Text(
+            groupTitle,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: AppColors.textBlack,
+            ),
+          ),
+          children:
+              foods.map((food) {
+                return Container(
+                  margin: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 16,
+                  ),
+                  child: _buildFoodHistoryItem(food),
+                );
+              }).toList(),
+        ),
       ),
     );
   }
