@@ -64,7 +64,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if (context.mounted) {
               Navigator.pushReplacementNamed(context, '/login');
             }
-            AppFlushbar.showSuccess(context, message: state.message);
+            AppFlushbar.showSuccess(
+              context,
+              title: 'Berhasil',
+              message: state.message,
+              marginVerticalValue: 8,
+            );
           } else if (state is AuthenticationError) {
             AppFlushbar.showError(context, message: state.error);
           }
@@ -378,7 +383,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       return null;
                                     },
                                   ),
-                                  const SizedBox(height: 24),
+                                  const SizedBox(height: 40),
                                   // Tombol daftar
                                   SizedBox(
                                     width: double.infinity,

@@ -45,6 +45,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             context,
             title: 'Berhasil',
             message: state.message,
+            marginVerticalValue: 8,
           );
         } else if (state is AuthenticationError) {
           AppFlushbar.showError(context, title: 'Error', message: state.error);

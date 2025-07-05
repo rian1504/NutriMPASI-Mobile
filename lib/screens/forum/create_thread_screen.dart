@@ -39,7 +39,7 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBarForum(
-        title: "Buat Thread",
+        title: "Buat Postingan",
         showExitButton: true,
         category: '',
       ),
@@ -51,7 +51,7 @@ class _CreateThreadScreenState extends State<CreateThreadScreen> {
             AppFlushbar.showSuccess(
               context,
               title: 'Berhasil',
-              message: 'Berhasil menambah thread!',
+              message: 'Berhasil menambah postingan',
             );
 
             context.read<ThreadBloc>().add(FetchThreads());

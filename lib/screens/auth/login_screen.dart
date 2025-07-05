@@ -52,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
               context,
               title: "Selamat datang mama!",
               message: state.message ?? 'Login berhasil',
-              marginVerticalValue: 8,
             );
           } else if (state is AuthenticationError) {
             AppFlushbar.showError(context, message: state.error);

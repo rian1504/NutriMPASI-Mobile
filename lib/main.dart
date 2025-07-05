@@ -212,8 +212,14 @@ class MainApp extends StatelessWidget {
 class MainPage extends StatefulWidget {
   final int initialPage;
   final DateTime? targetDate;
+  final Map<String, dynamic>? additionalParams;
 
-  const MainPage({super.key, this.initialPage = 0, this.targetDate});
+  const MainPage({
+    super.key,
+    this.initialPage = 0,
+    this.targetDate,
+    this.additionalParams,
+  });
 
   @override
   State<MainPage> createState() => MainPageState();
@@ -222,24 +228,26 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   late int _page;
   Map<String, dynamic> _pageParams = {};
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     _page = widget.initialPage;
+    _pageController = PageController(initialPage: widget.initialPage);
     if (widget.targetDate != null) {
       _pageParams = {'targetDate': widget.targetDate};
     }
+    if (widget.additionalParams != null) {
+      _pageParams.addAll(widget.additionalParams!);
+    }
   }
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const FoodListScreen(),
-    const ScheduleScreen(),
-    const ForumScreen(),
-    const SettingScreen(),
-    const Center(child: Text('Settings')),
-  ];
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   // Fungsi untuk mengubah halaman
   void changePage(int index, {Map<String, dynamic>? additionalParams}) {
@@ -247,6 +255,11 @@ class MainPageState extends State<MainPage> {
       _page = index;
       _pageParams = additionalParams ?? {};
     });
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -280,14 +293,29 @@ class MainPageState extends State<MainPage> {
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body:
-            _page == 1 && _pageParams.containsKey('showUserSuggestions')
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          onPageChanged: (index) {
+            setState(() {
+              _page = index;
+              _pageParams = {};
+            });
+          },
+          children: [
+            const HomeScreen(),
+            _pageParams.containsKey('showUserSuggestions')
                 ? FoodListScreen(
                   showUserSuggestions: _pageParams['showUserSuggestions'],
                 )
-                : _page == 2 && _pageParams.containsKey('targetDate')
+                : const FoodListScreen(),
+            _pageParams.containsKey('targetDate')
                 ? ScheduleScreen(targetDate: _pageParams['targetDate'])
-                : _screens[_page],
+                : const ScheduleScreen(),
+            const ForumScreen(),
+            const SettingScreen(),
+          ],
+        ),
         bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: AppColors.background,
           color: AppColors.primary,
@@ -330,6 +358,11 @@ class MainPageState extends State<MainPage> {
               _page = index;
               _pageParams = {};
             });
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
           },
         ),
       ),

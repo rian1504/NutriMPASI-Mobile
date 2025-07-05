@@ -23,6 +23,7 @@ class AppColors {
   static Color primaryHighTransparent = Color(0xFFFC8207).withAlpha(25);
   static Color accentHighTransparent = Color(0xFF5966B1).withAlpha(25);
   static Color errorHighTranparent = Color(0xFFFE2323).withAlpha(25);
+  static Color warningHighTranparent = Color(0xFFFFCD29).withAlpha(40);
   static Color primaryLowTransparent = Color(0xFFFC8207).withAlpha(175);
   static Color errorLowTranparent = Color(0xFFFE2323).withAlpha(175);
 

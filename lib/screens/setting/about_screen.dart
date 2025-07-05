@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  String appVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getAppVersion();
+  }
+
+  Future<void> _getAppVersion() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        appVersion = packageInfo.version;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +78,32 @@ class AboutScreen extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Background
+                // Lingkaran besar di belakang
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            offset: const Offset(0, 8),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Lataran bawah dengan warna primer
                 Container(
                   width: double.infinity,
                   height: 125,
@@ -76,7 +124,7 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Logo Politeknik
+                // Lingkaran besar di depan (warna primer)
                 Positioned(
                   top: 0,
                   left: 0,
@@ -88,38 +136,37 @@ class AboutScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Logo aplikasi di tengah lingkaran
+                Positioned(
+                  top: 25,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withAlpha(10),
-                            offset: const Offset(0, 8),
-                            blurRadius: 0,
-                            spreadRadius: 0,
+                            color: Colors.black.withAlpha(25),
+                            blurRadius: 6,
+                            spreadRadius: 1,
                           ),
                         ],
                       ),
-                      child: Center(
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(25),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          // Logo Politeknik
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/images/logo/nutrimpasi.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                      // Logo Politeknik
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/images/logo/nutrimpasi.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
@@ -128,8 +175,7 @@ class AboutScreen extends StatelessWidget {
               ],
             ),
 
-            SizedBox(height: 100),
-
+            const SizedBox(height: 80),
             // Konten utama tentang aplikasi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -147,7 +193,7 @@ class AboutScreen extends StatelessWidget {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -163,21 +209,19 @@ class AboutScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
-
+                      const SizedBox(height: 4),
                       // Versi aplikasi
-                      const Center(
+                      Center(
                         child: Text(
-                          'Versi 1.0.0',
-                          style: TextStyle(
+                          'Versi $appVersion',
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.greyDark,
                           ),
                         ),
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Deskripsi aplikasi
                       const Text(
                         'Tentang Aplikasi',
@@ -188,19 +232,19 @@ class AboutScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
 
                       const Text(
                         'NutriMPASI adalah aplikasi panduan makanan pendamping ASI yang merupakan hasil proyek PBL (Project Based Learning) dari Politeknik Negeri Batam. Aplikasi ini dibuat khusus untuk membantu para ibu dalam memberikan nutrisi terbaik untuk bayi usia 6-24 bulan.\n\nSebagai solusi inovatif dalam bidang kesehatan bayi, NutriMPASI dirancang untuk memudahkan ibu dalam menyiapkan makanan bergizi, memantau perkembangan bayi, dan berbagi pengalaman dengan komunitas ibu lainnya. Dengan fitur resep MPASI sehat, pemantauan pertumbuhan, forum diskusi, dan pengingat jadwal makan, NutriMPASI hadir sebagai solusi terpadu untuk kebutuhan nutrisi bayi Anda.',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textBlack,
+                          height: 1.5,
                         ),
                         textAlign: TextAlign.justify,
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Tim pengembang
                       const Text(
                         'Tim Pengembang',
@@ -211,7 +255,7 @@ class AboutScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
 
                       _buildDeveloperItem(
                         context,
@@ -241,8 +285,7 @@ class AboutScreen extends StatelessWidget {
                         'Anggota - Frontend dan UI/UX',
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Manajer proyek
                       const Text(
                         'Manajer Proyek',
@@ -253,7 +296,7 @@ class AboutScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
 
                       _buildMentorItem(
                         context,
@@ -261,8 +304,7 @@ class AboutScreen extends StatelessWidget {
                         'NIK: 113115',
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Logo Politeknik dan Jurusan
                       const Text(
                         'Institusi',
@@ -273,8 +315,7 @@ class AboutScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 16),
-
+                      const SizedBox(height: 20),
                       // Baris untuk logo Politeknik dan Jurusan
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -302,19 +343,19 @@ class AboutScreen extends StatelessWidget {
                                   fit: BoxFit.contain,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
                               const Text(
                                 'Politeknik Negeri Batam',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
 
-                          const SizedBox(width: 20),
-
+                          const SizedBox(width: 24),
                           // Logo Jurusan
                           Column(
                             children: [
@@ -338,21 +379,21 @@ class AboutScreen extends StatelessWidget {
                                   fit: BoxFit.contain,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
                               const Text(
                                 'Teknik Informatika',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 32),
                       // Copyright
                       const Center(
                         child: Text(
@@ -366,7 +407,6 @@ class AboutScreen extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 8),
-
                       // Kontak
                       const Center(
                         child: Text(
@@ -378,12 +418,14 @@ class AboutScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                     ],
                   ),
                 ),
               ),
             ),
+
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -398,7 +440,7 @@ class AboutScreen extends StatelessWidget {
     String role,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -424,6 +466,7 @@ class AboutScreen extends StatelessWidget {
                     color: AppColors.textBlack,
                   ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   nim,
                   style: const TextStyle(
@@ -431,6 +474,7 @@ class AboutScreen extends StatelessWidget {
                     color: AppColors.greyDark,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   role,
                   style: const TextStyle(
@@ -450,7 +494,7 @@ class AboutScreen extends StatelessWidget {
   // Widget untuk menampilkan item manajer proyek
   Widget _buildMentorItem(BuildContext context, String name, String id) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -476,6 +520,7 @@ class AboutScreen extends StatelessWidget {
                     color: AppColors.textBlack,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   id,
                   style: const TextStyle(

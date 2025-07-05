@@ -13,7 +13,6 @@ import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/utils/menu_dialog.dart';
 import 'package:nutrimpasi/utils/navigation_animation.dart';
 import 'package:nutrimpasi/utils/report_dialog.dart';
-import 'package:nutrimpasi/widgets/custom_app_bar.dart';
 import 'package:nutrimpasi/widgets/custom_message_dialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -45,7 +44,7 @@ class _FavoriteThreadScreenState extends State<FavoriteThreadScreen> {
           AppFlushbar.showSuccess(
             context,
             title: 'Berhasil',
-            message: 'Berhasil menghapus thread',
+            message: 'Berhasil menghapus postingan',
           );
 
           context.read<LikeBloc>().add(FetchLikes());
@@ -53,62 +52,200 @@ class _FavoriteThreadScreenState extends State<FavoriteThreadScreen> {
           AppFlushbar.showError(context, title: 'Error', message: state.error);
         }
       },
-      child: CustomAppBar(
-        title: 'Thread yang Disukai',
-        appBarContent: true,
-        icon: AppIcons.likeFill,
-        content: // Daftar konten thread yang disukai
-            Column(
-          children: [
-            SizedBox(height: 100),
-            BlocBuilder<LikeBloc, LikeState>(
-              builder: (context, state) {
-                if (state is LikeLoading) {
-                  return const Expanded(
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          elevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Material(
+              elevation: 5,
+              shadowColor: Colors.black54,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: AppColors.textBlack,
+                    size: 24,
+                  ),
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Postingan yang Disukai',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Lingkaran besar di belakang
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
                     child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(50),
+                              offset: const Offset(0, 8),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                }
-
-                if (state is LikeLoaded) {
-                  likes = state.likes;
-                }
-
-                if (likes.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: EmptyMessage(
-                      title: 'Anda belum menyukai thread',
-                      subtitle:
-                          'Belum ada thread yang Anda sukai. Temukan berbagai diskusi menarik di forum dan tekan tombol suka pada thread favorit Anda agar mudah ditemukan kembali di halaman ini.',
-                      iconName: AppIcons.forum,
-                    ),
-                  );
-                }
-
-                return Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: likes.length,
-                    itemBuilder: (context, index) {
-                      final thread = likes[index].thread;
-                      final userId = loggedInUser!.id;
-                      final checkUser = thread.userId == userId;
-                      return ForumCard(
-                        thread: thread,
-                        showMenu: checkUser,
-                        showReport: !checkUser,
-                        currentUserId: userId,
-                      );
-                    },
                   ),
-                );
-              },
-            ),
-          ],
+
+                  // Lataran bawah dengan warna primer
+                  Container(
+                    width: double.infinity,
+                    height: 125,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(50),
+                          offset: const Offset(0, 4),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Lingkaran besar di depan (warna primer)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Icon forum/like di tengah lingkaran
+                  Positioned(
+                    top: 25,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(25),
+                              blurRadius: 6,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          AppIcons.likeFill,
+                          size: 80,
+                          color: AppColors.accent,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 100),
+
+              // Daftar thread yang disukai
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: BlocBuilder<LikeBloc, LikeState>(
+                  builder: (context, state) {
+                    if (state is LikeLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      );
+                    }
+
+                    if (state is LikeLoaded) {
+                      likes = state.likes;
+                    }
+
+                    if (likes.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: EmptyMessage(
+                          title: 'Anda belum menyukai postingan',
+                          subtitle:
+                              'Belum ada postingan yang Anda sukai. Temukan berbagai diskusi menarik di forum dan tekan tombol suka pada postingan favorit Anda agar mudah ditemukan kembali di halaman ini.',
+                          iconName: AppIcons.forum,
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(4),
+                      itemCount: likes.length,
+                      itemBuilder: (context, index) {
+                        final thread = likes[index].thread;
+                        final userId = loggedInUser!.id;
+                        final checkUser = thread.userId == userId;
+                        return ForumCard(
+                          thread: thread,
+                          showMenu: checkUser,
+                          showReport: !checkUser,
+                          currentUserId: userId,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
@@ -312,18 +449,14 @@ class ForumCardState extends State<ForumCard> {
                           children: [
                             IconButton(
                               icon: Row(
-                                mainAxisSize:
-                                    MainAxisSize
-                                        .min, // Agar Row hanya mengambil ruang minimal
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     AppIcons.favoriteFill,
                                     color: Colors.red,
                                     size: 24,
                                   ),
-                                  const SizedBox(
-                                    width: 4,
-                                  ), // Jarak antara ikon dan teks
+                                  const SizedBox(width: 4),
                                   Text(
                                     currentLikeCount.toString(),
                                     style: TextStyle(
@@ -340,24 +473,20 @@ class ForumCardState extends State<ForumCard> {
                         SizedBox(width: 4),
                         IconButton(
                           icon: Row(
-                            mainAxisSize:
-                                MainAxisSize
-                                    .min, // Penting agar Row tidak memakan ruang lebih
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
                                 AppIcons.comment,
                                 size: 24,
                                 color: AppColors.black,
                               ),
-                              const SizedBox(
-                                width: 4,
-                              ), // Sedikit jarak antara ikon dan teks
+                              const SizedBox(width: 4),
                               Text(
                                 widget.thread.commentsCount.toString(),
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: AppColors.black,
-                                ), // Sesuaikan warna teks
+                                ),
                               ),
                             ],
                           ),
@@ -376,7 +505,6 @@ class ForumCardState extends State<ForumCard> {
                   if (widget.showMenu)
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
-                      // child: ReportButton(category: "thread", refersId: widget.thread.id),
                       child: GestureDetector(
                         onTap: _showMenuDialog,
                         child: Icon(AppIcons.menu, size: 20),
@@ -385,7 +513,6 @@ class ForumCardState extends State<ForumCard> {
                   if (widget.showReport)
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
-                      // child: ReportButton(category: "thread", refersId: widget.thread.id),
                       child: GestureDetector(
                         onTap:
                             () => showReportDialog(

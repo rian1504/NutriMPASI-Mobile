@@ -7,6 +7,7 @@ import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_edit_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
+import 'package:nutrimpasi/widgets/custom_dialog.dart';
 
 class FoodSuggestionDetailScreen extends StatefulWidget {
   final int foodId;
@@ -88,13 +89,13 @@ class _FoodSuggestionDetailScreenState
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Material(
-                                  elevation: 3,
+                                  elevation: 5,
                                   shadowColor: Colors.black54,
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(12),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: IconButton(
                                       icon: const Icon(
@@ -310,53 +311,57 @@ class _FoodSuggestionDetailScreenState
                                 },
                               ),
 
-                              // Bagian Buah (dipindah ke bawah Bahan)
-                              Text(
-                                'Buah',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textBlack,
+                              if (food.fruit!.any(
+                                (item) => item.trim().isNotEmpty,
+                              )) ...[
+                                // Bagian Buah (dipindah ke bawah Bahan)
+                                Text(
+                                  'Buah',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.textBlack,
+                                  ),
                                 ),
-                              ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: food.fruit!.length,
-                                padding: const EdgeInsets.all(16),
-                                itemBuilder: (context, index) {
-                                  final fruit = food.fruit![index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          width: 24,
-                                          height: 24,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              '${index + 1}',
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: food.fruit!.length,
+                                  padding: const EdgeInsets.all(16),
+                                  itemBuilder: (context, index) {
+                                    final fruit = food.fruit![index];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            width: 24,
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${index + 1}',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(child: Text(fruit)),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
+                                          const SizedBox(width: 12),
+                                          Expanded(child: Text(fruit)),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
 
                               // Bagian Langkah-langkah
                               Text(
@@ -536,8 +541,8 @@ class _FoodSuggestionDetailScreenState
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.amber,
-                                foregroundColor: Colors.white,
+                                backgroundColor: AppColors.warning,
+                                foregroundColor: AppColors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -579,131 +584,42 @@ class _FoodSuggestionDetailScreenState
                                 // tampilkan dialog konfirmasi hapus
                                 showDialog(
                                   context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(20),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Anda yakin ingin menghapus Usulan Resep "${food.name}" ini?',
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 24),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                // Tombol Batal
-                                                Expanded(
-                                                  child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          AppColors
-                                                              .componentBlack,
-                                                      foregroundColor:
-                                                          Colors.white,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.of(
-                                                        context,
-                                                      ).pop();
-                                                    },
-                                                    child: const Text('Batal'),
-                                                  ),
+                                  builder:
+                                      (ctx) => ConfirmDialog(
+                                        titleText: 'Hapus Usulan Resep',
+                                        contentText:
+                                            'Anda yakin ingin menghapus usulan resep "${food.name}" ini?',
+                                        confirmButtonText: 'Hapus',
+                                        confirmButtonColor: AppColors.error,
+                                        onConfirm: () {
+                                          if (!mounted) {
+                                            return;
+                                          }
+
+                                          context
+                                              .read<FoodSuggestionBloc>()
+                                              .add(
+                                                DeleteFoodSuggestion(
+                                                  foodId: food.id!,
                                                 ),
-                                                const SizedBox(width: 10),
-                                                // Tombol Hapus
-                                                Expanded(
-                                                  child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          AppColors.error,
-                                                      foregroundColor:
-                                                          Colors.white,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      if (!mounted) {
-                                                        return;
-                                                      }
+                                              );
 
-                                                      context
-                                                          .read<
-                                                            FoodSuggestionBloc
-                                                          >()
-                                                          .add(
-                                                            DeleteFoodSuggestion(
-                                                              foodId: food.id!,
-                                                            ),
-                                                          );
+                                          context.read<FoodBloc>().add(
+                                            FetchFoods(),
+                                          );
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
 
-                                                      context
-                                                          .read<FoodBloc>()
-                                                          .add(FetchFoods());
-                                                      Navigator.pop(context);
-                                                      Navigator.pop(context);
-
-                                                      AppFlushbar.showSuccess(
-                                                        context,
-                                                        title: 'Berhasil',
-                                                        message:
-                                                            'Makanan berhasil dihapus',
-                                                      );
-                                                    },
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        const Icon(
-                                                          Icons.delete,
-                                                          size: 18,
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        const Text(
-                                                          'Hapus',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Poppins',
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                          AppFlushbar.showSuccess(
+                                            context,
+                                            title: 'Berhasil',
+                                            message: 'Makanan berhasil dihapus',
+                                          );
+                                        },
+                                        cancelButtonText: 'Batal',
+                                        onCancel:
+                                            () => Navigator.pop(ctx, false),
                                       ),
-                                    );
-                                  },
                                 );
                               },
                               style: ElevatedButton.styleFrom(
@@ -723,7 +639,7 @@ class _FoodSuggestionDetailScreenState
                                   const Icon(Icons.delete, size: 18),
                                   const SizedBox(width: 8),
                                   const Text(
-                                    'Hapus ',
+                                    'Hapus Usulan ',
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 14,

@@ -444,6 +444,8 @@ class _FoodNutritionCalculatorScreenState
             LeadingActionButton(
               onPressed: _isSubmitting ? null : () => Navigator.pop(context),
               icon: AppIcons.back,
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
             ),
           ],
         ),

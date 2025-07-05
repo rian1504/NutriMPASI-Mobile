@@ -70,7 +70,7 @@ class _ForumScreenState extends State<ForumScreen> {
                     AppFlushbar.showSuccess(
                       context,
                       title: 'Berhasil',
-                      message: 'Berhasil menghapus thread',
+                      message: 'Berhasil menghapus postingan',
                     );
 
                     context.read<ThreadBloc>().add(FetchThreads());
@@ -395,11 +395,11 @@ class _EmptyStateWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: EmptyMessage(
         iconName: AppIcons.forum,
-        title: isMyPosts ? 'Anda belum membuat thread' : 'Belum ada thread',
-        // title: 'Belum Ada Thread',
+        title:
+            isMyPosts ? 'Anda belum membuat postingan' : 'Belum ada postingan',
         subtitle:
-            'Tambahkan thread atau postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
-        buttonText: 'Tambah Thread',
+            'Tambahkan postingan atau postingan Anda agar dapat berinteraksi dan menyampaikan pendapat Anda.',
+        buttonText: 'Tambah Postingan',
         onPressed:
             isMyPosts
                 ? () =>
