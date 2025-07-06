@@ -123,6 +123,280 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
   }
 
+  // Fungsi untuk menampilkan dialog informasi swipe
+  void _showSwipeInfo() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Informasi',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textBlack,
+                      ),
+                    ),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            border: Border.all(color: AppColors.textBlack),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.close,
+                              color: AppColors.textBlack,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.componentGrey!.withAlpha(75),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Symbols.touch_app,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Cara Menggunakan Jadwal:',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Bagian 1: Membuka opsi
+                      const Text(
+                        '1. Membuka Opsi Jadwal:',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textBlack,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: const Text(
+                          '• Geser jadwal ke kiri atau tekan tombol panah kiri',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 13,
+                            color: AppColors.textBlack,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const SizedBox(width: 16),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.accent,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Icon(
+                              Symbols.chevron_left,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Expanded(
+                            child: Text(
+                              'Tekan tombol ini untuk membuka opsi',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 13,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Bagian 2: Pilihan aksi
+                      const Text(
+                        '2. Pilihan Aksi:',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textBlack,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const SizedBox(width: 16),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.accent,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Icon(
+                              Symbols.chef_hat,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Masak',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 13,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.warning,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Icon(
+                              Symbols.edit,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Edit',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 13,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.error,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Icon(
+                              Symbols.delete,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Hapus',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 13,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Bagian 3: Menutup opsi
+                      const Text(
+                        '3. Menutup Opsi:',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textBlack,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: const Text(
+                          '• Geser kembali ke kanan atau tekan tombol silang',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 13,
+                            color: AppColors.textBlack,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text(
+                      'Mengerti',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   // Metode untuk mengupdate tanggal terpilih
   void _updateSelectedDate(int index) {
     if (_days[index]['enabled']) {
@@ -314,6 +588,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   DateFormat('EEEE, d MMMM yyyy', 'id').format(_selectedDate),
@@ -322,6 +597,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textBlack,
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _showSwipeInfo,
+                    customBorder: const CircleBorder(),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(
+                        Symbols.info,
+                        size: 20,
+                        color: AppColors.textGrey,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -458,13 +748,62 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 bottom: 0,
                                 child: Row(
                                   children: [
+                                    // Tombol masak
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.warning,
+                                      ),
+                                      child: Container(
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.accent,
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 20.0,
+                                          ),
+                                          child: InkWell(
+                                            onTap: () {
+                                              // Mengubah list baby ke list id baby
+                                              List<String> babyId =
+                                                  babies
+                                                      .map(
+                                                        (baby) =>
+                                                            baby.id.toString(),
+                                                      )
+                                                      .toList();
+
+                                              pushWithSlideTransition(
+                                                context,
+                                                CookingGuideScreen(
+                                                  foodId: food!.id.toString(),
+                                                  babyId: babyId,
+                                                  scheduleId:
+                                                      item.id.toString(),
+                                                ),
+                                              );
+                                            },
+                                            child: const Center(
+                                              child: Icon(
+                                                Symbols.chef_hat,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     // Tombol edit
                                     Container(
                                       decoration: BoxDecoration(
                                         color: AppColors.error,
                                       ),
                                       child: Container(
-                                        width: 80,
+                                        width: 60,
                                         decoration: BoxDecoration(
                                           color: AppColors.warning,
                                           borderRadius: BorderRadius.only(
@@ -474,7 +813,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.only(
-                                            left: 20.0,
+                                            left: 0,
                                           ),
                                           child: InkWell(
                                             onTap: () {
@@ -1200,167 +1539,145 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               ),
 
                               // Card jadwal
-                              GestureDetector(
-                                onTap: () {
-                                  // Mengubah list baby ke list id baby
-                                  List<String> babyId =
-                                      babies
-                                          .map((baby) => baby.id.toString())
-                                          .toList();
-
-                                  pushWithSlideTransition(
-                                    context,
-                                    CookingGuideScreen(
-                                      foodId: food.id.toString(),
-                                      babyId: babyId,
-                                      scheduleId: item.id.toString(),
-                                    ),
-                                  );
-                                },
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
-                                  transform: Matrix4.translationValues(
-                                    isOpen ? -120 : 0,
-                                    0,
-                                    0,
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                transform: Matrix4.translationValues(
+                                  isOpen ? -180 : 0,
+                                  0,
+                                  0,
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withAlpha(25),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withAlpha(25),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
+                                  child: Row(
+                                    children: [
+                                      // Gambar makanan
+                                      ClipRRect(
+                                        // borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
                                         ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        // Gambar makanan
-                                        ClipRRect(
-                                          // borderRadius: BorderRadius.circular(10),
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10),
-                                          ),
-                                          child: Image.network(
-                                            storageUrl + food!.image,
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                          ),
+                                        child: Image.network(
+                                          storageUrl + food!.image,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
                                         ),
-                                        const SizedBox(width: 12),
-                                        // Info makanan
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                food.name,
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.textBlack,
-                                                ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      // Info makanan
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              food.name,
+                                              style: const TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.textBlack,
                                               ),
-                                              const SizedBox(height: 4),
-                                              SizedBox(
-                                                height: 40,
-                                                child: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  child: Column(
-                                                    children:
-                                                        babies.map((baby) {
-                                                          return Padding(
-                                                            padding:
-                                                                const EdgeInsets.only(
-                                                                  right: 5,
-                                                                ),
-                                                            child: Text(
-                                                              baby.name,
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                fontSize: 12,
-                                                                color:
-                                                                    AppColors
-                                                                        .textGrey,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            SizedBox(
+                                              height: 40,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.vertical,
+                                                child: Column(
+                                                  children:
+                                                      babies.map((baby) {
+                                                        return Padding(
+                                                          padding:
+                                                              const EdgeInsets.only(
+                                                                right: 5,
                                                               ),
+                                                          child: Text(
+                                                            baby.name,
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Poppins',
+                                                              fontSize: 12,
+                                                              color:
+                                                                  AppColors
+                                                                      .textGrey,
                                                             ),
-                                                          );
-                                                        }).toList(),
-                                                  ),
+                                                          ),
+                                                        );
+                                                      }).toList(),
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                        // Tombol masak
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 8.0,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "${babies.length.toString()} porsi",
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.accent,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 12),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  // Mengubah list baby ke list id baby
-                                                  List<String> babyId =
-                                                      babies
-                                                          .map(
-                                                            (baby) =>
-                                                                baby.id
-                                                                    .toString(),
-                                                          )
-                                                          .toList();
-
-                                                  pushWithSlideTransition(
-                                                    context,
-                                                    CookingGuideScreen(
-                                                      foodId:
-                                                          food.id.toString(),
-                                                      babyId: babyId,
-                                                      scheduleId:
-                                                          item.id.toString(),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    10,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.accent,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: const Icon(
-                                                    Symbols.chef_hat,
-                                                    color: Colors.white,
-                                                    size: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                      ),
+                                      // Tombol opsi
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 8.0,
                                         ),
-                                      ],
-                                    ),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "${babies.length.toString()} Set",
+                                              style: const TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.accent,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 12),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  if (isOpen) {
+                                                    _openCardId = null;
+                                                  } else {
+                                                    _openCardId = itemId;
+                                                  }
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      isOpen
+                                                          ? AppColors
+                                                              .componentGrey
+                                                          : AppColors.accent,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  isOpen
+                                                      ? Symbols.close
+                                                      : Symbols
+                                                          .chevron_backward,
+                                                  color:
+                                                      isOpen
+                                                          ? AppColors.textGrey
+                                                          : Colors.white,
+                                                  size: 28,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
