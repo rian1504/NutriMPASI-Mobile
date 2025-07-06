@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrimpasi/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrimpasi/main.dart';
+import 'package:nutrimpasi/utils/flushbar.dart';
 import 'url.dart';
 import 'secure_storage.dart';
 
@@ -42,14 +42,14 @@ class RemoteDio {
             // 3. Show notification only if not already logging out
             if (navigatorKey.currentContext != null &&
                 !(e.requestOptions.extra['isLoggingOut'] ?? false)) {
-              ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
-                SnackBar(
-                  content: Text(
+              // Tampilkan pesan error
+              AppFlushbar.showError(
+                navigatorKey.currentContext!,
+                title: 'Error',
+                message:
                     e.response?.data['message'] ??
-                        'Session expired, please login again',
-                  ),
-                  duration: const Duration(seconds: 3),
-                ),
+                    'Session expired, please login again',
+                marginVerticalValue: 8.0,
               );
 
               // 4. Mark request as logging out to prevent recursion

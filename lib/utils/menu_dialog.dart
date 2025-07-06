@@ -29,7 +29,9 @@ Future<void> confirmDeleteThread({
     builder:
         (ctx) => AlertDialog(
           title: const Text("Konfirmasi Hapus"),
-          content: const Text("Apakah Anda yakin ingin menghapus thread ini?"),
+          content: const Text(
+            "Apakah Anda yakin ingin menghapus postingan ini?",
+          ),
           actions: [
             TextButton(
               child: const Text("Batal"),
@@ -120,20 +122,20 @@ void showThreadPreviewAndMenu({
                         borderRadius: BorderRadius.circular(4),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.accentHighTransparent,
+                            color: AppColors.warningHighTranparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ListTile(
                             leading: Icon(
                               AppIcons.edit,
                               size: 20,
-                              color: AppColors.accent,
+                              color: AppColors.amber,
                             ),
                             title: Text(
-                              "Edit Thread",
+                              "Edit Postingan",
                               style: TextStyle(
                                 fontSize: 16,
-                                color: AppColors.accent,
+                                color: AppColors.amber,
                               ),
                             ),
                             onTap: () {
@@ -170,7 +172,7 @@ void showThreadPreviewAndMenu({
                                 color: AppColors.error,
                               ),
                               title: Text(
-                                "Hapus Thread",
+                                "Hapus Postingan",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: AppColors.error,
@@ -304,20 +306,20 @@ void showCommentPreviewAndMenu({
                             color: Colors.white,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: AppColors.accentHighTransparent,
+                                color: AppColors.warningHighTranparent,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: ListTile(
                                 leading: Icon(
                                   AppIcons.edit,
                                   size: 20,
-                                  color: AppColors.accent,
+                                  color: AppColors.amber,
                                 ),
                                 title: const Text(
                                   "Edit Komentar",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: AppColors.accent,
+                                    color: AppColors.amber,
                                   ),
                                 ),
                                 onTap: () {

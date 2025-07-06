@@ -133,7 +133,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
               if (thread == null) {
                 return Center(
                   child: Text(
-                    "Tidak ada data thread.",
+                    "Tidak ada data postingan.",
                     style: TextStyle(color: AppColors.textBlack),
                   ),
                 );

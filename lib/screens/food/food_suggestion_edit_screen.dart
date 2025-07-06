@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nutrimpasi/blocs/food_category/food_category_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/constants/url.dart';
 import 'package:nutrimpasi/models/food_suggestion.dart';
 import 'package:nutrimpasi/screens/food/food_nutrition_calculator_screen.dart';
@@ -10,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:nutrimpasi/utils/flushbar.dart';
+import 'package:nutrimpasi/widgets/custom_button.dart';
 
 class FoodSuggestionEditScreen extends StatefulWidget {
   final FoodSuggestion food;
@@ -127,7 +129,7 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
     try {
       final XFile? selectedImage = await _picker.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 80,
+        imageQuality: 50,
       );
       if (selectedImage != null) {
         setState(() {
@@ -151,7 +153,7 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
     try {
       final XFile? takenImage = await _picker.pickImage(
         source: ImageSource.camera,
-        imageQuality: 80,
+        imageQuality: 50,
       );
       if (takenImage != null) {
         setState(() {
@@ -500,6 +502,21 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
     }
   }
 
+  // Helper method untuk mengkapitalisasi setiap kata
+  String _capitalizeEachWord(String text) {
+    if (text.isEmpty) return text;
+
+    return text
+        .split(' ')
+        .map(
+          (word) =>
+              word.isEmpty
+                  ? word
+                  : word[0].toUpperCase() + word.substring(1).toLowerCase(),
+        )
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -534,10 +551,7 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
           return Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 40,
-                  horizontal: 20,
-                ),
+                padding: EdgeInsets.fromLTRB(22, kToolbarHeight + 0, 22, 22),
                 child: Column(
                   children: [
                     // Judul dan indikator progres
@@ -1609,13 +1623,10 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                                       )
                                                       .toList();
 
-                                              // menambahkan field buah ke bahan untuk perhitungan gizi
-                                              if (_fruitsController
-                                                  .text
-                                                  .isNotEmpty) {
-                                                ingredients.add(
-                                                  _fruitsController.text,
-                                                );
+                                              String trimmedFruits =
+                                                  _fruitsController.text.trim();
+                                              if (trimmedFruits.isNotEmpty) {
+                                                ingredients.add(trimmedFruits);
                                               }
 
                                               // Mengupdate data makanan
@@ -1624,8 +1635,9 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                                 foodCategoryId:
                                                     _selectedCategory?.id ??
                                                     widget.food.foodCategoryId,
-                                                name:
-                                                    _recipeNameController.text,
+                                                name: _capitalizeEachWord(
+                                                  _recipeNameController.text,
+                                                ),
                                                 image:
                                                     _imagePath ??
                                                     widget.food.image,
@@ -1654,12 +1666,11 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                                         .map((c) => c.text)
                                                         .toList(),
                                                 fruit:
-                                                    _fruitsController
-                                                            .text
-                                                            .isNotEmpty
-                                                        ? _fruitsController.text
-                                                            .split(', ')
-                                                        : widget.food.fruit,
+                                                    trimmedFruits.isNotEmpty
+                                                        ? trimmedFruits.split(
+                                                          ', ',
+                                                        )
+                                                        : null,
                                                 step:
                                                     _stepControllers
                                                         .map((c) => c.text)
@@ -1701,12 +1712,12 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                             width: 50,
                                             height: 50,
                                             decoration: const BoxDecoration(
-                                              color: AppColors.buff,
+                                              color: AppColors.accent,
                                               shape: BoxShape.circle,
                                             ),
                                             child: const Icon(
                                               Symbols.arrow_forward_ios_rounded,
-                                              color: Colors.black,
+                                              color: Colors.white,
                                               size: 24,
                                             ),
                                           ),
@@ -1724,27 +1735,10 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                   ],
                 ),
               ),
-
               // Tombol kembali
-              Positioned(
-                top: 35,
-                left: 15,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.componentGrey!),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Symbols.arrow_back_ios_new_rounded,
-                      color: AppColors.textBlack,
-                      size: 24,
-                    ),
-                    padding: EdgeInsets.zero,
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
+              LeadingActionButton(
+                onPressed: () => Navigator.pop(context),
+                icon: AppIcons.back,
               ),
             ],
           );

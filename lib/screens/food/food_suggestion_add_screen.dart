@@ -443,6 +443,21 @@ class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
     }
   }
 
+  // Helper method untuk mengkapitalisasi setiap kata
+  String _capitalizeEachWord(String text) {
+    if (text.isEmpty) return text;
+
+    return text
+        .split(' ')
+        .map(
+          (word) =>
+              word.isEmpty
+                  ? word
+                  : word[0].toUpperCase() + word.substring(1).toLowerCase(),
+        )
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -466,7 +481,6 @@ class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
           return Stack(
             children: [
               Padding(
-                // padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                 padding: EdgeInsets.fromLTRB(22, kToolbarHeight + 0, 22, 22),
                 child: Column(
                   children: [
@@ -1454,19 +1468,18 @@ class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
                                                       )
                                                       .toList();
 
-                                              if (_fruitsController
-                                                  .text
-                                                  .isNotEmpty) {
-                                                ingredients.add(
-                                                  _fruitsController.text,
-                                                );
+                                              String trimmedFruits =
+                                                  _fruitsController.text.trim();
+                                              if (trimmedFruits.isNotEmpty) {
+                                                ingredients.add(trimmedFruits);
                                               }
 
                                               final storedFood = FoodSuggestion(
                                                 foodCategoryId:
                                                     _selectedCategory?.id,
-                                                name:
-                                                    _recipeNameController.text,
+                                                name: _capitalizeEachWord(
+                                                  _recipeNameController.text,
+                                                ),
                                                 image: _imagePath ?? '',
                                                 age: _selectedAgeGroup ?? '',
                                                 energy: 0,
@@ -1482,11 +1495,10 @@ class _FoodSuggestionAddScreenState extends State<FoodSuggestionAddScreen> {
                                                         .map((c) => c.text)
                                                         .toList(),
                                                 fruit:
-                                                    _fruitsController
-                                                            .text
-                                                            .isNotEmpty
-                                                        ? _fruitsController.text
-                                                            .split(', ')
+                                                    trimmedFruits.isNotEmpty
+                                                        ? trimmedFruits.split(
+                                                          ', ',
+                                                        )
                                                         : null,
                                                 step:
                                                     _stepControllers

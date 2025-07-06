@@ -90,13 +90,12 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
         final selectedDate = date as DateTime;
         if (selectedDate.isAfter(sixMonthsAgo) ||
             selectedDate.isBefore(twoYearsAgo)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
+          AppFlushbar.showWarning(
+            context,
+            title: 'Perhatian!',
+            message:
                 'Tanggal harus antara ${DateFormat('d MMMM y', 'id_ID').format(twoYearsAgo)} dan ${DateFormat('d MMMM y', 'id_ID').format(sixMonthsAgo)}',
-              ),
-              backgroundColor: Colors.red,
-            ),
+            marginVerticalValue: 8,
           );
           return;
         }
@@ -180,7 +179,32 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Background
+                // Lingkaran besar di belakang
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            offset: const Offset(0, 8),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Lataran bawah dengan warna primer
                 Container(
                   width: double.infinity,
                   height: 125,
@@ -201,7 +225,7 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                   ),
                 ),
 
-                // Avatar bayi
+                // Lingkaran besar di depan (warna primer)
                 Positioned(
                   top: 0,
                   left: 0,
@@ -213,40 +237,39 @@ class _BabyAddScreenState extends State<BabyAddScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Gambar bayi di tengah lingkaran
+                Positioned(
+                  top: 25,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withAlpha(10),
-                            offset: const Offset(0, 8),
-                            blurRadius: 0,
-                            spreadRadius: 0,
+                            color: Colors.black.withAlpha(25),
+                            blurRadius: 6,
+                            spreadRadius: 1,
                           ),
                         ],
                       ),
-                      child: Center(
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(25),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          // Gambar bayi sesuai dengan jenis kelamin
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              _gender == 'L'
-                                  ? 'assets/images/component/bayi_laki_laki.png'
-                                  : 'assets/images/component/bayi_perempuan.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                      // Gambar bayi sesuai dengan jenis kelamin
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          _gender == 'L'
+                              ? 'assets/images/component/bayi_laki_laki.png'
+                              : 'assets/images/component/bayi_perempuan.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),

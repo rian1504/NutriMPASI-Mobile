@@ -18,12 +18,23 @@ class FeatureListScreen extends StatelessWidget {
     final MainPageState? mainPage =
         context.findAncestorStateOfType<MainPageState>();
 
-    Navigator.pop(context);
-
     if (mainPage != null) {
+      Navigator.pop(context);
       mainPage.changePage(
         1,
         additionalParams: {'showUserSuggestions': showUserSuggestions},
+      );
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => MainPage(
+                initialPage: 1,
+                additionalParams: {'showUserSuggestions': showUserSuggestions},
+              ),
+        ),
+        (route) => false,
       );
     }
   }

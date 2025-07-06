@@ -565,7 +565,10 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                         fontFamily: 'Poppins',
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.white,
+                                        color:
+                                            _selectedBaby == baby.id.toString()
+                                                ? Colors.black
+                                                : Colors.white,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -576,7 +579,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                     const Icon(
                                       Icons.check,
                                       size: 16,
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                 ],
                               ),
@@ -829,34 +832,45 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                   );
                                 },
                               ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                              Column(
                                 children: [
                                   const Text(
-                                    'Total kkal Bulan ini',
+                                    'Total kkal',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
-                                  GestureDetector(
-                                    onTap: () {
-                                      _showRecommendationInfo(context);
-                                    },
-                                    child: Container(
-                                      width: 16,
-                                      height: 16,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withAlpha(75),
-                                        shape: BoxShape.circle,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Bulan ini',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
                                       ),
-                                      child: const Icon(
-                                        Icons.info_outline,
-                                        size: 12,
-                                        color: Colors.white,
+                                      const SizedBox(width: 4),
+                                      GestureDetector(
+                                        onTap: () {
+                                          _showRecommendationInfo(context);
+                                        },
+                                        child: Container(
+                                          width: 16,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withAlpha(75),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.info_outline,
+                                            size: 12,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -1279,22 +1293,45 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                             decoration: BoxDecoration(
                               color:
                                   _selectedTimePeriod == period
-                                      ? AppColors.primary
-                                      : AppColors.buff,
+                                      ? AppColors.primary.withAlpha(50)
+                                      : AppColors.white,
+                              border: Border.all(
+                                color:
+                                    _selectedTimePeriod == period
+                                        ? AppColors.primary
+                                        : AppColors.componentGrey!,
+                              ),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
-                              child: Text(
-                                period,
-                                style: TextStyle(
-                                  color:
-                                      _selectedTimePeriod == period
-                                          ? Colors.white
-                                          : AppColors.textBlack,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                ),
-                              ),
+                              child:
+                                  _selectedTimePeriod == period
+                                      ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            Icons.check,
+                                            color: AppColors.primary,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            period,
+                                            style: const TextStyle(
+                                              color: AppColors.primary,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                      : Text(
+                                        period,
+                                        style: const TextStyle(
+                                          color: AppColors.textBlack,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                             ),
                           ),
                         ),
@@ -1391,28 +1428,41 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
           ),
         ],
       ),
-      child: ExpansionTile(
-        initiallyExpanded: _isGroupExpanded(groupTitle),
-        onExpansionChanged: (isExpanded) {
-          _toggleGroupExpansion(groupTitle, isExpanded);
-        },
-        backgroundColor: Colors.transparent,
-        collapsedBackgroundColor: Colors.transparent,
-        title: Text(
-          groupTitle,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: AppColors.textBlack,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          expansionTileTheme: const ExpansionTileThemeData(
+            shape: Border(),
+            collapsedShape: Border(),
           ),
         ),
-        children:
-            foods.map((food) {
-              return Container(
-                margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                child: _buildFoodHistoryItem(food),
-              );
-            }).toList(),
+        child: ExpansionTile(
+          initiallyExpanded: _isGroupExpanded(groupTitle),
+          onExpansionChanged: (isExpanded) {
+            _toggleGroupExpansion(groupTitle, isExpanded);
+          },
+          backgroundColor: Colors.transparent,
+          collapsedBackgroundColor: Colors.transparent,
+          title: Text(
+            groupTitle,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: AppColors.textBlack,
+            ),
+          ),
+          children:
+              foods.map((food) {
+                return Container(
+                  margin: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 16,
+                  ),
+                  child: _buildFoodHistoryItem(food),
+                );
+              }).toList(),
+        ),
       ),
     );
   }
