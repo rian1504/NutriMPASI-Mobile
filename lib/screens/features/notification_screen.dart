@@ -8,6 +8,7 @@ import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/models/notification.dart' as model;
 import 'package:nutrimpasi/widgets/custom_button.dart';
 import 'package:nutrimpasi/screens/forum/thread_screen.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -259,12 +260,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
         }
         break;
       case 'schedule':
-        final tomorrow = DateTime.now().add(const Duration(days: 1));
+        // Hitung tanggal jadwal berdasarkan created_at notifikasi
+        // Notifikasi dibuat sehari sebelum jadwal, jadi tambahkan 1 hari
+        final scheduleDate = notification.createdAt.add(
+          const Duration(days: 1),
+        );
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder:
-                (context) => MainPage(initialPage: 2, targetDate: tomorrow),
+                (context) => MainPage(initialPage: 2, targetDate: scheduleDate),
           ),
         );
         break;
@@ -536,6 +541,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 style: TextStyle(
                                                   color: AppColors.textGrey,
                                                   fontSize: 12,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                timeago.format(
+                                                  notification.createdAt,
+                                                  locale: 'id',
+                                                ),
+                                                style: TextStyle(
+                                                  color: AppColors.textGrey,
+                                                  fontSize: 11,
+                                                  fontStyle: FontStyle.italic,
                                                 ),
                                               ),
                                             ],
