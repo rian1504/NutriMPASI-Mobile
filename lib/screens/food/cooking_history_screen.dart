@@ -832,34 +832,45 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                   );
                                 },
                               ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                              Column(
                                 children: [
                                   const Text(
-                                    'Total kkal Bulan ini',
+                                    'Total kkal',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
-                                  GestureDetector(
-                                    onTap: () {
-                                      _showRecommendationInfo(context);
-                                    },
-                                    child: Container(
-                                      width: 16,
-                                      height: 16,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withAlpha(75),
-                                        shape: BoxShape.circle,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Bulan ini',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
                                       ),
-                                      child: const Icon(
-                                        Icons.info_outline,
-                                        size: 12,
-                                        color: Colors.white,
+                                      const SizedBox(width: 4),
+                                      GestureDetector(
+                                        onTap: () {
+                                          _showRecommendationInfo(context);
+                                        },
+                                        child: Container(
+                                          width: 16,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withAlpha(75),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.info_outline,
+                                            size: 12,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
