@@ -175,7 +175,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ],
             ),
 
-            const SizedBox(height: 80),
+            SizedBox(height: 100),
             // Konten utama tentang aplikasi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -260,7 +260,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       _buildDeveloperItem(
                         context,
                         'Rian Abdullah',
-                        'NIM: 3312301003',
+                        'NIM: 3312301004',
                         'Ketua - Backend Web dan Mobile, Database',
                       ),
 
@@ -317,80 +317,54 @@ class _AboutScreenState extends State<AboutScreen> {
 
                       const SizedBox(height: 20),
                       // Baris untuk logo Politeknik dan Jurusan
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Logo Politeknik
-                          Column(
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 120,
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withAlpha(25),
-                                      blurRadius: 5,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                ),
-                                child: Image.asset(
-                                  'assets/images/logo/polibatam.png',
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'Politeknik Negeri Batam',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          // Tentukan apakah menggunakan layout horizontal atau vertikal
+                          final useVerticalLayout = constraints.maxWidth < 300;
+                          final logoSize =
+                              constraints.maxWidth < 350 ? 80.0 : 120.0;
 
-                          const SizedBox(width: 24),
-                          // Logo Jurusan
-                          Column(
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 120,
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withAlpha(25),
-                                      blurRadius: 5,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
+                          if (useVerticalLayout) {
+                            // Layout vertikal untuk layar kecil
+                            return Column(
+                              children: [
+                                _buildInstitutionLogo(
+                                  'assets/images/logo/polibatam.png',
+                                  'Politeknik Negeri Batam',
+                                  logoSize,
                                 ),
-                                child: Image.asset(
+                                const SizedBox(height: 24),
+                                _buildInstitutionLogo(
                                   'assets/images/logo/prodi_if.png',
-                                  fit: BoxFit.contain,
+                                  'Teknik Informatika',
+                                  logoSize,
                                 ),
-                              ),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'Teknik Informatika',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                              ],
+                            );
+                          } else {
+                            // Layout horizontal untuk layar normal
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Flexible(
+                                  child: _buildInstitutionLogo(
+                                    'assets/images/logo/polibatam.png',
+                                    'Politeknik Negeri Batam',
+                                    logoSize,
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ],
+                                const SizedBox(width: 16),
+                                Flexible(
+                                  child: _buildInstitutionLogo(
+                                    'assets/images/logo/prodi_if.png',
+                                    'Teknik Informatika',
+                                    logoSize,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        },
                       ),
 
                       const SizedBox(height: 32),
@@ -534,6 +508,42 @@ class _AboutScreenState extends State<AboutScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  // Widget untuk menampilkan logo institusi
+  Widget _buildInstitutionLogo(String imagePath, String label, double size) {
+    return Column(
+      children: [
+        Container(
+          width: size,
+          height: size,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(25),
+                blurRadius: 5,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child: Image.asset(imagePath, fit: BoxFit.contain),
+        ),
+        const SizedBox(height: 12),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

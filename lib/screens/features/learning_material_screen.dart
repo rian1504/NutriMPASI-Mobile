@@ -24,7 +24,7 @@ class LearningMaterialScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
+                  padding: const EdgeInsets.only(top: 16.0),
                   child: Center(
                     child: Text(
                       'Materi Pembelajaran',

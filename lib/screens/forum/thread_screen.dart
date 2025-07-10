@@ -323,14 +323,13 @@ class _ThreadSectionState extends State<_ThreadSection> {
                       children: [
                         Expanded(
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
                                 width: 32,
                                 height: 32,
                                 decoration: BoxDecoration(
-                                  color:
-                                      AppColors
-                                          .primaryHighTransparent, // abu-abu muda
+                                  color: AppColors.primaryHighTransparent,
                                   shape: BoxShape.circle,
                                 ),
                                 child:
@@ -347,32 +346,40 @@ class _ThreadSectionState extends State<_ThreadSection> {
                                         : Icon(
                                           AppIcons.userFill,
                                           color: AppColors.primary,
-                                          size:
-                                              20, // opsional, atur agar pas di lingkaran
+                                          size: 20,
                                         ),
                               ),
                               SizedBox(width: 8),
-                              Text(
-                                widget.thread.user.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
-                                  color: AppColors.textBlack,
+                              Expanded(
+                                child: Text(
+                                  widget.thread.user.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    color: AppColors.textBlack,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
                         ),
-                        Text(
-                          timeago.format(widget.thread.createdAt),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 12,
-                            color: AppColors.textGrey,
+                        if (widget.showMenu)
+                          GestureDetector(
+                            onTap: _showMenuDialog,
+                            child: Icon(AppIcons.menu, size: 20),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        if (widget.showReport)
+                          GestureDetector(
+                            onTap:
+                                () => showReportDialog(
+                                  context: context,
+                                  category: "thread",
+                                  refersId: widget.thread.id,
+                                ),
+                            child: Icon(AppIcons.report, size: 20),
+                          ),
                       ],
                     ),
                     SizedBox(height: 16),
@@ -407,7 +414,6 @@ class _ThreadSectionState extends State<_ThreadSection> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // IconButton(
                                   Icon(
                                     isLiked
                                         ? AppIcons.favoriteFill
@@ -415,8 +421,6 @@ class _ThreadSectionState extends State<_ThreadSection> {
                                     color: Colors.red,
                                     size: 24,
                                   ),
-                                  // onPressed: _toggleLike,
-                                  // ),
                                   SizedBox(width: 4),
                                   Text(
                                     likeCount.toString(),
@@ -427,22 +431,14 @@ class _ThreadSectionState extends State<_ThreadSection> {
                             ),
                           ],
                         ),
-
-                        if (widget.showMenu)
-                          GestureDetector(
-                            onTap: _showMenuDialog,
-                            child: Icon(AppIcons.menu, size: 20),
+                        Text(
+                          timeago.format(widget.thread.createdAt),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                            color: AppColors.textGrey,
                           ),
-                        if (widget.showReport)
-                          GestureDetector(
-                            onTap:
-                                () => showReportDialog(
-                                  context: context,
-                                  category: "thread",
-                                  refersId: widget.thread.id,
-                                ),
-                            child: Icon(AppIcons.report, size: 20),
-                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 16),

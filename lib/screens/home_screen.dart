@@ -537,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
+                                        padding: const EdgeInsets.all(4.0),
                                         child: Row(
                                           children: [
                                             // Avatar bayi
@@ -606,18 +606,24 @@ class _HomeScreenState extends State<HomeScreen>
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  Text(
-                                                    baby.name,
-                                                    style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color:
-                                                          AppColors.textBlack,
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          right: 32.0,
+                                                        ),
+                                                    child: Text(
+                                                      baby.name,
+                                                      style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            AppColors.textBlack,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 4),
                                                   if (baby
@@ -647,7 +653,6 @@ class _HomeScreenState extends State<HomeScreen>
                                                         ),
                                                       ],
                                                     ),
-                                                    const SizedBox(height: 4),
 
                                                     // Informasi tinggi (Height)
                                                     Row(
@@ -674,7 +679,6 @@ class _HomeScreenState extends State<HomeScreen>
                                                         ),
                                                       ],
                                                     ),
-                                                    const SizedBox(height: 4),
 
                                                     // Informasi berat (Weight)
                                                     Row(
@@ -701,7 +705,6 @@ class _HomeScreenState extends State<HomeScreen>
                                                         ),
                                                       ],
                                                     ),
-                                                    const SizedBox(height: 4),
 
                                                     // Informasi alergi (Allergy)
                                                     Row(
@@ -717,14 +720,26 @@ class _HomeScreenState extends State<HomeScreen>
                                                         const SizedBox(
                                                           width: 4,
                                                         ),
-                                                        Text(
-                                                          baby.condition ??
-                                                              'Tidak ada alergi',
-                                                          style: const TextStyle(
-                                                            fontSize: 12,
-                                                            color:
-                                                                AppColors
-                                                                    .textGrey,
+                                                        Flexible(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets.only(
+                                                                  right: 16.0,
+                                                                ),
+                                                            child: Text(
+                                                              baby.condition ??
+                                                                  'Tidak ada alergi',
+                                                              style: const TextStyle(
+                                                                fontSize: 12,
+                                                                color:
+                                                                    AppColors
+                                                                        .textGrey,
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
                                                           ),
                                                         ),
                                                       ],
@@ -744,15 +759,25 @@ class _HomeScreenState extends State<HomeScreen>
                                                           ),
                                                         );
                                                       },
-                                                      child: Text(
-                                                        'Lengkapi Data Bayi',
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          color:
-                                                              AppColors.accent,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                              right: 48.0,
+                                                            ),
+                                                        child: Text(
+                                                          'Lengkapi Data Bayi',
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            color:
+                                                                AppColors
+                                                                    .accent,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .underline,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -1374,7 +1399,7 @@ class _HomeScreenState extends State<HomeScreen>
           const SizedBox(height: 4),
           // Carousel kartu fitur
           SizedBox(
-            height: 180,
+            height: 200,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),

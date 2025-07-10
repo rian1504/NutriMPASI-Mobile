@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:intl/intl.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
@@ -177,11 +177,7 @@ class _BabyEditScreenState extends State<BabyEditScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
-                icon: const Icon(
-                  Symbols.arrow_back_ios_new_rounded,
-                  color: AppColors.textBlack,
-                  size: 24,
-                ),
+                icon: Icon(AppIcons.back, color: AppColors.textBlack, size: 24),
                 padding: EdgeInsets.zero,
                 onPressed: () {
                   Navigator.pop(context);

@@ -291,7 +291,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   padding: EdgeInsets.only(
                     top:
                         AppBar().preferredSize.height +
-                        MediaQuery.of(context).padding.top,
+                        MediaQuery.of(context).padding.top +
+                        8,
                   ),
                   child: const Center(child: CircularProgressIndicator()),
                 ),
@@ -372,7 +373,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     padding: EdgeInsets.only(
                       top:
                           AppBar().preferredSize.height +
-                          MediaQuery.of(context).padding.top,
+                          MediaQuery.of(context).padding.top +
+                          8,
                     ),
                     child: Container(
                       color: AppColors.primary,
@@ -430,7 +432,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           TextButton(
                             onPressed: unreadCount > 0 ? _markAllAsRead : null,
                             child: Text(
-                              'Tandai Semua Telah Dibaca',
+                              'Baca Semua',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight:

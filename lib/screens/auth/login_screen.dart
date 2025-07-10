@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   // Panel utama
                   Positioned(
-                    top: size.height * 0.5,
+                    bottom: 24,
                     left: 24,
                     right: 24,
                     child: Card(
@@ -133,14 +133,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Expanded(
                                   child: TextButton(
                                     onPressed: () {
-                                      Navigator.pushAndRemoveUntil(
+                                      Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder:
                                               (context) =>
                                                   const RegisterScreen(),
                                         ),
-                                        (route) => false,
                                       );
                                     },
                                     style: TextButton.styleFrom(
@@ -257,14 +256,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       alignment: Alignment.centerRight,
                                       child: TextButton(
                                         onPressed: () {
-                                          Navigator.pushAndRemoveUntil(
+                                          Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder:
                                                   (context) =>
                                                       const ForgetPasswordScreen(),
                                             ),
-                                            (route) => false,
                                           );
                                         },
                                         child: const Text(

@@ -57,7 +57,8 @@ class AppBarForum extends StatelessWidget implements PreferredSizeWidget {
                 if (showTabs == false)
                   Padding(
                     padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top + 10.0,
+                      top: MediaQuery.of(context).padding.top,
+                      bottom: 8,
                     ),
                     child: Text(
                       title,

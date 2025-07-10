@@ -111,7 +111,7 @@ void showThreadPreviewAndMenu({
               Padding(
                 padding: const EdgeInsets.only(right: 4.0),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * (1 / 2.5),
+                  width: MediaQuery.of(context).size.width * (1 / 2.3),
 
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -125,19 +125,7 @@ void showThreadPreviewAndMenu({
                             color: AppColors.warningHighTranparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: ListTile(
-                            leading: Icon(
-                              AppIcons.edit,
-                              size: 20,
-                              color: AppColors.amber,
-                            ),
-                            title: Text(
-                              "Edit Postingan",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.amber,
-                              ),
-                            ),
+                          child: GestureDetector(
                             onTap: () {
                               Navigator.pop(dialogContext);
                               Navigator.push(
@@ -149,6 +137,29 @@ void showThreadPreviewAndMenu({
                                 ),
                               );
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    AppIcons.edit,
+                                    size: 20,
+                                    color: AppColors.amber,
+                                  ),
+                                  SizedBox(width: 16),
+                                  Text(
+                                    "Edit \nPostingan",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppColors.amber,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    maxLines: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -165,19 +176,7 @@ void showThreadPreviewAndMenu({
                               color: AppColors.errorHighTranparent,
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: ListTile(
-                              leading: Icon(
-                                AppIcons.deleteFill,
-                                size: 20,
-                                color: AppColors.error,
-                              ),
-                              title: Text(
-                                "Hapus Postingan",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: AppColors.error,
-                                ),
-                              ),
+                            child: GestureDetector(
                               onTap: () {
                                 Navigator.pop(context);
                                 confirmDeleteThread(
@@ -186,6 +185,29 @@ void showThreadPreviewAndMenu({
                                   isFromDetailPage: isFromDetailPage,
                                 );
                               },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      AppIcons.deleteFill,
+                                      size: 20,
+                                      color: AppColors.error,
+                                    ),
+                                    SizedBox(width: 16),
+                                    Text(
+                                      "Hapus \nPostingan",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: AppColors.error,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      maxLines: 2,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -309,25 +331,36 @@ void showCommentPreviewAndMenu({
                                 color: AppColors.warningHighTranparent,
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: ListTile(
-                                leading: Icon(
-                                  AppIcons.edit,
-                                  size: 20,
-                                  color: AppColors.amber,
-                                ),
-                                title: const Text(
-                                  "Edit Komentar",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.amber,
-                                  ),
-                                ),
+                              child: GestureDetector(
                                 onTap: () {
                                   Navigator.pop(dialogContext);
                                   if (onEdit != null) {
                                     onEdit(comment);
                                   }
                                 },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        AppIcons.edit,
+                                        size: 20,
+                                        color: AppColors.amber,
+                                      ),
+                                      SizedBox(width: 16),
+                                      Text(
+                                        "Edit \nKomentar",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: AppColors.amber,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        maxLines: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -341,19 +374,7 @@ void showCommentPreviewAndMenu({
                               color: AppColors.errorHighTranparent,
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: ListTile(
-                              leading: Icon(
-                                AppIcons.deleteFill,
-                                size: 20,
-                                color: AppColors.error,
-                              ),
-                              title: const Text(
-                                "Hapus Komentar",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: AppColors.error,
-                                ),
-                              ),
+                            child: GestureDetector(
                               onTap: () {
                                 Navigator.pop(dialogContext);
                                 confirmDeleteComment(
@@ -363,6 +384,29 @@ void showCommentPreviewAndMenu({
                                   threadId: threadId,
                                 );
                               },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      AppIcons.deleteFill,
+                                      size: 20,
+                                      color: AppColors.error,
+                                    ),
+                                    SizedBox(width: 16),
+                                    Text(
+                                      "Hapus \nKomentar",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: AppColors.error,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      maxLines: 2,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
