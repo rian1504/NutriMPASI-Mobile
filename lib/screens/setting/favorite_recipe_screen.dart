@@ -250,32 +250,38 @@ class _FavoriteRecipeScreenState extends State<FavoriteRecipeScreen> {
                                     ),
                                   ),
                                   Expanded(
+                                    flex: 5,
                                     child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        8,
-                                        8,
-                                        48,
-                                        8,
+                                      padding: const EdgeInsets.only(
+                                        right: 48.0,
+                                        left: 8,
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             recipe.name,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
+                                              height: 1.1,
                                             ),
                                             textAlign: TextAlign.justify,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             recipe.description,
                                             style: const TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 12,
+                                              height: 1.1,
                                             ),
                                             maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.justify,
                                           ),
                                         ],

@@ -92,7 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 // Panel utama
                 Positioned(
-                  top: size.height * 0.4,
+                  bottom: 24,
                   left: 24,
                   right: 24,
                   child: Card(
@@ -121,13 +121,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Expanded(
                                 child: TextButton(
                                   onPressed: () {
-                                    Navigator.pushAndRemoveUntil(
+                                    Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                         builder:
                                             (context) => const LoginScreen(),
                                       ),
-                                      (route) => false,
                                     );
                                   },
                                   style: TextButton.styleFrom(

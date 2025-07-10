@@ -37,6 +37,7 @@ class _ForumScreenState extends State<ForumScreen> {
   @override
   void initState() {
     super.initState();
+    timeago.setLocaleMessages('id', timeago.IdShortMessages());
     context.read<ThreadBloc>().add(FetchThreads());
   }
 
@@ -219,7 +220,7 @@ class _ForumTabState extends State<_ForumTab> {
             Positioned(
               left: offset.dx + 4,
               top: offset.dy + 4,
-              width: 0.4 * MediaQuery.of(context).size.width - 8,
+              width: 0.45 * MediaQuery.of(context).size.width - 8,
               child: ScaleTransition(
                 scale: CurvedAnimation(
                   parent: animation,
@@ -308,7 +309,7 @@ class _ForumTabState extends State<_ForumTab> {
               if (!widget.isMyPosts)
                 // filter
                 SizedBox(
-                  width: 0.4 * MediaQuery.of(context).size.width,
+                  width: 0.45 * MediaQuery.of(context).size.width,
                   child: GestureDetector(
                     key: _dropdownButtonKey,
                     onTap: () {
@@ -434,7 +435,6 @@ class ForumCard extends StatefulWidget {
 class ForumCardState extends State<ForumCard> {
   late bool isLiked;
   late int likeCount;
-  // final GlobalKey _menuKey = GlobalKey();
   OverlayEntry? _overlayEntry;
 
   @override
@@ -449,6 +449,32 @@ class ForumCardState extends State<ForumCard> {
   void hideMenu() {
     _overlayEntry?.remove();
     _overlayEntry = null;
+  }
+
+  String _formatTimeAgo(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays >= 30) {
+      final months = (difference.inDays / 30).floor();
+      return months == 1 ? '1 bulan lalu' : '$months bulan lalu';
+    } else if (difference.inDays >= 7) {
+      final weeks = (difference.inDays / 7).floor();
+      return weeks == 1 ? '1 minggu lalu' : '$weeks minggu lalu';
+    } else if (difference.inDays >= 1) {
+      return difference.inDays == 1
+          ? '1 hari lalu'
+          : '${difference.inDays} hari lalu';
+    } else {
+      return timeago.format(dateTime, locale: 'id');
+    }
+  }
+
+  String _truncateUsername(String username, {int maxLength = 15}) {
+    if (username.length <= maxLength) {
+      return username;
+    }
+    return '${username.substring(0, maxLength)}...';
   }
 
   @override
@@ -535,19 +561,22 @@ class ForumCardState extends State<ForumCard> {
                                       ),
                             ),
                             SizedBox(width: 8),
-                            Text(
-                              widget.thread.user.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: AppColors.black,
+                            Expanded(
+                              child: Text(
+                                _truncateUsername(widget.thread.user.name),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: AppColors.black,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
                       ),
                       Text(
-                        timeago.format(widget.thread.createdAt),
+                        _formatTimeAgo(widget.thread.createdAt),
                         style: TextStyle(
                           color: AppColors.greyDark,
                           fontSize: 12,

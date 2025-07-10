@@ -192,13 +192,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             size: 20,
                           ),
                           const SizedBox(width: 8),
-                          const Text(
-                            'Cara Menggunakan Jadwal:',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textBlack,
+                          Flexible(
+                            child: const Text(
+                              'Cara Menggunakan Jadwal:',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textBlack,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
                         ],
@@ -293,6 +296,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               color: AppColors.textBlack,
                             ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
                           const SizedBox(width: 16),
                           Container(
                             padding: const EdgeInsets.all(4),
@@ -315,6 +323,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                               color: AppColors.textBlack,
                             ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
                           const SizedBox(width: 16),
                           Container(
                             padding: const EdgeInsets.all(4),
@@ -570,9 +583,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       children: [
                         const Icon(Symbols.add),
                         const SizedBox(width: 4),
-                        const Text(
-                          'Tambah Jadwal Masak',
-                          style: TextStyle(fontSize: 12),
+                        Flexible(
+                          child: const Text(
+                            'Tambah Jadwal Masak',
+                            style: TextStyle(
+                              fontSize: 12,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -670,17 +688,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               }
 
               if (_scheduleItems.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: EmptyMessage(
-                    title: 'Belum ada jadwal memasak ',
-                    subtitle:
-                        'Tambahkan jadwal memasak untuk hari ini dengan menekan tombol di atas',
-                    buttonText: 'Tambah Jadwal',
-                    iconName: AppIcons.schedule,
+                return Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: EmptyMessage(
+                        title: 'Belum ada jadwal memasak ',
+                        subtitle:
+                            'Tambahkan jadwal memasak untuk hari ini dengan menekan tombol di atas',
+                        buttonText: 'Tambah Jadwal',
+                        iconName: AppIcons.schedule,
+                      ),
+                    ),
                   ),
                 );
               }
@@ -1589,6 +1611,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                                 fontWeight: FontWeight.bold,
                                                 color: AppColors.textBlack,
                                               ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                             const SizedBox(height: 4),
                                             SizedBox(

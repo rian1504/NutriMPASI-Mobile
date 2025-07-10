@@ -72,7 +72,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 ),
                 // Panel utama
                 Positioned(
-                  top: size.height * 0.5,
+                  bottom: 24,
                   left: 24,
                   right: 24,
                   child: Card(
@@ -230,14 +230,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushAndRemoveUntil(
+                                                  Navigator.pushReplacement(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const LoginScreen(),
                                                     ),
-                                                    (route) => false,
                                                   );
                                                 },
                                         ),
@@ -258,14 +257,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           recognizer:
                                               TapGestureRecognizer()
                                                 ..onTap = () {
-                                                  Navigator.pushAndRemoveUntil(
+                                                  Navigator.pushReplacement(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder:
                                                           (context) =>
                                                               const RegisterScreen(),
                                                     ),
-                                                    (route) => false,
                                                   );
                                                 },
                                         ),

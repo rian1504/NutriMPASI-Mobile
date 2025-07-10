@@ -168,12 +168,21 @@ class _SettingScreenState extends State<SettingScreen> {
                                   ),
                                   SizedBox(height: 8),
                                   // nama pengguna
-                                  Text(
-                                    loggedInUser?.name ?? 'Pengguna',
-                                    style: TextStyle(
-                                      color: AppColors.textWhite,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                    ),
+                                    child: Text(
+                                      loggedInUser?.name ?? 'Pengguna',
+
+                                      style: TextStyle(
+                                        color: AppColors.textWhite,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
                                   ),
                                 ],

@@ -516,7 +516,7 @@ class _FoodSuggestionDetailScreenState
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 24.0,
-                      horizontal: 36.0,
+                      horizontal: 24.0,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -639,7 +639,7 @@ class _FoodSuggestionDetailScreenState
                                   const Icon(Icons.delete, size: 18),
                                   const SizedBox(width: 8),
                                   const Text(
-                                    'Hapus Usulan ',
+                                    'Hapus Usulan',
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 14,

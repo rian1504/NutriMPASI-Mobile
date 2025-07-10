@@ -405,7 +405,7 @@ class _FoodListScreenState extends State<FoodListScreen>
             Positioned(
               left: offset.dx + 4,
               top: offset.dy + 4,
-              width: 0.4 * MediaQuery.of(context).size.width - 8,
+              width: 0.45 * MediaQuery.of(context).size.width - 8,
               child: ScaleTransition(
                 scale: CurvedAnimation(
                   parent: animation,
@@ -1036,6 +1036,7 @@ class _FoodListScreenState extends State<FoodListScreen>
             builder: (context, child) {
               return AppBar(
                 backgroundColor: AppColors.background,
+                surfaceTintColor: AppColors.background,
                 elevation: 0,
                 leadingWidth: Tween<double>(
                   begin: 56.0,
@@ -1428,14 +1429,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                               : Colors.white,
                                     ),
                                     duration: const Duration(milliseconds: 300),
-                                    child: const Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 8,
-                                        ),
-                                        child: Text('Semua'),
-                                      ),
-                                    ),
+                                    child: const Center(child: Text('Semua')),
                                   ),
                                 ),
                                 // Text "Usulan Saya"
@@ -1452,12 +1446,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                     ),
                                     duration: const Duration(milliseconds: 300),
                                     child: const Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 8,
-                                        ),
-                                        child: Text('Usulan Saya'),
-                                      ),
+                                      child: Text('Usulan Saya'),
                                     ),
                                   ),
                                 ),
@@ -1518,7 +1507,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             SizedBox(
-                              width: 0.4 * MediaQuery.of(context).size.width,
+                              width: 0.45 * MediaQuery.of(context).size.width,
                               child: GestureDetector(
                                 key: _dropdownButtonKey,
                                 onTap: () {
@@ -1827,9 +1816,11 @@ class _FoodListScreenState extends State<FoodListScreen>
                               style: const TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 16,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.bold,
                                 color: AppColors.textBlack,
+                                height: 1.1,
                               ),
+                              maxLines: 2,
                             ),
                             const SizedBox(height: 4),
                             // Deskripsi singkat
@@ -1839,6 +1830,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                                 fontFamily: 'Poppins',
                                 fontSize: 12,
                                 color: AppColors.textGrey,
+                                height: 1.1,
                               ),
                               textAlign: TextAlign.justify,
                               maxLines: 3,

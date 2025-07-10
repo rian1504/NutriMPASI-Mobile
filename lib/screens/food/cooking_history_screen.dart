@@ -684,12 +684,15 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
               right: 0,
               child: AppBar(
                 centerTitle: true,
-                title: Text(
-                  'Riwayat Memasak',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    'Riwayat Memasak',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 backgroundColor: AppColors.primary,
@@ -760,7 +763,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                   '${_lastMonthCalorieAnimation.value}',
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 22,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 );
@@ -778,7 +781,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                       ],
                     ),
 
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 16),
 
                     // Indikator progres lingkaran
                     SizedBox(
@@ -880,7 +883,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                       ),
                     ),
 
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 16),
 
                     // Informasi bulan ini
                     Column(
@@ -909,7 +912,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                         diff >= 0
                                             ? AppColors.success
                                             : AppColors.error,
-                                    fontSize: 22,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 );
@@ -1536,7 +1539,7 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textBlack,
                               ),
-                              maxLines: 2,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -1641,6 +1644,8 @@ class _CookingHistoryScreenState extends State<CookingHistoryScreen>
               fontWeight: FontWeight.bold,
               color: AppColors.textBlack,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

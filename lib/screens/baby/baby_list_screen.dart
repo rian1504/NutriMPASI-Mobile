@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nutrimpasi/blocs/baby/baby_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
+import 'package:nutrimpasi/constants/icons.dart';
 import 'package:nutrimpasi/models/baby.dart';
 import 'package:nutrimpasi/screens/baby/baby_edit_screen.dart';
 import 'package:nutrimpasi/screens/baby/baby_add_screen.dart';
@@ -82,11 +83,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
-                icon: const Icon(
-                  Symbols.arrow_back_ios_new_rounded,
-                  color: AppColors.textBlack,
-                  size: 24,
-                ),
+                icon: Icon(AppIcons.back, color: AppColors.textBlack, size: 24),
                 padding: EdgeInsets.zero,
                 onPressed: () {
                   context.read<BabyBloc>().add(FetchBabies());
@@ -299,7 +296,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
         curve: Curves.easeInOut,
         margin: EdgeInsets.symmetric(
           horizontal: 8,
-          vertical: isCurrentItem ? 0 : 20,
+          vertical: isCurrentItem ? 0 : 15,
         ),
         decoration: BoxDecoration(
           color: Colors.white.withAlpha(200),
@@ -494,7 +491,7 @@ class _BabyListScreenState extends State<BabyListScreen> {
         curve: Curves.easeInOut,
         margin: EdgeInsets.symmetric(
           horizontal: 8,
-          vertical: isCurrentItem ? 0 : 20,
+          vertical: isCurrentItem ? 0 : 15,
         ),
         decoration: BoxDecoration(
           color: Colors.white.withAlpha(200),
@@ -508,68 +505,72 @@ class _BabyListScreenState extends State<BabyListScreen> {
             ),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Ikon dan judul
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppColors.bisque,
-                shape: BoxShape.circle,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Ikon dan judul
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppColors.bisque,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Symbols.child_care,
+                  size: 60,
+                  color: AppColors.primary,
+                ),
               ),
-              child: const Icon(
-                Symbols.child_care,
-                size: 60,
-                color: AppColors.primary,
+              const SizedBox(height: 24),
+              const Text(
+                'Tambah Profil Bayi Baru',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textBlack,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Tambah Profil Bayi Baru',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textBlack,
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: Text(
+                  'Tambahkan data bayi untuk mendapatkan rekomendasi makanan yang sesuai dengan kebutuhan si kecil',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: AppColors.textGrey),
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Text(
-                'Tambahkan data bayi untuk mendapatkan rekomendasi makanan yang sesuai dengan kebutuhan si kecil',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: AppColors.textGrey),
-              ),
-            ),
-            const SizedBox(height: 32),
-            // Tombol tambah
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BabyAddScreen(),
+              const SizedBox(height: 32),
+              // Tombol tambah
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BabyAddScreen(),
+                    ),
+                  ).then((_) {
+                    setState(() {});
+                  });
+                },
+                icon: const Icon(Symbols.add),
+                label: const Text('Tambah Bayi'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accent,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
                   ),
-                ).then((_) {
-                  setState(() {});
-                });
-              },
-              icon: const Icon(Symbols.add),
-              label: const Text('Tambah Bayi'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.accent,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -581,25 +582,29 @@ class _BabyListScreenState extends State<BabyListScreen> {
       children: [
         Icon(icon, size: 16, color: AppColors.textGrey),
         const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10,
-                color: AppColors.textGrey.withAlpha(200),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: AppColors.textGrey.withAlpha(200),
+                ),
               ),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textBlack,
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textBlack,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
