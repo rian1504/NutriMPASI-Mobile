@@ -1623,11 +1623,25 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                                       )
                                                       .toList();
 
+                                              String combinedIngredients =
+                                                  ingredients.join(';');
+
                                               String trimmedFruits =
                                                   _fruitsController.text.trim();
                                               if (trimmedFruits.isNotEmpty) {
                                                 ingredients.add(trimmedFruits);
                                               }
+
+                                              List<String> steps =
+                                                  _stepControllers
+                                                      .map(
+                                                        (controller) =>
+                                                            controller.text,
+                                                      )
+                                                      .toList();
+                                              String combinedSteps = steps.join(
+                                                ';',
+                                              );
 
                                               // Mengupdate data makanan
                                               final updatedFood = FoodSuggestion(
@@ -1661,20 +1675,14 @@ class _FoodSuggestionEditScreenState extends State<FoodSuggestionEditScreen> {
                                                       _servingsController.text,
                                                     ) ??
                                                     widget.food.portion,
-                                                recipe:
-                                                    _ingredientControllers
-                                                        .map((c) => c.text)
-                                                        .toList(),
+                                                recipe: [combinedIngredients],
                                                 fruit:
                                                     trimmedFruits.isNotEmpty
                                                         ? trimmedFruits.split(
                                                           ', ',
                                                         )
                                                         : null,
-                                                step:
-                                                    _stepControllers
-                                                        .map((c) => c.text)
-                                                        .toList(),
+                                                step: [combinedSteps],
                                                 description:
                                                     _descriptionController.text,
                                               );

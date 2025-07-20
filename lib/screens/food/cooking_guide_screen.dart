@@ -38,149 +38,114 @@ class _CookingGuideScreenState extends State<CookingGuideScreen> {
       return ingredient;
     }
 
-    // Jika format umum
-    RegExp quantityPatternMiddle = RegExp(
-      r'([a-zA-Z\s]+)\s+(\d+(?:[,.]\d+)?|\d+\/\d+)\s*([a-zA-Z]*)',
+    // Fungsi pembantu untuk mengkonversi dan mengkalikan nilai numerik
+    String scaleValue(String quantityStr) {
+      double value;
+      String cleanedQuantityStr = quantityStr.replaceAll(',', '.');
+
+      if (cleanedQuantityStr.contains('/')) {
+        // Handle pecahan (e.g., "1/2")
+        var parts = cleanedQuantityStr.split('/');
+        double numerator = double.parse(parts[0]);
+        double denominator = double.parse(parts[1]);
+        value = numerator / denominator;
+      } else {
+        // Handle integer dan desimal
+        value = double.tryParse(cleanedQuantityStr) ?? 0;
+      }
+
+      // Kalikan dengan jumlah bayi
+      value *= widget.babyId.length;
+
+      String newQuantity;
+      if (value == value.toInt()) {
+        // Jika hasilnya bilangan bulat, tampilkan sebagai integer
+        newQuantity = value.toInt().toString();
+      } else {
+        // Jika hasilnya desimal, tampilkan dengan satu angka di belakang koma dan bersihkan jika .0
+        newQuantity = value.toStringAsFixed(1);
+        if (newQuantity.endsWith('.0')) {
+          newQuantity = newQuantity.substring(0, newQuantity.length - 2);
+        }
+        newQuantity = newQuantity.replaceAll(
+          '.',
+          ',',
+        ); // Konversi kembali ke koma desimal
+      }
+      return newQuantity;
+    }
+
+    // Regex utama untuk menemukan pola kuantitas
+    // Ini mencari: [Angka] [Spasi] [Unit]
+    // Atau: ([Angka] [Spasi] [Unit])
+    // Ini akan menangkap:
+    // - "150 gr" dari "nasi 150 gr (15 sdm)"
+    // - "15 sdm" dari "(15 sdm)"
+    // - "2 potong" dari "2 potong ayam"
+    // - "1/2 cm" dari "1/2 cm lengkuas"
+    // - "5 siung" dari "5 siung bawang merah"
+    final RegExp quantityPattern = RegExp(
+      r'(?:' // Non-capturing group for OR logic
+      r'(\d+(?:[.,]\d+)?|\d+\/\d+)\s*' // Group 1: Kuantitas utama (angka/desimal/pecahan)
+      r'(' // Group 2: Unit utama
+      r'(?:gr|grm|gram|sdm|sdt|sendok\s*teh|sendok\s*makan|potong|buah|ekor|cm|butir|siung|lembar|batang|bungkus|liter|ml|kg|mg|tsp|tbsp|cup|gelas|sachet|keping|sendok|ruas|jari|slice|iris|ons|pouch|botol|kaleng|pack|kotak)\b'
+      r'(?:(?:\s|[,])?(?:[a-zA-Z%]+))?' // Opsional: spasi/koma + kata lain (misal: "buah besar")
+      r')' // Akhir Group 2
+      r'|' // OR (untuk mencocokkan kuantitas dalam kurung)
+      r'\(((\d+(?:[.,]\d+)?|\d+\/\d+)\s*' // Group 3: Kuantitas di dalam kurung (Group 4)
+      r'(' // Group 5: Unit di dalam kurung
+      r'(?:gr|grm|gram|sdm|sdt|sendok\s*teh|sendok\s*makan|potong|buah|ekor|cm|butir|siung|lembar|batang|bungkus|liter|ml|kg|g|mg|tsp|tbsp|cup|gelas|sachet|keping|sendok|ruas|jari|slice|iris|ons|pouch|botol|kaleng|pack|kotak)\b'
+      r'(?:(?:\s|[,])?(?:[a-zA-Z%]+))?' // Opsional: spasi/koma + kata lain
+      r')?' // Akhir Group 5 (unit di dalam kurung)
+      r')\)' // Akhir kurung
+      r')', // Akhir non-capturing group
       caseSensitive: false,
     );
 
-    // Jika format kuantitas di awal
-    RegExp quantityPatternBegin = RegExp(
-      r'^(\d+(?:[,.]\d+)?|\d+\/\d+)\s*([a-zA-Z]*)\s+([a-zA-Z\s]+)',
-      caseSensitive: false,
-    );
+    // Gunakan replaceAllMapped untuk menemukan dan mengkalikan semua pola kuantitas
+    // yang diikuti oleh unit yang dikenal di seluruh string.
+    String newIngredient = ingredient.replaceAllMapped(quantityPattern, (
+      match,
+    ) {
+      String originalMatch =
+          match.group(
+            0,
+          )!; // Seluruh teks yang cocok (misal: "150 gr", "(15 sdm)")
 
-    // Jika format kuantitas di tengah
-    var matchMiddle = quantityPatternMiddle.firstMatch(ingredient);
-    if (matchMiddle != null) {
-      String itemName = matchMiddle.group(1)?.trim() ?? '';
-      String quantityStr = matchMiddle.group(2) ?? '';
-      String unit = matchMiddle.group(3) ?? '';
+      // Cek apakah ini pola kuantitas utama (Group 1 dan 2) atau di dalam kurung (Group 3, 4, dan 5)
+      String? quantityStr;
+      String? unitPart;
 
-      double value;
-      if (quantityStr.contains('/')) {
-        var parts = quantityStr.split('/');
-        double numerator = double.parse(parts[0]);
-        double denominator = double.parse(parts[1]);
-        value = numerator / denominator * widget.babyId.length;
+      if (match.group(1) != null) {
+        // Pola kuantitas utama
+        quantityStr = match.group(1)!;
+        unitPart = match.group(2) ?? '';
+      } else if (match.group(4) != null) {
+        // Pola kuantitas di dalam kurung
+        quantityStr = match.group(4)!;
+        unitPart = match.group(5) ?? '';
       } else {
-        if (quantityStr.contains(',')) {
-          quantityStr = quantityStr.replaceAll(',', '.');
-        }
-        value = double.tryParse(quantityStr) ?? 0;
-        value *= widget.babyId.length;
+        // Ini seharusnya tidak terjadi jika regex dirancang dengan benar,
+        // tapi sebagai fallback, gunakan seluruh match.
+        return originalMatch;
       }
 
-      String newQuantity;
-      if (value == value.toInt()) {
-        newQuantity = value.toInt().toString();
-      } else {
-        newQuantity = value.toString().replaceAll('.', ',');
+      String scaledQuantity = scaleValue(quantityStr);
+
+      // Rekonstruksi bagian yang cocok: angka yang diskalakan + spasi (jika ada unit) + unit asli
+      // Jika unitPart kosong, pastikan tidak ada spasi ekstra
+      String reconstructedPart = '$scaledQuantity ${unitPart.trim()}'.trim();
+
+      // Jika match aslinya adalah pola dalam kurung, kita perlu mempertahankan kurungnya.
+      if (match.group(3) != null) {
+        // Jika Group 3 (yang merupakan isi dari () ) matched
+        return '($reconstructedPart)';
       }
 
-      return "$itemName $newQuantity $unit".trim();
-    }
+      return reconstructedPart;
+    });
 
-    // Jika format kuantitas di awal
-    var matchBegin = quantityPatternBegin.firstMatch(ingredient);
-    if (matchBegin != null) {
-      String quantityStr = matchBegin.group(1) ?? '';
-      String unit = matchBegin.group(2) ?? '';
-      String itemName = matchBegin.group(3)?.trim() ?? '';
-
-      double value;
-      if (quantityStr.contains('/')) {
-        var parts = quantityStr.split('/');
-        double numerator = double.parse(parts[0]);
-        double denominator = double.parse(parts[1]);
-        value = numerator / denominator * widget.babyId.length;
-      } else {
-        if (quantityStr.contains(',')) {
-          quantityStr = quantityStr.replaceAll(',', '.');
-        }
-        value = double.tryParse(quantityStr) ?? 0;
-        value *= widget.babyId.length;
-      }
-
-      String newQuantity;
-      if (value == value.toInt()) {
-        newQuantity = value.toInt().toString();
-      } else {
-        newQuantity = value.toString().replaceAll('.', ',');
-      }
-
-      return "$newQuantity $unit $itemName".trim();
-    }
-
-    // Jika format kuantitas di akhir
-    RegExp spaceUnitPattern = RegExp(
-      r'(.+?)\s+(\d+(?:[,.]\d+)?|\d+\/\d+)\s+([a-zA-Z]+)',
-      caseSensitive: false,
-    );
-
-    var spaceMatch = spaceUnitPattern.firstMatch(ingredient);
-    if (spaceMatch != null) {
-      String itemName = spaceMatch.group(1)?.trim() ?? '';
-      String quantityStr = spaceMatch.group(2) ?? '';
-      String unit = spaceMatch.group(3) ?? '';
-
-      double value;
-      if (quantityStr.contains('/')) {
-        var parts = quantityStr.split('/');
-        double numerator = double.parse(parts[0]);
-        double denominator = double.parse(parts[1]);
-        value = numerator / denominator * widget.babyId.length;
-      } else {
-        if (quantityStr.contains(',')) {
-          quantityStr = quantityStr.replaceAll(',', '.');
-        }
-        value = double.tryParse(quantityStr) ?? 0;
-        value *= widget.babyId.length;
-      }
-
-      String newQuantity;
-      if (value == value.toInt()) {
-        newQuantity = value.toInt().toString();
-      } else {
-        newQuantity = value.toString().replaceAll('.', ',');
-      }
-
-      return "$itemName $newQuantity $unit".trim();
-    }
-
-    // Jika tidak ada pola yang cocok, gunakan regex untuk menangkap angka
-    RegExp numbersOnly = RegExp(r'(\d+(?:[,.]\d+)?|\d+\/\d+)');
-    var numMatch = numbersOnly.firstMatch(ingredient);
-    if (numMatch != null) {
-      String quantityStr = numMatch.group(1) ?? '';
-      String before = ingredient.substring(0, numMatch.start);
-      String after = ingredient.substring(numMatch.end);
-
-      double value;
-      if (quantityStr.contains('/')) {
-        var parts = quantityStr.split('/');
-        double numerator = double.parse(parts[0]);
-        double denominator = double.parse(parts[1]);
-        value = numerator / denominator * widget.babyId.length;
-      } else {
-        if (quantityStr.contains(',')) {
-          quantityStr = quantityStr.replaceAll(',', '.');
-        }
-        value = double.tryParse(quantityStr) ?? 0;
-        value *= widget.babyId.length;
-      }
-
-      String newQuantity;
-      if (value == value.toInt()) {
-        newQuantity = value.toInt().toString();
-      } else {
-        newQuantity = value.toString().replaceAll('.', ',');
-      }
-
-      return before + newQuantity + after;
-    }
-
-    return ingredient;
+    return newIngredient;
   }
 
   @override
