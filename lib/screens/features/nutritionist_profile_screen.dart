@@ -41,10 +41,7 @@ class _NutritionistProfileScreenState extends State<NutritionistProfileScreen> {
     });
 
     // Load data
-    final nutritionistState = context.read<NutritionistBloc>().state;
-    if (nutritionistState is! NutritionistLoaded) {
-      context.read<NutritionistBloc>().add(FetchNutritionists());
-    }
+    context.read<NutritionistBloc>().add(FetchNutritionists());
   }
 
   @override
