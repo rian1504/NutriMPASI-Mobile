@@ -5,6 +5,7 @@ import 'package:nutrimpasi/blocs/food/food_bloc.dart';
 import 'package:nutrimpasi/blocs/food_suggestion/food_suggestion_bloc.dart';
 import 'package:nutrimpasi/constants/colors.dart';
 import 'package:nutrimpasi/constants/url.dart';
+import 'package:nutrimpasi/main.dart';
 import 'package:nutrimpasi/screens/food/food_suggestion_edit_screen.dart';
 import 'package:nutrimpasi/utils/flushbar.dart';
 import 'package:nutrimpasi/widgets/custom_dialog.dart';
@@ -28,6 +29,35 @@ class _FoodSuggestionDetailScreenState
     context.read<FoodSuggestionBloc>().add(
       FetchFoodSuggestion(foodId: widget.foodId),
     );
+  }
+
+  // Fungsi untuk navigasi ke halaman daftar makanan
+  void _navigateToFoodList(
+    BuildContext context, {
+    bool showUserSuggestions = false,
+  }) {
+    final MainPageState? mainPage =
+        context.findAncestorStateOfType<MainPageState>();
+
+    if (mainPage != null) {
+      Navigator.pop(context);
+      mainPage.changePage(
+        1,
+        additionalParams: {'showUserSuggestions': showUserSuggestions},
+      );
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => MainPage(
+                initialPage: 1,
+                additionalParams: {'showUserSuggestions': showUserSuggestions},
+              ),
+        ),
+        (route) => false,
+      );
+    }
   }
 
   @override
@@ -604,11 +634,10 @@ class _FoodSuggestionDetailScreenState
                                                 ),
                                               );
 
-                                          context.read<FoodBloc>().add(
-                                            FetchFoods(),
+                                          _navigateToFoodList(
+                                            context,
+                                            showUserSuggestions: true,
                                           );
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
 
                                           AppFlushbar.showSuccess(
                                             context,

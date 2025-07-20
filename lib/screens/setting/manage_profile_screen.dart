@@ -242,7 +242,6 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
             message: "Profil berhasil diperbarui!",
             title: "Berhasil",
             position: FlushbarPosition.BOTTOM,
-            marginVerticalValue: 8,
           );
         } else if (state is ProfileError) {
           AppFlushbar.showError(context, message: state.error, title: "Error");
